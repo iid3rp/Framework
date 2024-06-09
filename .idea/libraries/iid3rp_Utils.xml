@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="iid3rp_Utils">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/jar/iid3rp_Utils.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
