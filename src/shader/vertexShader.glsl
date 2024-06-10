@@ -11,6 +11,7 @@ out vec2 passTextureCoordinates;
 
 out vec3 surfaceNormal;
 out vec3 lightVector;
+out vec3 cameraVector;
 
 uniform mat4 transform;
 uniform mat4 projection;
@@ -30,5 +31,7 @@ void main(void)
 
     surfaceNormal = (transform * vec4(normal, 0.0)).xyz;
     lightVector = lightPosition - worldPosition.xyz;
+
+    cameraVector = (inverse(view) * vec4(0.0, 0.0, 0.0, 1.0)).xyz - worldPosition.xyz;
 
 }

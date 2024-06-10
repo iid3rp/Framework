@@ -1,4 +1,4 @@
-package Shaders;
+package shader;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
@@ -11,14 +11,14 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 
-public abstract class ShaderReader
+public abstract class GLShader
 {
     private final int programID;
     private final int vertexShaderID;
     private final int fragmentShaderID;
 
     private static final FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
-    public ShaderReader(String vertexFile, String fragmentFile)
+    public GLShader(String vertexFile, String fragmentFile)
     {
         vertexShaderID = loadShader(vertexFile, GL20.GL_VERTEX_SHADER);
         fragmentShaderID = loadShader(fragmentFile, GL20.GL_FRAGMENT_SHADER);
@@ -72,7 +72,7 @@ public abstract class ShaderReader
         GL20.glUseProgram(0);
     }
 
-    public void cleanUp()
+    public void dispose()
     {
         stop();
         GL20.glDetachShader(programID, vertexShaderID);

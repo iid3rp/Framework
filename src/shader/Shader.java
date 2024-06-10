@@ -1,11 +1,11 @@
-package Shaders;
+package shader;
 
-import Entities.Camera;
-import Entities.Lighting;
-import Toolbox.MatrixMultiplication;
+import entity.Camera;
+import entity.Lighting;
+import toolbox.MatrixMultiplication;
 import org.lwjgl.util.vector.Matrix4f;
 
-public class StaticShader extends ShaderReader
+public class Shader extends GLShader
 {
     public static final String VERTEX_FILE = "src/Shaders/vertexShader.glsl";
     public static final String FRAGMENT_FILE = "src/Shaders/fragmentShader.glsl";
@@ -14,8 +14,10 @@ public class StaticShader extends ShaderReader
     private int locationView;
     private int locationLightPosition;
     private int locationLightColor;
+    private int locationDamper;
+    private int locationReflectivity;
 
-    public StaticShader()
+    public Shader()
     {
         super(VERTEX_FILE, FRAGMENT_FILE);
     }
@@ -28,7 +30,17 @@ public class StaticShader extends ShaderReader
         locationView = super.getUniformLocation("view");
         locationLightPosition = super.getUniformLocation("lightPosition");
         locationLightColor = super.getUniformLocation("lightColor");
+        locationDamper = super.getUniformLocation("damper");
+        locationReflectivity = super.getUniformLocation("reflectivity");
     }
+
+    public void loadShine(float damper, float reflectivity)
+    {
+        super.loadFloat(locationDamper, damper);
+        super.loadFloat(locationReflectivity, reflectivity);
+    }
+
+
 
     @Override
     protected void bindAttributes()

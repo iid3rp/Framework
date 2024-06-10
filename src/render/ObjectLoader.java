@@ -1,4 +1,4 @@
-package Render;
+package render;
 
 import model.Model;
 import org.lwjgl.util.vector.Vector2f;
@@ -76,7 +76,6 @@ public class ObjectLoader
                 processVertex(vertex1, indices, textures, normals, textureArray, normalsArray);
                 processVertex(vertex2, indices, textures, normals, textureArray, normalsArray);
                 processVertex(vertex3, indices, textures, normals, textureArray, normalsArray);
-                System.out.println(vertices.size());
                 line = reader.readLine();
             }
             reader.close();

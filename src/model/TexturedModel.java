@@ -1,13 +1,13 @@
 package model;
 
-import Textures.ModelTexture;
+import texture.Texture;
 
 public class TexturedModel
 {
     private Model model;
-    private ModelTexture texture;
+    private Texture texture;
 
-    public TexturedModel(Model model, ModelTexture texture)
+    public TexturedModel(Model model, Texture texture)
     {
         this.model = model;
         this.texture = texture;
@@ -18,8 +18,9 @@ public class TexturedModel
         return model;
     }
 
-    public ModelTexture getTexture()
+    public Texture getTexture()
     {
         return texture;
     }
+
 }

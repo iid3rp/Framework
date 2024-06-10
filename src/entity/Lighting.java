@@ -1,4 +1,4 @@
-package Entities;
+package entity;
 
 import org.lwjgl.util.vector.Vector3f;
 
