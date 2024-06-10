@@ -27,7 +27,7 @@ public class ObjectLoader
         int[] indicesArray;
         try
         {
-            file = new FileReader("resources/" + fileName + ".obj");
+            file = new FileReader("resources/objects/" + fileName + ".obj");
             BufferedReader reader = new BufferedReader(file);
 
             while(true)
@@ -76,6 +76,7 @@ public class ObjectLoader
                 processVertex(vertex1, indices, textures, normals, textureArray, normalsArray);
                 processVertex(vertex2, indices, textures, normals, textureArray, normalsArray);
                 processVertex(vertex3, indices, textures, normals, textureArray, normalsArray);
+                System.out.println(vertices.size());
                 line = reader.readLine();
             }
             reader.close();
@@ -99,7 +100,7 @@ public class ObjectLoader
         {
             indicesArray[i] = indices.get(i);
         }
-        return loader.loadToVAO(verticesArray, textureArray, indicesArray);
+        return loader.loadToVAO(verticesArray, textureArray, normalsArray, indicesArray);
     }
 
     private static void processVertex(String[] data, List<Integer> indices,

@@ -5,7 +5,7 @@ import org.lwjgl.opengl.*;
 
 public class DisplayManager
 {
-    public static final int Width = 1280;
+    public static final int Width = 720;
     public static final int Height = 720;
     private static final int Frames = 60;
     public static void createDisplay()

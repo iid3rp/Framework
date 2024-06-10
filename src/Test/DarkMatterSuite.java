@@ -2,6 +2,7 @@ package Test;
 
 import Entities.Camera;
 import Entities.Entity;
+import Entities.Lighting;
 import Render.DisplayManager;
 import Render.ModelLoader;
 import Render.ObjectLoader;
@@ -18,6 +19,7 @@ public class DarkMatterSuite
 {
     public static void main(String[] a)
     {
+
         DisplayManager.createDisplay();
         ModelLoader loader = new ModelLoader();
 
@@ -25,14 +27,18 @@ public class DarkMatterSuite
         Render render = new Render(shader);
 
 
-        Model model = ObjectLoader.loadObject("stall", loader);
+        Model model = ObjectLoader.loadObject("rainbowStone", loader);
 
         // brat!
-        ModelTexture texture = new ModelTexture(loader.loadTexture("brat"));
+        ModelTexture texture = new ModelTexture(loader.loadTexture("rainbowTexture"));
         TexturedModel texturedModel = new TexturedModel(model, texture);
-        Entity entity = new Entity(texturedModel, new Vector3f(0, 0 ,-50), 0, 0, 0, 1);
+        Entity entity = new Entity(texturedModel, new Vector3f(0, -5 ,-30), 0, 0, 0, 1);
 
         Camera camera = new Camera();
+
+        Lighting lighting = new Lighting(new Vector3f(0, 0 ,0), new Vector3f(1, 1, 1));
+
+        entity.transformRotation(0, 180, 0);
 
         while(!(Display.isCloseRequested()))
         {
@@ -41,6 +47,7 @@ public class DarkMatterSuite
             camera.move();
             render.prepare();
             shader.start();
+            shader.loadLighting(lighting);
             shader.loadViewMatrix(camera);
             render.render(entity, shader);
             shader.stop();

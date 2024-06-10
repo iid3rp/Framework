@@ -22,12 +22,13 @@ public class ModelLoader
     private final List<Integer> vbo = new ArrayList<>();
     private final List<Integer> txt = new ArrayList<>();
 
-    public Model loadToVAO(float[] pos, float[] coords, int[] indices)
+    public Model loadToVAO(float[] pos, float[] coords, float[] normals, int[] indices)
     {
         int id = createVAO();
         bindIndicesBuffer(indices);
         storeDataInAttributes(0, 3, pos);
         storeDataInAttributes(1, 2, coords);
+        storeDataInAttributes(2, 3, normals);
         unbindVAO();
         return new Model(id, indices.length);
     }
@@ -37,7 +38,7 @@ public class ModelLoader
         Texture texture = null;
         int textureID;
         try {
-            texture = TextureLoader.getTexture("PNG", new FileInputStream("resources/"  + filename + ".png"));
+            texture = TextureLoader.getTexture("PNG", new FileInputStream("resources/textures/"  + filename + ".png"));
         }
         catch(IOException e) {
             throw new RuntimeException(e);
@@ -48,14 +49,18 @@ public class ModelLoader
             textureID = texture.getTextureID();
             txt.add(textureID);
         }
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_REPEAT);
         return textureID;
     }
 
     public void dispose()
     {
-        for(int i : vao) { GL30.glDeleteVertexArrays(i); }
-        for(int i : vbo) { GL15.glDeleteBuffers(i); }
-        for(int i : txt) { GL11.glDeleteTextures(i); }
+        for(int i : vao) GL30.glDeleteVertexArrays(i);
+        for(int i : vbo) GL15.glDeleteBuffers(i);
+        for(int i : txt) GL11.glDeleteTextures(i);
     }
 
     private int createVAO()
