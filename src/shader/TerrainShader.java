@@ -2,13 +2,13 @@ package shader;
 
 import entity.Camera;
 import entity.Lighting;
-import toolbox.MatrixMultiplication;
 import org.lwjgl.util.vector.Matrix4f;
+import toolbox.MatrixMultiplication;
 
-public class Shader extends GLShader
+public class TerrainShader extends GLShader
 {
-    public static final String VERTEX_FILE = "src/shader/vertexShader.glsl";
-    public static final String FRAGMENT_FILE = "src/shader/fragmentShader.glsl";
+    public static final String VERTEX_FILE = "src/shader/terrainVertexShader.glsl";
+    public static final String FRAGMENT_FILE = "src/shader/terrainFragmentShader.glsl";
     private int locationTransform;
     private int locationProjection;
     private int locationView;
@@ -17,7 +17,7 @@ public class Shader extends GLShader
     private int locationDamper;
     private int locationReflectivity;
 
-    public Shader()
+    public TerrainShader()
     {
         super(VERTEX_FILE, FRAGMENT_FILE);
     }

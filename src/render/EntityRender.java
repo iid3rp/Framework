@@ -6,7 +6,6 @@ import texture.Texture;
 import toolbox.MatrixMultiplication;
 import model.Model;
 import model.TexturedModel;
-import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
@@ -17,30 +16,16 @@ import util.Intention;
 import java.util.List;
 import java.util.Map;
 
-public class Render
+public class EntityRender
 {
-    private static float fieldOfView = 70;
-    private static float nearPlane = .1f;
-    private static float farPlane = 1000f;
-    private Matrix4f projection;
     private Shader shader;
 
-    public Render(Shader shader)
+    public EntityRender(Shader shader, Matrix4f projection)
     {
         this.shader = shader;
-        GL11.glEnable(GL11.GL_CULL_FACE);
-        GL11.glCullFace(GL11.GL_BACK);
-        createProjectionMatrix();
         shader.start();
         shader.loadProjectionMatrix(projection);
         shader.stop();
-    }
-
-    public void prepare()
-    {
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
-        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-        GL11.glClearColor(0, 0, 0, 1);
     }
 
     @Intention(design = "for textured models only")
@@ -141,23 +126,5 @@ public class Render
                 entity.getRotationZ(),
                 entity.getScale());
         shader.loadTransformMatrix(matrix4f);
-    }
-
-    private void createProjectionMatrix()
-    {
-        float aspectRatio = (float) Display.getWidth() / (float) Display.getHeight();
-        float yScale = (float) (1f / Math.tan(Math.toRadians(fieldOfView / 2f)) * aspectRatio);
-        float xScale = yScale / aspectRatio;
-        float frustumLength = farPlane - nearPlane;
-
-        projection = new Matrix4f();
-        projection.m00 = xScale;
-        projection.m11 = yScale;
-
-        projection.m22 = -((farPlane + nearPlane) / frustumLength);
-        projection.m23 = -1f;
-        projection.m32 = -((2f * nearPlane * farPlane) / frustumLength);
-        projection.m33 = 0f;
-
     }
 }

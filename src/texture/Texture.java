@@ -21,9 +21,10 @@ public class Texture
         return shineDampening;
     }
 
-    public void setShineDampening(float shineDampening)
+    public Texture setShineDampening(float shineDampening)
     {
         this.shineDampening = shineDampening;
+        return this;
     }
 
     public float getReflectivity()
