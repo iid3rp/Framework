@@ -21,15 +21,15 @@ public class MasterRenderer
     private static float fieldOfView = 70;
     private static float nearPlane = .1f;
     private static float farPlane = 1000f;
-    private Matrix4f projection;
-    private Shader shader;
-    private EntityRender render;
-    private Map<TexturedModel, List<Entity>> entities;
-    private TerrainRender terrainRender;
-    private TerrainShader terrainShader;
-    private List<Terrain> terrains;
+    private static Matrix4f projection;
+    private static Shader shader;
+    private static EntityRender render;
+    private static Map<TexturedModel, List<Entity>> entities;
+    private static TerrainRender terrainRender;
+    private static TerrainShader terrainShader;
+    private static List<Terrain> terrains;
 
-    public MasterRenderer()
+    public static void setRenderer()
     {
         GL11.glEnable(GL11.GL_CULL_FACE);
         GL11.glCullFace(GL11.GL_BACK);
@@ -41,7 +41,19 @@ public class MasterRenderer
         terrainRender = new TerrainRender(terrainShader, projection);
         terrains = new ArrayList<>();
     }
-    public void render(Lighting lighting, Camera camera)
+
+    public static void enableCulling()
+    {
+        GL11.glEnable(GL11.GL_CULL_FACE);
+        GL11.glCullFace(GL11.GL_BACK);
+    }
+
+    public static void disableCulling()
+    {
+        GL11.glDisable(GL11.GL_CULL_FACE);
+    }
+
+    public static void render(Lighting lighting, Camera camera)
     {
         prepare();
 
@@ -63,12 +75,12 @@ public class MasterRenderer
         entities.clear(); // very important!!
     }
 
-    public void processTerrain(Terrain terrain)
+    public static void processTerrain(Terrain terrain)
     {
         terrains.add(terrain);
     }
 
-    public void processEntity(Entity entity)
+    public static void processEntity(Entity entity)
     {
         TexturedModel texturedModel = entity.getModel();
         List<Entity> batch = entities.get(texturedModel);
@@ -84,20 +96,20 @@ public class MasterRenderer
         }
     }
 
-    public void prepare()
+    public static void prepare()
     {
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
         GL11.glClearColor(0, 1, 1, 1);
     }
 
-    public void dispose()
+    public static void dispose()
     {
         shader.dispose();
         terrainShader.dispose();
     }
 
-    private void createProjectionMatrix()
+    private static Matrix4f createProjectionMatrix()
     {
         float aspectRatio = (float) Display.getWidth() / (float) Display.getHeight();
         float yScale = (float) (1f / Math.tan(Math.toRadians(fieldOfView / 2f)) * aspectRatio);
@@ -112,10 +124,11 @@ public class MasterRenderer
         projection.m23 = -1f;
         projection.m32 = -((2f * nearPlane * farPlane) / frustumLength);
         projection.m33 = 0f;
+        return projection;
 
     }
 
-    public void processAllEntities(List<Entity> entities)
+    public static void processAllEntities(List<Entity> entities)
     {
         for(Entity entity : entities)
         {
@@ -123,7 +136,7 @@ public class MasterRenderer
         }
     }
 
-    public void processAllTerrains(Terrain[] terrains)
+    public static void processAllTerrains(Terrain[] terrains)
     {
         for(Terrain terrain : terrains)
         {

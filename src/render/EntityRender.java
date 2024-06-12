@@ -104,12 +104,19 @@ public class EntityRender
         Texture texture = texturedModel.getTexture();
         shader.loadShine(texture.getShineDampening(), texture.getReflectivity());
 
+        if(texture.hasTransparency())
+        {
+            MasterRenderer.disableCulling();
+        }
+        shader.loadFakeLighting(texture.isUseFakeLighting());
+
         GL13.glActiveTexture(GL13.GL_TEXTURE0);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, texturedModel.getTexture().getID());
     }
 
     private void unbindTexturedModels()
     {
+        MasterRenderer.enableCulling();
         GL20.glDisableVertexAttribArray(0);
         GL20.glDisableVertexAttribArray(1);
         GL20.glDisableVertexAttribArray(2);

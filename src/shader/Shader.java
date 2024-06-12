@@ -16,6 +16,7 @@ public class Shader extends GLShader
     private int locationLightColor;
     private int locationDamper;
     private int locationReflectivity;
+    private int locationFakeLighting;
 
     public Shader()
     {
@@ -32,6 +33,7 @@ public class Shader extends GLShader
         locationLightColor = super.getUniformLocation("lightColor");
         locationDamper = super.getUniformLocation("damper");
         locationReflectivity = super.getUniformLocation("reflectivity");
+        locationFakeLighting = super.getUniformLocation("useFakeLighting");
     }
 
     public void loadShine(float damper, float reflectivity)
@@ -40,7 +42,10 @@ public class Shader extends GLShader
         super.loadFloat(locationReflectivity, reflectivity);
     }
 
-
+    public void loadFakeLighting(boolean value)
+    {
+        super.loadBoolean(locationFakeLighting, value);
+    }
 
     @Override
     protected void bindAttributes()

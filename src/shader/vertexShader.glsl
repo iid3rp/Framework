@@ -19,6 +19,8 @@ uniform mat4 view;
 
 uniform vec3 lightPosition;
 
+uniform float useFakeLighting;
+
 void main(void)
 {
     vec4 worldPosition = transform * vec4(position, 1.0);
@@ -26,6 +28,11 @@ void main(void)
 
     //color = vec3(position.x + .5, 1.0, position.y + .5);
     // no use somehow...
+    vec3 model = normal;
+    if(useFakeLighting > 0.5)
+    {
+        model = vec3(0.0, 1, 0.0);
+    }
 
     passTextureCoordinates = textureCoordinates;
 

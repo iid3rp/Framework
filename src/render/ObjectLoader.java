@@ -12,7 +12,7 @@ import java.util.List;
 
 public class ObjectLoader
 {
-    public static Model loadObject(String fileName, ModelLoader loader)
+    public static Model loadObject(String fileName)
     {
         FileReader file;
         String line;
@@ -99,7 +99,7 @@ public class ObjectLoader
         {
             indicesArray[i] = indices.get(i);
         }
-        return loader.loadToVAO(verticesArray, textureArray, normalsArray, indicesArray);
+        return ModelLoader.loadToVAO(verticesArray, textureArray, normalsArray, indicesArray);
     }
 
     private static void processVertex(String[] data, List<Integer> indices,

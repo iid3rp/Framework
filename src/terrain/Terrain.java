@@ -12,12 +12,12 @@ public class Terrain
     private float z;
     private Model model;
     private Texture texture;
-    public Terrain(int gridX, int gridZ, ModelLoader loader, Texture texture)
+    public Terrain(int gridX, int gridZ, Texture texture)
     {
         this.texture = texture;
         this.x = gridX * SIZE;
         this.z = gridZ * SIZE;
-        this.model = generateTerrain(loader);
+        this.model = generateTerrain();
     }
 
     public float getX()
@@ -40,7 +40,7 @@ public class Terrain
         return texture;
     }
 
-    private Model generateTerrain(ModelLoader loader)
+    private Model generateTerrain()
     {
         int count = VERTEX_COUNT * VERTEX_COUNT;
         float[] vertices = new float[count * 3];
@@ -78,6 +78,6 @@ public class Terrain
                 indices[pointer++] = bottomRight;
             }
         }
-        return loader.loadToVAO(vertices, textureCoords, normals, indices);
+        return ModelLoader.loadToVAO(vertices, textureCoords, normals, indices);
     }
 }
