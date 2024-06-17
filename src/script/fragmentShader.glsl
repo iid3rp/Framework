@@ -7,18 +7,20 @@ in vec2 passTextureCoordinates;
 in vec3 surfaceNormal;
 in vec3 lightVector;
 in vec3 cameraVector;
+in float visibility;
 
 out vec4 outColor;
 
 uniform sampler2D textureSampler;
-uniform vec3 lightColor;
 
+uniform vec3 lightColor;
 uniform float damper;
 uniform float reflectivity;
+uniform vec3 skyColor;
 
 void main(void)
 {
-    vec3  unitNormal = normalize(surfaceNormal);
+    vec3 unitNormal = normalize(surfaceNormal);
     vec3 unitLightVector = normalize(lightVector);
 
     float numberDot1 = dot(unitNormal, unitLightVector);
@@ -41,5 +43,7 @@ void main(void)
     {
         discard;
     }
-    outColor = vec4(diffuse, 1.0) * textureColor+ vec4(finalSpecular, 1.0);
+
+    outColor = vec4(diffuse, 1.0) * textureColor + vec4(finalSpecular, 1.0);
+    outColor = mix(vec4(skyColor, 1.0), outColor, visibility);
 }

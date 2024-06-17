@@ -1,8 +1,9 @@
 package streamio;
 
 import model.Model;
-import render.ObjectLoader;
+import render.ModelLoader;
 import texture.Texture;
+import render.ObjectLoader;
 
 import java.io.File;
 import java.util.HashMap;
@@ -16,9 +17,12 @@ public final class Resources
     public static File resourcesFolder;
     public static File objectsFolder;
     public static File texturesFolder;
+    public static String resource = "resources";
 
     public static void setResource(String resourceFileName)
     {
+        resource = resourceFileName;
+
         resourcesFolder = new File( resourceFileName);
         var a = resourcesFolder.mkdirs();
 
@@ -35,6 +39,11 @@ public final class Resources
         }
     }
 
+    public static String getResource()
+    {
+        return resource;
+    }
+
     public static void loadAllResources()
     {
         File[] objectFiles = objectsFolder.listFiles(file ->
@@ -47,10 +56,26 @@ public final class Resources
             file.getName().endsWith(".png")
         );
 
-        if(objectFiles != null) {
+        if(objectFiles != null)
+        {
+            float progress = 0;
             for(File file : objectFiles)
             {
-                ObjectLoader.loadObject(file.getPath());
+                String name = file.getName().substring(0, file.getName().lastIndexOf("."));
+                Model model = ObjectLoader.loadObject(name);
+                models.put(name, model);
+                System.out.println("Loading Object Models: " + ((++progress / objectFiles.length) * 100f) + "%");
+            }
+        }
+        if(textureFiles != null)
+        {
+            float progress = 0;
+            for(File file : textureFiles)
+            {
+                String name = file.getName().substring(0, file.getName().lastIndexOf("."));
+                Texture texture = new Texture(ModelLoader.loadTexture(name));
+                textures.put(name, texture);
+                System.out.println("Loading Object Textures: " + ((++progress / textureFiles.length) * 100f) + "%");
             }
         }
     }

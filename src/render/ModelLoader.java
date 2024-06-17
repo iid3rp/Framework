@@ -3,6 +3,7 @@ package render;
 import model.Model;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
@@ -33,12 +34,23 @@ public class ModelLoader
         return new Model(id, indices.length);
     }
 
+    public static Model loadToVAO(float[] positions)
+    {
+        int VAOId = createVAO();
+        storeDataInAttributes(0, 2, positions);
+        unbindVAO();
+        return new Model(VAOId, positions.length / 2);
+    }
+
     public static int loadTexture(String filename)
     {
         Texture texture = null;
         int textureID;
         try {
             texture = TextureLoader.getTexture("PNG", new FileInputStream("resources/textures/"  + filename + ".png"));
+            GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR);
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL14.GL_TEXTURE_LOD_BIAS, 0);
         }
         catch(IOException e) {
             throw new RuntimeException(e);

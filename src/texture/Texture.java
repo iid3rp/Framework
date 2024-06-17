@@ -7,10 +7,21 @@ public class Texture
     private float reflectivity = 0;
     private boolean hasTransparency;
     private boolean useFakeLighting;
+    private int numberOfRows = 1;
 
     public Texture(int id)
     {
         this.textureID = id;
+    }
+
+    public int getNumberOfRows()
+    {
+        return numberOfRows;
+    }
+
+    public void setNumberOfRows(int numberOfRows)
+    {
+        this.numberOfRows = numberOfRows;
     }
 
     public boolean hasTransparency()

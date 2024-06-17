@@ -9,8 +9,8 @@ import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 import shader.TerrainShader;
 import terrain.Terrain;
-import texture.Texture;
-import toolbox.MatrixMultiplication;
+import texture.TerrainTexturePack;
+import toolbox.GeomMath;
 import util.Intention;
 
 import java.util.List;
@@ -23,6 +23,7 @@ public class TerrainRender
         this.shader = shader;
         shader.start();
         shader.loadProjectionMatrix(projection);
+        shader.connectTextureUnits();
         shader.stop();
     }
 
@@ -46,12 +47,24 @@ public class TerrainRender
         GL20.glEnableVertexAttribArray(0);
         GL20.glEnableVertexAttribArray(1);
         GL20.glEnableVertexAttribArray(2);
+        bindTextures(terrain);
+        shader.loadShine(1, 0);
+    }
 
-        Texture texture = terrain.getTexture();
-        shader.loadShine(texture.getShineDampening(), texture.getReflectivity());
-
+    private void bindTextures(Terrain terrain)
+    {
+        TerrainTexturePack texturePack = terrain.getTexturePack();
         GL13.glActiveTexture(GL13.GL_TEXTURE0);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture.getID());
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, texturePack.getBackground().getTextureID());
+        GL13.glActiveTexture(GL13.GL_TEXTURE1);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, texturePack.getRed().getTextureID());
+        GL13.glActiveTexture(GL13.GL_TEXTURE2);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, texturePack.getGreen().getTextureID());
+        GL13.glActiveTexture(GL13.GL_TEXTURE3);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, texturePack.getBlue().getTextureID());
+        GL13.glActiveTexture(GL13.GL_TEXTURE4);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, terrain.getBlendMap().getTextureID());
+
     }
 
     private void unbindTerrain()
@@ -65,7 +78,7 @@ public class TerrainRender
     private void loadTerrain(Terrain terrain)
     {
         @Intention(design = "for additional texture and shader effect")
-        Matrix4f matrix4f = MatrixMultiplication.transformMatrix(
+        Matrix4f matrix4f = GeomMath.transformMatrix(
                 new Vector3f(terrain.getX(), 0, terrain.getZ()),
                 0, 0, 0, 1
         );

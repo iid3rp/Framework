@@ -1,14 +1,19 @@
 package Main;
 
-import entity.Camera;
+import Swing.GUIRenderer;
+import Swing.GUITexture;
 import entity.Entity;
 import entity.Lighting;
+import entity.Player;
+import org.lwjgl.util.vector.Vector2f;
 import render.DisplayManager;
 import render.MasterRenderer;
 import render.ModelLoader;
 import render.ObjectLoader;
 import streamio.Resources;
 import terrain.Terrain;
+import texture.TerrainTexture;
+import texture.TerrainTexturePack;
 import texture.Texture;
 import model.Model;
 
@@ -26,7 +31,7 @@ public class Example
     {
         DisplayManager.createDisplay();
         MasterRenderer.setRenderer();
-        Resources.setResource("resourcesdfss");
+        Resources.setResource("resources");
 
 
         Model model = ObjectLoader.loadObject("dragon");
@@ -37,30 +42,36 @@ public class Example
         reflection.setShineDampening(5);
         reflection.setReflectivity(1);
 
-        Camera camera = new Camera();
-        Lighting lighting = new Lighting(new Vector3f(0, 3 ,0), new Vector3f(1, 1, 0));
+        List<GUITexture> guis = new ArrayList<>();
+        GUITexture guisTexture = new GUITexture(ModelLoader.loadTexture("brat"), new Vector2f(.5f, .5f), new Vector2f(.25f, .25f));
+        //guis.add(guisTexture);
 
-        // episode 14 simple terrain
-        // timestamp: 17:02
-        Terrain[] terrains = new Terrain[]
-        {
-                new Terrain(-1, -1,
-                        new Texture(ModelLoader.loadTexture("grass"))),
-                new Terrain(0, -1,
-                        new Texture(ModelLoader.loadTexture("grass"))),
-            new Terrain(0, 0,
-                    new Texture(ModelLoader.loadTexture("grass"))),
-            new Terrain(-1, 0,
-                    new Texture(ModelLoader.loadTexture("grass")))
-        };
+        Lighting lighting = new Lighting(new Vector3f(2000, 3000 ,2000), new Vector3f(1, 1, 1));
 
-        terrains[0].getTexture().setShineDampening(5).setReflectivity(1);
-        terrains[1].getTexture().setShineDampening(5).setReflectivity(1);
-        terrains[2].getTexture().setShineDampening(5).setReflectivity(1);
-        terrains[3].getTexture().setShineDampening(5).setReflectivity(1);
+        TerrainTexture background = new TerrainTexture(ModelLoader.loadTexture("grassy"));
+        TerrainTexture red = new TerrainTexture(ModelLoader.loadTexture("mud"));
+        TerrainTexture green = new TerrainTexture(ModelLoader.loadTexture("grassFlowers"));
+        TerrainTexture blue = new TerrainTexture(ModelLoader.loadTexture("path"));
+
+        TerrainTexturePack pack = new TerrainTexturePack(background, red, green, blue);
+        TerrainTexture blendMap = new TerrainTexture(ModelLoader.loadTexture("blendMap"));
+
+        Model person = ObjectLoader.loadObject("bunny");
+        Texture personTexture = new Texture(ModelLoader.loadTexture("brat"));
+        TexturedModel personTexturedModel = new TexturedModel(person, personTexture);
+
+        Texture reflection1 = personTexturedModel.getTexture();
+        reflection1.setShineDampening(5);
+        reflection1.setReflectivity(1);
+
+        Player player = new Player(new Entity(personTexturedModel, new Vector3f(0, 0, 0), 0, 0, 0, 1));
+
+        Terrain terrain = new Terrain(-.5f, -.5f, pack, blendMap, "heightMap");
+
 
         List<Entity> entities = new ArrayList<>();
         entities.add(new Entity(texturedModel, new Vector3f(0, 0,-30), 0, 0, 0, 1));
+        entities.add(player);
 
         Random random = new Random();
         int progress = 0;
@@ -74,62 +85,65 @@ public class Example
         Texture grassTexture = new Texture(ModelLoader.loadTexture("grassTexture"));
         TexturedModel grassTexturedModel = new TexturedModel(grassModel, grassTexture);
         grassTexturedModel.getTexture().setTransparency(true);
+        grassTexturedModel.getTexture().setUseFakeLighting(true);
 
         Model fernModel = ObjectLoader.loadObject("fern");
-        Texture fernTexture = new Texture(ModelLoader.loadTexture("fern"));
+        Texture fernTexture = new Texture(ModelLoader.loadTexture("fernAtlas"));
+        fernTexture.setNumberOfRows(2);
         TexturedModel fernTexturedModel = new TexturedModel(fernModel, fernTexture);
         fernTexturedModel.getTexture().setTransparency(true);
+        fernTexturedModel.getTexture().setUseFakeLighting(true);
 
         Texture flowerTexture = new Texture(ModelLoader.loadTexture("flower"));
         TexturedModel flowerTexturedModel = new TexturedModel(grassModel, flowerTexture);
+        flowerTexturedModel.getTexture().setTransparency(true);
+        flowerTexturedModel.getTexture().setUseFakeLighting(true);
 
+        float x;
+        float y;
+        float z;
         // other trees
-        for(int i = 0; i < 500; i++)
-        {
-            // adding resources in the 3d environment
-            Entity fern = new Entity(fernTexturedModel,
-                    new Vector3f(random.nextInt(800) - 400, 0, random.nextInt(800) - 400),
-                    0, 0, 0, 1);
+        for(int i = 0; i < 500; i++) {
+            x = random.nextFloat(Terrain.SIZE) - (Terrain.SIZE / 2);
+            z = random.nextFloat(Terrain.SIZE) - (Terrain.SIZE / 2);
+            y = terrain.getHeightOfTerrain(x, z);
+            // adding resources in the 3d environments
 
             Entity tree = new Entity(treeTexturedModel,
-                    new Vector3f(random.nextInt(800) - 400, 0, random.nextInt(800) - 400),
+                    new Vector3f(x, y - 0.1f, z),
                     0, 0, 0, 8);
-
-            Entity grass = new Entity(grassTexturedModel,
-                    new Vector3f(random.nextInt(800) - 400, 0, random.nextInt(800) - 400),
-                    0, 0, 0, 2);
-
-            Entity flower = new Entity(flowerTexturedModel,
-                    new Vector3f(random.nextInt(800) - 400, 0, random.nextInt(800) - 400),
-                    0, 0, 0, 2);
-
-            tree.transformRotation(0,random.nextFloat(1), 0);
-            grass.transformRotation(0,random.nextFloat(1), 0);
-            fern.transformRotation(0,random.nextFloat(1), 0);
-            fern.transformRotation(0,random.nextFloat(1), 0);
-            flower.transformRotation(0, random.nextFloat(1), 0);
-
+            tree.transformRotation(0, random.nextFloat(1), 0);
             entities.add(tree);
-            entities.add(grass);
-            entities.add(fern);
-            entities.add(flower);
-
-            if(i % 50 == 0)
-            {
-                progress += 10;
-                System.out.println("Loading Resources: " + progress);
-            }
         }
+
+        for(int i = 0; i < 500; i++) {
+            x = random.nextFloat(Terrain.SIZE) - (Terrain.SIZE / 2);
+            z = random.nextFloat(Terrain.SIZE) - (Terrain.SIZE / 2);
+            y = terrain.getHeightOfTerrain(x, z);
+            // adding resources in the 3d environments
+
+            Entity fern = new Entity(fernTexturedModel,
+                    new Vector3f(x, y - 0.1f, z),
+                    0, 0, 0, 1);
+            fern.setTextureIndex(random.nextInt(4));
+            fern.transformRotation(0, random.nextFloat(1), 0);
+            entities.add(fern);
+        }
+
+        System.out.println("lets go!!");
+
+        GUIRenderer renderer = new GUIRenderer();
 
         while(!(Display.isCloseRequested()))
         {
+            player.move(terrain);
             MasterRenderer.processAllEntities(entities);
-            entities.getFirst().transformRotation(0, 1, 0);
-            camera.move();
-            MasterRenderer.processAllTerrains(terrains);
-            MasterRenderer.render(lighting, camera);
+            MasterRenderer.processTerrain(terrain);
+            MasterRenderer.render(lighting, player);
+            renderer.render(guis);
             DisplayManager.updateDisplay();
         }
+        renderer.dispose();
         MasterRenderer.dispose();
         ModelLoader.dispose();
         DisplayManager.closeDisplay();

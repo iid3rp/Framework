@@ -3,10 +3,11 @@ package render;
 import entity.Camera;
 import entity.Entity;
 import entity.Lighting;
+import entity.Player;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Matrix4f;
-import shader.Shader;
+import shader.EntityShader;
 import model.TexturedModel;
 import shader.TerrainShader;
 import terrain.Terrain;
@@ -21,8 +22,11 @@ public class MasterRenderer
     private static float fieldOfView = 70;
     private static float nearPlane = .1f;
     private static float farPlane = 1000f;
+    private static float red = 0.5f;
+    private static float green = 0.5f;
+    private static  float blue = 0.5f;
     private static Matrix4f projection;
-    private static Shader shader;
+    private static EntityShader shader;
     private static EntityRender render;
     private static Map<TexturedModel, List<Entity>> entities;
     private static TerrainRender terrainRender;
@@ -34,7 +38,7 @@ public class MasterRenderer
         GL11.glEnable(GL11.GL_CULL_FACE);
         GL11.glCullFace(GL11.GL_BACK);
         createProjectionMatrix();
-        shader = new Shader();
+        shader = new EntityShader();
         render = new EntityRender(shader, projection);
         entities = new HashMap<>();
         terrainShader = new TerrainShader();
@@ -59,6 +63,7 @@ public class MasterRenderer
 
         //entity render
         shader.start();
+        shader.loadSkyColor(red, green, blue);
         shader.loadLighting(lighting);
         shader.loadViewMatrix(camera);
         render.render(entities);
@@ -66,12 +71,13 @@ public class MasterRenderer
 
         // terrain render
         terrainShader.start();
+        terrainShader.loadSkyColor(red, green, blue);
         terrainShader.loadLighting(lighting);
         terrainShader.loadViewMatrix(camera);
         terrainRender.render(terrains);
         terrainShader.stop();
 
-        terrains.clear();
+        terrains.clear(); // very important!!
         entities.clear(); // very important!!
     }
 
@@ -100,7 +106,7 @@ public class MasterRenderer
     {
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-        GL11.glClearColor(0, 1, 1, 1);
+        GL11.glClearColor(red, green, blue, 1);
     }
 
     public static void dispose()
@@ -142,5 +148,10 @@ public class MasterRenderer
         {
             processTerrain(terrain);
         }
+    }
+
+    public static void render(Lighting lighting, Player player)
+    {
+        render(lighting, player.camera);
     }
 }
