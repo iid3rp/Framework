@@ -2,14 +2,13 @@ package shader;
 
 import entity.Camera;
 import entity.Lighting;
+import toolbox.MatrixMultiplication;
 import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector3f;
-import toolbox.GeomMath;
 
-public class TerrainShader extends GLShader
+public class Shader extends GLShader
 {
-    public static final String VERTEX_FILE = "source/src.script/terrainVertexShader.glsl";
-    public static final String FRAGMENT_FILE = "source/src.script/terrainFragmentShader.glsl";
+    public static final String VERTEX_FILE = "src/shader/vertexShader.glsl";
+    public static final String FRAGMENT_FILE = "src/shader/fragmentShader.glsl";
     private int locationTransform;
     private int locationProjection;
     private int locationView;
@@ -17,14 +16,9 @@ public class TerrainShader extends GLShader
     private int locationLightColor;
     private int locationDamper;
     private int locationReflectivity;
-    private int locationSkyColor;
-    private int locationBackground;
-    private int locationRed;
-    private int locationGreen;
-    private int locationBlue;
-    private int blendMap;
+    private int locationFakeLighting;
 
-    public TerrainShader()
+    public Shader()
     {
         super(VERTEX_FILE, FRAGMENT_FILE);
     }
@@ -39,27 +33,18 @@ public class TerrainShader extends GLShader
         locationLightColor = super.getUniformLocation("lightColor");
         locationDamper = super.getUniformLocation("damper");
         locationReflectivity = super.getUniformLocation("reflectivity");
-        locationSkyColor = super.getUniformLocation("skyColor");
-        locationBackground = super.getUniformLocation("background");
-        locationRed = super.getUniformLocation("red");
-        locationGreen = super.getUniformLocation("green");
-        locationBlue = super.getUniformLocation("blue");
-        blendMap = super.getUniformLocation("blendMap");
-    }
-
-    public void connectTextureUnits()
-    {
-        super.loadInteger(locationBackground, 0);
-        super.loadInteger(locationRed, 1);
-        super.loadInteger(locationGreen, 2);
-        super.loadInteger(locationBlue, 3);
-        super.loadInteger(blendMap, 4);
+        locationFakeLighting = super.getUniformLocation("useFakeLighting");
     }
 
     public void loadShine(float damper, float reflectivity)
     {
         super.loadFloat(locationDamper, damper);
         super.loadFloat(locationReflectivity, reflectivity);
+    }
+
+    public void loadFakeLighting(boolean value)
+    {
+        super.loadBoolean(locationFakeLighting, value);
     }
 
     @Override
@@ -72,13 +57,8 @@ public class TerrainShader extends GLShader
 
     public void loadLighting(Lighting light)
     {
-        super.loadVector3f(locationLightPosition, light.getPosition());
-        super.loadVector3f(locationLightColor, light.getColor());
-    }
-
-    public void loadSkyColor(float r, float g, float b)
-    {
-        super.loadVector3f(locationSkyColor, new Vector3f(r, g, b));
+        super.loadVector(locationLightPosition, light.getPosition());
+        super.loadVector(locationLightColor, light.getColor());
     }
 
     public void loadTransformMatrix(Matrix4f matrix)
@@ -88,7 +68,7 @@ public class TerrainShader extends GLShader
 
     public void loadViewMatrix(Camera camera)
     {
-        Matrix4f view = GeomMath.createViewMatrix(camera);
+        Matrix4f view = MatrixMultiplication.createViewMatrix(camera);
         super.loadMatrix(locationView, view);
     }
 

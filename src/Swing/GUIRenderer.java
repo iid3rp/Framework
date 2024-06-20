@@ -1,4 +1,4 @@
-package Swing;
+package source.Swing;
 
 import model.Model;
 import org.lwjgl.opengl.GL11;
