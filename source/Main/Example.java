@@ -1,25 +1,35 @@
 package Main;
 
-import entity.Camera;
 import entity.Entity;
-import entity.Lighting;
+import entity.Light;
+import entity.Player;
 import environment.Environment;
 import environment.Scene;
+import event.MouseEvent;
+import fontMeshCreator.FontType;
+import fontMeshCreator.GUIText;
+import fontRendering.TextMasterRenderer;
+import normalMappingObjConverter.NormalMappedObjLoader;
+import org.lwjgl.util.vector.Vector2f;
 import render.DisplayManager;
 import render.MasterRenderer;
 import render.ModelLoader;
 import render.ObjectLoader;
 import streamio.Resources;
+import swing.ContentPane;
+import swing.GUITexture;
+import swing.PictureBox;
 import terrain.Terrain;
+import texture.TerrainTexture;
+import texture.TerrainTexturePack;
 import texture.Texture;
 import model.Model;
 
 import model.TexturedModel;
-import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector3f;
+import water.WaterTile;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.File;
 import java.util.Random;
 
 public class Example
@@ -30,10 +40,19 @@ public class Example
         DisplayManager.setTitle("Hello World!");
         DisplayManager.setSize(1280, 720);
         DisplayManager.createDisplay();
+        TextMasterRenderer.initialize();
 
         Scene scene = new Scene();
+        ContentPane panel = new ContentPane();
 
-        MasterRenderer.setRenderer();
+        GUITexture img = new PictureBox();
+        img.setBackgroundImage(ModelLoader.loadTexture("brat"));
+        img.setSize(30, 30);
+        img.setPosition(20, 20);
+
+        panel.add(img);
+
+        scene.setContentPane(panel);
 
 
         Model model = ObjectLoader.loadObject("dragon");
@@ -43,104 +62,79 @@ public class Example
         Texture reflection = texturedModel.getTexture();
         reflection.setShineDampening(5);
         reflection.setReflectivity(1);
+        Light lighting = new Light(new Vector3f(0, 3, 0), new Vector3f(.9f, .8f, 1f));
 
-        Camera camera = new Camera();
-        Lighting lighting = new Lighting(new Vector3f(0, 3 ,0), new Vector3f(1, 1, 0));
+        scene.getLights().add(lighting);
+        scene.getLights().add(new Light(new Vector3f(0, 10, 0), new Vector3f(1, 0, 1), new Vector3f(1, 0f, 200f)));
+        scene.getLights().add(new Light(new Vector3f(20, 0, 20), new Vector3f(1, 0, 1), new Vector3f(1, 0.01f, 0.02f)));
+        scene.getLights().add(new Light(new Vector3f(40, 0, 40), new Vector3f(1, 0, 1), new Vector3f(1, 0.1f, 0.002f)));
+        scene.getLights().add(new Light(new Vector3f(-20, 0, 60), new Vector3f(1, 0, 0), new Vector3f(1, 0.01f, 0.02f)));
+        scene.getLights().add(new Light(new Vector3f(0, 0, -80), new Vector3f(1, 0, 1), new Vector3f(1, 0.1f, 0.002f)));
 
-        // episode 14 simple terrain
-        // timestamp: 17:02
-        Terrain[] terrains = new Terrain[]
-        {
-                new Terrain(-1, -1,
-                        new Texture(ModelLoader.loadTexture("grass"))),
-                new Terrain(0, -1,
-                        new Texture(ModelLoader.loadTexture("grass"))),
-            new Terrain(0, 0,
-                    new Texture(ModelLoader.loadTexture("grass"))),
-            new Terrain(-1, 0,
-                    new Texture(ModelLoader.loadTexture("grass")))
-        };
+        TerrainTexturePack bg = new TerrainTexturePack(
+                new TerrainTexture(ModelLoader.loadTexture("grass")),
+                new TerrainTexture(ModelLoader.loadTexture("mud")),
+                new TerrainTexture(ModelLoader.loadTexture("path")),
+                new TerrainTexture(ModelLoader.loadTexture("pine"))
+        );
+        TerrainTexture blend = new TerrainTexture(ModelLoader.loadTexture("blendMap"));
+        Terrain terrain = new Terrain(-.5f, -.5f, bg, blend, "heightmap");
 
-        terrains[0].getTexture().setShineDampening(5).setReflectivity(1);
-        terrains[1].getTexture().setShineDampening(5).setReflectivity(1);
-        terrains[2].getTexture().setShineDampening(5).setReflectivity(1);
-        terrains[3].getTexture().setShineDampening(5).setReflectivity(1);
+        scene.setTerrain(terrain);
+        scene.getEntities().add(new Entity(texturedModel, new Vector3f(0, 0, -30), 0, 0, 0, 1));
 
-        List<Entity> entities = new ArrayList<>();
-        entities.add(new Entity(texturedModel, new Vector3f(0, 0,-30), 0, 0, 0, 1));
+
+        TexturedModel barrel = new TexturedModel(NormalMappedObjLoader.loadObject("barrel"),
+                new Texture(ModelLoader.loadTexture("barrel")));
+        barrel.getTexture().setNormalMap(ModelLoader.loadTexture("barrelNormal"));
+        barrel.getTexture().setReflectivity(.5f);
+        barrel.getTexture().setShineDampening(10);
+        Entity barrelEntity = new Entity(barrel, new Vector3f(0, 0, 0), 0, 0, 0, 1);
+
 
         Random random = new Random();
         int progress = 0;
 
-        // resource load goes here:
-        Model treeModel = ObjectLoader.loadObject("tree");
-        Texture treeTexture = new Texture(ModelLoader.loadTexture("tree"));
-        TexturedModel treeTexturedModel = new TexturedModel(treeModel, treeTexture);
+        Entity box = new Entity(
+                new TexturedModel(NormalMappedObjLoader.loadObject("box"),
+                new Texture(ModelLoader.loadTexture("brat"))),
+                new Vector3f(0, 0, 0),
+                0,
+                0,
+                0,
+                2);
+        Player player = new Player(barrelEntity);
+        player.setLight();
+        player.setLightColor(255, 255, 255);
+        player.setLightAttenuation(new Vector3f(.1f, .01f, .01f));
+        scene.setPlayer(player);
+        scene.getNormalMappedEntities().add(player);
+        scene.getEntities().add(box);
+        scene.getLights().add(player.getLight());
+        scene.setCamera(player.getCamera());
 
-        Model grassModel = ObjectLoader.loadObject("grassModel");
-        Texture grassTexture = new Texture(ModelLoader.loadTexture("grassTexture"));
-        TexturedModel grassTexturedModel = new TexturedModel(grassModel, grassTexture);
-        grassTexturedModel.getTexture().setTransparency(true);
 
-        Model fernModel = ObjectLoader.loadObject("fern");
-        Texture fernTexture = new Texture(ModelLoader.loadTexture("fern"));
-        TexturedModel fernTexturedModel = new TexturedModel(fernModel, fernTexture);
-        fernTexturedModel.getTexture().setTransparency(true);
+        scene.setTerrainSize(500, 500);
+        scene.add(new WaterTile(75, -75, 0));
 
-        Texture flowerTexture = new Texture(ModelLoader.loadTexture("flower"));
-        TexturedModel flowerTexturedModel = new TexturedModel(grassModel, flowerTexture);
+        FontType type = new FontType(ModelLoader.loadTexture("comicMono"),
+                new File("resources/font/comicMono.fnt"));
 
-        // other trees
-        for(int i = 0; i < 500; i++)
-        {
-            // adding resources in the 3d environment
-            Entity fern = new Entity(fernTexturedModel,
-                    new Vector3f(random.nextInt(800) - 400, 0, random.nextInt(800) - 400),
-                    0, 0, 0, 1);
+        GUIText text = new GUIText("""
+                this is a text :3 that is so long that it's\s
+                very very very very\s
+                VERY VERY LONG!!!! and big :o""", 2, type, new Vector2f(.5f, .5f), .5f, true);
+        text.setColor((float) 10 /255, (float) 255/255, (float) 10 /255);
 
-            Entity tree = new Entity(treeTexturedModel,
-                    new Vector3f(random.nextInt(800) - 400, 0, random.nextInt(800) - 400),
-                    0, 0, 0, 8);
 
-            Entity grass = new Entity(grassTexturedModel,
-                    new Vector3f(random.nextInt(800) - 400, 0, random.nextInt(800) - 400),
-                    0, 0, 0, 2);
-
-            Entity flower = new Entity(flowerTexturedModel,
-                    new Vector3f(random.nextInt(800) - 400, 0, random.nextInt(800) - 400),
-                    0, 0, 0, 2);
-
-            tree.transformRotation(0,random.nextFloat(1), 0);
-            grass.transformRotation(0,random.nextFloat(1), 0);
-            fern.transformRotation(0,random.nextFloat(1), 0);
-            fern.transformRotation(0,random.nextFloat(1), 0);
-            flower.transformRotation(0, random.nextFloat(1), 0);
-
-            entities.add(tree);
-            entities.add(grass);
-            entities.add(fern);
-            entities.add(flower);
-
-            if(i % 50 == 0)
-            {
-                progress += 10;
-                System.out.println("Loading Resources: " + progress);
-            }
-        }
 
         Environment.setScene(scene);
+        MasterRenderer.setRenderer();
 
-        while(!(Display.isCloseRequested()))
-        {
-            MasterRenderer.processAllEntities(entities);
-            entities.getFirst().transformRotation(0, 1, 0);
-            camera.move();
-            MasterRenderer.processAllTerrains(terrains);
-            MasterRenderer.render(lighting, camera);
-            DisplayManager.updateDisplay();
-        }
-        MasterRenderer.dispose();
-        ModelLoader.dispose();
-        DisplayManager.closeDisplay();
+        MouseEvent event = new MouseEvent(Environment.getScene().getPlayer().getCamera(),
+                MasterRenderer.getProjectionMatrix());
+
+        scene.setEvent(event);
+        Environment.start();
     }
 }

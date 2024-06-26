@@ -1,13 +1,16 @@
 package render;
 
 import org.lwjgl.LWJGLException;
+import org.lwjgl.Sys;
 import org.lwjgl.opengl.*;
 
 public class DisplayManager
 {
     public static int width = 720;
     public static int height = 720;
-    private static final int Frames = 60;
+    private static int frames = 60;
+    private static long lastTime;
+    private static float delta;
     public static void createDisplay()
     {
         ContextAttribs attributes = new ContextAttribs(3, 2);
@@ -23,12 +26,16 @@ public class DisplayManager
         }
 
         GL11.glViewport(0, 0, width, height);
+        lastTime = getCurrentTime();
     }
 
     public static void updateDisplay()
     {
-        Display.sync(Frames);
+        Display.sync(frames);
         Display.update();
+        long currentFrameTime = getCurrentTime();
+        delta = (currentFrameTime - lastTime) / 1000f;
+        lastTime = currentFrameTime;
     }
 
     public static void closeDisplay()
@@ -46,4 +53,16 @@ public class DisplayManager
         DisplayManager.width = width;
         DisplayManager.height = height;
     }
+
+    public static float getFrameTimeSeconds()
+    {
+        return delta;
+    }
+
+    public static long getCurrentTime()
+    {
+        return Sys.getTime() * 1000 / Sys.getTimerResolution();
+    }
+
+
 }

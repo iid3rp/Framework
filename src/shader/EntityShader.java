@@ -9,8 +9,8 @@ import org.lwjgl.util.vector.Matrix4f;
 
 public class EntityShader extends GLShader
 {
-    public static final String VERTEX_FILE = "source/src.script/vertexShader.glsl";
-    public static final String FRAGMENT_FILE = "source/src.script/fragmentShader.glsl";
+    public static final String VERTEX_FILE = "source/src.script/entityVertexShader.glsl";
+    public static final String FRAGMENT_FILE = "source/src.script/entityFragmentShader.glsl";
     private int locationTransform;
     private int locationProjection;
     private int locationView;

@@ -7,8 +7,8 @@ import org.lwjgl.util.vector.Matrix4f;
 
 public class Shader extends GLShader
 {
-    public static final String VERTEX_FILE = "src/shader/vertexShader.glsl";
-    public static final String FRAGMENT_FILE = "src/shader/fragmentShader.glsl";
+    public static final String VERTEX_FILE = "src/shader/entityVertexShader.glsl";
+    public static final String FRAGMENT_FILE = "src/shader/entityFragmentShader.glsl";
     private int locationTransform;
     private int locationProjection;
     private int locationView;

@@ -12,5 +12,7 @@
     <orderEntry type="library" name="lwjgl" level="project" />
     <orderEntry type="library" name="iid3rp_Utils" level="project" />
     <orderEntry type="library" name="iid3rp_Utils" level="project" />
+    <orderEntry type="library" name="PNGDecoder" level="project" />
+    <orderEntry type="library" name="javadoc" level="project" />
   </component>
 </module>

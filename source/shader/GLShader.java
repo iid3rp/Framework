@@ -4,19 +4,28 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
+import org.lwjgl.util.vector.Vector4f;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 
+/**
+ * Abstract class representing a GLShader used for handling
+ * OpenGL shaders.
+ * Provides methods for loading various types of data into shaders,
+ * starting and stopping shader programs,
+ * disposing of shaders, and binding attributes.
+ */
 public abstract class GLShader
 {
+    protected static int lights = 100;
     private final int programID;
     private final int vertexShaderID;
     private final int fragmentShaderID;
-
     private static final FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
     public GLShader(String vertexFile, String fragmentFile)
     {
@@ -42,9 +51,23 @@ public abstract class GLShader
         GL20.glUniform1f(location, value);
     }
 
-    protected  void loadVector(int location, Vector3f vector3f)
+    protected void loadInteger(int location, int value)
+    {
+        GL20.glUniform1i(location, value);
+    }
+
+    protected void loadVector3f(int location, Vector3f vector3f)
     {
         GL20.glUniform3f(location, vector3f.x, vector3f.y, vector3f.z);
+    }
+    protected void loadVector4f(int location, Vector4f vector4f)
+    {
+        GL20.glUniform4f(location, vector4f.x, vector4f.y, vector4f.z, vector4f.w);
+    }
+
+    protected  void loadVector2f(int location, Vector2f vector2f)
+    {
+        GL20.glUniform2f(location, vector2f.x, vector2f.y);
     }
 
     protected void loadBoolean(int location, boolean value)
@@ -112,7 +135,7 @@ public abstract class GLShader
         if(GL20.glGetShaderi(shaderID, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) // if the thing is equal to zero...
         {
             System.err.println(GL20.glGetShaderInfoLog(shaderID, 500));
-            throw new RuntimeException("Could not compile shader");
+            throw new RuntimeException("Could not compile shader" + file);
         }
         return shaderID;
     }

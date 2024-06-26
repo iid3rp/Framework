@@ -3,14 +3,36 @@ package texture;
 public class Texture
 {
     private int textureID;
+    private int normalMap;
     private float shineDampening = 1;
     private float reflectivity = 0;
     private boolean hasTransparency;
     private boolean useFakeLighting;
+    private int numberOfRows = 1;
 
     public Texture(int id)
     {
         this.textureID = id;
+    }
+
+    public int getNormalMap()
+    {
+        return normalMap;
+    }
+
+    public void setNormalMap(int normalMap)
+    {
+        this.normalMap = normalMap;
+    }
+
+    public int getNumberOfRows()
+    {
+        return numberOfRows;
+    }
+
+    public void setNumberOfRows(int numberOfRows)
+    {
+        this.numberOfRows = numberOfRows;
     }
 
     public boolean hasTransparency()

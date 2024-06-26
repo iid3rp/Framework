@@ -1,9 +1,9 @@
 package render;
 
 import entity.Entity;
-import shader.Shader;
+import shader.EntityShader;
 import texture.Texture;
-import toolbox.MatrixMultiplication;
+import toolbox.GeomMath;
 import model.Model;
 import model.TexturedModel;
 import org.lwjgl.opengl.GL11;
@@ -18,9 +18,8 @@ import java.util.Map;
 
 public class EntityRender
 {
-    private Shader shader;
-
-    public EntityRender(Shader shader, Matrix4f projection)
+    private EntityShader shader;
+    public EntityRender(EntityShader shader, Matrix4f projection)
     {
         this.shader = shader;
         shader.start();
@@ -46,7 +45,7 @@ public class EntityRender
 
     @Intention(design = "for single entity each time only")
     @Deprecated
-    public void render(Entity entity, Shader shader)
+    public void render(Entity entity, EntityShader shader)
     {
         TexturedModel txtModel = entity.getModel();
         Model model = txtModel.getModel();
@@ -56,7 +55,7 @@ public class EntityRender
         GL20.glEnableVertexAttribArray(2);
 
         @Intention(design = "for additional texture and shader effect")
-        Matrix4f matrix4f = MatrixMultiplication.transformMatrix(
+        Matrix4f matrix4f = GeomMath.createTransformationMatrix(
                 entity.getPosition(),
                 entity.getRotationX(),
                 entity.getRotationY(),
@@ -80,7 +79,7 @@ public class EntityRender
     {
         for(TexturedModel texturedModel : entities.keySet())
         {
-            prepareTexturedModels(texturedModel);
+            prepareTexturedModel(texturedModel);
             List<Entity> batch = entities.get(texturedModel);
             for(Entity entity : batch)
             {
@@ -93,7 +92,7 @@ public class EntityRender
         }
     }
 
-    public void prepareTexturedModels(TexturedModel texturedModel)
+    public void prepareTexturedModel(TexturedModel texturedModel)
     {
         Model model = texturedModel.getModel();
         GL30.glBindVertexArray(model.getVaoID());
@@ -103,7 +102,7 @@ public class EntityRender
 
         Texture texture = texturedModel.getTexture();
         shader.loadShine(texture.getShineDampening(), texture.getReflectivity());
-
+        shader.loadNumberOfRows(texture.getNumberOfRows());
         if(texture.hasTransparency())
         {
             MasterRenderer.disableCulling();
@@ -126,12 +125,13 @@ public class EntityRender
     private void prepareEntity(Entity entity)
     {
         @Intention(design = "for additional texture and shader effect")
-        Matrix4f matrix4f = MatrixMultiplication.transformMatrix(
+        Matrix4f matrix4f = GeomMath.createTransformationMatrix(
                 entity.getPosition(),
                 entity.getRotationX(),
                 entity.getRotationY(),
                 entity.getRotationZ(),
                 entity.getScale());
         shader.loadTransformMatrix(matrix4f);
+        shader.loadOffset(entity.getTextureXOffset(), entity.getTextureYOffset());
     }
 }
