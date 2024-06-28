@@ -1,24 +1,19 @@
 package environment;
 
-import entity.Entity;
-import entity.Player;
+import fontMeshCreator.FontType;
+import fontMeshCreator.GUIText;
 import fontRendering.TextMasterRenderer;
-import model.Model;
-import model.TexturedModel;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
-import org.lwjgl.util.vector.Vector3f;
+import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector4f;
+import particles.ParticleMaster;
 import render.DisplayManager;
 import render.MasterRenderer;
 import render.ModelLoader;
-import render.ObjectLoader;
-import swing.GUIRenderer;
-import swing.GUITexture;
-import texture.Texture;
 
-import java.util.Random;
+import java.io.File;
 
 public final class Environment
 {
@@ -31,119 +26,22 @@ public final class Environment
 
     public static void start()
     {
-        GUIRenderer renderer = new GUIRenderer();
         if(scene != null)
         {
-            Model treeModel = ObjectLoader.loadObject("tree");
-            Texture treeTexture = new Texture(ModelLoader.loadTexture("tree"));
-            TexturedModel treeTexturedModel = new TexturedModel(treeModel, treeTexture);
+            FontType font = new FontType(ModelLoader.loadTexture("comic"), new File("resources/font/comic.fnt"));
+            GUIText fps = new GUIText("fps count: 0", 1, font, new Vector2f(0, 0), 1f, false);
+            fps.setColor(1, 1, 0);
 
-            Model grassModel = ObjectLoader.loadObject("grassModel");
-            Texture grassTexture = new Texture(ModelLoader.loadTexture("grassTexture"));
-            TexturedModel grassTexturedModel = new TexturedModel(grassModel, grassTexture);
-            grassTexturedModel.getTexture().setTransparency(true);
-
-            Model fernModel = ObjectLoader.loadObject("fern");
-            Texture fernTexture = new Texture(ModelLoader.loadTexture("fern"));
-            TexturedModel fernTexturedModel = new TexturedModel(fernModel, fernTexture);
-            fernTexturedModel.getTexture().setTransparency(true);
-
-            Texture flowerTexture = new Texture(ModelLoader.loadTexture("flower"));
-            TexturedModel flowerTexturedModel = new TexturedModel(grassModel, flowerTexture);
-
-            Entity box = new Entity(new TexturedModel(ObjectLoader.loadObject("box"), new Texture( ModelLoader.loadTexture("brat"))),
-                    new Vector3f(0, 0, 0), 0, 0, 0, 1);
-            Player player = new Player(box);
-            scene.getEntities().add(player);
-            Random random = new Random();
-
-            long time = DisplayManager.getCurrentTime();
-
-            GUITexture texture1 = new GUITexture();
-            texture1.setBackgroundImage(MasterRenderer.buffer.getScreenTexture());
-            texture1.setPosition(40, 40);
-            texture1.setSize(384, 216);
-            texture1.mirrorX();
-            scene.add(texture1);
-
-            GUITexture texture2 = new GUITexture();
-            texture2.setBackgroundImage(MasterRenderer.buffer.getScreenTexture());
-            texture2.setPosition(40, 296);
-            texture2.setSize(384, 216);
-            texture2.mirrorX();
-            scene.add(texture2);
-
-            GUITexture texture3 = new GUITexture();
-            texture3.setBackgroundImage(MasterRenderer.buffer.getScreenTexture());
-            texture3.setPosition(40, 542);
-            texture3.setSize(384, 216);
-            texture3.mirrorX();
-            scene.add(texture3);
-
-            float hello = DisplayManager.getFrameTimeSeconds();
-            float world = 4;
-            long stuff= 0;
-            int actionsInSecond = 0;
-            long startTime = DisplayManager.getCurrentTime();
             while(!(Display.isCloseRequested()))
             {
-                actionsInSecond++;
-
-                if(hello > world)
-                {
-                    float x = random.nextFloat(scene.getTerrain().getSize() / 2);
-                    float z = random.nextFloat(scene.getTerrain().getSize() / 2);
-                    float y = scene.getTerrain().getHeightOfTerrain(x, z);
-                    // adding resources in the 3d environment
-                    Entity fern = new Entity(fernTexturedModel,
-                            new Vector3f(x, y, z),
-                            0, 0, 0, 1);
-
-                    x = random.nextFloat(scene.getTerrain().getSize() / 2);
-                    z = random.nextFloat(scene.getTerrain().getSize() / 2);
-                    y = scene.getTerrain().getHeightOfTerrain(x, z);
-                    Entity tree = new Entity(treeTexturedModel,
-                            new Vector3f(x, y, z),
-                            0, 0, 0, 8);
-
-                    x = random.nextFloat(scene.getTerrain().getSize() / 2);
-                    z = random.nextFloat(scene.getTerrain().getSize() / 2);
-                    y = scene.getTerrain().getHeightOfTerrain(x, z);
-                    Entity grass = new Entity(grassTexturedModel,
-                            new Vector3f(x, y, z),
-                            0, 0, 0, 2);
-
-                    x = random.nextFloat(scene.getTerrain().getSize() / 2);
-                    z = random.nextFloat(scene.getTerrain().getSize() / 2);
-                    y = scene.getTerrain().getHeightOfTerrain(x, z);
-                    Entity flower = new Entity(flowerTexturedModel,
-                            new Vector3f(x, y, z),
-                            0, 0, 0, 2);
-
-                    tree.transformRotation(0,random.nextFloat(1), 0);
-                    grass.transformRotation(0,random.nextFloat(1), 0);
-                    fern.transformRotation(0,random.nextFloat(1), 0);
-                    fern.transformRotation(0,random.nextFloat(1), 0);
-                    flower.transformRotation(0, random.nextFloat(1), 0);
-
-                    scene.getEntities().add(tree);
-                    scene.getEntities().add(grass);
-                    scene.getEntities().add(fern);
-                    scene.getEntities().add(flower);
-                    //System.out.println("added");
-                    world += .25f;
-                    stuff++;
-
-                    if(DisplayManager.getCurrentTime() - startTime >= 1000) {
-                        //System.out.println("Actions in a second: " + actionsInSecond);
-                        actionsInSecond = 0;
-                        startTime = DisplayManager.getCurrentTime();
-                    }
-                }
-                hello += DisplayManager.getFrameTimeSeconds();
-
+                FPSCounter.update();
                 // mouseEvent stuff
                 scene.getEvent().update();
+
+                //particle
+                ParticleMaster.update();
+                scene.getParticleSystem().generateParticles(scene.getPlayer().getPosition());
+
                 // debuggers
                 //System.out.println(scene.getEvent().getCurrentTerrainPoint());
                 //System.out.println(scene.getEvent().currentRay);
@@ -178,8 +76,8 @@ public final class Environment
                 GL11.glDisable(GL30.GL_CLIP_DISTANCE3);
                 MasterRenderer.buffer.unbindCurrentFrameBuffer();
 
-                MasterRenderer.buffer.bindScreenFrameBuffer();
-                renderScene(new Vector4f(0, 0, 0, scene.getWaters().getFirst().getHeight()));
+                //MasterRenderer.buffer.bindScreenFrameBuffer();
+                //renderScene(new Vector4f(0, 0, 0, scene.getWaters().getFirst().getHeight()));
 
                 MasterRenderer.buffer.unbindCurrentFrameBuffer();
                 renderScene(new Vector4f(0, -1, 0, scene.getWaters().getFirst().getHeight()));
@@ -187,6 +85,10 @@ public final class Environment
 
                 MasterRenderer.renderWaters(scene.getWaters(), scene.getCamera(), scene.getMainLight());
                 scene.getContentPane().render(scene.getContentPane().getComponents());
+
+                ParticleMaster.renderParticles(scene.getCamera());
+
+                TextMasterRenderer.setText(fps, "fps count: " + FPSCounter.getCounter());
                 TextMasterRenderer.render();
 
                 DisplayManager.updateDisplay();
@@ -212,6 +114,7 @@ public final class Environment
 
     private static void exit()
     {
+        ParticleMaster.dispose();
         TextMasterRenderer.dispose();
         scene.getContentPane().dispose();
         MasterRenderer.dispose();

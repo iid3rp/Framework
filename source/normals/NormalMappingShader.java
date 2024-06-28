@@ -1,4 +1,4 @@
-package normalMappingRenderer;
+package normals;
 
 import entity.Light;
 import org.lwjgl.util.vector.Matrix4f;
@@ -12,8 +12,8 @@ import java.util.List;
 
 public class NormalMappingShader extends GLShader
 {
-	private static final String VERTEX_FILE = "source/normalMappingRenderer/normalMapVertexShader.glsl";
-	private static final String FRAGMENT_FILE = "source/normalMappingRenderer/normalMapFragmentShader.glsl";
+	private static final String VERTEX_FILE = "source/normals/normalMapVertexShader.glsl";
+	private static final String FRAGMENT_FILE = "source/normals/normalMapFragmentShader.glsl";
 	
 	private int location_transformationMatrix;
 	private int location_projectionMatrix;

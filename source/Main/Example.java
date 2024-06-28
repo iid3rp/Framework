@@ -6,11 +6,11 @@ import entity.Player;
 import environment.Environment;
 import environment.Scene;
 import event.MouseEvent;
-import fontMeshCreator.FontType;
-import fontMeshCreator.GUIText;
 import fontRendering.TextMasterRenderer;
-import normalMappingObjConverter.NormalMappedObjLoader;
-import org.lwjgl.util.vector.Vector2f;
+import normals.NormalMappedObjLoader;
+import particles.ParticleMaster;
+import particles.ParticleSystem;
+import particles.ParticleTexture;
 import render.DisplayManager;
 import render.MasterRenderer;
 import render.ModelLoader;
@@ -29,7 +29,6 @@ import model.TexturedModel;
 import org.lwjgl.util.vector.Vector3f;
 import water.WaterTile;
 
-import java.io.File;
 import java.util.Random;
 
 public class Example
@@ -41,9 +40,11 @@ public class Example
         DisplayManager.setSize(1280, 720);
         DisplayManager.createDisplay();
         TextMasterRenderer.initialize();
+        MasterRenderer.setRenderer();
 
         Scene scene = new Scene();
         ContentPane panel = new ContentPane();
+        Environment.setScene(scene);
 
         GUITexture img = new PictureBox();
         img.setBackgroundImage(ModelLoader.loadTexture("brat"));
@@ -51,7 +52,6 @@ public class Example
         img.setPosition(20, 20);
 
         panel.add(img);
-
         scene.setContentPane(panel);
 
 
@@ -89,7 +89,7 @@ public class Example
         barrel.getTexture().setNormalMap(ModelLoader.loadTexture("barrelNormal"));
         barrel.getTexture().setReflectivity(.5f);
         barrel.getTexture().setShineDampening(10);
-        Entity barrelEntity = new Entity(barrel, new Vector3f(0, 0, 0), 0, 0, 0, 1);
+        Entity barrelEntity = new Entity(barrel, new Vector3f(200, 200, 200), 0, 0, 0, 1);
 
 
         Random random = new Random();
@@ -117,19 +117,13 @@ public class Example
         scene.setTerrainSize(500, 500);
         scene.add(new WaterTile(75, -75, 0));
 
-        FontType type = new FontType(ModelLoader.loadTexture("comicMono"),
-                new File("resources/font/comicMono.fnt"));
 
-        GUIText text = new GUIText("""
-                this is a text :3 that is so long that it's\s
-                very very very very\s
-                VERY VERY LONG!!!! and big :o""", 2, type, new Vector2f(.5f, .5f), .5f, true);
-        text.setColor((float) 10 /255, (float) 255/255, (float) 10 /255);
+        ParticleMaster.initialize(MasterRenderer.getProjectionMatrix());
+        ParticleTexture txt = new ParticleTexture(ModelLoader.loadTexture("particleStar"), 1);
+        ParticleSystem system = new ParticleSystem(70, 50, .3f, 5, 1, txt);
+        scene.setParticleSystem(system);
 
 
-
-        Environment.setScene(scene);
-        MasterRenderer.setRenderer();
 
         MouseEvent event = new MouseEvent(Environment.getScene().getPlayer().getCamera(),
                 MasterRenderer.getProjectionMatrix());

@@ -10,7 +10,7 @@ import util.Intention;
 public class Player extends Entity
 {
     private static  final float RUN_SPEED = 40f;
-    private static final float GRAVITY = -98.1f;
+    public static final float GRAVITY = -98.1f;
     private static final float JUMP_POWER = 40;
 
     private static final float TERRAIN_Y = 0;

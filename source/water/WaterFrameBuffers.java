@@ -10,12 +10,12 @@ import org.lwjgl.opengl.GL32;
 
 public class WaterFrameBuffers {
 
-	protected static final int REFRACTION_WIDTH = 1280;
-	private static final int REFRACTION_HEIGHT = 720;
-	protected static final int REFLECTION_WIDTH = REFRACTION_WIDTH / 3;
-	private static final int REFLECTION_HEIGHT = REFRACTION_HEIGHT / 3;
-	private static int SCREEN_WIDTH = Display.getWidth() / 4;
-	private static int SCREEN_HEIGHT = Display.getHeight() / 4;
+	protected static final int REFRACTION_WIDTH = Display.getWidth();
+	private static final int REFRACTION_HEIGHT = Display.getHeight();
+	protected static final int REFLECTION_WIDTH = REFRACTION_WIDTH / 4;
+	private static final int REFLECTION_HEIGHT = REFRACTION_HEIGHT / 4;
+	private static int SCREEN_WIDTH = REFLECTION_WIDTH / 4;
+	private static int SCREEN_HEIGHT = REFLECTION_HEIGHT / 4;
 
 	private int reflectionFrameBuffer;
 	private int reflectionTexture;

@@ -3,8 +3,7 @@ package render;
 import entity.Camera;
 import entity.Entity;
 import entity.Light;
-import fontRendering.TextMasterRenderer;
-import normalMappingRenderer.NormalMappingRenderer;
+import normals.NormalMappingRenderer;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Matrix4f;
@@ -41,7 +40,7 @@ public class MasterRenderer
     private static TerrainRenderer terrainRender;
     private static TerrainShader terrainShader;
     private static List<Terrain> terrains;
-    public static SkyboxRenderer skybox;
+    public static SkyboxRenderer skyboxRenderer;
     public static WaterFrameBuffers buffer;
     private static NormalMappingRenderer normalMappingRenderer;
 
@@ -50,17 +49,17 @@ public class MasterRenderer
         GL11.glEnable(GL11.GL_CULL_FACE);
         GL11.glCullFace(GL11.GL_BACK);
         createProjectionMatrix();
-        waterShader = new WaterShader();
-        buffer = new WaterFrameBuffers();
-        waterRenderer = new WaterRenderer(waterShader, projection, buffer);
-        entityShader = new EntityShader();
-        entityRender = new EntityRender(entityShader, projection);
-        terrainShader = new TerrainShader();
-        terrainRender = new TerrainRenderer(terrainShader, projection);
         entities = new HashMap<>();
         normalEntities = new HashMap<>();
         terrains = new ArrayList<>();
-        skybox = new SkyboxRenderer(projection);
+        waterShader = new WaterShader();
+        entityShader = new EntityShader();
+        buffer = new WaterFrameBuffers();
+        terrainShader = new TerrainShader();
+        waterRenderer = new WaterRenderer(waterShader, projection, buffer);
+        entityRender = new EntityRender(entityShader, projection);
+        terrainRender = new TerrainRenderer(terrainShader, projection);
+        skyboxRenderer = new SkyboxRenderer(projection);
         normalMappingRenderer = new NormalMappingRenderer(projection);
     }
 
@@ -106,7 +105,7 @@ public class MasterRenderer
         terrainShader.stop();
 
         // skybox rendering
-        skybox.render(camera);
+        skyboxRenderer.render(camera);
 
         // very important!!
         terrains.clear();

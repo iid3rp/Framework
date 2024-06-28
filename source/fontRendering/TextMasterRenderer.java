@@ -43,6 +43,13 @@ public class TextMasterRenderer
             texts.remove(text.getFont());
         }
     }
+    public static void setText(GUIText gui, String text)
+    {
+        removeText(gui);
+        GUIText newText = gui;
+        gui.setText(text);
+        loadText(newText);
+    }
 
     public static void dispose()
     {

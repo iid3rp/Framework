@@ -63,6 +63,11 @@ public class GUIText {
 		TextMasterRenderer.loadText(this);
 	}
 
+	public void setText(String text)
+	{
+		this.textString = text;
+	}
+
 	/**
 	 * Remove the text from the screen.
 	 */

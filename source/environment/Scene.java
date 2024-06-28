@@ -5,6 +5,7 @@ import entity.Entity;
 import entity.Light;
 import entity.Player;
 import event.MouseEvent;
+import particles.ParticleSystem;
 import swing.ContentPane;
 import swing.GUITexture;
 import terrain.Terrain;
@@ -26,6 +27,7 @@ public class Scene
     private Player player;
     private ContentPane pane;
     public MouseEvent event;
+    private ParticleSystem particleSystem;
 
     //private Vector4f clipPlane;
     public Scene()
@@ -144,5 +146,15 @@ public class Scene
     public List<Entity> getNormalMappedEntities()
     {
         return normalMappedEntities;
+    }
+
+    public void setParticleSystem(ParticleSystem particleSystem)
+    {
+        this.particleSystem = particleSystem;
+    }
+
+    public ParticleSystem getParticleSystem()
+    {
+        return particleSystem;
     }
 }
