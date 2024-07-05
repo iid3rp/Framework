@@ -24,6 +24,7 @@ public class EntityRender
         this.shader = shader;
         shader.start();
         shader.loadProjectionMatrix(projection);
+        shader.connectTextureUnits();
         shader.stop();
     }
 
@@ -75,8 +76,9 @@ public class EntityRender
         GL30.glBindVertexArray(0);
     }
 
-    public void render(Map<TexturedModel, List<Entity>> entities)
+    public void render(Map<TexturedModel, List<Entity>> entities, Matrix4f shadowMap)
     {
+        shader.loadToShadowMapSpaceMatrix(shadowMap);
         for(TexturedModel texturedModel : entities.keySet())
         {
             prepareTexturedModel(texturedModel);

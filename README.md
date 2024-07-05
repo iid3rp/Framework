@@ -10,12 +10,12 @@ and is on development and learning.
 * Get a copy of the library by either cloning [*this repository*](https://github.com/iid3rp/framework)
 or manually download it
 
-* Create a main method on your `Main` class and run this before getting started
+* Create a main method on your `AMain` class and run this before getting started
 
 ```java
 import streamio.Resources;
 
-public class Main
+public class AMain
 {
     public static void main(String[] args)
     {

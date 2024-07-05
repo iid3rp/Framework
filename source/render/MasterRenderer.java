@@ -6,11 +6,13 @@ import entity.Light;
 import normals.NormalMappingRenderer;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector4f;
 import shader.EntityShader;
 import model.TexturedModel;
 import shader.TerrainShader;
+import shadow.ShadowMapMasterRenderer;
 import terrain.Terrain;
 import water.WaterFrameBuffers;
 import water.WaterRenderer;
@@ -24,9 +26,9 @@ import java.util.Map;
 
 public class MasterRenderer
 {
-    private static float fieldOfView = 70;
+    public static float fieldOfView = 60;
     public static float nearPlane = .1f;
-    public static float farPlane = 1000000f;
+    public static float farPlane = 1_000_000f;
     public static float red = 0.5f;
     public static float green = 0.5f;
     public static  float blue = 0.4f;
@@ -43,6 +45,7 @@ public class MasterRenderer
     public static SkyboxRenderer skyboxRenderer;
     public static WaterFrameBuffers buffer;
     private static NormalMappingRenderer normalMappingRenderer;
+    private static ShadowMapMasterRenderer shadowMap;
 
     public static void setRenderer()
     {
@@ -85,11 +88,12 @@ public class MasterRenderer
 
         //entity render
         entityShader.start();
+        entityShader.loadSkyColor(red, green, blue);
         entityShader.loadClipPlane(plane);
         entityShader.loadLightAmount(lights.size());
         entityShader.loadLights(lights);
         entityShader.loadViewMatrix(camera);
-        entityRender.render(entities);
+        entityRender.render(entities, shadowMap.getToShadowMapSpaceMatrix());
         entityShader.stop();
 
         // normal entities
@@ -97,11 +101,12 @@ public class MasterRenderer
 
         // terrain render
         terrainShader.start();
+        terrainShader.loadSkyColor(red, green, blue);
         terrainShader.loadClipPlane(plane);
         terrainShader.loadLightAmount(lights.size());
         terrainShader.loadLights(lights);
         terrainShader.loadViewMatrix(camera);
-        terrainRender.render(terrains);
+        terrainRender.render(terrains, shadowMap.getToShadowMapSpaceMatrix());
         terrainShader.stop();
 
         // skybox rendering
@@ -155,6 +160,23 @@ public class MasterRenderer
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glClearColor(0, 0, 0, 0);
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+        GL13.glActiveTexture(GL13.GL_TEXTURE5);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, getShadowMapTexture());
+    }
+
+    public static void renderShadowMap(List<Entity> list, Light light)
+    {
+        for(Entity entity : list)
+        {
+            processEntity(entity);
+        }
+        shadowMap.render(entities, light);
+        entities.clear();
+    }
+
+    public static int getShadowMapTexture()
+    {
+        return shadowMap.getShadowMap();
     }
 
     public static void dispose()
@@ -164,25 +186,23 @@ public class MasterRenderer
         entityShader.dispose();
         terrainShader.dispose();
         normalMappingRenderer.dispose();
+        shadowMap.dispose();
     }
 
-    private static Matrix4f createProjectionMatrix()
+    private static void createProjectionMatrix()
     {
+        projection = new Matrix4f();
         float aspectRatio = (float) Display.getWidth() / (float) Display.getHeight();
-        float yScale = (float) (1f / Math.tan(Math.toRadians(fieldOfView / 2f)) * aspectRatio);
+        float yScale = (float) (1f / Math.tan(Math.toRadians(fieldOfView / 2f)));
         float xScale = yScale / aspectRatio;
         float frustumLength = farPlane - nearPlane;
 
-        projection = new Matrix4f();
         projection.m00 = xScale;
         projection.m11 = yScale;
-
         projection.m22 = -((farPlane + nearPlane) / frustumLength);
         projection.m23 = -1f;
         projection.m32 = -((2f * nearPlane * farPlane) / frustumLength);
         projection.m33 = 0f;
-        return projection;
-
     }
 
     public static void processAllNormalMappedEntities(List<Entity> entities)
@@ -199,6 +219,11 @@ public class MasterRenderer
         {
             processEntity(entity);
         }
+    }
+
+    public static void setShadowMap(Camera camera)
+    {
+        shadowMap = new ShadowMapMasterRenderer(camera);
     }
 
     public static void renderWaters(List<WaterTile> waters, Camera camera, Light light)

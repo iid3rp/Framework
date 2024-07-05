@@ -9,7 +9,7 @@ uniform float blendFactor;
 
 const float lowerLimit = -200.0;
 const float upperLimit = -100.0;
-const float levels = 10;
+const float levels = 10000;
 
 
 void main(void)

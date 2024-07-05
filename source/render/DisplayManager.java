@@ -13,13 +13,13 @@ public class DisplayManager
     private static float delta;
     public static void createDisplay()
     {
-        ContextAttribs attributes = new ContextAttribs(3, 2);
+        ContextAttribs attributes = new ContextAttribs(3, 3);
         attributes = attributes.withForwardCompatible(true);
         attributes = attributes.withProfileCore(true);
 
         try {
             Display.setDisplayMode(new DisplayMode(width, height));
-            Display.create(new PixelFormat(), attributes);
+            Display.create(new PixelFormat().withSamples(4), attributes);
         }
         catch(LWJGLException e) {
             throw new RuntimeException(e);

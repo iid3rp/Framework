@@ -26,8 +26,17 @@ public final class Environment
 
     public static void start()
     {
+        // static method calling goes here:
+        MasterRenderer.setRenderer();
+        TextMasterRenderer.initialize();
+        ParticleMaster.initialize(MasterRenderer.getProjectionMatrix());
+
         if(scene != null)
         {
+            if(getScene().getEvent() != null)
+            {
+                getScene().getEvent().setProjectionMatrix(MasterRenderer.getProjectionMatrix());
+            }
             FontType font = new FontType(ModelLoader.loadTexture("comic"), new File("resources/font/comic.fnt"));
             GUIText fps = new GUIText("fps count: 0", 1, font, new Vector2f(0, 0), 1f, false);
             fps.setColor(1, 1, 0);
@@ -38,14 +47,22 @@ public final class Environment
                 // mouseEvent stuff
                 scene.getEvent().update();
 
+                // the shadow thingies
+                MasterRenderer.renderShadowMap(scene.getEntities(), scene.getMainLight());
+
                 //particle
-                ParticleMaster.update();
-                scene.getParticleSystem().generateParticles(scene.getPlayer().getPosition());
+                if(scene.getParticleSystem() != null) {
+                    ParticleMaster.update(scene.getCamera());
+                    scene.getParticleSystem().generateParticles(scene.getPlayer().getPosition());
+                }
+                ParticleMaster.renderParticles(scene.getCamera());
 
                 // debuggers
                 //System.out.println(scene.getEvent().getCurrentTerrainPoint());
                 //System.out.println(scene.getEvent().currentRay);
 
+
+                // the player and the camera movements
                 scene.getPlayer().move(scene.getTerrain());
                 scene.getCamera().move();
 
@@ -84,10 +101,9 @@ public final class Environment
 
 
                 MasterRenderer.renderWaters(scene.getWaters(), scene.getCamera(), scene.getMainLight());
+
+
                 scene.getContentPane().render(scene.getContentPane().getComponents());
-
-                ParticleMaster.renderParticles(scene.getCamera());
-
                 TextMasterRenderer.setText(fps, "fps count: " + FPSCounter.getCounter());
                 TextMasterRenderer.render();
 

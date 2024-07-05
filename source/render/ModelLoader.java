@@ -4,12 +4,15 @@ import de.matthiasmann.twl.utils.PNGDecoder;
 import de.matthiasmann.twl.utils.PNGDecoder.Format;
 import model.Model;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.EXTTextureFilterAnisotropic;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL33;
+import org.lwjgl.opengl.GLContext;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 import texture.TextureData;
@@ -69,6 +72,42 @@ public class ModelLoader
         return new Model(VAOId, positions.length / dimensions);
     }
 
+    public static int createEmptyVBO(int count)
+    {
+        int vbo = GL15.glGenBuffers();
+        ModelLoader.vbo.add(vbo);
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
+        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, count * 4L, GL15.GL_STATIC_DRAW);
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+        return vbo;
+    }
+
+    public static void updateVBO(int vbo, float[] data, FloatBuffer buffer)
+    {
+        buffer.clear();
+        buffer.put(data);
+        buffer.flip();
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
+        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer.capacity() * 4L, GL15.GL_STREAM_DRAW);
+        GL15.glBufferSubData(GL15.GL_ARRAY_BUFFER, 0, buffer);
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+    }
+
+    public static void addInstanceAttribs(int vao,
+                                          int vbo,
+                                          int attrib,
+                                          int size,
+                                          int instancedLength,
+                                          int offset)
+    {
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
+        GL30.glBindVertexArray(vao);
+        GL20.glVertexAttribPointer(attrib, size, GL11.GL_FLOAT, false, instancedLength * 4, offset * 4L);
+        GL33.glVertexAttribDivisor(attrib, 1);
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+        GL30.glBindVertexArray(0);
+    }
+
     public static int loadCubeMap(String[] textureFiles)
     {
         int textureID = GL11.glGenTextures();
@@ -124,7 +163,14 @@ public class ModelLoader
             texture = TextureLoader.getTexture("PNG", new FileInputStream("resources/textures/"  + filename + ".png"));
             GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR);
-            GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL14.GL_TEXTURE_LOD_BIAS, 20);
+            GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL14.GL_TEXTURE_LOD_BIAS, 0);
+            if(GLContext.getCapabilities().GL_EXT_texture_filter_anisotropic) {
+                float amount = Math.min(4f, GL11.glGetFloat(EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT));
+                GL11.glTexParameterf(GL11.GL_TEXTURE_2D, EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT, amount);
+            }
+            else {
+                System.out.println("not supported :((");
+            }
         }
         catch(IOException e) {
             throw new RuntimeException(e);

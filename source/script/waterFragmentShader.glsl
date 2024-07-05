@@ -29,7 +29,7 @@ void main(void)
 	vec2 reflectionTextureCoordinates = vec2(perspective.x, -perspective.y);
 
 	float near = 0.1;
-	float far = 1000.0;
+	float far = 1000000.0;
 	float depth = texture(depthMap, refractionTextureCoordinates).r;
 	float floorDistance = 2.0 * near * far / (far + near - (2.0 * depth - 1.0) * (far - near));
 

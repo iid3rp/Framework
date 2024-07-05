@@ -1,12 +1,16 @@
 package toolbox;
 
 import entity.Camera;
+import environment.Scene;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
 public class GeomMath
 {
+    /**
+     * no one uses this constructor
+     */
     private GeomMath() {}
 
     /**
@@ -103,8 +107,8 @@ public class GeomMath
 
     /**
      *
-     * @param camera
-     * @return
+     * @param camera the camera of the certain {@link Scene}
+     * @return the view matrix
      */
     public static Matrix4f createViewMatrix(Camera camera)
     {

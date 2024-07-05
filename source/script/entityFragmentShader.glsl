@@ -7,21 +7,46 @@ uniform vec3 lightColor[lightAmount];
 uniform vec3 attenuation[lightAmount];
 uniform float damper;
 uniform float reflectivity;
+uniform vec3 skyColor;
+uniform sampler2D shadowMap;
 
 in vec2 passTextureCoordinates;
 in vec3 surfaceNormal;
 in vec3 lightVector[lightAmount];
 in vec3 cameraVector;
+in vec4 shadowCoords;
+in float visibility;
 
 out vec4 outColor;
 
-const float levels = 10;
+// make this uniform soon!!
+const float mapSize = 4096;
+const float levels = 10000;
+const int pcfCount = 4;
+const float totalTexels = pow((pcfCount * 2 + 1), 2);
 
 void main(void)
 {
+    float texelSize = 1 / mapSize;
+    float total = 0;
+
+    for(int x = -pcfCount; x <= pcfCount; x++)
+    {
+        for (int y = -pcfCount; y <= pcfCount; y++)
+        {
+            float objectNearLight = texture(shadowMap, shadowCoords.xy + vec2(x, y) * texelSize).r;
+            if(shadowCoords.z > objectNearLight + 0.002)
+            {
+                total += 1;
+            }
+        }
+    }
+
+    total /= totalTexels;
+    float lightFactor = 1.0 - (total * shadowCoords.w);
+
     vec3 unitNormal = normalize(surfaceNormal);
     vec3 unitVectorToCamera = normalize(cameraVector);
-
     vec3 totalDiffuse = vec3(0.0);
     vec3 totalSpecular = vec3(0.0);
 
@@ -49,7 +74,7 @@ void main(void)
         totalDiffuse = totalDiffuse + (brightness * lightColor[i]) / setFactor;
         totalSpecular = totalSpecular + (dampFactor * reflectivity * lightColor[i]) / setFactor;
     }
-    totalDiffuse = max(totalDiffuse, 0.2);
+    totalDiffuse = max(totalDiffuse * lightFactor, 0.2);
 
     vec4 textureColor = texture(textureSampler, passTextureCoordinates);
 
@@ -57,5 +82,7 @@ void main(void)
     {
         discard;
     }
+
     outColor = vec4(totalDiffuse, 1.0) * textureColor + vec4(totalSpecular, 1.0);
+    outColor = mix(vec4(skyColor, 1.0), outColor, visibility);
 }

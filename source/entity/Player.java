@@ -9,7 +9,7 @@ import util.Intention;
 
 public class Player extends Entity
 {
-    private static  final float RUN_SPEED = 40f;
+    private static  final float RUN_SPEED = 70f;
     public static final float GRAVITY = -98.1f;
     private static final float JUMP_POWER = 40;
 
@@ -137,7 +137,10 @@ public class Player extends Entity
         float getPositionX = getPosition().x;
         float getPositionY = getPosition().y + 10;
         float getPositionZ = getPosition().z;
-        light.setPosition(new Vector3f(getPositionX, getPositionY, getPositionZ));
+        if(light != null)
+        {
+            light.setPosition(new Vector3f(getPositionX, getPositionY, getPositionZ));
+        }
     }
 
     private float shortAngle(float target, float angle)

@@ -10,8 +10,9 @@ public class ParticleShader extends GLShader
 	private static final String VERTEX_FILE = "source/particles/particleVertexShader.glsl";
 	private static final String FRAGMENT_FILE = "source/particles/particleFragmentShader.glsl";
 
-	private int location_modelViewMatrix;
+	private int location_numberOfRows;
 	private int location_projectionMatrix;
+
 
 	public ParticleShader() {
 		super(VERTEX_FILE, FRAGMENT_FILE);
@@ -19,17 +20,21 @@ public class ParticleShader extends GLShader
 
 	@Override
 	protected void getAllUniformLocations() {
-		location_modelViewMatrix = super.getUniformLocation("modelViewMatrix");
+		location_numberOfRows = super.getUniformLocation("numOfRows");
 		location_projectionMatrix = super.getUniformLocation("projectionMatrix");
 	}
 
 	@Override
 	protected void bindAttributes() {
 		super.bindAttribute(0, "position");
+		super.bindAttribute(1, "modelViewMatrix");
+		super.bindAttribute(5, "texOffset");
+		super.bindAttribute(6, "blendFactor");
 	}
 
-	protected void loadModelViewMatrix(Matrix4f modelView) {
-		super.loadMatrix(location_modelViewMatrix, modelView);
+	protected void loadNumberOfRows(float numberOfRows)
+	{
+		super.loadFloat(location_numberOfRows, numberOfRows);
 	}
 
 	protected void loadProjectionMatrix(Matrix4f projectionMatrix) {

@@ -12,7 +12,7 @@ import texture.Texture;
 
 public class SkyboxRenderer
 {
-    public static float SIZE = 10000f;
+    public static float SIZE = 5000f;
 
     private static final float[] VERTICES = {
             -SIZE,  SIZE, -SIZE,

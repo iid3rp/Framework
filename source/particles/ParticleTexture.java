@@ -16,7 +16,7 @@ public class ParticleTexture
         return textureID;
     }
 
-    public int getNumParticles()
+    public int getNumOfRows()
     {
         return numOfRows;
     }

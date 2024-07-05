@@ -27,6 +27,9 @@ public class EntityShader extends GLShader
     private int locationNumberOfRows;
     private int locationOffset;
     private int locationPlane;
+    private int locationSkyColor;
+    private int locationToShadowMapSpace;
+    private int locationShadowMap;
 
     public EntityShader()
     {
@@ -46,6 +49,9 @@ public class EntityShader extends GLShader
         locationNumberOfRows = super.getUniformLocation("numberOfRows");
         locationOffset = super.getUniformLocation("offset");
         locationPlane = super.getUniformLocation("plane");
+        locationSkyColor = super.getUniformLocation("skyColor");
+        locationToShadowMapSpace = super.getUniformLocation("toShadowMapSpace");
+        locationShadowMap = super.getUniformLocation("shadowMap");
 
 
         locationLightPosition = new int[lights];
@@ -58,6 +64,16 @@ public class EntityShader extends GLShader
             locationLightColor[i] = super.getUniformLocation("lightColor[" + i + "]");
             locationAttenuation[i] = super.getUniformLocation("attenuation[" + i + "]");
         }
+    }
+
+    public void loadToShadowMapSpaceMatrix(Matrix4f matrix)
+    {
+        super.loadMatrix(locationToShadowMapSpace, matrix);
+    }
+
+    public void loadSkyColor(float r, float g, float b)
+    {
+        super.loadVector3f(locationSkyColor, new Vector3f(r, g, b));
     }
 
     public void loadClipPlane(Vector4f plane)
@@ -89,6 +105,11 @@ public class EntityShader extends GLShader
     public void loadFakeLighting(boolean value)
     {
         super.loadBoolean(locationFakeLighting, value);
+    }
+
+    public void connectTextureUnits()
+    {
+        super.loadInteger(locationShadowMap, 5);
     }
 
     @Override

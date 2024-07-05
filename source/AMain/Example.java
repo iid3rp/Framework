@@ -1,4 +1,4 @@
-package Main;
+package AMain;
 
 import entity.Entity;
 import entity.Light;
@@ -6,11 +6,7 @@ import entity.Player;
 import environment.Environment;
 import environment.Scene;
 import event.MouseEvent;
-import fontRendering.TextMasterRenderer;
 import normals.NormalMappedObjLoader;
-import particles.ParticleMaster;
-import particles.ParticleSystem;
-import particles.ParticleTexture;
 import render.DisplayManager;
 import render.MasterRenderer;
 import render.ModelLoader;
@@ -27,6 +23,7 @@ import model.Model;
 
 import model.TexturedModel;
 import org.lwjgl.util.vector.Vector3f;
+import util.Intention;
 import water.WaterTile;
 
 import java.util.Random;
@@ -39,8 +36,6 @@ public class Example
         DisplayManager.setTitle("Hello World!");
         DisplayManager.setSize(1280, 720);
         DisplayManager.createDisplay();
-        TextMasterRenderer.initialize();
-        MasterRenderer.setRenderer();
 
         Scene scene = new Scene();
         ContentPane panel = new ContentPane();
@@ -49,7 +44,7 @@ public class Example
         GUITexture img = new PictureBox();
         img.setBackgroundImage(ModelLoader.loadTexture("brat"));
         img.setSize(30, 30);
-        img.setPosition(20, 20);
+        img.setLocation(20, 20);
 
         panel.add(img);
         scene.setContentPane(panel);
@@ -62,7 +57,7 @@ public class Example
         Texture reflection = texturedModel.getTexture();
         reflection.setShineDampening(5);
         reflection.setReflectivity(1);
-        Light lighting = new Light(new Vector3f(0, 3, 0), new Vector3f(.9f, .8f, 1f));
+        Light lighting = new Light(new Vector3f(1_000_000, 1_000_000, 1_000_000), new Vector3f(.9f, .8f, 1f));
 
         scene.getLights().add(lighting);
         scene.getLights().add(new Light(new Vector3f(0, 10, 0), new Vector3f(1, 0, 1), new Vector3f(1, 0f, 200f)));
@@ -87,8 +82,8 @@ public class Example
         TexturedModel barrel = new TexturedModel(NormalMappedObjLoader.loadObject("barrel"),
                 new Texture(ModelLoader.loadTexture("barrel")));
         barrel.getTexture().setNormalMap(ModelLoader.loadTexture("barrelNormal"));
-        barrel.getTexture().setReflectivity(.5f);
-        barrel.getTexture().setShineDampening(10);
+        //barrel.getTexture().setReflectivity(.5f);
+        //barrel.getTexture().setShineDampening(10);
         Entity barrelEntity = new Entity(barrel, new Vector3f(200, 200, 200), 0, 0, 0, 1);
 
 
@@ -96,7 +91,7 @@ public class Example
         int progress = 0;
 
         Entity box = new Entity(
-                new TexturedModel(NormalMappedObjLoader.loadObject("box"),
+                new TexturedModel(NormalMappedObjLoader.loadObject("barrel"),
                 new Texture(ModelLoader.loadTexture("brat"))),
                 new Vector3f(0, 0, 0),
                 0,
@@ -104,29 +99,40 @@ public class Example
                 0,
                 2);
         Player player = new Player(barrelEntity);
-        player.setLight();
-        player.setLightColor(255, 255, 255);
-        player.setLightAttenuation(new Vector3f(.1f, .01f, .01f));
+        //player.setLight();
+        //player.setLightColor(255, 255, 255);
+        //player.setLightAttenuation(new Vector3f(.1f, .01f, .01f));
         scene.setPlayer(player);
-        scene.getNormalMappedEntities().add(player);
+        scene.getEntities().add(player);
         scene.getEntities().add(box);
-        scene.getLights().add(player.getLight());
+        //scene.getLights().add(player.getLight());
         scene.setCamera(player.getCamera());
 
 
         scene.setTerrainSize(500, 500);
         scene.add(new WaterTile(75, -75, 0));
 
+        TexturedModel chrysalis = new TexturedModel(ObjectLoader.loadObject("tree"),new Texture(ModelLoader.loadTexture("tree")));
 
-        ParticleMaster.initialize(MasterRenderer.getProjectionMatrix());
-        ParticleTexture txt = new ParticleTexture(ModelLoader.loadTexture("particleStar"), 1);
-        ParticleSystem system = new ParticleSystem(70, 50, .3f, 5, 1, txt);
-        scene.setParticleSystem(system);
+        for(int i = 0 ; i < 300; i++)
+        {
+            float x = random.nextFloat(terrain.getSize());
+            float z = random.nextFloat(terrain.getSize());
+            float y = terrain.getHeightOfTerrain(x, z);
+            Entity crystal = new Entity(chrysalis, new Vector3f(x, y, z), 0, 0, 0, 10f);
+            scene.getEntities().add(crystal);
+        }
+
+        @Intention(design = "forRemoval")
+        PictureBox shadowMap = new PictureBox();
+        shadowMap.setBackgroundImage(MasterRenderer.getShadowMapTexture());
+        shadowMap.setSize(256, 144);
+        shadowMap.setLocation(20, 70);
+        scene.add(shadowMap);
 
 
-
-        MouseEvent event = new MouseEvent(Environment.getScene().getPlayer().getCamera(),
-                MasterRenderer.getProjectionMatrix());
+        MouseEvent event = new MouseEvent();
+        event.setCamera(scene.getCamera());
 
         scene.setEvent(event);
         Environment.start();

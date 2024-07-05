@@ -57,10 +57,10 @@ public class GUITexture
         float w = (float) width / Display.getWidth();
         float h = (float) height / Display.getHeight();
         this.scale = new Vector2f(w, h);
-        setPosition(this.x, this.y);
+        setLocation(this.x, this.y);
     }
 
-    public void setPosition(int x, int y)
+    public void setLocation(int x, int y)
     {
         this.x = x;
         this.y = y;

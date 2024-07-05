@@ -22,12 +22,19 @@ public class MouseEvent
     private Terrain terrain;
     private Vector3f currentTerrainPoint;
 
+    public MouseEvent() {}
+
     public MouseEvent(Camera camera, Matrix4f projection)
     {
         this.camera = camera;
         this.projection = projection;
         this.terrain = Environment.getScene().getTerrain();
         this.view = GeomMath.createViewMatrix(camera);
+    }
+
+    public void setProjectionMatrix(Matrix4f projection)
+    {
+        this.projection = projection;
     }
 
     public Vector3f getCurrentTerrainPoint() {
@@ -63,6 +70,36 @@ public class MouseEvent
         Vector4f eyeCoordinates = toEyeCoordinates(clipCoords);
         Vector3f worldRay = toWorldCoordinates(eyeCoordinates);
         return  worldRay;
+    }
+
+    public Matrix4f getProjection()
+    {
+        return projection;
+    }
+
+    public void setProjection(Matrix4f projection)
+    {
+        this.projection = projection;
+    }
+
+    public Matrix4f getView()
+    {
+        return view;
+    }
+
+    public void setView(Matrix4f view)
+    {
+        this.view = view;
+    }
+
+    public Camera getCamera()
+    {
+        return camera;
+    }
+
+    public void setCamera(Camera camera)
+    {
+        this.camera = camera;
     }
 
     private Vector3f toWorldCoordinates(Vector4f eyeCoordinates)

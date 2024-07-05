@@ -29,6 +29,8 @@ public class TerrainShader extends GLShader
     private int locationBlue;
     private int blendMap;
     private int locationPlane;
+    private int locationToShadowMapSpace;
+    private int locationShadowMap;
 
 
     public TerrainShader()
@@ -51,6 +53,9 @@ public class TerrainShader extends GLShader
         locationBlue = super.getUniformLocation("blue");
         blendMap = super.getUniformLocation("blendMap");
         locationPlane = super.getUniformLocation("plane");
+        locationToShadowMapSpace = super.getUniformLocation("toShadowMapSpace");
+        locationShadowMap = super.getUniformLocation("shadowMap");
+        locationSkyColor = super.getUniformLocation("skyColor");
 
         locationLightPosition = new int[lights];
         locationLightColor = new int[lights];
@@ -76,6 +81,7 @@ public class TerrainShader extends GLShader
         super.loadInteger(locationGreen, 2);
         super.loadInteger(locationBlue, 3);
         super.loadInteger(blendMap, 4);
+        super.loadInteger(locationShadowMap, 5);
     }
 
     public void loadShine(float damper, float reflectivity)
@@ -90,6 +96,11 @@ public class TerrainShader extends GLShader
         super.bindAttribute(0, "position");
         super.bindAttribute(1, "textureCoords");
         super.bindAttribute(2, "normal");
+    }
+
+    public void loadToShadowSpaceMatrix(Matrix4f matrix)
+    {
+        super.loadMatrix(locationToShadowMapSpace, matrix);
     }
 
     public void loadLights(List<Light> lights)

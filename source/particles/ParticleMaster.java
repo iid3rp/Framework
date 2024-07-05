@@ -11,24 +11,34 @@ import java.util.Map;
 
 public class ParticleMaster
 {
-    private static List<Particle> particles = new ArrayList<>();
+    private static Map<ParticleTexture, List<Particle>> particles = new HashMap<>();
     private static ParticleRenderer renderer;
     public static void initialize(Matrix4f projection)
     {
         renderer = new ParticleRenderer(projection);
     }
 
-    public static void update()
+    public static void update(Camera camera)
     {
-        Iterator<Particle> i = particles.iterator();
-        while(i.hasNext())
+        Iterator<Map.Entry<ParticleTexture, List<Particle>>> it = particles.entrySet().iterator();
+        while(it.hasNext())
         {
-            Particle particle = i.next();
-            boolean stillAlive = particle.update();
-            if(!stillAlive)
+            List<Particle> list = it.next().getValue();
+            Iterator<Particle> i = list.iterator();
+            while(i.hasNext())
             {
-                i.remove();
+                Particle particle = i.next();
+                boolean stillAlive = particle.update(camera);
+                if(!stillAlive)
+                {
+                    i.remove();
+                    if(list.isEmpty())
+                    {
+                        it.remove();
+                    }
+                }
             }
+            InsertionSort.sortHighToLow(list);
         }
     }
 
@@ -44,7 +54,8 @@ public class ParticleMaster
 
     public static void addParticle(Particle particle)
     {
-        particles.add(particle);
+        List<Particle> list = particles.computeIfAbsent(particle.getTexture(), k -> new ArrayList<>());
+        list.add(particle);
     }
 
     public ParticleMaster()

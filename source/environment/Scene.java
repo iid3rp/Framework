@@ -6,6 +6,7 @@ import entity.Light;
 import entity.Player;
 import event.MouseEvent;
 import particles.ParticleSystem;
+import render.MasterRenderer;
 import swing.ContentPane;
 import swing.GUITexture;
 import terrain.Terrain;
@@ -39,7 +40,6 @@ public class Scene
         terrain = new Terrain();
         waters = new ArrayList<>();
         normalMappedEntities = new ArrayList<>();
-        //clipPlane = new Vector4f(0, -1, 0, 15);
     }
 
     public List<Entity> getEntities()
@@ -125,6 +125,7 @@ public class Scene
     public void setCamera(Camera camera)
     {
         this.camera = camera;
+        MasterRenderer.setShadowMap(this.camera);
     }
 
     public Camera getCamera()
