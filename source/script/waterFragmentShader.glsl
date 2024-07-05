@@ -29,7 +29,10 @@ void main(void)
 	vec2 reflectionTextureCoordinates = vec2(perspective.x, -perspective.y);
 
 	float near = 0.1;
-	float far = 1000000.0;
+
+	// DID I JUST FIXED A PROBLEM?? NO WAY??
+	float far = 1000.0;
+
 	float depth = texture(depthMap, refractionTextureCoordinates).r;
 	float floorDistance = 2.0 * near * far / (far + near - (2.0 * depth - 1.0) * (far - near));
 
@@ -58,7 +61,6 @@ void main(void)
 	vec3 viewFactor = normalize(toCameraPosition);
 	float refractionFactor = dot(viewFactor, normal);
 	refractionFactor = pow(refractionFactor, 2);
-
 
 	vec3 reflectedLight = reflect(normalize(fromLightVector), normal);
 	float specular = max(dot(reflectedLight, viewFactor), 0.0);

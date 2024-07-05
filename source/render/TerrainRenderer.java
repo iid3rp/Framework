@@ -80,7 +80,7 @@ public class TerrainRenderer
     {
         @Intention(design = "for additional texture and shader effect")
         Matrix4f matrix4f = GeomMath.createTransformationMatrix(
-                new Vector3f(terrain.getX(), 0, terrain.getZ()),
+                new Vector3f(-terrain.getSize() / 2, 0, -terrain.getSize() / 2),
                 0, 0, 0, 1
         );
         shader.loadTransformMatrix(matrix4f);

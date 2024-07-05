@@ -27,7 +27,7 @@ public class ObjectLoader
         int[] indicesArray;
         try
         {
-            file = new FileReader("resources/objects/" + fileName + ".obj");
+            file = new FileReader("source/resources/objects/" + fileName + ".obj");
             BufferedReader reader = new BufferedReader(file);
 
             while(true)

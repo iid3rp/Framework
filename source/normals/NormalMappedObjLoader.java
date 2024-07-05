@@ -16,7 +16,7 @@ import render.ModelLoader;
 
 public class NormalMappedObjLoader {
 
-	private static final String RES_LOC = "resources/objects/";
+	private static final String RES_LOC = "source/resources/objects/";
 
 	public static Model loadObject(String objFileName) {
 		FileReader isr = null;

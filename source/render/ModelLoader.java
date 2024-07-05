@@ -69,7 +69,7 @@ public class ModelLoader
         int VAOId = createVAO();
         storeDataInAttributes(0, dimensions, positions);
         unbindVAO();
-        return new Model(VAOId, positions.length / dimensions);
+        return new Model(VAOId, positions.length * dimensions);
     }
 
     public static int createEmptyVBO(int count)
@@ -116,7 +116,7 @@ public class ModelLoader
 
         for(int i = 0; i < textureFiles.length; i++)
         {
-            TextureData data = decodeTextureFile("resources/skybox/" + textureFiles[i] + ".png");
+            TextureData data = decodeTextureFile("source/resources/skybox/" + textureFiles[i] + ".png");
             GL11.glTexImage2D(
                     GL13.GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
                     0,
@@ -160,11 +160,12 @@ public class ModelLoader
         Texture texture = null;
         int textureID;
         try {
-            texture = TextureLoader.getTexture("PNG", new FileInputStream("resources/textures/"  + filename + ".png"));
+            texture = TextureLoader.getTexture("PNG", new FileInputStream("source/resources/textures/"  + filename + ".png"));
             GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR);
-            GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL14.GL_TEXTURE_LOD_BIAS, 0);
+            GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL14.GL_TEXTURE_LOD_BIAS, 0f);
             if(GLContext.getCapabilities().GL_EXT_texture_filter_anisotropic) {
+                System.out.println("t");
                 float amount = Math.min(4f, GL11.glGetFloat(EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT));
                 GL11.glTexParameterf(GL11.GL_TEXTURE_2D, EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT, amount);
             }
@@ -172,7 +173,7 @@ public class ModelLoader
                 System.out.println("not supported :((");
             }
         }
-        catch(IOException e) {
+        catch(IOException | NullPointerException e) {
             throw new RuntimeException(e);
         }
         finally

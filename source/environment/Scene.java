@@ -76,6 +76,10 @@ public class Scene
     {
         waters.add(water);
     }
+    public void add(Entity entity)
+    {
+        entities.add(entity);
+    }
 
     public List<Light> getLights()
     {
@@ -158,4 +162,5 @@ public class Scene
     {
         return particleSystem;
     }
+
 }

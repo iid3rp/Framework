@@ -37,7 +37,7 @@ public final class Environment
             {
                 getScene().getEvent().setProjectionMatrix(MasterRenderer.getProjectionMatrix());
             }
-            FontType font = new FontType(ModelLoader.loadTexture("comic"), new File("resources/font/comic.fnt"));
+            FontType font = new FontType(ModelLoader.loadTexture("comic"), new File("source/resources/font/comic.fnt"));
             GUIText fps = new GUIText("fps count: 0", 1, font, new Vector2f(0, 0), 1f, false);
             fps.setColor(1, 1, 0);
 
@@ -97,10 +97,11 @@ public final class Environment
                 //renderScene(new Vector4f(0, 0, 0, scene.getWaters().getFirst().getHeight()));
 
                 MasterRenderer.buffer.unbindCurrentFrameBuffer();
+
                 renderScene(new Vector4f(0, -1, 0, scene.getWaters().getFirst().getHeight()));
-
-
                 MasterRenderer.renderWaters(scene.getWaters(), scene.getCamera(), scene.getMainLight());
+
+
 
 
                 scene.getContentPane().render(scene.getContentPane().getComponents());

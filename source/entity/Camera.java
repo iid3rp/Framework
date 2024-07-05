@@ -6,6 +6,8 @@ import org.lwjgl.util.vector.Vector3f;
 
 public class Camera
 {
+    private static final float MAX_DISTANCE = 150;
+    private static final float MIN_DISTANCE = 0;
     private static float REFRESH_RATE = 60;
     private static final float WALK_SPEED = .5f;
     private static final float ROTATIONAL_SPEED = 180 / REFRESH_RATE;
@@ -72,50 +74,40 @@ public class Camera
 
     public void move()
     {
-        if(playerCamera)
-        {
+        if(playerCamera) {
             return;
         }
         float angleInRadians = (float) Math.toRadians(yaw);
         float dx = (float) (walkSpeed * Math.sin(angleInRadians));
         float dz = (float) (walkSpeed * Math.cos(angleInRadians));
 
-        if(Keyboard.isKeyDown(Keyboard.KEY_TAB))
-        {
-            if(Keyboard.isKeyDown(Keyboard.KEY_W))
-            {
+        if(Keyboard.isKeyDown(Keyboard.KEY_TAB)) {
+            if(Keyboard.isKeyDown(Keyboard.KEY_W)) {
                 position.x += dx;
                 position.z -= dz;
             }
-            if(Keyboard.isKeyDown(Keyboard.KEY_D))
-            {
+            if(Keyboard.isKeyDown(Keyboard.KEY_D)) {
                 position.x += dz;
                 position.z += dx;
             }
-            if(Keyboard.isKeyDown(Keyboard.KEY_A))
-            {
+            if(Keyboard.isKeyDown(Keyboard.KEY_A)) {
                 position.x -= dz;
                 position.z -= dx;
             }
-            if(Keyboard.isKeyDown(Keyboard.KEY_S))
-            {
+            if(Keyboard.isKeyDown(Keyboard.KEY_S)) {
                 position.x -= dx;
                 position.z += dz;
             }
-            if(Keyboard.isKeyDown(Keyboard.KEY_SPACE))
-            {
+            if(Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
                 position.y += walkSpeed;
             }
-            if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
-            {
+            if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
                 position.y -= walkSpeed;
             }
-            if(Keyboard.isKeyDown(Keyboard.KEY_LEFT))
-            {
+            if(Keyboard.isKeyDown(Keyboard.KEY_LEFT)) {
                 yaw -= rotationalSpeed;
             }
-            if(Keyboard.isKeyDown(Keyboard.KEY_RIGHT))
-            {
+            if(Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {
                 yaw += rotationalSpeed;
             }
         }
@@ -208,7 +200,9 @@ public class Camera
     public void calculateZoom()
     {
         float zoomLevel = (float) Mouse.getDWheel() * 0.1f;
-        distanceFromThePlayer -= zoomLevel;
+        distanceFromThePlayer =
+        distanceFromThePlayer - zoomLevel > MAX_DISTANCE? MAX_DISTANCE :
+                Math.max(distanceFromThePlayer - zoomLevel, MIN_DISTANCE);
     }
 
     private void calculatePitch()

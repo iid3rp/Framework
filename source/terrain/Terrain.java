@@ -73,8 +73,8 @@ public class Terrain
 
     public float getHeightOfTerrain(float x, float z)
     {
-        float terrainX = x - this.x;
-        float terrainZ = z - this.z;
+        float terrainX = x + (getSize() / 2);
+        float terrainZ = z + (getSize() / 2);
         float gridSquareSize = (size / (heights.length - 1));
 
         int gridX = (int) Math.floor(terrainX / gridSquareSize);
