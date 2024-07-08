@@ -184,7 +184,7 @@ public class Camera
 
     private float calculateVerticalDistance()
     {
-        return (float) (distanceFromThePlayer * Math.sin(Math.toRadians(pitch))) + 5;
+        return (float) (distanceFromThePlayer * Math.sin(Math.toRadians(pitch))) + 10;
     }
 
     public Vector3f getNegativePosition()

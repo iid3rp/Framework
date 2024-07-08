@@ -7,6 +7,8 @@ import framework.particles.ParticleMaster;
 import framework.display.DisplayManager;
 import framework.display.MasterRenderer;
 import framework.display.ModelLoader;
+import framework.post_processing.FrameBufferObjects;
+import framework.post_processing.PostProcessing;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
@@ -16,6 +18,7 @@ import org.lwjgl.util.vector.Vector4f;
 public final class Environment
 {
     public static Scene scene;
+    public static FrameBufferObjects objects = new FrameBufferObjects(Display.getWidth(), Display.getHeight(), FrameBufferObjects.DEPTH_RENDER_BUFFER);
 
     public static void setScene(Scene scene)
     {
@@ -26,6 +29,7 @@ public final class Environment
     {
         // static method calling goes here:
         MasterRenderer.setRenderer();
+        PostProcessing.initialize();
         TextMasterRenderer.initialize();
         ParticleMaster.initialize(MasterRenderer.getProjectionMatrix());
 
@@ -46,7 +50,6 @@ public final class Environment
                 scene.getEvent().update();
 
                 // the shadow thingies
-                MasterRenderer.renderShadowMap(scene.getEntities(), scene.getMainLight());
 
                 //particle
                 if(scene.getParticleSystem() != null) {
@@ -95,8 +98,13 @@ public final class Environment
                 GL11.glDisable(GL30.GL_CLIP_DISTANCE3);
                 MasterRenderer.buffer.unbindCurrentFrameBuffer();
 
+                MasterRenderer.renderShadowMap(scene.getEntities(), scene.getMainLight());
+                // frame buffer stuff
+                objects.bindFrameBuffer();
                 renderScene(new Vector4f(0, -1, 0, 100_000_000));
                 MasterRenderer.renderWaters(scene.getWaters(), scene.getCamera(), scene.getMainLight());
+                objects.unbindFrameBuffer();
+                PostProcessing.doPostProcessing(objects.getColourTexture());
 
                 scene.getContentPane().render(scene.getContentPane().getComponents());
                 TextMasterRenderer.setText(fps, "fps count: " + FPSCounter.getCounter());
@@ -112,11 +120,7 @@ public final class Environment
     private static void renderScene(Vector4f plane)
     {
         // the 3D space stuff...
-        if(plane == null)
-        {
             // the shadow thingies
-            MasterRenderer.renderShadowMap(scene.getEntities(), scene.getMainLight());
-        }
         MasterRenderer.processTerrain(scene.getTerrain());
         MasterRenderer.processAllEntities(scene.getEntities());
         MasterRenderer.processAllNormalMappedEntities(scene.getNormalMappedEntities());
@@ -130,6 +134,8 @@ public final class Environment
 
     private static void exit()
     {
+        PostProcessing.dispose();
+        objects.dispose();
         ParticleMaster.dispose();
         TextMasterRenderer.dispose();
         scene.getContentPane().dispose();
