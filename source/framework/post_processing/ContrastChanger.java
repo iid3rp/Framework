@@ -22,6 +22,11 @@ public class ContrastChanger
         shader.stop();
     }
 
+    public int getOutputTexture()
+    {
+        return renderer.getOutputTexture();
+    }
+
     public void dispose()
     {
         renderer.dispose();

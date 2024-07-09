@@ -9,7 +9,6 @@ import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -120,7 +119,6 @@ public abstract class GLShader
         try
         {
             InputStream in = GLShader.class.getResourceAsStream(file);
-            System.out.println(GLShader.class.getResourceAsStream(file));
             assert in != null;
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
             String line;

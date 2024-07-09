@@ -10,7 +10,7 @@ public class ImageRenderer {
 		this.fbo = new FrameBufferObject(width, height, FrameBufferObject.NONE);
 	}
 
-	protected ImageRenderer() {}
+	public ImageRenderer() {}
 
 	public void renderQuad() {
 		if (fbo != null) {

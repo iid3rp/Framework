@@ -29,13 +29,13 @@ public final class BufferedImageMapper
         {
             references[index++] = image;
         }
-        return getGenerateTextureAtlas(references, rows, powerResolution);
+        return generateTextureAtlas(references, rows, powerResolution);
     }
 
-    public static BufferedImage getGenerateTextureAtlas(BufferedImage[] image, int rows, int powerResolution)
+    public static BufferedImage generateTextureAtlas(BufferedImage[] image, int rows, int powerResolution)
     {
         int index = 0;
-        int length = (int) Math.pow(2, powerResolution);
+        int length = (int) Math.pow(2   , powerResolution);
         int textureLength = length / rows;
         BufferedImage reference = new BufferedImage(length, length, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = reference.createGraphics();

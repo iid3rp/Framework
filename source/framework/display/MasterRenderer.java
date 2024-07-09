@@ -32,9 +32,9 @@ public class MasterRenderer
     public static float fieldOfView = 60;
     public static float nearPlane = .1f;
     public static float farPlane = 100_000f;
-    public static float red = 0.5f;
-    public static float green = 0.5f;
-    public static  float blue = 0.4f;
+    public static float red = 1;
+    public static float green = 1f;
+    public static  float blue = 1f;
     private static Matrix4f projection;
     private static EntityShader entityShader;
     private static EntityRenderer entityRenderer;

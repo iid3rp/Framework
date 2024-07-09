@@ -33,7 +33,7 @@ public class Example
     {
         Resources.setResource("resources");
         DisplayManager.setTitle("Hello World!");
-        DisplayManager.setSize(1280, 720);
+        DisplayManager.setSize(1376, 768);
         DisplayManager.createDisplay();
 
         Scene scene = new Scene();
@@ -49,7 +49,7 @@ public class Example
         scene.setContentPane(panel);
 
 
-        Light lighting = new Light(new Vector3f(1_000_000, 1_000_000, 1_000_000), new Vector3f(.9f, .8f, 1f));
+        Light lighting = new Light(new Vector3f(1_000_000, 1_000_000, 1_000_000), new Vector3f(1f, 1f, 1f));
 
         scene.getLights().add(lighting);
         scene.getLights().add(new Light(new Vector3f(0, 10, 0), new Vector3f(1, 0, 1), new Vector3f(1, 0f, 200f)));
@@ -70,10 +70,11 @@ public class Example
         scene.setTerrain(terrain);
 
         TexturedModel barrel = new TexturedModel(NormalMappedObjLoader.loadObject("barrel"),
-                new Texture(ModelLoader.loadTexture("barrel")));
+                new Texture(ModelLoader.loadTexture("brat")));
         barrel.getTexture().setNormalMap(ModelLoader.loadTexture("barrelNormal"));
-        //barrel.getTexture().setReflectivity(.5f);
-        //barrel.getTexture().setShineDampening(10);
+        barrel.getTexture().setSpecularMap(ModelLoader.loadTexture("bratMap"));
+        barrel.getTexture().setReflectivity(.5f);
+        barrel.getTexture().setShineDampening(10);
         Entity barrelEntity = new Entity(barrel, new Vector3f(0, 200, 0), 0, 0, 0, 1);
 
 
@@ -86,7 +87,7 @@ public class Example
         //player.setLightColor(255, 255, 255);
         //player.setLightAttenuation(new Vector3f(.1f, .01f, .01f));
         scene.setPlayer(player);
-        scene.getEntities().add(player);
+        //scene.getEntities().add(player);
         //scene.getLights().add(player.getLight());
         scene.setCamera(player.getCamera());
 
@@ -94,6 +95,9 @@ public class Example
         scene.add(new WaterTile(75, -75, 0));
 
         TexturedModel chrysalis = new TexturedModel(ObjectLoader.loadObject("tree"),new Texture(ModelLoader.loadTexture("tree")));
+        chrysalis.getTexture().setShineDampening(1f);
+        chrysalis.getTexture().setReflectivity(.1f);
+
         Entity entity = new Entity(new TexturedModel(
                 ObjectLoader.loadObject("crate"),
                         new Texture(ModelLoader.loadTexture("brat"))),

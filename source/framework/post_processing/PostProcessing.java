@@ -2,6 +2,8 @@ package framework.post_processing;
 
 import framework.display.ModelLoader;
 import framework.model.Model;
+import framework.post_processing.bloom.BrightFilter;
+import framework.post_processing.bloom.CombineFilter;
 import framework.post_processing.blur.HorizontalBlur;
 import framework.post_processing.blur.VerticalBlur;
 import org.lwjgl.opengl.Display;
@@ -16,12 +18,16 @@ public class PostProcessing {
 	private static ContrastChanger changer;
 	private static HorizontalBlur horizontalBlur;
 	private static VerticalBlur verticalBlur;
+	private static BrightFilter brightFilter;
+	private static CombineFilter combineFilter;
 
 	public static void initialize(){
 		quad = ModelLoader.loadToVAO(POSITIONS, 2);
 		changer = new ContrastChanger();
-		horizontalBlur = new HorizontalBlur(Display.getWidth() / 2, Display.getHeight() / 2);
-		verticalBlur = new VerticalBlur(Display.getWidth() / 2, Display.getHeight() / 2);
+		horizontalBlur = new HorizontalBlur(Display.getWidth() / 4, Display.getHeight() / 4);
+		verticalBlur = new VerticalBlur(Display.getWidth() / 4, Display.getHeight() / 4);
+		brightFilter = new BrightFilter(Display.getWidth() / 2, Display.getHeight() / 2);
+		combineFilter = new CombineFilter(Display.getWidth() / 2, Display.getHeight() / 2);
 	}
 	
 	public static void doPostProcessing(int colorTexture){
@@ -33,8 +39,12 @@ public class PostProcessing {
 //			verticalBlur.render(horizontalBlur.getOutputTexture());
 //			changer.render(verticalBlur.getOutputTexture());
 //		}
-		changer.render(colorTexture);
-		end();
+		brightFilter.render(colorTexture);
+		horizontalBlur.render(brightFilter.getOutputTexture());
+		verticalBlur.render(horizontalBlur.getOutputTexture());
+		combineFilter.render(colorTexture, verticalBlur.getOutputTexture());
+		changer.render(combineFilter.getOutputTexture());
+		stop();
 	}
 	
 	public static void dispose()
@@ -42,6 +52,8 @@ public class PostProcessing {
 		changer.dispose();
 		horizontalBlur.dispose();
 		verticalBlur.dispose();
+		brightFilter.dispose();
+		combineFilter.dispose();
 	}
 	
 	private static void start(){
@@ -50,7 +62,7 @@ public class PostProcessing {
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
 	}
 	
-	private static void end(){
+	private static void stop(){
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		GL20.glDisableVertexAttribArray(0);
 		GL30.glBindVertexArray(0);
