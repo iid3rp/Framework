@@ -7,7 +7,7 @@ import framework.particles.ParticleMaster;
 import framework.display.DisplayManager;
 import framework.display.MasterRenderer;
 import framework.display.ModelLoader;
-import framework.post_processing.FrameBufferObjects;
+import framework.post_processing.FrameBufferObject;
 import framework.post_processing.PostProcessing;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
@@ -18,7 +18,8 @@ import org.lwjgl.util.vector.Vector4f;
 public final class Environment
 {
     public static Scene scene;
-    public static FrameBufferObjects objects = new FrameBufferObjects(Display.getWidth(), Display.getHeight(), FrameBufferObjects.DEPTH_RENDER_BUFFER);
+    public static FrameBufferObject multisample = new FrameBufferObject(Display.getWidth(), Display.getHeight());
+    public static FrameBufferObject out = new FrameBufferObject(Display.getWidth(), Display.getHeight(), FrameBufferObject.DEPTH_TEXTURE);
 
     public static void setScene(Scene scene)
     {
@@ -100,11 +101,12 @@ public final class Environment
 
                 MasterRenderer.renderShadowMap(scene.getEntities(), scene.getMainLight());
                 // frame buffer stuff
-                objects.bindFrameBuffer();
+                multisample.bindFrameBuffer();
                 renderScene(new Vector4f(0, -1, 0, 100_000_000));
                 MasterRenderer.renderWaters(scene.getWaters(), scene.getCamera(), scene.getMainLight());
-                objects.unbindFrameBuffer();
-                PostProcessing.doPostProcessing(objects.getColourTexture());
+                multisample.unbindFrameBuffer();
+                multisample.resolveToFrameBufferObject(out);
+                PostProcessing.doPostProcessing(out.getColorTexture());
 
                 scene.getContentPane().render(scene.getContentPane().getComponents());
                 TextMasterRenderer.setText(fps, "fps count: " + FPSCounter.getCounter());
@@ -135,7 +137,8 @@ public final class Environment
     private static void exit()
     {
         PostProcessing.dispose();
-        objects.dispose();
+        multisample.dispose();
+        out.dispose();
         ParticleMaster.dispose();
         TextMasterRenderer.dispose();
         scene.getContentPane().dispose();

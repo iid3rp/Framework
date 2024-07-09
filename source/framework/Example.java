@@ -6,7 +6,6 @@ import framework.entity.Player;
 import framework.environment.Environment;
 import framework.environment.Scene;
 import framework.event.MouseEvent;
-import framework.model.Model;
 import framework.model.TexturedModel;
 import framework.normals.NormalMappedObjLoader;
 import framework.display.DisplayManager;
@@ -46,17 +45,10 @@ public class Example
         img.setSize(30, 30);
         img.setLocation(20, 20);
 
-        panel.add(img);
+        //panel.add(img);
         scene.setContentPane(panel);
 
 
-        Model model = ObjectLoader.loadObject("dragon");
-        Texture texture = new Texture(ModelLoader.loadTexture("brat"));
-        TexturedModel texturedModel = new TexturedModel(model, texture);
-
-        Texture reflection = texturedModel.getTexture();
-        reflection.setShineDampening(5);
-        reflection.setReflectivity(1);
         Light lighting = new Light(new Vector3f(1_000_000, 1_000_000, 1_000_000), new Vector3f(.9f, .8f, 1f));
 
         scene.getLights().add(lighting);
@@ -76,8 +68,6 @@ public class Example
         Terrain terrain = new Terrain(0, 0, bg, blend, "heightmap");
 
         scene.setTerrain(terrain);
-        scene.getEntities().add(new Entity(texturedModel, new Vector3f(0, 0, -30), 0, 0, 0, 1));
-
 
         TexturedModel barrel = new TexturedModel(NormalMappedObjLoader.loadObject("barrel"),
                 new Texture(ModelLoader.loadTexture("barrel")));
@@ -90,26 +80,17 @@ public class Example
         Random random = new Random();
         int progress = 0;
 
-        Entity box = new Entity(
-                new TexturedModel(NormalMappedObjLoader.loadObject("barrel"),
-                new Texture(ModelLoader.loadTexture("brat"))),
-                new Vector3f(0, 0, 0),
-                0,
-                0,
-                0,
-                2);
+
         Player player = new Player(barrelEntity);
         //player.setLight();
         //player.setLightColor(255, 255, 255);
         //player.setLightAttenuation(new Vector3f(.1f, .01f, .01f));
         scene.setPlayer(player);
         scene.getEntities().add(player);
-        scene.getEntities().add(box);
         //scene.getLights().add(player.getLight());
         scene.setCamera(player.getCamera());
 
 
-        scene.setTerrainSize(500, 500);
         scene.add(new WaterTile(75, -75, 0));
 
         TexturedModel chrysalis = new TexturedModel(ObjectLoader.loadObject("tree"),new Texture(ModelLoader.loadTexture("tree")));
@@ -121,11 +102,14 @@ public class Example
 
         for(int i = 0 ; i < 300; i++)
         {
-            float x = random.nextFloat(terrain.getSize());
-            float z = random.nextFloat(terrain.getSize());
+            float x = random.nextFloat(terrain.getSize()) - (terrain.getSize() / 2);
+            float z = random.nextFloat(terrain.getSize()) - (terrain.getSize() / 2);
             float y = terrain.getHeightOfTerrain(x, z);
             Entity crystal = new Entity(chrysalis, new Vector3f(x, y, z), 0, 0, 0, 10f);
-            scene.getEntities().add(crystal);
+            if(crystal.getPosition().y > 0) {
+                scene.getEntities().add(crystal);
+            }
+            else i--;
         }
 
         @Intention(design = "forRemoval")
@@ -133,7 +117,7 @@ public class Example
         shadowMap.setBackgroundImage(MasterRenderer.getShadowMapTexture());
         shadowMap.setSize(256, 144);
         shadowMap.setLocation(20, 70);
-        scene.add(shadowMap);
+        //scene.add(shadowMap);
 
 
         MouseEvent event = new MouseEvent();

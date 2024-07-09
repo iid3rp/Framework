@@ -24,16 +24,16 @@ public class PostProcessing {
 		verticalBlur = new VerticalBlur(Display.getWidth() / 2, Display.getHeight() / 2);
 	}
 	
-	public static void doPostProcessing(int colourTexture){
+	public static void doPostProcessing(int colorTexture){
 		start();
 		//intentional
 //		if(false)
 //		{
-//			horizontalBlur.render(colourTexture);
+//			horizontalBlur.render(colorTexture);
 //			verticalBlur.render(horizontalBlur.getOutputTexture());
 //			changer.render(verticalBlur.getOutputTexture());
 //		}
-		changer.render(colourTexture);
+		changer.render(colorTexture);
 		end();
 	}
 	

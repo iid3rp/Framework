@@ -2,16 +2,16 @@
 
 in vec2 textureCoords;
 
-out vec4 out_Colour;
+out vec4 outColor;
 
-uniform sampler2D colourTexture;
+uniform sampler2D colorTecture;
 
 // make this uniform:
 const float contrast = 0.3;
 
 void main(void){
 
-	out_Colour = texture(colourTexture, textureCoords);
-	out_Colour.rgb = (out_Colour.rgb - 0.5) * (1 + contrast) + 0.5;
+	outColor = texture(colorTecture, textureCoords);
+	outColor.rgb = (outColor.rgb - 0.5) * (1 + contrast) + 0.5;
 
 }

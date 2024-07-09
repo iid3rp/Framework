@@ -2,7 +2,9 @@
 
 const int lightAmount = 10;
 
-uniform sampler2D textureSampler;
+uniform sampler2D texture;
+uniform sampler2D specular;
+uniform float usesSpecular;
 uniform vec3 lightColor[lightAmount];
 uniform vec3 attenuation[lightAmount];
 uniform float damper;
@@ -76,11 +78,22 @@ void main(void)
     }
     totalDiffuse = max(totalDiffuse * lightFactor, 0.2);
 
-    vec4 textureColor = texture(textureSampler, passTextureCoordinates);
+    vec4 textureColor = texture(texture, passTextureCoordinates);
 
     if(textureColor.a < 0.5)
     {
         discard;
+    }
+
+    // TODO: make this transitional instead of cutting to two levels :3
+    if(usesSpecular > .5)
+    {
+        vec4 mapInfo = texture(specular, passTextureCoordinates);
+        totalSpecular *= mapInfo.r;
+        if(mapInfo.g > 0.5)
+        {
+            totalSpecular = vec3(1);
+        }
     }
 
     outColor = vec4(totalDiffuse, 1.0) * textureColor + vec4(totalSpecular, 1.0);

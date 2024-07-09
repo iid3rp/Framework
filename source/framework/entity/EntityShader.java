@@ -28,7 +28,10 @@ public class EntityShader extends GLShader
     private int locationPlane;
     private int locationSkyColor;
     private int locationToShadowMapSpace;
+    private int locationTextureMap;
     private int locationShadowMap;
+    private int locationSpecularMap;
+    private int locationUsesSpecularMap;
 
     public EntityShader()
     {
@@ -38,6 +41,9 @@ public class EntityShader extends GLShader
     @Override
     protected void getAllUniformLocations()
     {
+        locationTextureMap = super.getUniformLocation("texture");
+        locationSpecularMap = super.getUniformLocation("specular");
+        locationUsesSpecularMap = super.getUniformLocation("usesSpecular");
         locationLightAmount = super.getUniformLocation("lightAmount");
         locationTransform = super.getUniformLocation("transform");
         locationProjection = super.getUniformLocation("projection");
@@ -109,6 +115,13 @@ public class EntityShader extends GLShader
     public void connectTextureUnits()
     {
         super.loadInteger(locationShadowMap, 5);
+        super.loadInteger(locationTextureMap, 0);
+        super.loadInteger(locationSpecularMap, 1);
+    }
+
+    public void loadUsesSpecularMap(boolean value)
+    {
+        super.loadBoolean(locationUsesSpecularMap, value);
     }
 
     @Override

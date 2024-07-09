@@ -43,7 +43,7 @@ void main(void)
 	float near = 5;
 
 	// DID I JUST FIXED A PROBLEM?? NO WAY??
-	float far = 250.0;
+	float far = 2500.0;
 
 	float depth;
 	depth = texture(depthMap, refractionTextureCoordinates).r;

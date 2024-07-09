@@ -4,10 +4,10 @@ import org.lwjgl.opengl.GL11;
 
 public class ImageRenderer {
 
-	private FrameBufferObjects fbo;
+	private FrameBufferObject fbo;
 
 	public ImageRenderer(int width, int height) {
-		this.fbo = new FrameBufferObjects(width, height, FrameBufferObjects.NONE);
+		this.fbo = new FrameBufferObject(width, height, FrameBufferObject.NONE);
 	}
 
 	protected ImageRenderer() {}
@@ -24,7 +24,7 @@ public class ImageRenderer {
 	}
 
 	public int getOutputTexture() {
-		return fbo.getColourTexture();
+		return fbo.getColorTexture();
 	}
 
 	public void dispose() {

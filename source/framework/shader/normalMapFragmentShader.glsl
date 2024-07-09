@@ -11,11 +11,11 @@ out vec4 out_Color;
 
 uniform sampler2D modelTexture;
 uniform sampler2D normalMap;
-uniform vec3 lightColour[lightAmount];
+uniform vec3 lightColor[lightAmount];
 uniform vec3 attenuation[lightAmount];
 uniform float shineDamper;
 uniform float reflectivity;
-uniform vec3 skyColour;
+uniform vec3 skyColor;
 
 void main(void){
 
@@ -39,18 +39,18 @@ void main(void){
 		float specularFactor = dot(reflectedLightDirection , unitVectorToCamera);
 		specularFactor = max(specularFactor,0.0);
 		float dampedFactor = pow(specularFactor,shineDamper);
-		totalDiffuse = totalDiffuse + (brightness * lightColour[i])/attFactor;
-		totalSpecular = totalSpecular + (dampedFactor * reflectivity * lightColour[i])/attFactor;
+		totalDiffuse = totalDiffuse + (brightness * lightColor[i])/attFactor;
+		totalSpecular = totalSpecular + (dampedFactor * reflectivity * lightColor[i])/attFactor;
 	}
 	totalDiffuse = max(totalDiffuse, 0.2);
 	
-	vec4 textureColour = texture(modelTexture,pass_textureCoordinates);
-	if(textureColour.a < 0.5)
+	vec4 textureColor = texture(modelTexture,pass_textureCoordinates);
+	if(textureColor.a < 0.5)
 	{
 		discard;
 	}
 
-	out_Color =  vec4(totalDiffuse,1.0) * textureColour + vec4(totalSpecular,1.0);
+	out_Color =  vec4(totalDiffuse,1.0) * textureColor + vec4(totalSpecular,1.0);
 
 
 }
