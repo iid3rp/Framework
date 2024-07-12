@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class HeightGenerator
 {
-    private static final float AMPLITUDE = 50f;
+    private static final float AMPLITUDE = 75f;
     public static final int OCTAVES = 3;
     public static final float ROUGHNESS = 0.3f;
 

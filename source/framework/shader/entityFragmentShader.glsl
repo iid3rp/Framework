@@ -19,10 +19,11 @@ in vec3 cameraVector;
 in vec4 shadowCoords;
 in float visibility;
 
-out vec4 outColor;
+layout(location = 0) out vec4 outColor;
+layout(location = 1) out vec4 brightColor;
 
 // make this uniform soon!!
-const float mapSize = 4096;
+const float mapSize = 2048;
 const float levels = 10000;
 const int pcfCount = 4;
 const float totalTexels = pow((pcfCount * 2 + 1), 2);
@@ -86,12 +87,14 @@ void main(void)
     }
 
     // TODO: make this transitional instead of cutting to two levels :3
+    brightColor = vec4(0);
     if(usesSpecular > .5)
     {
         vec4 mapInfo = texture(specular, passTextureCoordinates);
         totalSpecular *= mapInfo.r;
         if(mapInfo.g > 0.5)
         {
+            brightColor = textureColor + vec4(totalSpecular, 1);
             totalSpecular = vec3(1);
         }
     }

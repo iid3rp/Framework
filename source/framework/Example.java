@@ -31,9 +31,9 @@ public class Example
 {
     public static void main(String[] a)
     {
-        Resources.setResource("resources");
+        //Resources.setResource("resources");
         DisplayManager.setTitle("Hello World!");
-        DisplayManager.setSize(1376, 768);
+        DisplayManager.setSize(1280, 720);
         DisplayManager.createDisplay();
 
         Scene scene = new Scene();
@@ -104,7 +104,7 @@ public class Example
                 new Vector3f(0, 0, 0), 0f, 0f, 0f, 1f);
         //scene.add(entity);
 
-        for(int i = 0 ; i < 300; i++)
+        for(int i = 0 ; i < 10; i++)
         {
             float x = random.nextFloat(terrain.getSize()) - (terrain.getSize() / 2);
             float z = random.nextFloat(terrain.getSize()) - (terrain.getSize() / 2);

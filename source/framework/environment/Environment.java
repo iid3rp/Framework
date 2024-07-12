@@ -20,11 +20,16 @@ public final class Environment
     public static Scene scene;
     public static FrameBufferObject multisample = new FrameBufferObject(Display.getWidth(), Display.getHeight());
     public static FrameBufferObject out = new FrameBufferObject(Display.getWidth(), Display.getHeight(), FrameBufferObject.DEPTH_TEXTURE);
+    public static FrameBufferObject bright = new FrameBufferObject(Display.getWidth(), Display.getHeight(), FrameBufferObject.DEPTH_TEXTURE);
 
     public static void setScene(Scene scene)
     {
         Environment.scene = scene;
     }
+
+    // intentional global-local variables
+    static FontType font;
+    static GUIText fps;
 
     public static void start()
     {
@@ -40,83 +45,89 @@ public final class Environment
             {
                 getScene().getEvent().setProjectionMatrix(MasterRenderer.getProjectionMatrix());
             }
-            FontType font = new FontType(ModelLoader.loadTexture("comic"), "comic");
-            GUIText fps = new GUIText("fps count: 0", 1, font, new Vector2f(0, 0), 1f, false);
+            font = new FontType(ModelLoader.loadTexture("comic"), "comic");
+            fps = new GUIText("fps count: 0", 1, font, new Vector2f(0, 0), 1f, false);
             fps.setColor(1, 1, 0);
 
-            while(!(Display.isCloseRequested()))
-            {
-                FPSCounter.update();
-                // mouseEvent stuff
-                scene.getEvent().update();
-
-                // the shadow thingies
-
-                //particle
-                if(scene.getParticleSystem() != null) {
-                    ParticleMaster.update(scene.getCamera());
-                    scene.getParticleSystem().generateParticles(scene.getPlayer().getPosition());
-                }
-                ParticleMaster.renderParticles(scene.getCamera());
-
-                // debuggers
-                //System.out.println(scene.getEvent().getCurrentTerrainPoint());
-                //System.out.println(scene.getEvent().currentRay);
-
-
-                // the player and the camera movements
-                scene.getPlayer().move(scene.getTerrain());
-                scene.getCamera().move();
-
-
-                // frame buffers thingy:
-                // apparently, the rendering process in this stuff is that,
-                // the first 3 clips [0, 1, 2] have certain black spots
-                // in their sky boxes, but now it is gone in the
-                // fourth index, finally.
-                // took me a day to fix that :sob:
-                GL11.glEnable(GL30.GL_CLIP_DISTANCE3);
-
-                // the reflection of the water
-                MasterRenderer.buffer.bindReflectionFrameBuffer();
-                float distance = 2 * (scene.getCamera().getPosition().y -
-                        scene.getWaters().getFirst().getHeight());
-                scene.getCamera().getPosition().y -= distance;
-                scene.getCamera().invertPitch();
-                renderScene(new Vector4f(0, 1, 0,
-                        -scene.getWaters().getFirst().getHeight() + 1.2f));
-                scene.getCamera().getPosition().y += distance;
-                scene.getCamera().invertPitch();
-
-                // the refraction of the water
-                MasterRenderer.buffer.bindRefractionFrameBuffer();
-                renderScene(new Vector4f(0, -1, 0,
-                        scene.getWaters().getFirst().getHeight()));
-
-                //MasterRenderer.buffer.bindScreenFrameBuffer();
-                //renderScene(new Vector4f(0, 0, 0, scene.getWaters().getFirst().getHeight()));
-
-                GL11.glDisable(GL30.GL_CLIP_DISTANCE3);
-                MasterRenderer.buffer.unbindCurrentFrameBuffer();
-
-                MasterRenderer.renderShadowMap(scene.getEntities(), scene.getMainLight());
-                // frame buffer stuff
-                multisample.bindFrameBuffer();
-                renderScene(new Vector4f(0, -1, 0, 100_000_000));
-                MasterRenderer.renderWaters(scene.getWaters(), scene.getCamera(), scene.getMainLight());
-                multisample.unbindFrameBuffer();
-                multisample.resolveToFrameBufferObject(out);
-                PostProcessing.doPostProcessing(out.getColorTexture());
-
-                scene.getContentPane().render(scene.getContentPane().getComponents());
-                TextMasterRenderer.setText(fps, "fps count: " + FPSCounter.getCounter());
-                TextMasterRenderer.render();
-
-                DisplayManager.updateDisplay();
-            }
+            loop();
             exit();
         }
         else throw new NullPointerException();
+    }
+
+    public static void loop()
+    {
+        while(!(Display.isCloseRequested()))
+        {
+            FPSCounter.update();
+            // mouseEvent stuff
+            scene.getEvent().update();
+
+            // the shadow thingies
+
+            //particle
+            if(scene.getParticleSystem() != null) {
+                ParticleMaster.update(scene.getCamera());
+                scene.getParticleSystem().generateParticles(scene.getPlayer().getPosition());
+            }
+            ParticleMaster.renderParticles(scene.getCamera());
+
+            // debuggers
+            //System.out.println(scene.getEvent().getCurrentTerrainPoint());
+            //System.out.println(scene.getEvent().currentRay);
+
+
+            // the player and the camera movements
+            scene.getPlayer().move(scene.getTerrain());
+            scene.getCamera().move();
+
+
+            // frame buffers thingy:
+            // apparently, the rendering process in this stuff is that,
+            // the first 3 clips [0, 1, 2] have certain black spots
+            // in their sky boxes, but now it is gone in the
+            // fourth index, finally.
+            // took me a day to fix that :sob:
+            GL11.glEnable(GL30.GL_CLIP_DISTANCE3);
+
+            // the reflection of the water
+            MasterRenderer.buffer.bindReflectionFrameBuffer();
+            float distance = 2 * (scene.getCamera().getPosition().y -
+                    scene.getWaters().getFirst().getHeight());
+            scene.getCamera().getPosition().y -= distance;
+            scene.getCamera().invertPitch();
+            renderScene(new Vector4f(0, 1, 0,
+                    -scene.getWaters().getFirst().getHeight() + 1.2f));
+            scene.getCamera().getPosition().y += distance;
+            scene.getCamera().invertPitch();
+
+            // the refraction of the water
+            MasterRenderer.buffer.bindRefractionFrameBuffer();
+            renderScene(new Vector4f(0, -1, 0,
+                    scene.getWaters().getFirst().getHeight()));
+
+            //MasterRenderer.buffer.bindScreenFrameBuffer();
+            //renderScene(new Vector4f(0, 0, 0, scene.getWaters().getFirst().getHeight()));
+
+            GL11.glDisable(GL30.GL_CLIP_DISTANCE3);
+            MasterRenderer.buffer.unbindCurrentFrameBuffer();
+
+            MasterRenderer.renderShadowMap(scene.getEntities(), scene.getMainLight());
+            // frame buffer stuff
+            multisample.bindFrameBuffer();
+            renderScene(new Vector4f(0, 1, 0, 100_000_000));
+            MasterRenderer.renderWaters(scene.getWaters(), scene.getCamera(), scene.getMainLight());
+            multisample.unbindFrameBuffer();
+            multisample.resolveToFrameBufferObject(GL30.GL_COLOR_ATTACHMENT0,out);
+            multisample.resolveToFrameBufferObject(GL30.GL_COLOR_ATTACHMENT1,bright);
+            PostProcessing.doPostProcessing(out.getColorTexture(), bright.getColorTexture());
+
+            scene.getContentPane().render(scene.getContentPane().getComponents());
+            TextMasterRenderer.setText(fps, "fps count: " + FPSCounter.getCounter());
+            TextMasterRenderer.render();
+
+            DisplayManager.updateDisplay();
+        }
     }
 
     private static void renderScene(Vector4f plane)
@@ -139,6 +150,7 @@ public final class Environment
         PostProcessing.dispose();
         multisample.dispose();
         out.dispose();
+        bright.dispose();
         ParticleMaster.dispose();
         TextMasterRenderer.dispose();
         scene.getContentPane().dispose();

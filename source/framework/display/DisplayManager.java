@@ -8,7 +8,7 @@ public class DisplayManager
 {
     public static int width = 720;
     public static int height = 720;
-    private static int frames = 60;
+    private static int frames = 120;
     private static long lastTime;
     private static float delta;
     public static void createDisplay()
@@ -19,7 +19,7 @@ public class DisplayManager
 
         try {
             Display.setDisplayMode(new DisplayMode(width, height));
-            Display.create(new PixelFormat().withDepthBits(24), attributes);
+            Display.create(new PixelFormat().withDepthBits(24).withSamples(4), attributes);
            
             GL11.glEnable(GL13.GL_MULTISAMPLE);
             System.out.println(GL11.glGetInteger(GL11.GL_DEPTH_BITS));
@@ -28,7 +28,7 @@ public class DisplayManager
             throw new RuntimeException(e);
         }
 
-        GL11.glViewport(0, 0, width, height);
+        GL11.glViewport(0, 0, width / 16, height / 16);
         lastTime = getCurrentTime();
     }
 

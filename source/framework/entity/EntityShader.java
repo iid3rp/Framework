@@ -1,7 +1,7 @@
 package framework.entity;
 
 import framework.shader.GLShader;
-import framework.toolbox.MatrixMultiplication;
+import framework.toolbox.GeomMath;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
@@ -158,7 +158,7 @@ public class EntityShader extends GLShader
 
     public void loadViewMatrix(Camera camera)
     {
-        Matrix4f view = MatrixMultiplication.createViewMatrix(camera);
+        Matrix4f view = GeomMath.createViewMatrix(camera);
         super.loadMatrix(locationView, view);
     }
 

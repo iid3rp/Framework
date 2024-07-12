@@ -2,11 +2,14 @@
 package framework.post_processing;
 
 import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL14;
+import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
 public class FrameBufferObject
@@ -15,7 +18,7 @@ public class FrameBufferObject
 	public static final int NONE = 0;
 	public static final int DEPTH_TEXTURE = 1;
 	public static final int DEPTH_RENDER_BUFFER = 2;
-	public boolean multiSampled = false;
+	public boolean multiSampledTarget = false;
 
 	private final int width;
 	private final int height;
@@ -27,6 +30,7 @@ public class FrameBufferObject
 
 	private int depthBuffer;
 	private int colorBuffer;
+	private int brightBuffer;
 
 	/**
 	 * Creates an FBO of a specified width and height, with the desired type of
@@ -49,7 +53,7 @@ public class FrameBufferObject
 	public FrameBufferObject(int width, int height) {
 		this.width = width;
 		this.height = height;
-		this.multiSampled = true;
+		this.multiSampledTarget = true;
 		initialiseFrameBuffer(DEPTH_RENDER_BUFFER);
 	}
 
@@ -62,6 +66,7 @@ public class FrameBufferObject
 		GL11.glDeleteTextures(depthTexture);
 		GL30.glDeleteRenderbuffers(depthBuffer);
 		GL30.glDeleteRenderbuffers(colorBuffer);
+		GL30.glDeleteRenderbuffers(brightBuffer);
 	}
 
 	/**
@@ -106,10 +111,11 @@ public class FrameBufferObject
 		return depthTexture;
 	}
 
-	public void resolveToFrameBufferObject(FrameBufferObject objects)
+	public void resolveToFrameBufferObject(int attachment, FrameBufferObject objects)
 	{
 		GL30.glBindFramebuffer((GL30.GL_DRAW_FRAMEBUFFER), objects.frameBuffer);
 		GL30.glBindFramebuffer((GL30.GL_READ_FRAMEBUFFER), this.frameBuffer);
+		GL11.glReadBuffer(attachment);
 		GL30.glBlitFramebuffer(
 				0, 0, width, height,
 				0, 0 , objects.width, objects.height,
@@ -132,16 +138,17 @@ public class FrameBufferObject
 	/**
 	 * Creates the FBO along with a color buffer texture attachment, and
 	 * possibly a depth buffer.
-	 * 
+	 *
 	 * @param type
 	 *            - the type of depth buffer attachment to be attached to the
 	 *            FBO.
 	 */
 	private void initialiseFrameBuffer(int type) {
 		createFrameBuffer();
-		if(multiSampled)
+		if(multiSampledTarget)
 		{
-			createMultisampleColorAttachment();
+			colorBuffer = createMultisampleColorAttachment(GL30.GL_COLOR_ATTACHMENT0);
+			brightBuffer = createMultisampleColorAttachment(GL30.GL_COLOR_ATTACHMENT1);
 		}
 		else createTextureAttachment();
 		if (type == DEPTH_RENDER_BUFFER) {
@@ -156,12 +163,24 @@ public class FrameBufferObject
 	 * Creates a new frame buffer object and sets the buffer to which drawing
 	 * will occur - color attachment 0. This is the attachment where the color
 	 * buffer texture is.
-	 * 
+	 *
 	 */
 	private void createFrameBuffer() {
 		frameBuffer = GL30.glGenFramebuffers();
 		GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, frameBuffer);
-		GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT0);
+		determineDrawBuffers();
+	}
+
+	private void determineDrawBuffers()
+	{
+		IntBuffer buffer = BufferUtils.createIntBuffer(2);
+		buffer.put(GL30.GL_COLOR_ATTACHMENT0);
+		if(multiSampledTarget)
+		{
+			buffer.put(GL30.GL_COLOR_ATTACHMENT1);
+		}
+		buffer.flip();
+		GL20.glDrawBuffers(buffer);
 	}
 
 	/**
@@ -195,13 +214,14 @@ public class FrameBufferObject
 		GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_DEPTH_ATTACHMENT, GL11.GL_TEXTURE_2D, depthTexture, 0);
 	}
 
-	private void createMultisampleColorAttachment()
+	private int createMultisampleColorAttachment(int attachment)
 	{
-		colorBuffer = GL30.glGenRenderbuffers();
+		int colorBuffer = GL30.glGenRenderbuffers();
 		GL30.glBindRenderbuffer(GL30.GL_RENDERBUFFER, colorBuffer);
 		GL30.glRenderbufferStorageMultisample(GL30.GL_RENDERBUFFER, 4, GL11.GL_RGBA8, width, height);
-		GL30.glFramebufferRenderbuffer(GL30.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, GL30.GL_RENDERBUFFER,
+		GL30.glFramebufferRenderbuffer(GL30.GL_FRAMEBUFFER, attachment, GL30.GL_RENDERBUFFER,
 				colorBuffer);
+		return colorBuffer;
 	}
 
 	/**
@@ -211,7 +231,7 @@ public class FrameBufferObject
 	private void createDepthBufferAttachment() {
 		depthBuffer = GL30.glGenRenderbuffers();
 		GL30.glBindRenderbuffer(GL30.GL_RENDERBUFFER, depthBuffer);
-		if(!multiSampled)
+		if(!multiSampledTarget)
 		{
 			GL30.glRenderbufferStorage(GL30.GL_RENDERBUFFER, GL14.GL_DEPTH_COMPONENT24, width, height);
 		}

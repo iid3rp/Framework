@@ -96,7 +96,7 @@ public class MasterRenderer
         entityShader.loadLightAmount(lights.size());
         entityShader.loadLights(lights);
         entityShader.loadViewMatrix(camera);
-        entityRenderer.render(entities, shadowMap.getToShadowMapSpaceMatrix());
+        entityRenderer.render(entities, shadowMap.getToShadowMapSpaceMatrix(), plane);
         entityShader.stop();
 
         // normal entities

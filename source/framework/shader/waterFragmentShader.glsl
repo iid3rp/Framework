@@ -6,7 +6,8 @@ in vec3 toCameraPosition;
 in vec3 fromLightVector;
 in float distanceToCamera;
 
-out vec4 out_Color;
+layout(location = 0) out vec4 outColor;
+layout(location = 1) out vec4 brightColor;
 
 uniform sampler2D reflection;
 uniform sampler2D refraction;
@@ -81,9 +82,9 @@ void main(void)
 	specular = pow(specular, shineDamper);
 	vec3 specularHighlights = lightColor * specular * reflectivity * clamp(waterDepth / 20, 0.0, 1.0);;
 
-	out_Color = mix(reflection, refraction, fresnelEffect);
-	out_Color = mix(out_Color, vec4(0, 0.3, 1, 1.0), 0.2) + vec4(specularHighlights, 0.0);
-	out_Color.a = clamp(waterDepth / 2, 0.0, 1.0);
+	outColor = mix(reflection, refraction, fresnelEffect);
+	outColor = mix(outColor, vec4(0, 0.3, 1, 1.0), 0.2) + vec4(specularHighlights, 0.0);
+	outColor.a = clamp(waterDepth / 2, 0.0, 1.0);
 
-	//out_Color = vec4(1);
+	brightColor = vec4(0);
 }

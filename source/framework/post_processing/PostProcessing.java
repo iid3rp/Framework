@@ -30,7 +30,7 @@ public class PostProcessing {
 		combineFilter = new CombineFilter(Display.getWidth() / 2, Display.getHeight() / 2);
 	}
 	
-	public static void doPostProcessing(int colorTexture){
+	public static void doPostProcessing(int colorTexture, int brightTexture){
 		start();
 		//intentional
 //		if(false)
@@ -39,8 +39,8 @@ public class PostProcessing {
 //			verticalBlur.render(horizontalBlur.getOutputTexture());
 //			changer.render(verticalBlur.getOutputTexture());
 //		}
-		brightFilter.render(colorTexture);
-		horizontalBlur.render(brightFilter.getOutputTexture());
+		//brightFilter.render(colorTexture);
+		horizontalBlur.render(brightTexture);
 		verticalBlur.render(horizontalBlur.getOutputTexture());
 		combineFilter.render(colorTexture, verticalBlur.getOutputTexture());
 		changer.render(combineFilter.getOutputTexture());

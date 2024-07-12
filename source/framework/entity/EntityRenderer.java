@@ -10,6 +10,7 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector4f;
 import util.Intention;
 
 import java.util.List;
@@ -75,7 +76,7 @@ public class EntityRenderer
         GL30.glBindVertexArray(0);
     }
 
-    public void render(Map<TexturedModel, List<Entity>> entities, Matrix4f shadowMap)
+    public void render(Map<TexturedModel, List<Entity>> entities, Matrix4f shadowMap, Vector4f plane)
     {
         shader.loadToShadowMapSpaceMatrix(shadowMap);
         for(TexturedModel texturedModel : entities.keySet())
@@ -84,10 +85,22 @@ public class EntityRenderer
             List<Entity> batch = entities.get(texturedModel);
             for(Entity entity : batch)
             {
-                prepareEntity(entity);
-                GL11.glDrawElements(GL11.GL_TRIANGLES,
-                        texturedModel.getModel().getVertexCount(),
-                        GL11.GL_UNSIGNED_INT, 0);
+                // preparing entities with efficiency...
+                // with an offset of 10 for a bit of bias...
+                if(plane.y == -1 && entity.getPosition().y >= plane.w - 10)
+                {
+                    prepareEntity(entity);
+                    GL11.glDrawElements(GL11.GL_TRIANGLES,
+                            texturedModel.getModel().getVertexCount(),
+                            GL11.GL_UNSIGNED_INT, 0);
+                }
+                if(plane.y == 1 && entity.getPosition().y <= plane.w + 10)
+                {
+                    prepareEntity(entity);
+                    GL11.glDrawElements(GL11.GL_TRIANGLES,
+                            texturedModel.getModel().getVertexCount(),
+                            GL11.GL_UNSIGNED_INT, 0);
+                }
             }
             unbindTexturedModels();
         }

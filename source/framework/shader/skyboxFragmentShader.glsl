@@ -1,7 +1,9 @@
 #version 400
 
 in vec3 textureCoords;
-out vec4 out_Color;
+
+layout(location = 0) out vec4 outColor;
+layout(location = 1) out vec4 brightColor;
 
 uniform samplerCube cubeMap1;
 uniform samplerCube cubeMap2;
@@ -21,5 +23,6 @@ void main(void)
     float amount = (finalColor.r + finalColor.g + finalColor.b) / 3.0;
     amount = floor(amount * levels) / levels;
 
-    out_Color = finalColor;
+    outColor = finalColor;
+    brightColor = finalColor;
 }
