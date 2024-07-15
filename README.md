@@ -1,11 +1,11 @@
 # iid3rp's libraries | Framework
 
 iid3rp's personal game development engine/framework with the 
-use of [LightWeight Java Game Library](https://lwjgl.org) version 2. It is currently 
+use of [LightWeight Java Game Library](https://lwjgl.org) version (~~2~~) **3!!**. It is currently 
 on its new beginnings
-and is on development and learning.
+and is on development and learning on how to migrate.
 
-## Getting into it
+## Getting into it (not working for now)
 
 * Get a copy of the library by either cloning [*this repository*](https://github.com/iid3rp/framework)
 or manually download it
@@ -30,4 +30,10 @@ public class AMain
 
 * [[1]](https://lwjgl.org) LWJGL
 * [[2]](https://learnopengl.com) Learn OpenGL
-* [[3]](https://www.youtube.com/watch?v=VS8wlS9hF8E&list=PLRIWtICgwaX0u7Rf9zkZhLoLuZVfUksDP) Karl Wimble's 3D Tutorials
+* [[3]](https://www.youtube.com/watch?v=VS8wlS9hF8E&list=PLRIWtICgwaX0u7Rf9zkZhLoLuZVfUksDP) Karl Wimble's 3D Tutorials (LWJGL 2.9)
+* [[4]](https://www.youtube.com/playlist?list=PL4QbKfRYvHvSJSVgHawYIvcIA0CcgnMzw) DevGenie Academy's 3D Tutorials (LWJGL 3.2)
+
+
+## Resources from Git Repositories
+
+* [[1]](https://github.com/gruberchris/ThinMatrixGame) Chris Gruber's Rendition of ThinMatrix' Tutorials
