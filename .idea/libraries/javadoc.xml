@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="javadoc">
-    <CLASSES />
-    <JAVADOC>
-      <root url="file://$PROJECT_DIR$/lib/jar/lwjgl-docs-2.9.3/javadoc" />
-    </JAVADOC>
-    <SOURCES />
-  </library>
-</component>
