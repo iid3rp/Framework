@@ -1,5 +1,6 @@
 package framework.display;
 
+import com.sun.source.tree.ParenthesizedTree;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
 import org.lwjgl.opengl.*;
@@ -28,7 +29,7 @@ public class DisplayManager
             throw new RuntimeException(e);
         }
 
-        GL11.glViewport(0, 0, width / 16, height / 16);
+        GL11.glViewport(0, 0, width, height);
         lastTime = getCurrentTime();
     }
 
@@ -68,4 +69,8 @@ public class DisplayManager
     }
 
 
+    public static boolean set()
+    {
+        return width != 0 || height != 0;
+    }
 }

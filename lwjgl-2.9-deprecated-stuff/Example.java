@@ -1,5 +1,6 @@
 package framework;
 
+import framework.display.Screen;
 import framework.entity.Entity;
 import framework.entity.Light;
 import framework.entity.Player;
@@ -8,11 +9,8 @@ import framework.environment.Scene;
 import framework.event.MouseEvent;
 import framework.model.TexturedModel;
 import framework.normals.NormalMappedObjLoader;
-import framework.display.DisplayManager;
-import framework.display.MasterRenderer;
 import framework.display.ModelLoader;
 import framework.display.ObjectLoader;
-import framework.resources.Resources;
 import framework.swing.ContentPane;
 import framework.swing.GUITexture;
 import framework.swing.PictureBox;
@@ -23,18 +21,30 @@ import framework.texture.Texture;
 import framework.water.WaterTile;
 
 import org.lwjgl.util.vector.Vector3f;
-import util.Intention;
 
+import javax.swing.JFrame;
 import java.util.Random;
 
-public class Example
+public class Example extends JFrame
 {
+    Screen screen;
+    public Example()
+    {
+        super();
+        setTitle("Hello");
+        setSize(1280, 720);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        screen = new Screen(1280, 720);
+        add(screen);
+        setVisible(true);
+        screen.set();
+    }
+
     public static void main(String[] a)
     {
-        //Resources.setResource("resources");
-        DisplayManager.setTitle("Hello World!");
-        DisplayManager.setSize(1280, 720);
-        DisplayManager.createDisplay();
+        new Example();
 
         Scene scene = new Scene();
         ContentPane panel = new ContentPane();
@@ -104,8 +114,7 @@ public class Example
                 new Vector3f(0, 0, 0), 0f, 0f, 0f, 1f);
         //scene.add(entity);
 
-        for(int i = 0 ; i < 10; i++)
-        {
+        for(int i = 0 ; i < 10; i++) {
             float x = random.nextFloat(terrain.getSize()) - (terrain.getSize() / 2);
             float z = random.nextFloat(terrain.getSize()) - (terrain.getSize() / 2);
             float y = terrain.getHeightOfTerrain(x, z);
@@ -115,13 +124,6 @@ public class Example
             }
             else i--;
         }
-
-        @Intention(design = "forRemoval")
-        PictureBox shadowMap = new PictureBox();
-        shadowMap.setBackgroundImage(MasterRenderer.getShadowMapTexture());
-        shadowMap.setSize(256, 144);
-        shadowMap.setLocation(20, 70);
-        //scene.add(shadowMap);
 
 
         MouseEvent event = new MouseEvent();
