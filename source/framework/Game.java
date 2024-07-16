@@ -5,6 +5,8 @@ import framework.entity.Entity;
 import framework.entity.Light;
 import framework.entity.Player;
 import framework.model.TexturedModel;
+import framework.swing.ContentPane;
+import framework.swing.PictureBox;
 import framework.terrains.Terrain;
 import framework.textures.ModelTexture;
 import framework.textures.TerrainTexture;
@@ -42,40 +44,38 @@ public class Game
         System.out.println("OpenGL: " + getOpenGlVersionMessage());
         System.out.println("LWJGL: " + getLwjglVersionMessage());
 
-        ModelLoader modelLoader = new ModelLoader();
-
         // Tree entity
         TexturedModel treeModel = new TexturedModel(
-                ObjLoader.loadObjModel("resources/tree.obj", modelLoader), new ModelTexture(modelLoader.loadTexture("resources/tree.png")));
+                ObjLoader.loadObjModel("resources/tree.obj"), new ModelTexture(ModelLoader.loadTexture("resources/tree.png")));
 
         // Low poly tree entity
         TexturedModel lowPolyTreeModel = new TexturedModel(
-                ObjLoader.loadObjModel("resources/lowPolyTree.obj", modelLoader), new ModelTexture(modelLoader.loadTexture("resources/lowPolyTree.png")));
+                ObjLoader.loadObjModel("resources/lowPolyTree.obj"), new ModelTexture(ModelLoader.loadTexture("resources/lowPolyTree.png")));
 
         // Grass entity
         TexturedModel grassModel = new TexturedModel(
-                ObjLoader.loadObjModel("resources/grassModel.obj", modelLoader), new ModelTexture(modelLoader.loadTexture("resources/grassTexture.png")));
+                ObjLoader.loadObjModel("resources/grassModel.obj"), new ModelTexture(ModelLoader.loadTexture("resources/grassTexture.png")));
         grassModel.getModelTexture().setHasTransparency(true);
         grassModel.getModelTexture().setUseFakeLighting(true);
 
         // Fern entity
-        ModelTexture fernTextureAtlas = new ModelTexture(modelLoader.loadTexture("resources/fern.png"));
+        ModelTexture fernTextureAtlas = new ModelTexture(ModelLoader.loadTexture("resources/fern.png"));
         fernTextureAtlas.setNumberOfRowsInTextureAtlas(2);
         TexturedModel fernModel = new TexturedModel(
-                ObjLoader.loadObjModel("resources/fern.obj", modelLoader), fernTextureAtlas);
+                ObjLoader.loadObjModel("resources/fern.obj"), fernTextureAtlas);
         fernModel.getModelTexture().setHasTransparency(true);
 
         // Multi-textured Terrain
-        TerrainTexture backgroundTexture = new TerrainTexture(modelLoader.loadTexture("resources/grassy2.png"));
-        TerrainTexture rTexture = new TerrainTexture(modelLoader.loadTexture("resources/mud.png"));
-        TerrainTexture gTexture = new TerrainTexture(modelLoader.loadTexture("resources/grassFlowers.png"));
-        TerrainTexture bTexture = new TerrainTexture(modelLoader.loadTexture("resources/path.png"));
-        TerrainTexture blendMap = new TerrainTexture(modelLoader.loadTexture("resources/blendMap.png"));
+        TerrainTexture backgroundTexture = new TerrainTexture(ModelLoader.loadTexture("resources/grassy2.png"));
+        TerrainTexture rTexture = new TerrainTexture(ModelLoader.loadTexture("resources/mud.png"));
+        TerrainTexture gTexture = new TerrainTexture(ModelLoader.loadTexture("resources/grassFlowers.png"));
+        TerrainTexture bTexture = new TerrainTexture(ModelLoader.loadTexture("resources/path.png"));
+        TerrainTexture blendMap = new TerrainTexture(ModelLoader.loadTexture("resources/blendMap.png"));
 
         TerrainTexturePack terrainTexturePack = new TerrainTexturePack(backgroundTexture, rTexture, gTexture, bTexture);
 
         // Terrain entityList
-        Terrain terrain = new Terrain(0, 0, modelLoader, terrainTexturePack, blendMap);
+        Terrain terrain = new Terrain(0, 0, terrainTexturePack, blendMap);
 
         List<Entity> entityList = new ArrayList<>();
 
@@ -114,10 +114,18 @@ public class Game
         MasterRenderer masterRenderer = new MasterRenderer();
 
         TexturedModel bunnyModel = new TexturedModel(
-                ObjLoader.loadObjModel("resources/stanfordBunny.obj", modelLoader), new ModelTexture(modelLoader.loadTexture("resources/white.png")));
+                ObjLoader.loadObjModel("resources/stanfordBunny.obj"), new ModelTexture(ModelLoader.loadTexture("resources/white.png")));
         Entity entity = new Entity(bunnyModel, new Vector3f(0, 0, 0), 0,0,0,0.6f);
         Player player = new Player(entity);
         Camera camera = new Camera(player);
+
+        ContentPane pane = new ContentPane();
+
+        PictureBox box = new PictureBox();
+        box.setBackgroundImage(ModelLoader.loadTexture("resources/brat.png"));
+        box.setLocation(10, 10);
+        box.setSize(300, 300);
+        pane.add(box);
 
         while (shouldDisplayClose()) {
             player.move(terrain);   // to do this with multiple Terrain, need to test first to know which Terrain the player's position is in
@@ -131,11 +139,13 @@ public class Game
             }
 
             masterRenderer.render(light, player.camera);
+
+            pane.render(pane.getComponents());
             updateDisplay();
         }
 
         masterRenderer.destroy();
-        modelLoader.destroy();
+        ModelLoader.destroy();
         closeDisplay();
     }
 

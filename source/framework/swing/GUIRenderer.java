@@ -1,13 +1,13 @@
 package framework.swing;
 
+import framework.ModelLoader;
 import framework.model.Model;
-import framework.display.ModelLoader;
-import framework.toolbox.GeomMath;
+import framework.utils.GeomMath;
+import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
-import org.lwjgl.util.vector.Matrix4f;
 
 import java.util.List;
 
@@ -18,14 +18,14 @@ public class GUIRenderer
     public GUIRenderer()
     {
         float[] positions = { -1, 1, -1, -1, 1, 1, 1, -1 };
-        quad = ModelLoader.loadToVAO(positions, 2);
+        quad = ModelLoader.loadToVao(positions, 2);
         shader = new GUIShader();
     }
 
     public void render(List<GUITexture> guis)
     {
-        shader.start();
-        GL30.glBindVertexArray(quad.getVaoID());
+        shader.bind();
+        GL30.glBindVertexArray(quad.getVaoId());
         GL20.glEnableVertexAttribArray(0);
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -45,7 +45,7 @@ public class GUIRenderer
         GL11.glDisable(GL11.GL_BLEND);
         GL20.glDisableVertexAttribArray(0);
         GL30.glBindVertexArray(0);
-        shader.stop();
+        shader.unbind();
     }
 
     public void dispose()

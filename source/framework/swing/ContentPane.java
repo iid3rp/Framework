@@ -1,8 +1,5 @@
 package framework.swing;
 
-import framework.swing.GUIRenderer;
-import framework.swing.GUITexture;
-
 import java.util.ArrayList;
 import java.util.List;
 

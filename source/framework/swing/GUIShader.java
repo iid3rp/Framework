@@ -1,13 +1,13 @@
 package framework.swing;
 
 import framework.shader.GLShader;
-import org.lwjgl.util.vector.Matrix4f;
+import org.joml.Matrix4f;
 
 public class GUIShader extends GLShader
 {
 	
-	private static final String VERTEX_FILE = "guiVertexShader.glsl";
-	private static final String FRAGMENT_FILE = "guiFragmentShader.glsl";
+	private static final String VERTEX_FILE = "resources/shaders/guiVertexShader.glsl";
+	private static final String FRAGMENT_FILE = "resources/shaders/guiFragmentShader.glsl";
 	private int locationTransformationMatrix;
 
 	public GUIShader()
