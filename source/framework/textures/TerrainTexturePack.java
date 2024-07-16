@@ -1,31 +1,38 @@
 package framework.textures;
 
-public class TerrainTexturePack {
-    private TerrainTexture backgroundTexture;
-    private TerrainTexture rTexture;
-    private TerrainTexture gTexture;
-    private TerrainTexture bTexture;
+public class TerrainTexturePack
+{
+    private TerrainTexture background;
+    private TerrainTexture red;
+    private TerrainTexture green;
+    private TerrainTexture blue;
+    private TerrainTexture blendMap;
 
-    public TerrainTexturePack(TerrainTexture backgroundTexture, TerrainTexture rTexture, TerrainTexture gTexture, TerrainTexture bTexture) {
-        this.backgroundTexture = backgroundTexture;
-        this.rTexture = rTexture;
-        this.gTexture = gTexture;
-        this.bTexture = bTexture;
+    public TerrainTexturePack(TerrainTexture background, TerrainTexture red, TerrainTexture green, TerrainTexture blue)
+    {
+        this.background = background;
+        this.red = red;
+        this.green = green;
+        this.blue = blue;
     }
 
-    public TerrainTexture getBackgroundTexture() {
-        return backgroundTexture;
+    public TerrainTexture getBackground()
+    {
+        return background;
     }
 
-    public TerrainTexture getrTexture() {
-        return rTexture;
+    public TerrainTexture getRed()
+    {
+        return red;
     }
 
-    public TerrainTexture getgTexture() {
-        return gTexture;
+    public TerrainTexture getGreen()
+    {
+        return green;
     }
 
-    public TerrainTexture getbTexture() {
-        return bTexture;
+    public TerrainTexture getBlue()
+    {
+        return blue;
     }
 }

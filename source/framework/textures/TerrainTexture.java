@@ -1,13 +1,16 @@
 package framework.textures;
 
-public class TerrainTexture {
-    private int textureId;
+public class TerrainTexture
+{
+    private int textureID;
 
-    public TerrainTexture(int textureId) {
-        this.textureId = textureId;
+    public int getTextureId()
+    {
+        return textureID;
     }
 
-    public int getTextureId() {
-        return textureId;
+    public TerrainTexture(int textureID)
+    {
+        this.textureID = textureID;
     }
 }

@@ -114,7 +114,7 @@ public class Game
 
         Light light = new Light(new Vector3f(3000, 2000, 2000), new Vector3f(1, 1,1));
         lights.add(light);
-        MasterRenderer masterRenderer = new MasterRenderer();
+        MasterRenderer.setRenderer();
 
         TexturedModel bunnyModel = new TexturedModel(
                 ObjLoader.loadObjModel("resources/stanfordBunny.obj"), new ModelTexture(ModelLoader.loadTexture("resources/white.png")));
@@ -134,20 +134,20 @@ public class Game
             player.move(terrain);   // to do this with multiple Terrain, need to test first to know which Terrain the player's position is in
             //player.camera.move();
 
-            masterRenderer.processEntity(player);
-            masterRenderer.processTerrain(terrain);
+            MasterRenderer.processEntity(player);
+            MasterRenderer.processTerrain(terrain);
 
             for (Entity e : entityList) {
-                masterRenderer.processEntity(e);
+                MasterRenderer.processEntity(e);
             }
 
-            masterRenderer.render(lights, player.camera);
+            MasterRenderer.render(lights, player.camera);
 
             pane.render(pane.getComponents());
             updateDisplay();
         }
 
-        masterRenderer.destroy();
+        MasterRenderer.destroy();
         ModelLoader.destroy();
         closeDisplay();
     }

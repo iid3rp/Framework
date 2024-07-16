@@ -1,18 +1,18 @@
 package framework.skybox;
 
+import framework.ModelLoader;
 import framework.entity.Camera;
 import framework.model.Model;
-import framework.display.ModelLoader;
-import framework.texture.Texture;
+import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
-import org.lwjgl.util.vector.Matrix4f;
+import framework.textures.Texture;
 
 public class SkyboxRenderer
 {
-    public static float SIZE = 5000f;
+    public static float SIZE = 1000f;
 
     private static final float[] VERTICES = {
             -SIZE,  SIZE, -SIZE,
@@ -86,26 +86,26 @@ public class SkyboxRenderer
 
     public SkyboxRenderer(Matrix4f projection)
     {
-        cube = ModelLoader.loadToVAO(VERTICES, 3);
+        cube = ModelLoader.loadToVao(VERTICES, 3);
         texture = new Texture(ModelLoader.loadCubeMap(textureFiles));
         nightTexture = new Texture(ModelLoader.loadCubeMap(nightTextureFiles));
         shader = new SkyboxShader();
-        shader.start();
+        shader.bind();
         shader.connectTextureUnits();
         shader.loadProjectionMatrix(projection);
-        shader.stop();
+        shader.unbind();
     }
 
     public void render(Camera camera)
     {
-        shader.start();
+        shader.bind();
         shader.loadViewMatrix(camera);
-        GL30.glBindVertexArray(cube.getVaoID());
+        GL30.glBindVertexArray(cube.getVaoId());
         GL20.glEnableVertexAttribArray(0);
         bindTextures();
         GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, cube.getVertexCount());
         GL30.glBindVertexArray(0);
-        shader.stop();
+        shader.unbind();
     }
 
     private void bindTextures()

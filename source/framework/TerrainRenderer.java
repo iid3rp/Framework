@@ -49,19 +49,19 @@ public class TerrainRenderer {
 
         // Bind background texture to texture bank 0
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, terrainTexturePack.getBackgroundTexture().getTextureId());
+        glBindTexture(GL_TEXTURE_2D, terrainTexturePack.getBackground().getTextureId());
 
         // Bind r texture to texture bank 1
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, terrainTexturePack.getrTexture().getTextureId());
+        glBindTexture(GL_TEXTURE_2D, terrainTexturePack.getRed().getTextureId());
 
         // Bind g texture to texture bank 2
         glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D, terrainTexturePack.getgTexture().getTextureId());
+        glBindTexture(GL_TEXTURE_2D, terrainTexturePack.getGreen().getTextureId());
 
         // Bind b texture to texture bank 3
         glActiveTexture(GL_TEXTURE3);
-        glBindTexture(GL_TEXTURE_2D, terrainTexturePack.getbTexture().getTextureId());
+        glBindTexture(GL_TEXTURE_2D, terrainTexturePack.getBlue().getTextureId());
 
         // Bind blend map texture to texture bank 4
         glActiveTexture(GL_TEXTURE4);

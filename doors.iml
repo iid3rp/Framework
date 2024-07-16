@@ -10,5 +10,6 @@
     <orderEntry type="library" name="lib" level="application" />
     <orderEntry type="library" name="iid3rp_Utils" level="project" />
     <orderEntry type="library" name="joml" level="project" />
+    <orderEntry type="library" name="PNGDecoder" level="project" />
   </component>
 </module>

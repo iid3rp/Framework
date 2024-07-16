@@ -1,17 +1,17 @@
 package framework.skybox;
 
+import framework.DisplayManager;
 import framework.entity.Camera;
-import framework.display.DisplayManager;
 import framework.shader.GLShader;
-import framework.toolbox.GeomMath;
-import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector3f;
+import framework.utils.GeomMath;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 public class SkyboxShader extends GLShader
 {
 
-	private static final String VERTEX_FILE = "skyboxVertexShader.glsl";
-	private static final String FRAGMENT_FILE = "skyboxFragmentShader.glsl";
+	private static final String VERTEX_FILE = "resources/shaders/skyboxVertexShader.glsl";
+	private static final String FRAGMENT_FILE = "resources/shaders/skyboxFragmentShader.glsl";
 	private static float rotationSpeed = 1f;
 	private int location_projectionMatrix;
 	private int location_viewMatrix;
@@ -31,23 +31,23 @@ public class SkyboxShader extends GLShader
 
 	public void loadViewMatrix(Camera camera){
 		Matrix4f matrix = GeomMath.createViewMatrix(camera);
-		matrix.m30 = 0;
-		matrix.m31 = 0;
-		matrix.m32 = 0;
-		rotation += rotationSpeed * DisplayManager.getFrameTimeSeconds();
-		Matrix4f.rotate((float) Math.toRadians(rotation), new Vector3f(0, 1, 0), matrix, matrix);
+		matrix.m30(0);
+		matrix.m31(0);
+		matrix.m32(0);
+		rotation += rotationSpeed * DisplayManager.getDeltaInSeconds();
+		matrix.rotate((float) Math.toRadians(rotation), new Vector3f(0, 1, 0));
 		super.loadMatrix(location_viewMatrix, matrix);
 	}
 
 	public void loadFogColor(float r, float g, float b)
 	{
-		super.loadVector3f(locationFogColor, new Vector3f(r, g, b));
+		super.loadVector(locationFogColor, new Vector3f(r, g, b));
 	}
 
 	public void connectTextureUnits()
 	{
-		super.loadInteger(locationCubeMap1, 0);
-		super.loadInteger(locationCubeMap2, 1);
+		super.loadInt(locationCubeMap1, 0);
+		super.loadInt(locationCubeMap2, 1);
 	}
 	
 	@Override

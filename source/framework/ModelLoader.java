@@ -1,8 +1,17 @@
 package framework;
 
+import de.matthiasmann.twl.utils.PNGDecoder;
+import de.matthiasmann.twl.utils.PNGDecoder.Format;
 import framework.model.Model;
+import framework.resources.Resources;
+import framework.textures.TextureData;
 import framework.utils.Buffer;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
+import org.lwjgl.opengl.GL13;
 
+import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
@@ -71,6 +80,58 @@ public final class ModelLoader {
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, -0.4f);
         textureList.add(textureId);
         return textureId;
+    }
+
+    public static int loadCubeMap(String[] textureFiles)
+    {
+        int textureID = GL11.glGenTextures();
+        GL13.glActiveTexture(GL13.GL_TEXTURE0);
+        GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, textureID);
+
+        for(int i = 0; i < textureFiles.length; i++)
+        {
+            TextureData data = decodeTextureFile("skybox/" + textureFiles[i] + ".png");
+            GL11.glTexImage2D
+            (
+                GL13.GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+                0,
+                GL11.GL_RGBA,
+                data.getWidth(),
+                data.getHeight(),
+                0,
+                GL11.GL_RGBA,
+                GL11.GL_UNSIGNED_BYTE,
+                data.getBuffer()
+            );
+        }
+        GL11.glTexParameteri(GL13.GL_TEXTURE_CUBE_MAP, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+        GL11.glTexParameteri(GL13.GL_TEXTURE_CUBE_MAP, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+        GL11.glTexParameteri(GL13.GL_TEXTURE_CUBE_MAP, GL11.GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE);
+        GL11.glTexParameteri(GL13.GL_TEXTURE_CUBE_MAP, GL11.GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE);
+        textureList.add(textureID);
+        return textureID;
+
+    }
+
+    private static TextureData decodeTextureFile(String fileName) {
+        int width;
+        int height;
+        ByteBuffer buffer;
+        try {
+            InputStream in = Resources.class.getResourceAsStream(fileName);
+            PNGDecoder decoder = new PNGDecoder(in);
+            width = decoder.getWidth();
+            height = decoder.getHeight();
+            buffer = ByteBuffer.allocateDirect(4 * width * height);
+            decoder.decode(buffer, width * 4, Format.RGBA);
+            buffer.flip();
+            assert in != null;
+            in.close();
+        } catch (Exception e) {
+            System.err.println("Tried to load texture " + fileName + ", didn't work");
+            throw new RuntimeException();
+        }
+        return new TextureData(buffer, width, height);
     }
 
     public static void destroy() {
