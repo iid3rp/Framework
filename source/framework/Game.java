@@ -110,7 +110,10 @@ public class Game
             }
         }
 
+        ArrayList<Light> lights = new ArrayList<>();
+
         Light light = new Light(new Vector3f(3000, 2000, 2000), new Vector3f(1, 1,1));
+        lights.add(light);
         MasterRenderer masterRenderer = new MasterRenderer();
 
         TexturedModel bunnyModel = new TexturedModel(
@@ -125,7 +128,7 @@ public class Game
         box.setBackgroundImage(ModelLoader.loadTexture("resources/brat.png"));
         box.setLocation(10, 10);
         box.setSize(300, 300);
-        pane.add(box);
+        //pane.add(box);
 
         while (shouldDisplayClose()) {
             player.move(terrain);   // to do this with multiple Terrain, need to test first to know which Terrain the player's position is in
@@ -138,7 +141,7 @@ public class Game
                 masterRenderer.processEntity(e);
             }
 
-            masterRenderer.render(light, player.camera);
+            masterRenderer.render(lights, player.camera);
 
             pane.render(pane.getComponents());
             updateDisplay();
