@@ -31,8 +31,8 @@ public class Terrain
 
     public Terrain()
     {
-        this.x = .5f;
-        this.z = .5f;
+        this.x = 0;
+        this.z = 0;
     }
 
     public Terrain(float x, float z, TerrainTexturePack texturePack, TerrainTexture blendMap, String heightMap)
@@ -92,13 +92,17 @@ public class Terrain
 
         if(xCoordinate <= (1 - zCoordinate))
         {
-            result = GeomMath.barryCentric(new Vector3f(0, heights[gridX][gridZ], 0), new Vector3f(1,
-                            heights[gridX + 1][gridZ], 0), new Vector3f(0,
-                            heights[gridX][gridZ + 1], 1), new Vector2f(xCoordinate, zCoordinate));
+            result = GeomMath.barryCentric(
+                    new Vector3f(0, heights[gridX][gridZ], 0),
+                    new Vector3f(1, heights[gridX + 1][gridZ], 0),
+                    new Vector3f(0, heights[gridX][gridZ + 1], 1),
+                    new Vector2f(xCoordinate, zCoordinate));
         } else {
-            result = GeomMath.barryCentric(new Vector3f(1, heights[gridX + 1][gridZ], 0), new Vector3f(1,
-                            heights[gridX + 1][gridZ + 1], 1), new Vector3f(0,
-                            heights[gridX][gridZ + 1], 1), new Vector2f(xCoordinate, zCoordinate));
+            result = GeomMath.barryCentric(
+                    new Vector3f(1, heights[gridX + 1][gridZ], 0),
+                    new Vector3f(1, heights[gridX + 1][gridZ + 1], 1),
+                    new Vector3f(0, heights[gridX][gridZ + 1], 1),
+                    new Vector2f(xCoordinate, zCoordinate));
         }
         return result;
     }

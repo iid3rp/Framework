@@ -1,6 +1,6 @@
 # iid3rp's libraries | Framework
 
-iid3rp's personal game development engine/framework with the 
+iid3rp's personal game development framework/framework with the 
 use of [LightWeight Java Game Library](https://lwjgl.org) version (~~2~~) **3!!**. It is currently 
 on its new beginnings
 and is on development and learning on how to migrate.
