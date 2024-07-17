@@ -126,4 +126,17 @@ public class MasterRenderer {
         projectionMatrix.m32(-((2 * NEAR_PLANE * FAR_PLANE) / frustumLength));
         projectionMatrix.m33(0);
     }
+
+    public static Matrix4f getProjectionMatrix()
+    {
+        return projectionMatrix;
+    }
+
+    public static void processAllEntities(List<Entity> entities)
+    {
+        for(Entity entity : entities)
+        {
+            processEntity(entity);
+        }
+    }
 }

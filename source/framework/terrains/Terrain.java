@@ -20,8 +20,8 @@ public class Terrain {
     private static final float MAX_PIXEL_COLOR = 256 * 256 * (float)256;
 
     String heightMap;
-    private float x;
-    private float z;
+    public float x;
+    public float z;
     private Model model;
     private TerrainTexturePack terrainTexturePack;
     private TerrainTexture blendMap;

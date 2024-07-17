@@ -1,15 +1,14 @@
 package framework.event;
 
+import framework.DisplayManager;
 import framework.entity.Camera;
 import framework.environment.Environment;
-import framework.terrain.Terrain;
-import framework.toolbox.GeomMath;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector2f;
-import org.lwjgl.util.vector.Vector3f;
-import org.lwjgl.util.vector.Vector4f;
+import framework.terrains.Terrain;
+import framework.utils.GeomMath;
+import org.joml.Matrix4f;
+import org.joml.Vector2f;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 public class MouseEvent
 {
@@ -63,8 +62,8 @@ public class MouseEvent
 
     private Vector3f calculateMouseRay()
     {
-        float mouseX = Mouse.getX();
-        float mouseY = Mouse.getY();
+        float mouseX = (float) Mouse.getMouseX();
+        float mouseY = DisplayManager.getWindowHeight() - (float) Mouse.getMouseY();
         Vector2f normalizedCoordinates = getNormalizedDeviceCoordinates(mouseX,  mouseY);
         Vector4f clipCoords = new Vector4f(normalizedCoordinates.x, normalizedCoordinates.y, -1f, 1f);
         Vector4f eyeCoordinates = toEyeCoordinates(clipCoords);
@@ -104,24 +103,28 @@ public class MouseEvent
 
     private Vector3f toWorldCoordinates(Vector4f eyeCoordinates)
     {
-        Matrix4f invertedView = Matrix4f.invert(view, null);
-        Vector4f rayWorld = Matrix4f.transform(invertedView, eyeCoordinates, null);
+        Matrix4f invertedView = new Matrix4f();
+        invertedView.invert(view);
+        Vector4f rayWorld = new Vector4f();
+        invertedView.transform(eyeCoordinates, rayWorld);
         Vector3f mouseRay = new Vector3f(rayWorld.x, rayWorld.y, rayWorld.z);
-        mouseRay.normalise();
+        mouseRay.normalize();
         return mouseRay;
     }
 
     private Vector4f toEyeCoordinates(Vector4f clipCoordinates)
     {
-        Matrix4f invertedProjection = Matrix4f.invert(projection, null);
-        Vector4f eyeCoordinates = Matrix4f.transform(invertedProjection, clipCoordinates, null);
+        Matrix4f invertedProjection = new Matrix4f();
+        invertedProjection.invert(projection);
+        Vector4f eyeCoordinates = new Vector4f();
+        invertedProjection.transform(clipCoordinates, eyeCoordinates);
         return new Vector4f(eyeCoordinates.x, eyeCoordinates.y, -1f, 0f);
     }
 
     private Vector2f getNormalizedDeviceCoordinates(float mouseX, float mouseY)
     {
-        float x = (2f * mouseX) / Display.getWidth() - 1;
-        float y = (2f * mouseY) / Display.getHeight() - 1;
+        float x = (2f * mouseX) / DisplayManager.getWindowWidth() - 1;
+        float y = (2f * mouseY) / DisplayManager.getWindowHeight() - 1;
         return new Vector2f(x, y);
     }
 
@@ -129,14 +132,14 @@ public class MouseEvent
         Vector3f camPos = camera.getPosition();
         Vector3f start = new Vector3f(camPos.x, camPos.y, camPos.z);
         Vector3f scaledRay = new Vector3f(ray.x * distance, ray.y * distance, ray.z * distance);
-        return Vector3f.add(start, scaledRay, null);
+        return scaledRay.add(start, scaledRay);
     }
 
     private Vector3f binarySearch(int count, float start, float finish, Vector3f ray) {
         float half = start + ((finish - start) / 2f);
         if (count >= recursionCount) {
             Vector3f endPoint = getPointOnRay(ray, half);
-            Terrain terrain = getTerrain(endPoint.getX(), endPoint.getZ());
+            Terrain terrain = getTerrain(endPoint.x, endPoint.z);
             if (terrain != null) {
                 return endPoint;
             } else {
@@ -157,10 +160,10 @@ public class MouseEvent
     }
 
     private boolean isUnderGround(Vector3f testPoint) {
-        Terrain terrain = getTerrain(testPoint.getX(), testPoint.getZ());
+        Terrain terrain = getTerrain(testPoint.x, testPoint.z);
         float height = 0;
         if (terrain != null) {
-            height = terrain.getHeightOfTerrain(testPoint.getX(), testPoint.getZ());
+            height = terrain.getHeightOfTerrain(testPoint.x, testPoint.z);
         }
         return testPoint.y < height;
     }

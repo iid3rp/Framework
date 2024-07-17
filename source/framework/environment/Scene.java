@@ -5,12 +5,9 @@ import framework.entity.Entity;
 import framework.entity.Light;
 import framework.entity.Player;
 import framework.event.MouseEvent;
-import framework.particles.ParticleSystem;
-import framework.display.MasterRenderer;
 import framework.swing.ContentPane;
 import framework.swing.GUITexture;
-import framework.terrain.Terrain;
-import framework.water.WaterTile;
+import framework.terrains.Terrain;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,17 +15,17 @@ import java.util.List;
 public class Scene
 {
     private List<Entity> entities;
-    private List<Entity> normalMappedEntities;
+    //private List<Entity> normalMappedEntities;
     private List<Player> players;
     private List<Light> lights;
-    private List<WaterTile> waters;
+    //private List<WaterTile> waters;
     private Terrain terrain;
 
     private Camera camera;
     private Player player;
     private ContentPane pane;
     public MouseEvent event;
-    private ParticleSystem particleSystem;
+    //private ParticleSystem particleSystem;
 
     //private Vector4f clipPlane;
     public Scene()
@@ -38,8 +35,8 @@ public class Scene
         players = new ArrayList<>();
         lights = new ArrayList<>();
         terrain = new Terrain();
-        waters = new ArrayList<>();
-        normalMappedEntities = new ArrayList<>();
+        //waters = new ArrayList<>();
+        //normalMappedEntities = new ArrayList<>();
     }
 
     public List<Entity> getEntities()
@@ -47,10 +44,10 @@ public class Scene
         return entities;
     }
 
-    public List<WaterTile> getWaters()
-    {
-        return waters;
-    }
+    //public List<WaterTile> getWaters()
+    //{
+    //    return waters;
+    //}
 
     public Player getPlayer()
     {
@@ -72,10 +69,10 @@ public class Scene
         this.clipPlane = clipPlane;
     }*/
 
-    public void add(WaterTile water)
-    {
-        waters.add(water);
-    }
+//    public void add(WaterTile water)
+//    {
+//        waters.add(water);
+//    }
     public void add(Entity entity)
     {
         entities.add(entity);
@@ -129,7 +126,7 @@ public class Scene
     public void setCamera(Camera camera)
     {
         this.camera = camera;
-        MasterRenderer.setShadowMap(this.camera);
+        //MasterRenderer.setShadowMap(this.camera);
     }
 
     public Camera getCamera()
@@ -139,8 +136,8 @@ public class Scene
 
     public void setTerrainSize(float x, float z)
     {
-        terrain.x = -.5f * x;
-        terrain.z = -.5f * z;
+        terrain.x = x;
+        terrain.z = z;
     }
 
     public Light getMainLight()
@@ -148,19 +145,19 @@ public class Scene
         return lights.getFirst();
     }
 
-    public List<Entity> getNormalMappedEntities()
-    {
-        return normalMappedEntities;
-    }
+//    public List<Entity> getNormalMappedEntities()
+//    {
+//        return normalMappedEntities;
+//    }
 
-    public void setParticleSystem(ParticleSystem particleSystem)
-    {
-        this.particleSystem = particleSystem;
-    }
-
-    public ParticleSystem getParticleSystem()
-    {
-        return particleSystem;
-    }
+//    public void setParticleSystem(ParticleSystem particleSystem)
+//    {
+//        this.particleSystem = particleSystem;
+//    }
+//
+//    public ParticleSystem getParticleSystem()
+//    {
+//        return particleSystem;
+//    }
 
 }
