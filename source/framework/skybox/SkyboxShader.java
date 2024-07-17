@@ -10,8 +10,8 @@ import org.joml.Vector3f;
 public class SkyboxShader extends GLShader
 {
 
-	private static final String VERTEX_FILE = "resources/shaders/skyboxVertexShader.glsl";
-	private static final String FRAGMENT_FILE = "resources/shaders/skyboxFragmentShader.glsl";
+	private static final String VERTEX_FILE = "SkyboxVertexShader.glsl";
+	private static final String FRAGMENT_FILE = "SkyboxFragmentShader.glsl";
 	private static float rotationSpeed = 1f;
 	private int location_projectionMatrix;
 	private int location_viewMatrix;

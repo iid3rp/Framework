@@ -4,7 +4,7 @@ import framework.entity.Entity;
 import framework.model.Model;
 import framework.model.TexturedModel;
 import framework.shader.EntityShader;
-import framework.textures.ModelTexture;
+import framework.textures.Texture;
 import framework.utils.GeomMath;
 import org.joml.Matrix4f;
 
@@ -55,18 +55,18 @@ public class EntityRenderer {
         glEnableVertexAttribArray(1);   // VAO 1 = texture coordinates
         glEnableVertexAttribArray(2);   // VAO 2 = normals
 
-        ModelTexture texture = texturedModel.getModelTexture();
+        Texture texture = texturedModel.getTexture();
 
-        staticShader.loadNumberOfRowsInTextureAtlas(texture.getNumberOfRowsInTextureAtlas());
+        staticShader.loadNumberOfRowsInTextureAtlas(texture.getNumberOfRows());
 
-        if (texture.isHasTransparency()) {
+        if (texture.hasTransparency()) {
             MasterRenderer.disableCulling();
         }
 
         staticShader.loadFakeLighting(texture.isUseFakeLighting());
-        staticShader.loadSpecularLight(texture.getShineDamper(), texture.getReflectivity());
+        staticShader.loadSpecularLight(texture.getShineDampening(), texture.getReflectivity());
         glActiveTexture(GL_TEXTURE0);
-        int textureId = texturedModel.getModelTexture().getTextureId();
+        int textureId = texturedModel.getTexture().getTextureId();
         glBindTexture(GL_TEXTURE_2D, textureId);    // sampler2D in fragment shader  uses texture bank 0 by default
     }
 

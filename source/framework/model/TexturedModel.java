@@ -1,13 +1,14 @@
 package framework.model;
 
-import framework.textures.ModelTexture;
+
+import framework.textures.Texture;
 
 public class TexturedModel
 {
     private final Model rawModel;
-    private final ModelTexture modelTexture;
+    private final Texture modelTexture;
 
-    public TexturedModel(Model rawModel, ModelTexture modelTexture) {
+    public TexturedModel(Model rawModel, Texture modelTexture) {
         this.rawModel = rawModel;
         this.modelTexture = modelTexture;
     }
@@ -16,7 +17,7 @@ public class TexturedModel
         return rawModel;
     }
 
-    public ModelTexture getModelTexture() {
+    public Texture getTexture() {
         return modelTexture;
     }
 }

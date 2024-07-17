@@ -11,8 +11,8 @@ import java.util.List;
 
 public class EntityShader extends GLShader
 {
-    private static final String VERTEX_FILE = "resources/shaders/EntityVertexShader.glsl";
-    private static final String FRAGMENT_FILE = "resources/shaders/EntityFragmentShader.glsl";
+    private static final String VERTEX_FILE = "EntityVertexShader.glsl";
+    private static final String FRAGMENT_FILE = "EntityFragmentShader.glsl";
 
     private int location_transformationMatrix;
     private int location_projectionMatrix;

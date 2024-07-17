@@ -5,7 +5,6 @@ import framework.MasterRenderer;
 import framework.ModelLoader;
 import framework.scripting.FrameworkScript;
 import framework.scripting.StackScript;
-import org.joml.Vector4f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
 
@@ -55,7 +54,7 @@ public final class Environment
 
     public static void loop()
     {
-        while(!(DisplayManager.shouldDisplayClose()))
+        while(DisplayManager.shouldDisplayClose())
         {
             //FPSCounter.update();
             // mouseEvent stuff
@@ -86,7 +85,7 @@ public final class Environment
             // in their skyboxes, but now it is gone in the
             // fourth index, finally.
             // took me a day to fix that :sob:
-            GL11.glEnable(GL30.GL_CLIP_DISTANCE3);
+            //GL11.glEnable(GL30.GL_CLIP_DISTANCE3);
 
             // the reflection of the water
             //MasterRenderer.buffer.bindReflectionFrameBuffer();
@@ -113,7 +112,7 @@ public final class Environment
             //MasterRenderer.renderShadowMap(scene.getEntities(), scene.getMainLight());
             // frame buffer stuff
             //multisample.bindFrameBuffer();
-            renderScene(new Vector4f(0, 1, 0, 100_000_000));
+            renderScene();
             //MasterRenderer.renderWaters(scene.getWaters(), scene.getCamera(), scene.getMainLight());
             //multisample.unbindFrameBuffer();
             //multisample.resolveToFrameBufferObject(GL30.GL_COLOR_ATTACHMENT0,out);
@@ -142,7 +141,7 @@ public final class Environment
             stack.remove(reference);
     }
 
-    private static void renderScene(Vector4f plane)
+    private static void renderScene()
     {
         // the 3D space stuff...
             // the shadow thingies

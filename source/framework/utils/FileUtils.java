@@ -1,19 +1,26 @@
 package framework.utils;
 
+import framework.shader.GLShader;
+
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Objects;
 
 public class FileUtils {
 
-    private FileUtils() {
-    }
+    private FileUtils() {}
 
-    public static String loadAsString(String file) {
+    public static String loadShader(String file) {
         StringBuilder result = new StringBuilder();
 
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(file));
+            InputStream stream = Objects.requireNonNull(GLShader.class.getResourceAsStream("glsl/" + file));
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(stream)
+            );
+
             String buffer;
 
             while ((buffer = reader.readLine()) != null) {

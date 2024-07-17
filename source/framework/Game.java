@@ -1,29 +1,27 @@
 package framework;
 
-import framework.entity.Camera;
 import framework.entity.Entity;
 import framework.entity.Light;
 import framework.entity.Player;
+import framework.environment.Environment;
+import framework.environment.Scene;
+import framework.event.MouseEvent;
 import framework.model.TexturedModel;
 import framework.swing.ContentPane;
+import framework.swing.GUITexture;
 import framework.swing.PictureBox;
 import framework.terrains.Terrain;
-import framework.textures.ModelTexture;
 import framework.textures.TerrainTexture;
 import framework.textures.TerrainTexturePack;
+import framework.textures.Texture;
 import org.joml.Vector3f;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
-import static framework.DisplayManager.closeDisplay;
 import static framework.DisplayManager.createDisplay;
 import static framework.DisplayManager.getLwjglVersionMessage;
 import static framework.DisplayManager.getOpenGlVersionMessage;
 import static framework.DisplayManager.setShowFPSTitle;
-import static framework.DisplayManager.shouldDisplayClose;
-import static framework.DisplayManager.updateDisplay;
 import static java.lang.management.ManagementFactory.*;
 
 public class Game
@@ -43,116 +41,94 @@ public class Game
 
         System.out.println("OpenGL: " + getOpenGlVersionMessage());
         System.out.println("LWJGL: " + getLwjglVersionMessage());
-
-        // Tree entity
-        TexturedModel treeModel = new TexturedModel(
-                ObjLoader.loadObjModel("resources/tree.obj"), new ModelTexture(ModelLoader.loadTexture("resources/tree.png")));
-
-        // Low poly tree entity
-        TexturedModel lowPolyTreeModel = new TexturedModel(
-                ObjLoader.loadObjModel("resources/lowPolyTree.obj"), new ModelTexture(ModelLoader.loadTexture("resources/lowPolyTree.png")));
-
-        // Grass entity
-        TexturedModel grassModel = new TexturedModel(
-                ObjLoader.loadObjModel("resources/grassModel.obj"), new ModelTexture(ModelLoader.loadTexture("resources/grassTexture.png")));
-        grassModel.getModelTexture().setHasTransparency(true);
-        grassModel.getModelTexture().setUseFakeLighting(true);
-
-        // Fern entity
-        ModelTexture fernTextureAtlas = new ModelTexture(ModelLoader.loadTexture("resources/fern.png"));
-        fernTextureAtlas.setNumberOfRowsInTextureAtlas(2);
-        TexturedModel fernModel = new TexturedModel(
-                ObjLoader.loadObjModel("resources/fern.obj"), fernTextureAtlas);
-        fernModel.getModelTexture().setHasTransparency(true);
-
-        // Multi-textured Terrain
-        TerrainTexture backgroundTexture = new TerrainTexture(ModelLoader.loadTexture("resources/grassy2.png"));
-        TerrainTexture rTexture = new TerrainTexture(ModelLoader.loadTexture("resources/mud.png"));
-        TerrainTexture gTexture = new TerrainTexture(ModelLoader.loadTexture("resources/grassFlowers.png"));
-        TerrainTexture bTexture = new TerrainTexture(ModelLoader.loadTexture("resources/path.png"));
-        TerrainTexture blendMap = new TerrainTexture(ModelLoader.loadTexture("resources/blendMap.png"));
-
-        TerrainTexturePack terrainTexturePack = new TerrainTexturePack(backgroundTexture, rTexture, gTexture, bTexture);
-
-        // Terrain entityList
-        Terrain terrain = new Terrain(0, 0, terrainTexturePack, blendMap);
-
-        List<Entity> entityList = new ArrayList<>();
-
-        for (int i = 0; i < 400; i++) {
-            float x = random.nextFloat() * 800 - 400;
-            float z = random.nextFloat() * -600;
-            float y = terrain.getHeightOfTerrain(x, z);
-
-            if (i % 20 == 0) {
-                entityList.add(new Entity(lowPolyTreeModel, new Vector3f(x, y, z), 0, random.nextFloat() * 360, 0, 1));
-            }
-
-            x = random.nextFloat() * 800 - 400;
-            z = random.nextFloat() * -600;
-            y = terrain.getHeightOfTerrain(x, z);
-
-            if (i % 20 == 0) {
-                entityList.add(new Entity(treeModel, new Vector3f(x, y, z), 0, random.nextFloat() * 360, 0, 5));
-            }
-
-            x = random.nextFloat() * 800 - 400;
-            z = random.nextFloat() * -600;
-            y = terrain.getHeightOfTerrain(x, z);
-
-            if (i % 10 == 0) {
-                // assigns a random texture for each fern from its texture atlas
-                entityList.add(new Entity(fernModel, random.nextInt(4), new Vector3f(x, y, z), 0, random.nextFloat() * 360, 0, 0.9f));
-            }
-
-            if (i % 5 == 0) {
-                entityList.add(new Entity(grassModel, new Vector3f(x, y, z), 0, random.nextFloat() * 360, 0, 1));
-            }
-        }
-
-        ArrayList<Light> lights = new ArrayList<>();
-
-        Light light = new Light(new Vector3f(3000, 2000, 2000), new Vector3f(1, 1,1));
-        lights.add(light);
-        MasterRenderer.setRenderer();
-
-        TexturedModel bunnyModel = new TexturedModel(
-                ObjLoader.loadObjModel("resources/stanfordBunny.obj"), new ModelTexture(ModelLoader.loadTexture("resources/white.png")));
-        Entity entity = new Entity(bunnyModel, new Vector3f(0, 0, 0), 0,0,0,0.6f);
-        Player player = new Player(entity);
-        Camera camera = new Camera(player);
-
-        ContentPane pane = new ContentPane();
-
-        PictureBox box = new PictureBox();
-        box.setBackgroundImage(ModelLoader.loadTexture("resources/brat.png"));
-        box.setLocation(10, 10);
-        box.setSize(300, 300);
-        //pane.add(box);
-
-        while (shouldDisplayClose()) {
-            player.move(terrain);   // to do this with multiple Terrain, need to test first to know which Terrain the player's position is in
-            //player.camera.move();
-
-            MasterRenderer.processEntity(player);
-            MasterRenderer.processTerrain(terrain);
-
-            for (Entity e : entityList) {
-                MasterRenderer.processEntity(e);
-            }
-
-            MasterRenderer.render(lights, player.camera);
-
-            pane.render(pane.getComponents());
-            updateDisplay();
-        }
-
-        MasterRenderer.destroy();
-        ModelLoader.destroy();
-        closeDisplay();
     }
 
     public static void main(String[] args) {
         start();
+        Scene scene = new Scene();
+        ContentPane panel = new ContentPane();
+        Environment.setScene(scene);
+
+        GUITexture img = new PictureBox();
+        img.setBackgroundImage(ModelLoader.loadTexture("brat.png"));
+        img.setSize(30, 30);
+        img.setLocation(20, 20);
+
+        //panel.add(img);
+        scene.setContentPane(panel);
+
+
+        Light lighting = new Light(new Vector3f(1_000_000, 1_000_000, 1_000_000), new Vector3f(1f, 1f, 1f));
+
+        scene.getLights().add(lighting);
+        scene.getLights().add(new Light(new Vector3f(0, 10, 0), new Vector3f(1, 0, 1), new Vector3f(1, 0f, 200f)));
+        scene.getLights().add(new Light(new Vector3f(20, 0, 20), new Vector3f(1, 0, 1), new Vector3f(1, 0.01f, 0.02f)));
+        scene.getLights().add(new Light(new Vector3f(40, 0, 40), new Vector3f(1, 0, 1), new Vector3f(1, 0.1f, 0.002f)));
+        scene.getLights().add(new Light(new Vector3f(-20, 0, 60), new Vector3f(1, 0, 0), new Vector3f(1, 0.01f, 0.02f)));
+        scene.getLights().add(new Light(new Vector3f(0, 0, -80), new Vector3f(1, 0, 1), new Vector3f(1, 0.1f, 0.002f)));
+
+        TerrainTexturePack bg = new TerrainTexturePack(
+                new TerrainTexture(ModelLoader.loadTexture("grass.png")),
+                new TerrainTexture(ModelLoader.loadTexture("mud.png")),
+                new TerrainTexture(ModelLoader.loadTexture("path.png")),
+                new TerrainTexture(ModelLoader.loadTexture("pine.png"))
+        );
+        TerrainTexture blend = new TerrainTexture(ModelLoader.loadTexture("blendMap.png"));
+        Terrain terrain = new Terrain(0, 0, bg, blend);
+
+        scene.setTerrain(terrain);
+
+        TexturedModel barrel = new TexturedModel(ObjectLoader.loadObjModel("barrel.obj"),
+                new Texture(ModelLoader.loadTexture("brat.png")));
+        barrel.getTexture().setNormalMap(ModelLoader.loadTexture("barrelNormal.png"));
+        barrel.getTexture().setSpecularMap(ModelLoader.loadTexture("bratMap.png"));
+        barrel.getTexture().setReflectivity(.5f);
+        barrel.getTexture().setShineDampening(10);
+        Entity barrelEntity = new Entity(barrel, new Vector3f(0, 200, 0), 0, 0, 0, 1);
+
+
+        Random random = new Random();
+        int progress = 0;
+
+
+        Player player = new Player(barrelEntity);
+        //player.setLight();
+        //player.setLightColor(255, 255, 255);
+        //player.setLightAttenuation(new Vector3f(.1f, .01f, .01f));
+        scene.setPlayer(player);
+        scene.getEntities().add(player);
+        //scene.getLights().add(player.getLight());
+        scene.setCamera(player.getCamera());
+
+
+        //scene.add(new WaterTile(75, -75, 0));
+
+        TexturedModel chrysalis = new TexturedModel(ObjectLoader.loadObjModel("tree.obj"),new Texture(ModelLoader.loadTexture("tree.png")));
+        chrysalis.getTexture().setShineDampening(1f);
+        chrysalis.getTexture().setReflectivity(.1f);
+
+        Entity entity = new Entity(new TexturedModel(
+                ObjectLoader.loadObjModel("crate.obj"),
+                new Texture(ModelLoader.loadTexture("brat.png"))),
+                new Vector3f(0, 0, 0), 0f, 0f, 0f, 1f);
+        //scene.add(entity);
+
+        for(int i = 0 ; i < 100; i++) {
+            float x = random.nextFloat(terrain.getSize()) - (terrain.getSize() / 2);
+            float z = random.nextFloat(terrain.getSize()) - (terrain.getSize() / 2);
+            float y = terrain.getHeightOfTerrain(x, z);
+            Entity crystal = new Entity(chrysalis, new Vector3f(x, y, z), 0, 0, 0, 10f);
+            if(crystal.getPosition().y > 0) {
+                scene.getEntities().add(crystal);
+            }
+            else i--;
+        }
+
+
+        MouseEvent event = new MouseEvent();
+        event.setCamera(scene.getCamera());
+
+        scene.setEvent(event);
+        Environment.start();
     }
 }

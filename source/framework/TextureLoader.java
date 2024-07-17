@@ -3,7 +3,9 @@ package framework;
 import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Objects;
 
+import framework.resources.Resources;
 import framework.utils.Buffer;
 
 import javax.imageio.ImageIO;
@@ -21,7 +23,9 @@ public class TextureLoader {
     private int load(String path) {
         int[] pixels;
         try {
-            BufferedImage image = ImageIO.read(new FileInputStream(path));
+            BufferedImage image = ImageIO.read(
+                    Objects.requireNonNull(
+                            Resources.class.getResourceAsStream("textures/" + path)));
             width = image.getWidth();
             height = image.getHeight();
             pixels = new int[width * height];

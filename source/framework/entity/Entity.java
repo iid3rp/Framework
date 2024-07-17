@@ -1,7 +1,7 @@
 package framework.entity;
 
 import framework.model.TexturedModel;
-import framework.textures.ModelTexture;
+import framework.textures.Texture;
 import org.joml.Vector3f;
 
 public class Entity {
@@ -32,7 +32,7 @@ public class Entity {
 
     public Entity(Entity entity)
     {
-        this.texturedModel = new TexturedModel(entity.getTexturedModel().getModel(), new ModelTexture(entity.getTexturedModel().getModelTexture().getTextureId()));
+        this.texturedModel = new TexturedModel(entity.getTexturedModel().getModel(), new Texture(entity.getTexturedModel().getTexture().getTextureId()));
         this.position = new Vector3f(entity.getPosition());
         this.rotationX = entity.getRotationX();
         this.rotationY = entity.getRotationY();
@@ -54,13 +54,13 @@ public class Entity {
     }
 
     public float getTextureAtlasXOffset() {
-        int column = textureAtlasIndex % texturedModel.getModelTexture().getNumberOfRowsInTextureAtlas();
-        return (float) column / (float) texturedModel.getModelTexture().getNumberOfRowsInTextureAtlas();
+        int column = textureAtlasIndex % texturedModel.getTexture().getNumberOfRows();
+        return (float) column / (float) texturedModel.getTexture().getNumberOfRows();
     }
 
     public float getTextureAtlasYOffset() {
-        int row = textureAtlasIndex / texturedModel.getModelTexture().getNumberOfRowsInTextureAtlas();
-        return (float) row / (float) texturedModel.getModelTexture().getNumberOfRowsInTextureAtlas();
+        int row = textureAtlasIndex / texturedModel.getTexture().getNumberOfRows();
+        return (float) row / (float) texturedModel.getTexture().getNumberOfRows();
     }
 
     public TexturedModel getTexturedModel() {

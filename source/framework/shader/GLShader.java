@@ -19,10 +19,10 @@ public abstract class GLShader
     private static FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(16);    // 16 is a 4 x 4 matrix
 
     public GLShader(String vertexPath, String fragmentPath) {
-        vertexFile = FileUtils.loadAsString(vertexPath);
-        fragmentFile = FileUtils.loadAsString(fragmentPath);
+        vertexFile = FileUtils.loadShader(vertexPath);
+        fragmentFile = FileUtils.loadShader(fragmentPath);
 
-        start();
+        create();
     }
 
     protected abstract void bindAttributes();
@@ -61,7 +61,7 @@ public abstract class GLShader
         glUniformMatrix4fv(location, false, matrix.get(matrixBuffer));
     }
 
-    public void start() {
+    public void create() {
         programId = glCreateProgram();
         vertexShaderId = glCreateShader(GL_VERTEX_SHADER);
 

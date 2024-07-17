@@ -90,7 +90,7 @@ public class TerrainRenderer {
 
     private void loadModelMatrix(Terrain terrain) {
         Matrix4f transformationMatrix = GeomMath.createTransformationMatrix(
-                new Vector3f(terrain.getX() - terrain.getSize() / 2, 0, terrain.getZ() - terrain.getSize() / 2), 0, 0, 0, 1);
+                new Vector3f(terrain.getX() - (terrain.getSize() / 2), 0, terrain.getZ() - (terrain.getSize() / 2)), 0, 0, 0, 1);
         terrainShader.loadTransformationMatrix(transformationMatrix);
     }
 }

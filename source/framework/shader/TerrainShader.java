@@ -10,8 +10,8 @@ import java.util.List;
 
 public class TerrainShader extends GLShader
 {
-    private static final String VERTEX_FILE = "resources/shaders/TerrainVertexShader.glsl";
-    private static final String FRAGMENT_FILE = "resources/shaders/TerrainFragmentShader.glsl";
+    private static final String VERTEX_FILE = "TerrainVertexShader.glsl";
+    private static final String FRAGMENT_FILE = "TerrainFragmentShader.glsl";
 
     private int location_transformationMatrix;
     private int location_projectionMatrix;

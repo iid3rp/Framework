@@ -102,7 +102,7 @@ public class Texture
         this.reflectivity = reflectivity;
     }
 
-    public int getTextureID()
+    public int getTextureId()
     {
         return textureID;
     }

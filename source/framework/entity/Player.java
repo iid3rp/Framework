@@ -195,4 +195,9 @@ public class Player extends Entity {
             jump();
         }
     }
+
+    public Camera getCamera()
+    {
+        return camera;
+    }
 }
