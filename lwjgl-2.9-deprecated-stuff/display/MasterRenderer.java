@@ -15,7 +15,6 @@ import framework.terrain.Terrain;
 import framework.water.WaterFrameBuffers;
 import framework.water.WaterRenderer;
 import framework.water.WaterShader;
-import framework.water.WaterTile;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;

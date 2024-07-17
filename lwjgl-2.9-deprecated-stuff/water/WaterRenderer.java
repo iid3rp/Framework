@@ -41,9 +41,9 @@ public class WaterRenderer {
 		setUpVAO();
 	}
 
-	public void render(List<framework.water.WaterTile> water, Camera camera, Light light) {
+	public void render(List<WaterTile> water, Camera camera, Light light) {
 		prepareRender(camera, light);
-		for (framework.water.WaterTile tile : water) {
+		for (WaterTile tile : water) {
 			MasterRenderer.disableCulling();
 			Matrix4f modelMatrix = GeomMath.createTransformationMatrix(
 					new Vector3f(tile.getX(), tile.getHeight(), tile.getZ()), 0, 0, 0,
@@ -68,13 +68,13 @@ public class WaterRenderer {
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, buffer.getReflectionTexture());
 		GL13.glActiveTexture(GL13.GL_TEXTURE1);
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, buffer.getReflectionTexture());
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, buffer.getRefractionTexture());
 		GL13.glActiveTexture(GL13.GL_TEXTURE2);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, duDvTexture.getID());
 		GL13.glActiveTexture(GL13.GL_TEXTURE3);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, normalTexture.getID());
 		GL13.glActiveTexture(GL13.GL_TEXTURE4);
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, buffer.getReflectionTexture());
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, buffer.getRefractionDepthTexture());
 
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);

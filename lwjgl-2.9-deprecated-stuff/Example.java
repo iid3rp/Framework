@@ -18,7 +18,6 @@ import framework.terrain.Terrain;
 import framework.texture.TerrainTexture;
 import framework.texture.TerrainTexturePack;
 import framework.texture.Texture;
-import framework.water.WaterTile;
 
 import org.lwjgl.util.vector.Vector3f;
 

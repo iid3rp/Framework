@@ -41,7 +41,8 @@ public class MasterRenderer {
     private static List<Terrain> terrainList;
     private static WaterShader waterShader;
     private static WaterRenderer waterRenderer;
-    public static WaterFrameBufferObject waterFrameBufferObject;
+
+    public static WaterFrameBufferObject buffer;
 
     public static void setRenderer()
     {
@@ -57,8 +58,8 @@ public class MasterRenderer {
         terrainList = new ArrayList<>();
         skyboxRenderer = new SkyboxRenderer(projectionMatrix);
         waterShader = new WaterShader();
-        waterFrameBufferObject = new WaterFrameBufferObject();
-        waterRenderer = new WaterRenderer(waterShader, projectionMatrix, waterFrameBufferObject);
+        buffer = new WaterFrameBufferObject();
+        waterRenderer = new WaterRenderer(waterShader, projectionMatrix, buffer);
 
     }
 

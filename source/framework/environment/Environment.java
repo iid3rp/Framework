@@ -87,23 +87,23 @@ public final class Environment
             // in their skyboxes, but now it is gone in the
             // fourth index, finally.
             // took me a day to fix that :sob:
-            GL11.glEnable(GL30.GL_CLIP_DISTANCE3);
-
-            // the reflection of the water
-            MasterRenderer.waterFrameBufferObject.bindReflectionFrameBuffer();
+//            GL11.glEnable(GL30.GL_CLIP_DISTANCE3);
+//
+//            // the reflection of the water
+            MasterRenderer.buffer.bindReflectionFrameBuffer();
             float distance = 2 * (scene.getCamera().getPosition().y - 0);
             scene.getCamera().getPosition().y -= distance;
             scene.getCamera().invertPitch();
             renderScene();
             scene.getCamera().getPosition().y += distance;
             scene.getCamera().invertPitch();
-
-            // the refraction of the water
-            MasterRenderer.waterFrameBufferObject.bindRefractionFrameBuffer();
-            renderScene();
-
-            GL11.glDisable(GL30.GL_CLIP_DISTANCE3);
-            MasterRenderer.waterFrameBufferObject.unbindCurrentFrameBuffer();
+//
+//            // the refraction of the water
+//            MasterRenderer.waterFrameBufferObject.bindRefractionFrameBuffer();
+//            renderScene();
+//
+//            GL11.glDisable(GL30.GL_CLIP_DISTANCE3);
+            MasterRenderer.buffer.unbindCurrentFrameBuffer();
 
 
             //MasterRenderer.renderShadowMap(scene.getEntities(), scene.getMainLight());

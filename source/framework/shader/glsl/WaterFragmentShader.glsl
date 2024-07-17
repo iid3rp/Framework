@@ -42,9 +42,7 @@ void main(void)
 	vec2 reflectionTextureCoordinates = vec2(perspective.x, -perspective.y);
 
 	float near = 5;
-
-	// DID I JUST FIXED A PROBLEM?? NO WAY??
-	float far = 2500.0;
+	float far = 100000.0;
 
 	float depth;
 	depth = texture(depthMap, refractionTextureCoordinates).r;
@@ -85,7 +83,7 @@ void main(void)
 	outColor = mix(reflection, refraction, fresnelEffect);
 	outColor = mix(outColor, vec4(0, 0.3, 1, 1.0), 0.2) + vec4(specularHighlights, 0.0);
 	outColor.a = clamp(waterDepth / 2, 0.0, 1.0);
+	outColor = vec4(1, 1, 1, .5);
 
 	brightColor = vec4(0);
-	outColor = vec4(1);
 }
