@@ -1,43 +1,43 @@
 package framework.water;
 
+import framework.Display.DisplayManager;
 import framework.entity.Camera;
 import framework.entity.Light;
+import framework.loader.ModelLoader;
 import framework.model.Model;
-import framework.display.DisplayManager;
-import framework.display.MasterRenderer;
-import framework.display.ModelLoader;
-import framework.texture.Texture;
-import framework.toolbox.GeomMath;
+import framework.renderer.MasterRenderer;
+import framework.textures.Texture;
+import framework.utils.GeomMath;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
-import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector3f;
 
 import java.util.List;
 
 public class WaterRenderer {
 
-	private static final String DuDv_MAP = "dude";
-	private static final String NORMALS_MAP = "normalWaterMap";
+	private static final String DuDv_MAP = "dude.png";
+	private static final String NORMALS_MAP = "normalWaterMap.png";
 	private static final float WAVE_SPEED = 0.04f;
 	private Model quad;
 	private WaterShader shader;
-	private WaterFrameBuffers buffer;
+	private WaterFrameBufferObject buffer;
 	private Texture duDvTexture;
 	private Texture normalTexture;
 	private float moveFactor;
 
-	public WaterRenderer(WaterShader shader, Matrix4f projectionMatrix, WaterFrameBuffers buffer) {
+	public WaterRenderer(WaterShader shader, Matrix4f projectionMatrix, WaterFrameBufferObject buffer) {
 		this.shader = shader;
 		this.buffer = buffer;
 		duDvTexture = new Texture(ModelLoader.loadTexture(DuDv_MAP));
 		normalTexture = new Texture(ModelLoader.loadTexture(NORMALS_MAP));
-		shader.start();
+		shader.create();
 		shader.connectTextureUnits();
 		shader.loadProjectionMatrix(projectionMatrix);
-		shader.stop();
+		shader.unbind();
 		setUpVAO();
 	}
 
@@ -57,13 +57,13 @@ public class WaterRenderer {
 
 	private void prepareRender(Camera camera, Light light)
 	{
-		shader.start();
+		shader.bind();
 		shader.loadViewMatrix(camera);
-		moveFactor += WAVE_SPEED * DisplayManager.getFrameTimeSeconds();
+		moveFactor += WAVE_SPEED * DisplayManager.getDeltaInSeconds();
 		moveFactor %= 1;
 		shader.loadLight(light);
 		shader.loadMoveFactor(moveFactor);
-		GL30.glBindVertexArray(quad.getVaoID());
+		GL30.glBindVertexArray(quad.getVaoId());
 		GL20.glEnableVertexAttribArray(0);
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, buffer.getReflectionTexture());
@@ -85,13 +85,13 @@ public class WaterRenderer {
 		GL11.glDisable(GL11.GL_BLEND);
 		GL20.glDisableVertexAttribArray(0);
 		GL30.glBindVertexArray(0);
-		shader.stop();
+		shader.unbind();
 	}
 
 	private void setUpVAO()
 	{
 		// Just x and z vertex positions here, y is set to 0 in v.shader
 		float[] vertices = { -1, -1, -1, 1, 1, -1, 1, -1, -1, 1, 1, 1};
-		quad = ModelLoader.loadToVAO(vertices, 2);
+		quad = ModelLoader.loadToVao(vertices, 2);
 	}
 }

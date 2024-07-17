@@ -1,4 +1,4 @@
-package framework;
+package framework.renderer;
 
 import framework.model.Model;
 import framework.shader.TerrainShader;

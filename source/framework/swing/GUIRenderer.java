@@ -1,6 +1,6 @@
 package framework.swing;
 
-import framework.ModelLoader;
+import framework.loader.ModelLoader;
 import framework.model.Model;
 import framework.utils.GeomMath;
 import org.joml.Matrix4f;

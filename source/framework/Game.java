@@ -1,11 +1,12 @@
 package framework;
 
+import framework.loader.ModelLoader;
+import framework.loader.ObjectLoader;
 import framework.entity.Entity;
 import framework.entity.Light;
 import framework.entity.Player;
 import framework.environment.Environment;
 import framework.environment.Scene;
-import framework.event.MouseEvent;
 import framework.model.TexturedModel;
 import framework.scripting.Count;
 import framework.swing.ContentPane;
@@ -15,14 +16,15 @@ import framework.terrains.Terrain;
 import framework.textures.TerrainTexture;
 import framework.textures.TerrainTexturePack;
 import framework.textures.Texture;
+import framework.water.WaterTile;
 import org.joml.Vector3f;
 
 import java.util.Random;
 
-import static framework.DisplayManager.createDisplay;
-import static framework.DisplayManager.getLwjglVersionMessage;
-import static framework.DisplayManager.getOpenGlVersionMessage;
-import static framework.DisplayManager.setShowFPSTitle;
+import static framework.Display.DisplayManager.createDisplay;
+import static framework.Display.DisplayManager.getLwjglVersionMessage;
+import static framework.Display.DisplayManager.getOpenGlVersionMessage;
+import static framework.Display.DisplayManager.setShowFPSTitle;
 import static java.lang.management.ManagementFactory.getRuntimeMXBean;
 
 public class Game
@@ -125,6 +127,8 @@ public class Game
             else i--;
         }
 
+        WaterTile tile = new WaterTile(0, 0,0);
+        scene.add(tile);
 
 
         Environment.run(new Count());

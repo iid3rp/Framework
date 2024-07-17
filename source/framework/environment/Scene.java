@@ -8,6 +8,7 @@ import framework.event.MouseEvent;
 import framework.swing.ContentPane;
 import framework.swing.GUITexture;
 import framework.terrains.Terrain;
+import framework.water.WaterTile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,7 @@ public class Scene
     private List<Entity> entities;
     //private List<Entity> normalMappedEntities;
     private List<Light> lights;
-    //private List<WaterTile> waters;
+    private List<WaterTile> waters;
     private Terrain terrain;
 
     private Camera camera;
@@ -33,7 +34,7 @@ public class Scene
         entities = new ArrayList<>();
         lights = new ArrayList<>();
         terrain = new Terrain();
-        //waters = new ArrayList<>();
+        waters = new ArrayList<>();
         //normalMappedEntities = new ArrayList<>();
     }
 
@@ -41,11 +42,6 @@ public class Scene
     {
         return entities;
     }
-
-    //public List<WaterTile> getWaters()
-    //{
-    //    return waters;
-    //}
 
     public Player getPlayer()
     {
@@ -67,10 +63,10 @@ public class Scene
         this.clipPlane = clipPlane;
     }*/
 
-//    public void add(WaterTile water)
-//    {
-//        waters.add(water);
-//    }
+    public void add(WaterTile water)
+    {
+        waters.add(water);
+    }
     public void add(Entity entity)
     {
         entities.add(entity);
@@ -172,4 +168,8 @@ public class Scene
                 "Number of Terrain Vertices: " + numTerrainVertices;
     }
 
+    public List<WaterTile> getWaters()
+    {
+        return waters;
+    }
 }

@@ -1,6 +1,6 @@
 package framework.scripting;
 
-import framework.DisplayManager;
+import framework.Display.DisplayManager;
 import framework.environment.Scene;
 
 public class Count implements FrameworkScript

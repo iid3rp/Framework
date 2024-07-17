@@ -1,4 +1,4 @@
-package framework;
+package framework.loader;
 
 import framework.model.Model;
 import framework.resources.Resources;

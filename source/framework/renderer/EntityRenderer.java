@@ -1,4 +1,4 @@
-package framework;
+package framework.renderer;
 
 import framework.entity.Entity;
 import framework.model.Model;

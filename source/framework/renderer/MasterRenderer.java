@@ -1,5 +1,6 @@
-package framework;
+package framework.renderer;
 
+import framework.Display.DisplayManager;
 import framework.entity.Camera;
 import framework.entity.Entity;
 import framework.entity.Light;
@@ -8,6 +9,10 @@ import framework.shader.EntityShader;
 import framework.shader.TerrainShader;
 import framework.skybox.SkyboxRenderer;
 import framework.terrains.Terrain;
+import framework.water.WaterFrameBufferObject;
+import framework.water.WaterRenderer;
+import framework.water.WaterShader;
+import framework.water.WaterTile;
 import org.joml.Matrix4f;
 
 import java.util.ArrayList;
@@ -20,8 +25,8 @@ import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 
 public class MasterRenderer {
     private static final float FOV = 70;
-    private static final float NEAR_PLANE = 0.1f;
-    private static final float FAR_PLANE = 100_000;
+    public static final float NEAR_PLANE = 0.1f;
+    public static final float FAR_PLANE = 100_000;
     private static final float SKY_RED = 0.95f;
     private static final float SKY_GREEN = 0.9f;
     private static final float SKY_BLUE = 0.67f;
@@ -34,18 +39,27 @@ public class MasterRenderer {
     private static SkyboxRenderer skyboxRenderer;
     private static TerrainShader terrainShader;
     private static List<Terrain> terrainList;
+    private static WaterShader waterShader;
+    private static WaterRenderer waterRenderer;
+    public static WaterFrameBufferObject waterFrameBufferObject;
 
     public static void setRenderer()
     {
         enableCulling();
+        createProjectionMatrix();
+
         entityShader = new EntityShader();
         terrainShader = new TerrainShader();
         entities = new HashMap<>();
-        createProjectionMatrix();
+
         entityRenderer = new EntityRenderer(entityShader, projectionMatrix);
         terrainRenderer = new TerrainRenderer(terrainShader, projectionMatrix);
         terrainList = new ArrayList<>();
         skyboxRenderer = new SkyboxRenderer(projectionMatrix);
+        waterShader = new WaterShader();
+        waterFrameBufferObject = new WaterFrameBufferObject();
+        waterRenderer = new WaterRenderer(waterShader, projectionMatrix, waterFrameBufferObject);
+
     }
 
     public static void enableCulling() {
@@ -125,6 +139,11 @@ public class MasterRenderer {
         projectionMatrix.m23(-1);
         projectionMatrix.m32(-((2 * NEAR_PLANE * FAR_PLANE) / frustumLength));
         projectionMatrix.m33(0);
+    }
+
+    public static void renderWaters(List<WaterTile> waters, Camera camera, Light light)
+    {
+        waterRenderer.render(waters, camera, light);
     }
 
     public static Matrix4f getProjectionMatrix()

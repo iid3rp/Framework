@@ -2,17 +2,17 @@ package framework.water;
 
 import framework.entity.Camera;
 import framework.entity.Light;
-import framework.display.MasterRenderer;
+import framework.renderer.MasterRenderer;
 import framework.shader.GLShader;
-import framework.toolbox.GeomMath;
-import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector3f;
+import framework.utils.GeomMath;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 public class WaterShader extends GLShader
 {
 
-	private final static String VERTEX_FILE = "waterVertexShader.glsl";
-	private final static String FRAGMENT_FILE = "waterFragmentShader.glsl";
+	private final static String VERTEX_FILE = "WaterVertexShader.glsl";
+	private final static String FRAGMENT_FILE = "WaterFragmentShader.glsl";
 	private int location_modelMatrix;
 	private int location_viewMatrix;
 	private int location_projectionMatrix;
@@ -57,13 +57,13 @@ public class WaterShader extends GLShader
 
 	public void loadLight(Light light)
 	{
-		super.loadVector3f(locationLightColor, light.getColor());
-		super.loadVector3f(locationLightPosition, light.getPosition());
+		super.loadVector(locationLightColor, light.getColor());
+		super.loadVector(locationLightPosition, light.getPosition());
 	}
 
 	public void loadCameraPosition(Vector3f position)
 	{
-		super.loadVector3f(locationCameraPosition, position);
+		super.loadVector(locationCameraPosition, position);
 	}
 
 	public void loadMoveFactor(float factor)
@@ -73,11 +73,11 @@ public class WaterShader extends GLShader
 
 	public void connectTextureUnits()
 	{
-		super.loadInteger(locationReflection, 0);
-		super.loadInteger(locationRefraction, 1);
-		super.loadInteger(locationDuDv, 2);
-		super.loadInteger(locationNormals, 3);
-		super.loadInteger(locationDepthMap, 4);
+		super.loadInt(locationReflection, 0);
+		super.loadInt(locationRefraction, 1);
+		super.loadInt(locationDuDv, 2);
+		super.loadInt(locationNormals, 3);
+		super.loadInt(locationDepthMap, 4);
 	}
 
 	public void loadProjectionMatrix(Matrix4f projection)
@@ -90,8 +90,8 @@ public class WaterShader extends GLShader
 		loadMatrix(location_viewMatrix, viewMatrix);
 		loadCameraPosition(camera.getPosition());
 		//loadCameraPosition(new Vector3f(camera.getPosition().x, 10, camera.getPosition().z));
-		super.loadFloat(locationNear, MasterRenderer.nearPlane);
-		super.loadFloat(locationFar, MasterRenderer.farPlane);
+		super.loadFloat(locationNear, MasterRenderer.NEAR_PLANE);
+		super.loadFloat(locationFar, MasterRenderer.FAR_PLANE);
 	}
 
 	public void loadModelMatrix(Matrix4f modelMatrix){

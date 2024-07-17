@@ -1,6 +1,6 @@
 package framework.event;
 
-import framework.DisplayManager;
+import framework.Display.DisplayManager;
 import framework.entity.Camera;
 import framework.environment.Environment;
 import framework.terrains.Terrain;

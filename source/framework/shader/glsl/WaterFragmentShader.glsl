@@ -87,4 +87,5 @@ void main(void)
 	outColor.a = clamp(waterDepth / 2, 0.0, 1.0);
 
 	brightColor = vec4(0);
+	outColor = vec4(1);
 }

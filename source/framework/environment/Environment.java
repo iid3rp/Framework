@@ -1,11 +1,14 @@
 package framework.environment;
 
-import framework.DisplayManager;
-import framework.MasterRenderer;
-import framework.ModelLoader;
+import framework.Display.DisplayManager;
+import framework.renderer.MasterRenderer;
+import framework.loader.ModelLoader;
 import framework.event.MouseEvent;
 import framework.scripting.FrameworkScript;
 import framework.scripting.StackScript;
+import org.joml.Vector4f;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL30;
 
 // the commented codes will be uncommented once the game is set up!
 public final class Environment
@@ -84,35 +87,30 @@ public final class Environment
             // in their skyboxes, but now it is gone in the
             // fourth index, finally.
             // took me a day to fix that :sob:
-            //GL11.glEnable(GL30.GL_CLIP_DISTANCE3);
+            GL11.glEnable(GL30.GL_CLIP_DISTANCE3);
 
             // the reflection of the water
-            //MasterRenderer.buffer.bindReflectionFrameBuffer();
-            //float distance = 2 * (scene.getCamera().getPosition().y -
-            //        scene.getWaters().getFirst().getHeight());
-            //scene.getCamera().getPosition().y -= distance;
-            //scene.getCamera().invertPitch();
-            //renderScene(new Vector4f(0, 1, 0,
-            //        -scene.getWaters().getFirst().getHeight() + 1.2f));
-            //scene.getCamera().getPosition().y += distance;
-            //scene.getCamera().invertPitch();
+            MasterRenderer.waterFrameBufferObject.bindReflectionFrameBuffer();
+            float distance = 2 * (scene.getCamera().getPosition().y - 0);
+            scene.getCamera().getPosition().y -= distance;
+            scene.getCamera().invertPitch();
+            renderScene();
+            scene.getCamera().getPosition().y += distance;
+            scene.getCamera().invertPitch();
 
             // the refraction of the water
-            //MasterRenderer.buffer.bindRefractionFrameBuffer();
-            //renderScene(new Vector4f(0, -1, 0,
-            //        scene.getWaters().getFirst().getHeight()));
+            MasterRenderer.waterFrameBufferObject.bindRefractionFrameBuffer();
+            renderScene();
 
-            //MasterRenderer.buffer.bindScreenFrameBuffer();
-            //renderScene(new Vector4f(0, 0, 0, scene.getWaters().getFirst().getHeight()));
+            GL11.glDisable(GL30.GL_CLIP_DISTANCE3);
+            MasterRenderer.waterFrameBufferObject.unbindCurrentFrameBuffer();
 
-            //GL11.glDisable(GL30.GL_CLIP_DISTANCE3);
-            //MasterRenderer.buffer.unbindCurrentFrameBuffer();
 
             //MasterRenderer.renderShadowMap(scene.getEntities(), scene.getMainLight());
             // frame buffer stuff
             //multisample.bindFrameBuffer();
             renderScene();
-            //MasterRenderer.renderWaters(scene.getWaters(), scene.getCamera(), scene.getMainLight());
+            MasterRenderer.renderWaters(scene.getWaters(), scene.getCamera(), scene.getMainLight());
             //multisample.unbindFrameBuffer();
             //multisample.resolveToFrameBufferObject(GL30.GL_COLOR_ATTACHMENT0,out);
             //multisample.resolveToFrameBufferObject(GL30.GL_COLOR_ATTACHMENT1,bright);

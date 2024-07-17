@@ -1,6 +1,6 @@
 package framework.skybox;
 
-import framework.ModelLoader;
+import framework.loader.ModelLoader;
 import framework.entity.Camera;
 import framework.model.Model;
 import org.joml.Matrix4f;

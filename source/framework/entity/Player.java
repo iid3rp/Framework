@@ -1,6 +1,6 @@
 package framework.entity;
 
-import framework.DisplayManager;
+import framework.Display.DisplayManager;
 import framework.event.Keyboard;
 import framework.model.TexturedModel;
 import framework.terrains.Terrain;

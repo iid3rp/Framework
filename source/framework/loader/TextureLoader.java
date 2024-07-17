@@ -1,7 +1,6 @@
-package framework;
+package framework.loader;
 
 import java.awt.image.BufferedImage;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Objects;
 

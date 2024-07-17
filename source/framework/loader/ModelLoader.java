@@ -1,4 +1,4 @@
-package framework;
+package framework.loader;
 
 import de.matthiasmann.twl.utils.PNGDecoder;
 import de.matthiasmann.twl.utils.PNGDecoder.Format;

@@ -1,4 +1,4 @@
-package framework;
+package framework.Display;
 
 import framework.event.Keyboard;
 import framework.event.Mouse;

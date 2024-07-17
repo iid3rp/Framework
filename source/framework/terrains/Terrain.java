@@ -1,6 +1,6 @@
 package framework.terrains;
 
-import framework.ModelLoader;
+import framework.loader.ModelLoader;
 import framework.model.Model;
 import framework.textures.TerrainTexture;
 import framework.textures.TerrainTexturePack;

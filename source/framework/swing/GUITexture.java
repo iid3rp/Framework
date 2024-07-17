@@ -1,6 +1,6 @@
 package framework.swing;
 
-import framework.DisplayManager;
+import framework.Display.DisplayManager;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
