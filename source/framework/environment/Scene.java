@@ -16,7 +16,6 @@ public class Scene
 {
     private List<Entity> entities;
     //private List<Entity> normalMappedEntities;
-    private List<Player> players;
     private List<Light> lights;
     //private List<WaterTile> waters;
     private Terrain terrain;
@@ -32,7 +31,6 @@ public class Scene
     {
         pane = new ContentPane();
         entities = new ArrayList<>();
-        players = new ArrayList<>();
         lights = new ArrayList<>();
         terrain = new Terrain();
         //waters = new ArrayList<>();
@@ -159,5 +157,19 @@ public class Scene
 //    {
 //        return particleSystem;
 //    }
+
+    @Override
+    public String toString() {
+        int numEntities = entities.size();
+        int numLights = lights.size();
+        int numGUITextures = pane.getComponents().size();
+        int numTerrainVertices = terrain.getModel().getVertexCount();
+
+        return "Scene Information:\n" +
+                "Number of Entities: " + numEntities + "\n" +
+                "Number of Lights: " + numLights + "\n" +
+                "Number of GUI Textures: " + numGUITextures + "\n" +
+                "Number of Terrain Vertices: " + numTerrainVertices;
+    }
 
 }

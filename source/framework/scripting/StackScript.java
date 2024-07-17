@@ -15,10 +15,19 @@ import java.util.Iterator;
  * OpenGL capabilities, and more. The OpenGL contexts are intended to run within the {@code main()}
  * method, maintaining the same threading as the compilation of shaders and other components.
  * <p>
+ * <p>
+ * <h3><a>What if I just create a thread with the scene as a parameter?</a></h3>
+ * <p>
  * It is important to note that it is technically possible to run this method and use the
- * {@link Scene} object and its members using the {@link Thread} class, but most of them are
+ * {@link Scene} object using the {@link Thread} class, but most of them are
  * part of the OpenGL context that should be only running in the {@code main()} method,
  * Attempting to interfere the contexts will result in runtime exceptions.
+ * One of them being like this
+ * <pre>{@code
+ * FATAL ERROR in native method: Thread[#<number>,Thread-main]:
+ * No context is current or a function that is not available in the current context was called.
+ * The JVM will abort execution.
+ * }</pre>
  * <p>
  * This class is used by the {@link Environment} class and will be added to a queue for execution
  * when appropriate. The class implements {@link Iterable}, allowing it to be used in enhanced for loops
@@ -48,7 +57,7 @@ import java.util.Iterator;
  * FrameworkScript reference = null;
  * for(FrameworkScript script : stack) {
  *     script.run(scene);
- *     if(!script.isStaying())
+ *     if(!script.whilst())
  *         reference = script;
  * }
  * if(reference != null)

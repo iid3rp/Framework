@@ -7,6 +7,7 @@ import framework.environment.Environment;
 import framework.environment.Scene;
 import framework.event.MouseEvent;
 import framework.model.TexturedModel;
+import framework.scripting.Count;
 import framework.swing.ContentPane;
 import framework.swing.GUITexture;
 import framework.swing.PictureBox;
@@ -22,7 +23,7 @@ import static framework.DisplayManager.createDisplay;
 import static framework.DisplayManager.getLwjglVersionMessage;
 import static framework.DisplayManager.getOpenGlVersionMessage;
 import static framework.DisplayManager.setShowFPSTitle;
-import static java.lang.management.ManagementFactory.*;
+import static java.lang.management.ManagementFactory.getRuntimeMXBean;
 
 public class Game
 {
@@ -125,10 +126,8 @@ public class Game
         }
 
 
-        MouseEvent event = new MouseEvent();
-        event.setCamera(scene.getCamera());
 
-        scene.setEvent(event);
+        Environment.run(new Count());
         Environment.start();
     }
 }

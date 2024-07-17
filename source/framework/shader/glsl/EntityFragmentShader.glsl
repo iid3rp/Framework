@@ -17,6 +17,12 @@ uniform float shineDamper;
 uniform float reflectivity;
 uniform vec3 skyColor;
 
+// make this uniform below:
+const float levels = 255;
+const int pcfCount = 4;
+const float totalTexels = pow((pcfCount * 2 + 1), 2);
+const float mapSize = 2048;
+
 void main(void) {
 
     vec3 unitNormal = normalize(surfaceNormal); // normalize makes the size of the vector = 1. Only direction of the vector matters here. Size is irrelevant
@@ -32,13 +38,20 @@ void main(void) {
         vec3 unitLightVector = normalize(toLightVector[i]);
         float nDotl = dot(unitNormal, unitLightVector);// dot product calculation of 2 vectors. nDotl is how bright this pixel should be. difference of the position and normal vector to the light source
 
+        // cel-shading technique (brightness)
         float brightness = max(nDotl, 0); // clamp the brightness result value to between 0 and 1. values less than 0 are clamped to 0.2. to leave a little more diffuse light
+        float level = floor(brightness * levels);
+        brightness = level / levels;
+
         vec3 lightDirection = -unitLightVector; // light direction vector is the opposite of the toLightVector
         vec3 reflectedLightDirection = reflect(lightDirection, unitNormal);// specular reflected light vector
-
         float specularFactor = dot(reflectedLightDirection, unitVectorToCamera);// determines how bright the specular light should be relative to the "camera" by taking the dot product of the two vectors
         specularFactor = max(specularFactor, 0.0);
+
+        // cel-shading technique (darkness)
         float dampedFactor = pow(specularFactor, shineDamper);// raise specularFactor to the power of the shineDamper value. makes the low specular values even lower but doesnt effect the high specular values too much
+        level = floor(dampedFactor * levels);
+        dampedFactor = level / levels;
 
         totalDiffuse = totalDiffuse + (brightness * lightColor[i]) / setFactor;// calculate final color of this pixel by how much light it has
         totalSpecular = totalSpecular + (dampedFactor * reflectivity * lightColor[i]) / setFactor;

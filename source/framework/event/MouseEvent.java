@@ -14,14 +14,16 @@ public class MouseEvent
 {
     public Vector3f currentRay;
     private static int recursionCount = 200;
-    private static float rayRange = 600f;
+    private static float rayRange = 6000f;
     private Matrix4f projection;
     private Matrix4f view;
     private Camera camera;
     private Terrain terrain;
     private Vector3f currentTerrainPoint;
 
-    public MouseEvent() {}
+    public MouseEvent() {
+        this.terrain = Environment.getScene().getTerrain();
+    }
 
     public MouseEvent(Camera camera, Matrix4f projection)
     {
@@ -29,11 +31,6 @@ public class MouseEvent
         this.projection = projection;
         this.terrain = Environment.getScene().getTerrain();
         this.view = GeomMath.createViewMatrix(camera);
-    }
-
-    public void setProjectionMatrix(Matrix4f projection)
-    {
-        this.projection = projection;
     }
 
     public Vector3f getCurrentTerrainPoint() {
@@ -99,6 +96,7 @@ public class MouseEvent
     public void setCamera(Camera camera)
     {
         this.camera = camera;
+        this.view = GeomMath.createViewMatrix(camera);
     }
 
     private Vector3f toWorldCoordinates(Vector4f eyeCoordinates)

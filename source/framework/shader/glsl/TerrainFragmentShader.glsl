@@ -22,6 +22,12 @@ uniform float shineDamper;
 uniform float reflectivity;
 uniform vec3 skyColor;
 
+// make this uniform sooner
+const float levels = 255;
+const int pcfCount = 4;
+const float totalTexels = pow((pcfCount * 2 + 1), 2);
+const float mapSize = 2048;
+
 void main(void) {
 
     // multitexturing
@@ -47,15 +53,20 @@ void main(void) {
         vec3 unitLightVector = normalize(toLightVector[i]);
         float nDot1 = dot(unitNormal, unitLightVector); // dot product calculation of 2 vectors. nDotl is how bright this pixel should be. difference of the position and normal vector to the light source
 
+        // cel-shading technique (brightness)
         float brightness = max(nDot1, 0); // clamp the brightness result value to between 0 and 1. values less than 0 are clamped to 0.2. to leave a little more diffuse light
-        vec3 diffuse = brightness * lightColor[i]; // calculate final color of this pixel by how much light it has
+        float level = floor(brightness * levels);
+        brightness = level / levels;
 
         vec3 lightDirection = -unitLightVector; // light direction vector is the opposite of the toLightVector
         vec3 reflectedLightDirection = reflect(lightDirection, unitNormal); // specular reflected light vector
-
         float specularFactor = dot(reflectedLightDirection, unitVectorToCamera);    // determines how bright the specular light should be relative to the "camera" by taking the dot product of the two vectors
         specularFactor = max(specularFactor, 0.0);
+
+        // cel-shading technique (darkness)
         float dampFactor = pow(specularFactor, shineDamper);
+        level = floor(dampFactor * levels);
+        dampFactor = level / levels;
 
         // raise specularFactor to the power of the shineDamper value. makes the low specular values even lower but doesnt effect the high specular values too much
         totalDiffuse = totalDiffuse + (brightness * lightColor[i]) / setFactor;

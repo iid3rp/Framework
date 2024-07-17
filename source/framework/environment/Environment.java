@@ -3,10 +3,9 @@ package framework.environment;
 import framework.DisplayManager;
 import framework.MasterRenderer;
 import framework.ModelLoader;
+import framework.event.MouseEvent;
 import framework.scripting.FrameworkScript;
 import framework.scripting.StackScript;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL30;
 
 // the commented codes will be uncommented once the game is set up!
 public final class Environment
@@ -38,10 +37,10 @@ public final class Environment
 
         if(scene != null)
         {
-            if(getScene().getEvent() != null)
-            {
-                getScene().getEvent().setProjectionMatrix(MasterRenderer.getProjectionMatrix());
-            }
+            MouseEvent event = new MouseEvent();
+            event.setCamera(getScene().getCamera());
+            event.setProjection(MasterRenderer.getProjectionMatrix());
+            getScene().setEvent(event);
             //font = new FontType(ModelLoader.loadTexture("comic"), "comic");
             //fps = new GUIText("fps count: 0", 1, font, new Vector2f(0, 0), 1f, false);
             //fps.setColor(1, 1, 0);
@@ -134,11 +133,13 @@ public final class Environment
         for(FrameworkScript script : stack)
         {
             script.run(scene);
-            if(!script.isStaying())
+            if(!script.whilst())
                 reference = script;
         }
-        if(reference != null)
-            stack.remove(reference);
+        if(reference != null) {
+            boolean x = stack.remove(reference);
+            System.out.println(x);
+        }
     }
 
     private static void renderScene()
