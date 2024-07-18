@@ -78,12 +78,11 @@ void main(void)
 	vec3 reflectedLight = reflect(normalize(fromLightVector), normal);
 	float specular = min(dot(reflectedLight, viewFactor), far);
 	specular = pow(specular, shineDamper);
-	vec3 specularHighlights = lightColor * specular * reflectivity * clamp(waterDepth / 20, 0.0, 1.0);;
+	vec3 specularHighlights = lightColor * specular * reflectivity * clamp(waterDepth / 2, 0.0, 1.0);;
 
 	outColor = mix(reflection, refraction, fresnelEffect);
 	outColor = mix(outColor, vec4(0, 0.3, 1, 1.0), 0.2) + vec4(specularHighlights, 0.0);
 	outColor.a = clamp(waterDepth / 2, 0.0, 1.0);
-	outColor = vec4(1, 1, 1, .5);
 
 	brightColor = vec4(0);
 }

@@ -16,12 +16,17 @@ uniform mat4 transformationMatrix;
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 uniform vec3 lightPosition[lightAmount];
+uniform vec4 plane;
 
 const float fogDensity = 1 / 100000;
 const float fogGradient = .2;
 
-void main(void) {
+void main(void)
+{
     vec4 worldPosition = transformationMatrix * vec4(position, 1.0);
+
+    gl_ClipDistance[1] = dot(worldPosition, plane);
+
     vec4 positionRelativeToCamera = viewMatrix * worldPosition;
     gl_Position = projectionMatrix * positionRelativeToCamera;
     pass_textureCoords = textureCoords;

@@ -14,6 +14,7 @@ import framework.water.WaterRenderer;
 import framework.water.WaterShader;
 import framework.water.WaterTile;
 import org.joml.Matrix4f;
+import org.joml.Vector4f;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -88,10 +89,11 @@ public class MasterRenderer {
         entityList.add(entity);
     }
 
-    public static void render(List<Light> lights, Camera camera) {
+    public static void render(List<Light> lights, Camera camera, Vector4f vec4) {
         prepare();
 
         entityShader.bind();
+        entityShader.loadClipPlane(vec4);
         entityShader.loadSkyColor(SKY_RED, SKY_GREEN, SKY_BLUE);
         entityShader.loadLights(lights);
         entityShader.loadViewMatrix(camera);
@@ -99,6 +101,7 @@ public class MasterRenderer {
         entityShader.unbind();
 
         terrainShader.bind();
+        terrainShader.loadClipPlane(vec4);
         terrainShader.loadSkyColor(SKY_RED, SKY_GREEN, SKY_BLUE);
         terrainShader.loadLights(lights);
         terrainShader.loadViewMatrix(camera);

@@ -4,7 +4,9 @@ import framework.utils.FileUtils;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL20;
 
 import java.nio.FloatBuffer;
 
@@ -123,5 +125,10 @@ public abstract class GLShader
         glDeleteShader(vertexShaderId);
         glDeleteShader(fragmentShaderId);
         glDeleteProgram(programId);
+    }
+
+    protected void loadVector(int location, Vector4f vector)
+    {
+        glUniform4f(location, vector.x, vector.y, vector.z,  vector.w);
     }
 }

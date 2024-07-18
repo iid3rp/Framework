@@ -5,6 +5,8 @@ import framework.entity.Light;
 import framework.utils.GeomMath;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.joml.Vector4dKt;
+import org.joml.Vector4f;
 
 import java.util.List;
 
@@ -26,6 +28,7 @@ public class TerrainShader extends GLShader
     private int location_gTexture;
     private int location_bTexture;
     private int location_blendMap;
+    private int locationPlane;
     private int[] locationAttenuation;
 
     public TerrainShader() {
@@ -52,6 +55,7 @@ public class TerrainShader extends GLShader
         location_gTexture = super.getUniformLocation("gTexture");
         location_bTexture = super.getUniformLocation("bTexture");
         location_blendMap = super.getUniformLocation("blendMap");
+        locationPlane = super.getUniformLocation("plane");
 
         location_lightPosition = new int[20];
         location_lightColor = new int[20];
@@ -63,6 +67,11 @@ public class TerrainShader extends GLShader
             location_lightColor[i] = super.getUniformLocation("lightColor[" + i + "]");
             locationAttenuation[i] = super.getUniformLocation("attenuation[" + i + "]");
         }
+    }
+
+    public void loadClipPlane(Vector4f plane)
+    {
+        super.loadVector(locationPlane, plane);
     }
 
     public void loadTransformationMatrix(Matrix4f matrix) {

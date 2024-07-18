@@ -6,6 +6,7 @@ import framework.utils.GeomMath;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 import java.util.List;
 
@@ -26,6 +27,7 @@ public class EntityShader extends GLShader
     private int location_numberOfRowsInTextureAtlas;
     private int location_offset;
     private int[] locationAttenuation;
+    private int locationPlane;
 
     public EntityShader() {
         super(VERTEX_FILE, FRAGMENT_FILE);
@@ -49,6 +51,7 @@ public class EntityShader extends GLShader
         location_skyColor = super.getUniformLocation("skyColor");
         location_numberOfRowsInTextureAtlas = super.getUniformLocation("numberOfRowsInTextureAtlas");   // texture atlas support
         location_offset = super.getUniformLocation("offset");   // texture atlas support
+        locationPlane = super.getUniformLocation("plane");
 
         location_lightPosition = new int[20];
         location_lightColor = new int[20];
@@ -112,5 +115,10 @@ public class EntityShader extends GLShader
 
     public void loadOffset(float x, float y) {
         super.loadVector(location_offset, new Vector2f(x, y));
+    }
+
+    public void loadClipPlane(Vector4f vec4)
+    {
+        super.loadVector(locationPlane, vec4);
     }
 }

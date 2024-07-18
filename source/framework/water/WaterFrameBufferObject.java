@@ -31,7 +31,7 @@ public class WaterFrameBufferObject
 
 	public WaterFrameBufferObject() {
 		//call when loading the game
-		initializeScreenFrameBuffer();
+		//initializeScreenFrameBuffer();
 		initializeReflectionFrameBuffer();
 		initializeRefractionFrameBuffer();
 	}

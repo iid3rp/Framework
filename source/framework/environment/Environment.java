@@ -87,29 +87,29 @@ public final class Environment
             // in their skyboxes, but now it is gone in the
             // fourth index, finally.
             // took me a day to fix that :sob:
-//            GL11.glEnable(GL30.GL_CLIP_DISTANCE3);
+            GL11.glEnable(GL30.GL_CLIP_DISTANCE1);
 //
 //            // the reflection of the water
             MasterRenderer.buffer.bindReflectionFrameBuffer();
             float distance = 2 * (scene.getCamera().getPosition().y - 0);
             scene.getCamera().getPosition().y -= distance;
             scene.getCamera().invertPitch();
-            renderScene();
+            renderScene(new Vector4f(0, 1, 0, -.001f));
             scene.getCamera().getPosition().y += distance;
             scene.getCamera().invertPitch();
 //
-//            // the refraction of the water
-//            MasterRenderer.waterFrameBufferObject.bindRefractionFrameBuffer();
-//            renderScene();
+            //the refraction of the water
+            MasterRenderer.buffer.bindRefractionFrameBuffer();
+            renderScene(new Vector4f(0, -1, 0, 0));
 //
-//            GL11.glDisable(GL30.GL_CLIP_DISTANCE3);
+            GL11.glDisable(GL30.GL_CLIP_DISTANCE1);
             MasterRenderer.buffer.unbindCurrentFrameBuffer();
 
 
             //MasterRenderer.renderShadowMap(scene.getEntities(), scene.getMainLight());
             // frame buffer stuff
             //multisample.bindFrameBuffer();
-            renderScene();
+            renderScene(new Vector4f(0, -1, 0, 1000000));
             MasterRenderer.renderWaters(scene.getWaters(), scene.getCamera(), scene.getMainLight());
             //multisample.unbindFrameBuffer();
             //multisample.resolveToFrameBufferObject(GL30.GL_COLOR_ATTACHMENT0,out);
@@ -140,14 +140,14 @@ public final class Environment
         }
     }
 
-    private static void renderScene()
+    private static void renderScene(Vector4f vec4)
     {
         // the 3D space stuff...
             // the shadow thingies
         MasterRenderer.processTerrain(scene.getTerrain());
         MasterRenderer.processAllEntities(scene.getEntities());
         //MasterRenderer.processAllNormalMappedEntities(scene.getNormalMappedEntities());
-        MasterRenderer.render(scene.getLights(), scene.getCamera());
+        MasterRenderer.render(scene.getLights(), scene.getCamera(), vec4);
     }
 
     public static void run(FrameworkScript script)
