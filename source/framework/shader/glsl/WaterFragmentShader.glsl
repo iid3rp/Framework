@@ -31,8 +31,15 @@ float calculateFresnelEffect(vec3 viewDir, vec3 normal, float distanceToCamera)
 	angleFactor = pow(angleFactor, 2);
 
 	// Increase Fresnel effect based on proximity to water surface
-	float proximityFactor = clamp(1.0 - distanceToCamera / 50.0, 0.0, 1.0); // Adjust 50.0 for the desired range
+	float proximityFactor = clamp(1.0 - (distanceToCamera / 50.0), 0.0, 1.0); // Adjust 50.0 for the desired range
 	return mix(angleFactor, 1.0, proximityFactor);
+}
+
+float calculateDepth(float depth)
+{
+	float near = 5.0;
+	float far = 2500.0;
+	return 2.0 * near * far / (far + near - (2.0 * depth - 1.0) * (far - near));
 }
 
 void main(void)
@@ -41,15 +48,11 @@ void main(void)
 	vec2 refractionTextureCoordinates = vec2(perspective.x, perspective.y);
 	vec2 reflectionTextureCoordinates = vec2(perspective.x, -perspective.y);
 
-	float near = 5;
-	float far = 100000.0;
+   float near = 5;
+   float far = 2500.0;
 
-	float depth;
-	depth = texture(depthMap, refractionTextureCoordinates).r;
-	float floorDistance = 2.0 * near * far / (far + near - (2.0 * depth - 1.0) * (far - near));
-
-	depth = gl_FragCoord.z;
-	float waterDistance = 2.0 * near * far / (far + near - (2.0 * depth - 1.0) * (far - near));
+	float floorDistance = calculateDepth(texture(depthMap, refractionTextureCoordinates).r);
+	float waterDistance = calculateDepth(gl_FragCoord.z);
 	float waterDepth = floorDistance - waterDistance;
 
 	vec2 distortedTexCoords = texture(duDv, vec2(textureCoordinates.x + moveFactor, textureCoordinates.y)).rg * 0.1;
@@ -78,11 +81,11 @@ void main(void)
 	vec3 reflectedLight = reflect(normalize(fromLightVector), normal);
 	float specular = min(dot(reflectedLight, viewFactor), far);
 	specular = pow(specular, shineDamper);
-	vec3 specularHighlights = lightColor * specular * reflectivity * clamp(waterDepth / 2, 0.0, 1.0);;
+	vec3 specularHighlights = lightColor * specular * reflectivity * clamp(waterDepth / 20, 0.0, 1.0);;
 
 	outColor = mix(reflection, refraction, fresnelEffect);
-	outColor = mix(outColor, vec4(0, 0.3, 1, 1.0), 0.2) + vec4(specularHighlights, 0.0);
-	outColor.a = clamp(waterDepth / 2, 0.0, 1.0);
+	outColor = mix(outColor, vec4(0, 0.3, 1, 1.0), .5) + vec4(specularHighlights, 0.0);
+	outColor.a = clamp(waterDepth / 2, 0.0, 1);
 
 	brightColor = vec4(0);
 }

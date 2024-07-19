@@ -5,15 +5,15 @@ import framework.entity.Entity;
 import framework.entity.Light;
 import framework.model.Model;
 import framework.model.TexturedModel;
-import framework.display.MasterRenderer;
-import framework.texture.Texture;
-import framework.toolbox.GeomMath;
+import framework.renderer.MasterRenderer;
+import framework.textures.Texture;
+import framework.utils.GeomMath;
+import org.joml.Matrix4f;
+import org.joml.Vector4f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
-import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector4f;
 
 import java.util.List;
 import java.util.Map;
@@ -24,14 +24,14 @@ public class NormalMappingRenderer {
 
 	public NormalMappingRenderer(Matrix4f projectionMatrix) {
 		this.shader = new NormalMappingShader();
-		shader.start();
+		shader.bind();
 		shader.loadProjectionMatrix(projectionMatrix);
 		shader.connectTextureUnits();
-		shader.stop();
+		shader.unbind();
 	}
 
 	public void render(Map<TexturedModel, List<Entity>> entities, Vector4f clipPlane, List<Light> lights, Camera camera) {
-		shader.start();
+		shader.bind();
 		prepare(clipPlane, lights, camera);
 		for (TexturedModel model : entities.keySet()) {
 			prepareTexturedModel(model);
@@ -42,7 +42,7 @@ public class NormalMappingRenderer {
 			}
 			unbindTexturedModel();
 		}
-		shader.stop();
+		shader.bind();
 	}
 	
 	public void dispose()

@@ -37,6 +37,15 @@ public class MouseEvent
         return currentTerrainPoint;
     }
 
+    public String getCurrentTerrainPointString()
+    {
+        if(currentTerrainPoint == null)
+            return null;
+        else return "[" + currentTerrainPoint.x + ", " +
+                currentTerrainPoint.y + ", " +
+                currentTerrainPoint.z + "]";
+    }
+
     public Vector3f getCurrentRay()
     {
         return currentRay;

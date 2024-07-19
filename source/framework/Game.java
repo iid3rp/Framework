@@ -57,7 +57,7 @@ public class Game
         img.setSize(30, 30);
         img.setLocation(20, 20);
 
-        //panel.add(img);
+        panel.add(img);
         scene.setContentPane(panel);
 
 

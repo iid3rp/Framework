@@ -1,0 +1,97 @@
+package framework.normals;
+
+import org.joml.Vector3f;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class VertexNormal
+{
+	
+	private static final int NO_INDEX = -1;
+	
+	private Vector3f position;
+	private int textureIndex = NO_INDEX;
+	private int normalIndex = NO_INDEX;
+	private VertexNormal duplicateVertex = null;
+	private int index;
+	private float length;
+	private List<Vector3f> tangents = new ArrayList<Vector3f>();
+	private Vector3f averagedTangent = new Vector3f(0, 0, 0);
+	
+	protected VertexNormal(int index, Vector3f position){
+		this.index = index;
+		this.position = position;
+		this.length = position.length();
+	}
+	
+	protected void addTangent(Vector3f tangent){
+		tangents.add(tangent);
+	}
+	
+	//NEW
+	protected VertexNormal duplicate(int newIndex){
+		VertexNormal vertex = new VertexNormal(newIndex, position);
+		vertex.tangents = this.tangents;
+		return vertex;
+	}
+	
+	protected void averageTangents(){
+		if(tangents.isEmpty()){
+			return;
+		}
+		for(Vector3f tangent : tangents){
+			averagedTangent = averagedTangent.add(averagedTangent, tangent);
+		}
+		averagedTangent.normalize();
+	}
+	
+	protected Vector3f getAverageTangent(){
+		return averagedTangent;
+	}
+	
+	protected int getIndex(){
+		return index;
+	}
+	
+	protected float getLength(){
+		return length;
+	}
+	
+	protected boolean isSet(){
+		return textureIndex == NO_INDEX || normalIndex == NO_INDEX;
+	}
+	
+	protected boolean hasSameTextureAndNormal(int textureIndexOther,int normalIndexOther){
+		return textureIndexOther==textureIndex && normalIndexOther==normalIndex;
+	}
+	
+	protected void setTextureIndex(int textureIndex){
+		this.textureIndex = textureIndex;
+	}
+	
+	protected void setNormalIndex(int normalIndex){
+		this.normalIndex = normalIndex;
+	}
+
+	protected Vector3f getPosition() {
+		return position;
+	}
+
+	protected int getTextureIndex() {
+		return textureIndex;
+	}
+
+	protected int getNormalIndex() {
+		return normalIndex;
+	}
+
+	protected VertexNormal getDuplicateVertex() {
+		return duplicateVertex;
+	}
+
+	protected void setDuplicateVertex(VertexNormal duplicateVertex) {
+		this.duplicateVertex = duplicateVertex;
+	}
+
+}

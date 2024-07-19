@@ -23,7 +23,7 @@ import static org.lwjgl.opengl.GL30.*;
 public final class ModelLoader {
     private static List<Integer> vaoList = new ArrayList<>();
     private static List<Integer> vboList = new ArrayList<>();
-    private static List<Integer> textureList = new ArrayList<>();
+    protected static List<Integer> textureList = new ArrayList<>();
     private static int createVao() {
         int vaoId = glGenVertexArrays();            // initialize an empty VAO
         vaoList.add(vaoId);
@@ -146,5 +146,17 @@ public final class ModelLoader {
         for (int textureId : textureList) {
             glDeleteTextures(textureId);
         }
+    }
+
+    public static Model loadToVao(float[] pos, float[] coords, float[] normals, int[] indices, float[] tangents)
+    {
+        int id = createVao();
+        bindIndicesBuffer(indices);
+        storeDataInAttributeList(0, 3, pos);
+        storeDataInAttributeList(1, 2, coords);
+        storeDataInAttributeList(2, 3, normals);
+        storeDataInAttributeList(3, 3, tangents);
+        unbindVao();
+        return new Model(id, indices.length);
     }
 }

@@ -2,7 +2,6 @@ package framework.textures;
 
 public class Texture
 {
-    private int textureID;
     private int diffuseMap;
     private int normalMap;
     private int specularMap;
@@ -17,8 +16,10 @@ public class Texture
 
     public Texture(int id)
     {
-        this.textureID = id;
+        this.diffuseMap = id;
     }
+
+    public Texture() {}
 
     public void setSpecularMap(int specularMap)
     {
@@ -78,7 +79,7 @@ public class Texture
 
     public int getID()
     {
-        return textureID;
+        return diffuseMap;
     }
 
     public float getShineDampening()
@@ -104,11 +105,11 @@ public class Texture
 
     public int getTextureId()
     {
-        return textureID;
+        return diffuseMap;
     }
 
     public void setTextureID(int textureID)
     {
-        this.textureID = textureID;
+        this.diffuseMap = textureID;
     }
 }

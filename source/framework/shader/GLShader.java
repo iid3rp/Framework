@@ -15,6 +15,7 @@ import static org.lwjgl.opengl.GL20.*;
 
 public abstract class GLShader
 {
+    public static final int lights = 20;
     private String vertexFile, fragmentFile;
     private int programId, vertexShaderId, fragmentShaderId;
 

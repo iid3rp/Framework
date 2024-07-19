@@ -81,6 +81,6 @@ public class EntityRenderer {
     private void prepareEntity(Entity entity) {
         Matrix4f transformationMatrix = GeomMath.createTransformationMatrix(entity.getPosition(), entity.getRotationX(), entity.getRotationY(), entity.getRotationZ(), entity.getScale());
         staticShader.loadTransformationMatrix(transformationMatrix);
-        staticShader.loadOffset(entity.getTextureAtlasXOffset(), entity.getTextureAtlasYOffset());
+        staticShader.loadOffset(entity.getTextureXOffset(), entity.getTextureYOffset());
     }
 }

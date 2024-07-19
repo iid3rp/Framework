@@ -53,12 +53,12 @@ public class Entity {
         this.rotationZ += dz;
     }
 
-    public float getTextureAtlasXOffset() {
+    public float getTextureXOffset() {
         int column = textureAtlasIndex % texturedModel.getTexture().getNumberOfRows();
         return (float) column / (float) texturedModel.getTexture().getNumberOfRows();
     }
 
-    public float getTextureAtlasYOffset() {
+    public float getTextureYOffset() {
         int row = textureAtlasIndex / texturedModel.getTexture().getNumberOfRows();
         return (float) row / (float) texturedModel.getTexture().getNumberOfRows();
     }

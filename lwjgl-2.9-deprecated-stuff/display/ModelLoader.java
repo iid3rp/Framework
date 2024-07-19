@@ -60,7 +60,7 @@ public class ModelLoader
         return new Model(id, indices.length);
     }
 
-    public static int loadToVAO(float[] pos, float[] coords)
+    public static int loadToVao(float[] pos, float[] coords)
     {
         int id = createVAO();
         storeDataInAttributes(0, 2, pos);

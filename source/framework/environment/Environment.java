@@ -82,11 +82,6 @@ public final class Environment
 
 
             // frame buffers thingy:
-            // apparently, the rendering process in this stuff is that,
-            // the first 3 clips [0, 1, 2] have certain black spots
-            // in their skyboxes, but now it is gone in the
-            // fourth index, finally.
-            // took me a day to fix that :sob:
             GL11.glEnable(GL30.GL_CLIP_DISTANCE1);
 //
 //            // the reflection of the water
@@ -94,16 +89,16 @@ public final class Environment
             float distance = 2 * (scene.getCamera().getPosition().y - 0);
             scene.getCamera().getPosition().y -= distance;
             scene.getCamera().invertPitch();
-            renderScene(new Vector4f(0, 1, 0, -.001f));
-            scene.getCamera().getPosition().y += distance;
-            scene.getCamera().invertPitch();
+            renderScene(new Vector4f(0, 1, 0, 0));
 //
             //the refraction of the water
+            scene.getCamera().getPosition().y += distance;
+            scene.getCamera().invertPitch();
             MasterRenderer.buffer.bindRefractionFrameBuffer();
             renderScene(new Vector4f(0, -1, 0, 0));
 //
-            GL11.glDisable(GL30.GL_CLIP_DISTANCE1);
             MasterRenderer.buffer.unbindCurrentFrameBuffer();
+            GL11.glDisable(GL30.GL_CLIP_DISTANCE1);
 
 
             //MasterRenderer.renderShadowMap(scene.getEntities(), scene.getMainLight());
