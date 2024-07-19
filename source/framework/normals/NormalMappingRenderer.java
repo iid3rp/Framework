@@ -53,7 +53,7 @@ public class NormalMappingRenderer {
 	private void prepareTexturedModel(TexturedModel model)
 	{
 		Model rawModel = model.getModel();
-		GL30.glBindVertexArray(rawModel.getVaoID());
+		GL30.glBindVertexArray(rawModel.getVaoId());
 		GL20.glEnableVertexAttribArray(0);
 		GL20.glEnableVertexAttribArray(1);
 		GL20.glEnableVertexAttribArray(2);
@@ -88,7 +88,7 @@ public class NormalMappingRenderer {
 
 	private void prepare(Vector4f clipPlane, List<Light> lights, Camera camera) {
 		shader.loadClipPlane(clipPlane);
-		shader.loadSkyColor(MasterRenderer.red, MasterRenderer.green, MasterRenderer.blue);
+		shader.loadSkyColor(MasterRenderer.SKY_RED, MasterRenderer.SKY_GREEN, MasterRenderer.SKY_BLUE);
 		Matrix4f viewMatrix = GeomMath.createViewMatrix(camera);
 		
 		shader.loadLights(lights, viewMatrix);

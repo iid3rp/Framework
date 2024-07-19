@@ -28,9 +28,9 @@ public class MasterRenderer {
     private static final float FOV = 70;
     public static final float NEAR_PLANE = 0.1f;
     public static final float FAR_PLANE = 100_000;
-    private static final float SKY_RED = 0.95f;
-    private static final float SKY_GREEN = 0.9f;
-    private static final float SKY_BLUE = 0.67f;
+    public static final float SKY_RED = 0.95f;
+    public static final float SKY_GREEN = 0.9f;
+    public static final float SKY_BLUE = 0.67f;
 
     private static EntityShader entityShader;
     private static EntityRenderer entityRenderer;

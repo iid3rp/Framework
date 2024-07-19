@@ -18,7 +18,8 @@ public class NormalMappedObjLoader {
 
 	private static final String RES_LOC = "objects/";
 
-	public static Model loadObject(String objFileName) {
+	public static Model loadObject(String objFileName)
+	{
 		BufferedReader isr;
 		InputStream objFile = Resources.class.getResourceAsStream(RES_LOC + objFileName + ".obj");
         assert objFile != null;
