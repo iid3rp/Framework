@@ -95,7 +95,7 @@ public class MasterRenderer {
         entityShader.bind();
         entityShader.loadClipPlane(vec4);
         entityShader.loadSkyColor(SKY_RED, SKY_GREEN, SKY_BLUE);
-        entityShader.loadLights(lights);
+        entityShader.loadLights(lights, camera);
         entityShader.loadViewMatrix(camera);
         entityRenderer.render(entities);
         entityShader.unbind();
@@ -113,6 +113,22 @@ public class MasterRenderer {
 
         entities.clear();
         terrainList.clear();
+    }
+
+    public static void processNormalMappedEntity(Entity entity)
+    {
+        TexturedModel texturedModel = entity.getTexturedModel();
+        List<Entity> batch = entities.get(texturedModel);
+        if(batch != null)
+        {
+            batch.add(entity);
+        }
+        else
+        {
+            List<Entity> newBatch = new ArrayList<>();
+            newBatch.add(entity);
+            entities.put(texturedModel, newBatch);
+        }
     }
 
     public static void processTerrain(Terrain terrain) {

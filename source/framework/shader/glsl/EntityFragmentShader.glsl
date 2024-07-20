@@ -3,16 +3,17 @@
 const int lightAmount = 20;
 
 in vec2 pass_textureCoords;
-in vec3 surfaceNormal;
 in vec3 toLightVector[lightAmount];
+in vec3 surfaceNormal;
 in vec3 toCameraVector;
 in float visibility;
 
 layout(location = 0) out vec4 out_Color;
 
 uniform sampler2D modelTexture;
-uniform vec3 attenuation[lightAmount];
+uniform sampler2D normalMap;
 uniform vec3 lightColor[lightAmount];
+uniform vec3 attenuation[lightAmount];
 uniform float shineDamper;
 uniform float reflectivity;
 uniform vec3 skyColor;
@@ -23,15 +24,34 @@ const int pcfCount = 4;
 const float totalTexels = pow((pcfCount * 2 + 1), 2);
 const float mapSize = 2048;
 
-void main(void) {
+// hypothetically we have some kind of normality value
+const float normality = 1;
 
-    vec3 unitNormal = normalize(surfaceNormal); // normalize makes the size of the vector = 1. Only direction of the vector matters here. Size is irrelevant
+vec3 normalTexture()
+{
+    vec4 normalMapValue = texture(normalMap, pass_textureCoords);
+
+    if(normalMapValue.r == 0 || normalMapValue.g == 0 || normalMapValue.b == 0)
+        return normalize(surfaceNormal);
+
+    normalMapValue = (normalMapValue * 2) - 1;
+    normalMapValue *= normality;
+    return normalize(normalMapValue.xyz);
+}
+
+void main(void)
+{
+    vec3 unitNormal = normalTexture(); // normalize makes the size of the vector = 1. Only direction of the vector matters here. Size is irrelevant
     vec3 unitVectorToCamera = normalize(toCameraVector);
+
     vec3 totalDiffuse = vec3(0.0);
     vec3 totalSpecular = vec3(0.0);
 
     for(int i = 0; i < lightAmount; i++)
     {
+        if(lightColor[i] == vec3(0, 0, 0))
+            continue;
+
         float distance = length(toLightVector[i]);
         float setFactor = attenuation[i].x + (attenuation[i].y * distance) + (attenuation[i].z * pow(distance, 2));
 
@@ -58,7 +78,7 @@ void main(void) {
     }
     // for shadows later :))
     //totalDiffuse = max(totalDiffuse * lightFactor, 0.3);
-    totalDiffuse = max(totalDiffuse, 0.5);
+    totalDiffuse = max(totalDiffuse, 0.3);
 
 
     vec4 textureColor = texture(modelTexture, pass_textureCoords);

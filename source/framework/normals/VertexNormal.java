@@ -9,7 +9,6 @@ public class VertexNormal
 {
 	
 	private static final int NO_INDEX = -1;
-	
 	private Vector3f position;
 	private int textureIndex = NO_INDEX;
 	private int normalIndex = NO_INDEX;
@@ -59,11 +58,11 @@ public class VertexNormal
 	}
 	
 	public boolean isSet(){
-		return textureIndex == NO_INDEX || normalIndex == NO_INDEX;
+		return textureIndex != NO_INDEX && normalIndex != NO_INDEX;
 	}
 	
 	public boolean hasSameTextureAndNormal(int textureIndexOther, int normalIndexOther){
-		return textureIndexOther==textureIndex && normalIndexOther==normalIndex;
+		return textureIndexOther == textureIndex && normalIndexOther == normalIndex;
 	}
 	
 	public void setTextureIndex(int textureIndex){

@@ -15,6 +15,8 @@ public class EntityShader extends GLShader
     private static final String VERTEX_FILE = "EntityVertexShader.glsl";
     private static final String FRAGMENT_FILE = "EntityFragmentShader.glsl";
 
+    private int locationModelTexture;
+    private int locationNormalMap;
     private int location_transformationMatrix;
     private int location_projectionMatrix;
     private int location_viewMatrix;
@@ -28,6 +30,7 @@ public class EntityShader extends GLShader
     private int location_offset;
     private int[] locationAttenuation;
     private int locationPlane;
+    private int locationNormalAvailability;
 
     public EntityShader() {
         super(VERTEX_FILE, FRAGMENT_FILE);
@@ -38,6 +41,7 @@ public class EntityShader extends GLShader
         super.bindAttribute(0, "position");
         super.bindAttribute(1, "textureCoords");
         super.bindAttribute(2, "normal");
+        super.bindAttribute(3, "tangent");
     }
 
     @Override
@@ -52,6 +56,9 @@ public class EntityShader extends GLShader
         location_numberOfRowsInTextureAtlas = super.getUniformLocation("numberOfRowsInTextureAtlas");   // texture atlas support
         location_offset = super.getUniformLocation("offset");   // texture atlas support
         locationPlane = super.getUniformLocation("plane");
+        locationModelTexture = super.getUniformLocation("modelTexture");
+        locationNormalMap = super.getUniformLocation("normalMap");
+        locationNormalAvailability = super.getUniformLocation("hasNormal");
 
         location_lightPosition = new int[20];
         location_lightColor = new int[20];
@@ -78,12 +85,13 @@ public class EntityShader extends GLShader
         super.loadMatrix(location_viewMatrix, viewMatrix);
     }
 
-    public void loadLights(List<Light> lights) {
+    public void loadLights(List<Light> lights, Camera camera) {
+        Matrix4f viewMatrix = GeomMath.createViewMatrix(camera);
         for(int i = 0; i < 20; i++)
         {
             if(i < lights.size())
             {
-                super.loadVector(location_lightPosition[i], lights.get(i).getPosition());
+                super.loadVector(location_lightPosition[i], getEyeSpacePosition(lights.get(i), viewMatrix));
                 super.loadVector(location_lightColor[i], lights.get(i).getColor());
                 super.loadVector(locationAttenuation[i], lights.get(i).getAttenuation());
             }
@@ -96,7 +104,24 @@ public class EntityShader extends GLShader
         }
     }
 
-    public void loadSpecularLight(float shineDamper, float reflectivity) {
+    private Vector3f getEyeSpacePosition(Light light, Matrix4f viewMatrix){
+        Vector3f position = light.getPosition();
+        Vector4f eyeSpacePos = new Vector4f(position.x,position.y, position.z, 1f);
+        viewMatrix.transform(eyeSpacePos, eyeSpacePos);
+        return new Vector3f(eyeSpacePos.x,eyeSpacePos.y,eyeSpacePos.z);
+    }
+
+    protected void loadNormalMap(boolean flag)
+    {
+        super.loadBoolean(locationNormalAvailability, flag);
+    }
+
+    public void connectTextureUnits(){
+        super.loadInt(locationModelTexture, 0);
+        super.loadInt(locationNormalMap, 1);
+    }
+
+    public void loadShineVariables(float shineDamper, float reflectivity) {
         super.loadFloat(location_shineDamper, shineDamper);
         super.loadFloat(location_reflectivity, reflectivity);
     }

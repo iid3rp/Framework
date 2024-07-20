@@ -42,7 +42,6 @@ public class NormalMappingRenderer {
 			}
 			unbindTexturedModel();
 		}
-		shader.bind();
 	}
 	
 	public void dispose()
@@ -86,7 +85,8 @@ public class NormalMappingRenderer {
 		shader.loadOffset(entity.getTextureXOffset(), entity.getTextureYOffset());
 	}
 
-	private void prepare(Vector4f clipPlane, List<Light> lights, Camera camera) {
+	private void prepare(Vector4f clipPlane, List<Light> lights, Camera camera)
+	{
 		shader.loadClipPlane(clipPlane);
 		shader.loadSkyColor(MasterRenderer.SKY_RED, MasterRenderer.SKY_GREEN, MasterRenderer.SKY_BLUE);
 		Matrix4f viewMatrix = GeomMath.createViewMatrix(camera);

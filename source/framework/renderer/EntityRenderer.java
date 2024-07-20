@@ -30,6 +30,7 @@ public class EntityRenderer {
         this.staticShader = staticShader;
         staticShader.bind();
         staticShader.loadProjectionMatrix(projectionMatrix);
+        staticShader.connectTextureUnits();
         staticShader.unbind();
     }
 
@@ -42,7 +43,6 @@ public class EntityRenderer {
                 prepareEntity(entity);
                 glDrawElements(GL_TRIANGLES, texturedModel.getModel().getVertexCount(), GL_UNSIGNED_INT, 0);    // Draw using index buffer and triangles
             }
-
             unbindTexturedModel();
         }
     }
@@ -54,9 +54,9 @@ public class EntityRenderer {
         glEnableVertexAttribArray(0);   // VAO 0 = vertex spacial coordinates
         glEnableVertexAttribArray(1);   // VAO 1 = texture coordinates
         glEnableVertexAttribArray(2);   // VAO 2 = normals
+        glEnableVertexAttribArray(3);   // VAO 3 = tangents
 
         Texture texture = texturedModel.getTexture();
-
         staticShader.loadNumberOfRowsInTextureAtlas(texture.getNumberOfRows());
 
         if (texture.hasTransparency()) {
@@ -64,10 +64,11 @@ public class EntityRenderer {
         }
 
         staticShader.loadFakeLighting(texture.isUseFakeLighting());
-        staticShader.loadSpecularLight(texture.getShineDampening(), texture.getReflectivity());
+        staticShader.loadShineVariables(texture.getShineDampening(), texture.getReflectivity());
         glActiveTexture(GL_TEXTURE0);
-        int textureId = texturedModel.getTexture().getTextureId();
-        glBindTexture(GL_TEXTURE_2D, textureId);    // sampler2D in fragment shader  uses texture bank 0 by default
+        glBindTexture(GL_TEXTURE_2D, texturedModel.getTexture().getTextureId());   // sampler2D in fragment shader uses texture bank 0 by default
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, texturedModel.getTexture().getNormalMap()); // but then were using normals in the entities...
     }
 
     private void unbindTexturedModel() {
@@ -75,6 +76,7 @@ public class EntityRenderer {
         glDisableVertexAttribArray(0);  // VAO 0 = vertex spacial coordinates
         glDisableVertexAttribArray(1);  // VAO 1 = texture coordinates
         glDisableVertexAttribArray(2);  // VAO 2 = normals
+        glDisableVertexAttribArray(3);  // VAO 3 = tangents
         glBindVertexArray(0);   // Unbind the VAO
     }
 

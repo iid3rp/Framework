@@ -21,7 +21,7 @@ public class NormalMappedObjLoader {
 	public static Model loadObject(String objFileName)
 	{
 		BufferedReader isr;
-		InputStream objFile = Resources.class.getResourceAsStream(RES_LOC + objFileName + ".obj");
+		InputStream objFile = Resources.class.getResourceAsStream(RES_LOC + objFileName);
         assert objFile != null;
         isr = new BufferedReader(new InputStreamReader(objFile));
         BufferedReader reader = new BufferedReader(isr);
@@ -107,11 +107,13 @@ public class NormalMappedObjLoader {
 
 	private static VertexNormal processVertex(String[] vertex, List<VertexNormal> vertices,
 													  List<Integer> indices) {
+
 		int index = Integer.parseInt(vertex[0]) - 1;
 		VertexNormal currentVertex = vertices.get(index);
 		int textureIndex = Integer.parseInt(vertex[1]) - 1;
 		int normalIndex = Integer.parseInt(vertex[2]) - 1;
-		if (currentVertex.isSet()) {
+
+		if (!currentVertex.isSet()) {
 			currentVertex.setTextureIndex(textureIndex);
 			currentVertex.setNormalIndex(normalIndex);
 			indices.add(index);

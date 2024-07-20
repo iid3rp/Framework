@@ -7,7 +7,9 @@ import framework.entity.Light;
 import framework.entity.Player;
 import framework.environment.Environment;
 import framework.environment.Scene;
+import framework.loader.TextureLoader;
 import framework.model.TexturedModel;
+import framework.normals.NormalMappedObjLoader;
 import framework.scripting.Count;
 import framework.swing.ContentPane;
 import framework.swing.GUITexture;
@@ -52,14 +54,6 @@ public class Game
         ContentPane panel = new ContentPane();
         Environment.setScene(scene);
 
-        GUITexture img = new PictureBox();
-        img.setBackgroundImage(ModelLoader.loadTexture("brat.png"));
-        img.setSize(30, 30);
-        img.setLocation(20, 20);
-
-        panel.add(img);
-        scene.setContentPane(panel);
-
 
         Light lighting = new Light(new Vector3f(1_000_000, 1_000_000, 1_000_000), new Vector3f(1f, 1f, 1f));
 
@@ -81,12 +75,8 @@ public class Game
 
         scene.setTerrain(terrain);
 
-        TexturedModel barrel = new TexturedModel(ObjectLoader.loadObjModel("barrel.obj"),
-                new Texture(ModelLoader.loadTexture("brat.png")));
-        barrel.getTexture().setNormalMap(ModelLoader.loadTexture("barrelNormal.png"));
-        barrel.getTexture().setSpecularMap(ModelLoader.loadTexture("bratMap.png"));
-        barrel.getTexture().setReflectivity(.5f);
-        barrel.getTexture().setShineDampening(10);
+        TexturedModel barrel = new TexturedModel(NormalMappedObjLoader.loadObject("barrel.obj"),
+                TextureLoader.generateTexture("barrel.png"));
         Entity barrelEntity = new Entity(barrel, new Vector3f(0, 200, 0), 0, 0, 0, 1);
 
 
@@ -102,6 +92,14 @@ public class Game
         scene.getEntities().add(player);
         //scene.getLights().add(player.getLight());
         scene.setCamera(player.getCamera());
+
+        GUITexture img = new PictureBox();
+        img.setBackgroundImage(barrel.getTexture().getNormalMap());
+        img.setSize(300, 300);
+        img.setLocation(20, 20);
+
+        //panel.add(img);
+        scene.setContentPane(panel);
 
 
         //scene.add(new WaterTile(75, -75, 0));

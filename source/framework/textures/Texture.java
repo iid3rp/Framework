@@ -17,9 +17,14 @@ public class Texture
     public Texture(int id)
     {
         this.diffuseMap = id;
+        this.normalMap = 0;
+        this.specularMap = 0;
     }
 
-    public Texture() {}
+    public Texture()
+    {
+        diffuseMap = normalMap = specularMap = 0;
+    }
 
     public void setSpecularMap(int specularMap)
     {

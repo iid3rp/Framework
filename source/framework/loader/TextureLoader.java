@@ -14,148 +14,120 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL14.GL_TEXTURE_LOD_BIAS;
 import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 
-public class TextureLoader {
-    private int width, height;
-    private int textureId;
+public class TextureLoader
+{
 
-    public TextureLoader(String path) {
-        textureId = loadTexture(path);
-    }
-
-    private Texture generateTexture(String path)
-    {
+    public static Texture generateTexture(String path) {
         Texture texture;
-        int[] pixels = new int[0];
-        try
-        {
+        int[] pixels;
+        int width;
+        int height;
+
+        try {
             BufferedImage image = ImageIO.read(
-                    Objects.requireNonNull(
-                            Resources.class.getResourceAsStream("textures/" + path)));
+                    Objects.requireNonNull(Resources.class.getResourceAsStream("textures/" + path))
+            );
             width = image.getWidth();
             height = image.getHeight();
             pixels = image.getRGB(0, 0, width, height, null, 0, width);
-        }
-        catch(IOException e)
-        {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        finally
-        {
-            // the textures will be set here
-            // diffuse maps are the textures itself
-            // normal maps will be based on x, y, and z components
-            // specular maps will have three elements:
-            //      -> specular / reflectivity
-            //      -> fake lighting
-            //      -> blooming intensity
-            int[][] textureData = new int[][]
-            {
-                    new int[width * height], // diffuse maps
-                    new int[width * height], // normal (bump) maps
-                    new int[width * height]  // specular maps
-            };
 
-            for(int i = 0; i < width * height; i++)
-            {
-                byte a = (byte) ((pixels[i] & 0xff000000) >> 24);
-                byte r = (byte) ((pixels[i] & 0xff0000) >> 16);
-                byte g = (byte) ((pixels[i] & 0xff00) >> 8);
-                byte b = (byte) (pixels[i] & 0xff);
+        int[][] textureData = new int[3][width * height]; // Diffuse, normal, and specular maps
 
-                // diffuse making, simple implementation
-                textureData[0][i] = a << 24 | b << 16 | g << 8 | r; // diffuse map goes here
+        int[][] sobelX = {
+                {-1, 0, 1},
+                {-2, 0, 2},
+                {-1, 0, 1}
+        };
 
-                // normal mapping... will have a different approach
-                byte xPlus = 0;
-                byte xMinus = 0;
-                byte y = (byte) ((byte) ((r + g + b) / 3) / (255 / a));
-                byte zPlus = 0;
-                byte zMinus = 0;
+        int[][] sobelY = {
+                {-1, -2, -1},
+                { 0,  0,  0},
+                { 1,  2,  1}
+        };
 
-                // making sure that it will be on bounds
-                if(i + 1 <= width * height)
-                    xPlus =  (byte) ((pixels[i + 1] & 0xff0000) >> 16);
-                if(i - 1 >= 0)
-                    xMinus =  (byte) ((pixels[i - 1] & 0xff0000) >> 16);
-                if(i + width <= width * height)
-                    zPlus = (byte) (pixels[i] & 0xff);
-                if(i - width >= 0)
-                    zMinus = (byte) (pixels[i] & 0xff);
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int i = y * width + x;
+                int pixel = pixels[i];
+                int a = (pixel >> 24) & 0xFF;
+                int r = (pixel >> 16) & 0xFF;
+                int g = (pixel >> 8) & 0xFF;
+                int b = pixel & 0xFF;
 
-                // checking the normality of the height based on its y value...
-                byte x,  _x, __x;
-                byte z, _z, __z;
-                if(xPlus > y)
-                    _x = (byte) (y - (xPlus - y));
-                else _x = (byte) (y + (y - xPlus));
-                if(xMinus > y)
-                    __x = (byte) (y - (xMinus - y));
-                else __x = (byte) (y + (y - xMinus));
-                if(zPlus > y)
-                    _z = (byte) (y - (zPlus - y));
-                else _z = (byte) (y + (y - zPlus));
-                if(zMinus > y)
-                    __z = (byte) (y - (zMinus - y));
-                else __z = (byte) (y + (y - zMinus));
-                x = (byte) ((byte) (_x + __x) / 2);
-                z = (byte) ((byte) (_z + __z) / 2);
+                // Diffuse map
+                textureData[0][i] = (a << 24) | (r << 16) | (g << 8) | b;
 
-                textureData[1][i] = 255 | z << 16 | y << 8 | x; // normal map goes here
+                // Apply Sobel filter to generate normal map
+                float gx = 0, gy = 0;
 
-                // specular mapping will have a different approach
-                byte spec;
-                byte fake;
-                byte bloom;
+                for (int ky = -1; ky <= 1; ky++) {
+                    for (int kx = -1; kx <= 1; kx++) {
+                        int sampleX = Math.min(Math.max(x + kx, 0), width - 1);
+                        int sampleY = Math.min(Math.max(y + ky, 0), height - 1);
+                        int sampleIndex = sampleY * width + sampleX;
+                        int samplePixel = pixels[sampleIndex];
+                        int sampleGray = (samplePixel >> 16) & 0xFF; // Using a red channel for grayscale
 
-                byte average = (byte) ((byte) ((r + g + b) / 3) / (255 / a)); // average color
-                spec = average; // specular
-                fake = average; // fake
+                        gx += sampleGray * sobelX[ky + 1][kx + 1];
+                        gy += sampleGray * sobelY[ky + 1][kx + 1];
+                    }
+                }
 
-                // bloom defines in which how strong it is based on the
-                // highest spectrum regardless of the color channel.
-                if(r > g)
-                    if(r > b)
-                        bloom = r;
-                    else bloom = b;
-                else if(g > b)
-                    bloom = g;
-                else bloom = b;
+                float magnitude = (float) Math.sqrt(gx * gx + gy * gy);
+                float scale = 255.0f / magnitude;
 
-                textureData[2][i] = 255 | bloom << 16 | fake << 8 | spec; // specular map goes here
+                int nx = (int) ((gx * scale + 255) / 2);
+                int ny = (int) ((gy * scale + 255) / 2);
+                int nz = 255;
+
+                textureData[1][i] = (a << 24) | (nz << 16) | (ny << 8) | nx;
+
+                // Specular mapping
+                byte average = (byte) ((r + g + b) / 3);
+                byte spec = average; // Specular
+                byte fake = average; // Fake lighting
+
+                // Bloom intensity
+                byte bloom = (byte) Math.max(Math.max(r, g), b);
+
+                textureData[2][i] = (255 << 24) | (bloom << 16) | (fake << 8) | spec;
             }
-
-            int[] textures = new int[textureData.length];
-
-            // create the integer as the id
-            for(int i = 0; i < textures.length; i++)
-            {
-                textures[i] = glGenTextures();
-                glBindTexture(GL_TEXTURE_2D, textures[i]);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE,
-                        Buffer.createIntBuffer(textureData[i]));
-                glBindTexture(GL_TEXTURE_2D, 0);
-
-                // add things into the ModelLoader class
-                glGenerateMipmap(GL_TEXTURE_2D);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-                glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, -0.4f);
-                ModelLoader.textureList.add(textures[i]);
-            }
-
-            // create your own texture with all the stuff needed with just one reference
-            texture = new Texture();
-            texture.setTextureID(textures[0]);
-            texture.setNormalMap(textures[1]);
-            texture.setSpecularMap(textures[2]);
         }
+
+        int[] textures = new int[3];
+
+        // Create textures
+        for (int i = 0; i < textures.length; i++) {
+            textures[i] = glGenTextures();
+            glBindTexture(GL_TEXTURE_2D, textures[i]);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE,
+                    Buffer.createIntBuffer(textureData[i]));
+            glBindTexture(GL_TEXTURE_2D, 0);
+
+            glGenerateMipmap(GL_TEXTURE_2D);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, -0.4f);
+            ModelLoader.textureList.add(textures[i]);
+        }
+
+        texture = new Texture();
+        texture.setTextureID(textures[0]);
+        texture.setNormalMap(textures[1]);
+        texture.setSpecularMap(textures[2]);
+
         return texture;
     }
 
-    private int loadTexture(String path) {
+    public static int loadTexture(String path) {
         int[] pixels = new int[0];
         int result;
+        int width = 0;
+        int height = 0;
         try
         {
             BufferedImage image = ImageIO.read(
@@ -193,17 +165,5 @@ public class TextureLoader {
             glBindTexture(GL_TEXTURE_2D, 0);
         }
         return result;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public int getTextureId() {
-        return textureId;
     }
 }

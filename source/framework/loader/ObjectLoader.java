@@ -45,7 +45,7 @@ public class ObjectLoader
     public static Model loadObject(String objFileName)
     {
         BufferedReader isr;
-        InputStream objFile = Resources.class.getResourceAsStream("objects/" + objFileName + ".obj");
+        InputStream objFile = Resources.class.getResourceAsStream("objects/" + objFileName);
         assert objFile != null;
         isr = new BufferedReader(new InputStreamReader(objFile));
         BufferedReader reader = new BufferedReader(isr);
@@ -88,7 +88,7 @@ public class ObjectLoader
                 VertexNormal v0 = processVertex(vertex1, vertices, indices);
                 VertexNormal v1 = processVertex(vertex2, vertices, indices);
                 VertexNormal v2 = processVertex(vertex3, vertices, indices);
-                calculateTangents(v0, v1, v2, textures);//NEW
+                calculateTangents(v0, v1, v2, textures); //NEW
                 line = reader.readLine();
             }
             reader.close();
@@ -119,8 +119,8 @@ public class ObjectLoader
         Vector2f deltaUv2 = uv0.sub(uv2, uv0);
 
         float r = 1.0f / (deltaUv1.x * deltaUv2.y - deltaUv1.y * deltaUv2.x);
-        deltaPos1.normalize(deltaUv2.y);
-        deltaPos2.normalize(deltaUv1.y);
+        deltaPos1.normalize();
+        deltaPos2.normalize();
         Vector3f tangent = deltaPos2.sub(deltaPos1, deltaPos2);
         tangent.normalize(r);
         Matrix4f f;
