@@ -5,6 +5,8 @@ import framework.entity.Camera;
 import framework.entity.Entity;
 import framework.entity.Light;
 import framework.model.TexturedModel;
+import framework.normals.NormalMappingRenderer;
+import framework.normals.NormalMappingShader;
 import framework.shader.EntityShader;
 import framework.shader.TerrainShader;
 import framework.skybox.SkyboxRenderer;
@@ -42,7 +44,6 @@ public class MasterRenderer {
     private static List<Terrain> terrainList;
     private static WaterShader waterShader;
     private static WaterRenderer waterRenderer;
-
     public static WaterFrameBufferObject buffer;
 
     public static void setRenderer()

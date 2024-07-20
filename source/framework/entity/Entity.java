@@ -110,4 +110,9 @@ public class Entity {
     public void setScale(float scale) {
         this.scale = scale;
     }
+
+    public void transformPosition(Vector3f vec3)
+    {
+        transformPosition(vec3.x, vec3.y, vec3.z);
+    }
 }

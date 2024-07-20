@@ -20,6 +20,7 @@ import framework.textures.TerrainTexturePack;
 import framework.textures.Texture;
 import framework.water.WaterTile;
 import org.joml.Vector3f;
+import org.lwjgl.openxr.MSFTSpatialAnchorPersistence;
 
 import java.util.Random;
 
@@ -75,11 +76,13 @@ public class Game
 
         scene.setTerrain(terrain);
 
-        TexturedModel barrel = new TexturedModel(NormalMappedObjLoader.loadObject("barrel.obj"),
+        TexturedModel barrel = new TexturedModel(ObjectLoader.loadObjModel("barrel.obj"),
                 TextureLoader.generateTexture("barrel.png"));
+        barrel.getTexture().setReflectivity(2);
         Entity barrelEntity = new Entity(barrel, new Vector3f(0, 200, 0), 0, 0, 0, 1);
-
-
+        Entity reference = new Entity(barrel, new Vector3f(212, 0, 607), 0, 0, 0, 1);
+        reference.getTexturedModel().getTexture().setNormalMap(0);
+        scene.getEntities().add(reference);
         Random random = new Random();
         int progress = 0;
 
