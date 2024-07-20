@@ -1,5 +1,7 @@
 package framework.textures;
 
+import java.nio.IntBuffer;
+
 public class Texture
 {
     private int diffuseMap;
@@ -13,6 +15,9 @@ public class Texture
     private boolean hasTransparency;
     private boolean useFakeLighting;
     private boolean hasSpecularMap;
+    private IntBuffer diffuseBuffer;
+    private IntBuffer normalBuffer;
+    private IntBuffer specularBuffer;
 
     public Texture(int id)
     {
@@ -116,5 +121,35 @@ public class Texture
     public void setTextureID(int textureID)
     {
         this.diffuseMap = textureID;
+    }
+
+    public void setDiffuseBuffer(IntBuffer diffuseBuffer)
+    {
+        this.diffuseBuffer = diffuseBuffer;
+    }
+
+    public IntBuffer getDiffuseBuffer()
+    {
+        return diffuseBuffer;
+    }
+
+    public void setNormalBuffer(IntBuffer normalBuffer)
+    {
+        this.normalBuffer = normalBuffer;
+    }
+
+    public IntBuffer getNormalBuffer()
+    {
+        return normalBuffer;
+    }
+
+    public void setSpecularBuffer(IntBuffer specularBuffer)
+    {
+        this.specularBuffer = specularBuffer;
+    }
+
+    public IntBuffer getSpecularBuffer()
+    {
+        return specularBuffer;
     }
 }
