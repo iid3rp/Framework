@@ -58,7 +58,6 @@ public class EntityShader extends GLShader
         locationPlane = super.getUniformLocation("plane");
         locationModelTexture = super.getUniformLocation("modelTexture");
         locationNormalMap = super.getUniformLocation("normalMap");
-        locationNormalAvailability = super.getUniformLocation("hasNormal");
 
         location_lightPosition = new int[20];
         location_lightColor = new int[20];

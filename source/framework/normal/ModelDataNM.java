@@ -1,4 +1,4 @@
-package framework.normals;
+package framework.normal;
 
 public class ModelDataNM {
 

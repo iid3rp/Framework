@@ -74,12 +74,14 @@ public class Game
 
         scene.setTerrain(terrain);
 
-        TexturedModel barrel = new TexturedModel(ObjectLoader.loadObjModel("barrel.obj"),
-                TextureLoader.generateTexture("brat.png"));
-        barrel.getTexture().setReflectivity(2);
+        TexturedModel barrel = new TexturedModel(ObjectLoader.loadObject("barrel.obj"),
+                TextureLoader.generateTexture("barrel.png"));
+        barrel.getTexture().setNormalMap(ModelLoader.loadTexture("barrelNormal.png"));
+        barrel.getTexture().setReflectivity(.002f);
+        barrel.getTexture().setShineDampening(1);
         Entity barrelEntity = new Entity(barrel, new Vector3f(0, 200, 0), 0, 0, 0, 1);
         Entity reference = new Entity(barrel, new Vector3f(212, 0, 607), 0, 0, 0, 1);
-        scene.getEntities().add(reference);
+        scene.getEntities().add(barrelEntity);
         Random random = new Random();
         int progress = 0;
 
@@ -98,7 +100,7 @@ public class Game
         img.setSize(300, 300);
         img.setLocation(20, 20);
 
-        panel.add(img);
+        //panel.add(img);
         scene.setContentPane(panel);
 
 
@@ -109,7 +111,7 @@ public class Game
         chrysalis.getTexture().setReflectivity(.1f);
 
         Entity entity = new Entity(new TexturedModel(
-                ObjectLoader.loadObjModel("crate.obj"),
+                ObjectLoader.loadObject("crate.obj"),
                 new Texture(ModelLoader.loadTexture("brat.png"))),
                 new Vector3f(0, 0, 0), 0f, 0f, 0f, 1f);
         //scene.add(entity);

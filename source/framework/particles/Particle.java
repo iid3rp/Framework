@@ -1,10 +1,10 @@
 package framework.particles;
 
+import framework.Display.DisplayManager;
 import framework.entity.Camera;
 import framework.entity.Player;
-import framework.display.DisplayManager;
-import org.lwjgl.util.vector.Vector2f;
-import org.lwjgl.util.vector.Vector3f;
+import org.joml.Vector2f;
+import org.joml.Vector3f;
 
 public class Particle {
     private Vector3f position;
@@ -148,13 +148,13 @@ public class Particle {
 
     protected boolean update(Camera camera)
     {
-        velocity.y += Player.GRAVITY * gravity * DisplayManager.getFrameTimeSeconds();
+        velocity.y += Player.GRAVITY * gravity * DisplayManager.getDeltaInSeconds();
         change.set(velocity);
-        change.scale(DisplayManager.getFrameTimeSeconds());
-        Vector3f.add(change, position, position);
-        distance = Vector3f.sub(camera.getPosition(),position, null).lengthSquared();
+        change.mul(DisplayManager.getDeltaInSeconds());
+        position.add(change);
+        distance = position.sub(camera.getPosition()).lengthSquared();
         updateTextureCoordinates();
-        elapsedTime += DisplayManager.getFrameTimeSeconds();
+        elapsedTime += DisplayManager.getDeltaInSeconds();
         return elapsedTime < lifeLength;
     }
 

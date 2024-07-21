@@ -1,7 +1,6 @@
 package framework.loader;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.nio.IntBuffer;
 import java.util.Objects;
@@ -29,7 +28,7 @@ public class TextureLoader
 
         try {
             BufferedImage image = ImageIO.read(
-                    Objects.requireNonNull(Resources.class.getResourceAsStream("textures/" + path))
+                    Objects.requireNonNull(Resources.getResource().getResourceAsStream("textures/" + path))
             );
             width = image.getWidth();
             height = image.getHeight();
@@ -64,7 +63,7 @@ public class TextureLoader
                 // Diffuse map
                 textureData[0][i] = ((a << 24) | (r << 16) | (g << 8) | b);
 
-                // Apply Sobel filter to generate normal map
+                // Apply Sobel filter to generate a normal map
                 float gx = 0, gy = 0;
 
                 for (int ky = -1; ky <= 1; ky++) {
@@ -73,19 +72,20 @@ public class TextureLoader
                         int sampleY = Math.min(Math.max(y + ky, 0), height - 1);
                         int sampleIndex = sampleY * width + sampleX;
                         int samplePixel = pixels[sampleIndex];
-                        int sampleGray = (samplePixel >> 16) & 0xFF; // Using a red channel for grayscale
+                        int sampleGray = (int)(0.21f * ((samplePixel >> 16) & 0xFF) +
+                                0.72f * ((samplePixel >> 8) & 0xFF) +
+                                0.07f * (samplePixel & 0xFF)); // Accurate grayscale
 
                         gx += sampleGray * sobelX[ky + 1][kx + 1];
                         gy += sampleGray * sobelY[ky + 1][kx + 1];
                     }
                 }
 
-                float magnitude = (float) Math.sqrt(gx * gx + gy * gy);
-                float scale = 255.0f / magnitude;
-
-                int nx = (int) ((gx * scale + 255) / 2);
-                int ny = (int) ((gy * scale + 255) / 2);
-                int nz = 255;
+                // Normalize the gradient to form a normal vector
+                float magnitude = (float) Math.sqrt(gx * gx + gy * gy + 1);
+                int nx = (int) ((gx / magnitude + 1) * 127.5);
+                int ny = (int) ((gy / magnitude + 1) * 127.5);
+                int nz = (int) ((1 / magnitude) * 127.5);
 
                 textureData[1][i] = ((255 << 24) | (nz << 16) | (ny << 8) | nx);
 
@@ -129,23 +129,6 @@ public class TextureLoader
         texture.setDiffuseBuffer(buffers[0]);
         texture.setNormalBuffer(buffers[1]);
         texture.setSpecularBuffer(buffers[2]);
-
-        // Create BufferedImage from ByteBuffer
-        BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                bufferedImage.setRGB(x, y, buffers[1].get());
-            }
-        }
-
-        // Save BufferedImage as PNG file
-        try {
-            ImageIO.write(bufferedImage, "png", new File("source/framework/bumpInBrat.png"));
-        }
-        catch(IOException e) {
-            throw new RuntimeException(e);
-        }
-        System.out.println("Image saved as bumpinbrat");
 
         return texture;
     }

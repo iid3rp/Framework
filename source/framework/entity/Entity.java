@@ -1,7 +1,6 @@
 package framework.entity;
 
 import framework.model.TexturedModel;
-import framework.textures.Texture;
 import org.joml.Vector3f;
 
 public class Entity {
@@ -32,7 +31,7 @@ public class Entity {
 
     public Entity(Entity entity)
     {
-        this.texturedModel = new TexturedModel(entity.getTexturedModel().getModel(), new Texture(entity.getTexturedModel().getTexture().getTextureId()));
+        this.texturedModel = new TexturedModel(entity.getTexturedModel().getModel(), entity.texturedModel.getTexture());
         this.position = new Vector3f(entity.getPosition());
         this.rotationX = entity.getRotationX();
         this.rotationY = entity.getRotationY();

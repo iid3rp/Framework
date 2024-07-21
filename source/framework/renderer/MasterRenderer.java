@@ -5,8 +5,6 @@ import framework.entity.Camera;
 import framework.entity.Entity;
 import framework.entity.Light;
 import framework.model.TexturedModel;
-import framework.normals.NormalMappingRenderer;
-import framework.normals.NormalMappingShader;
 import framework.shader.EntityShader;
 import framework.shader.TerrainShader;
 import framework.skybox.SkyboxRenderer;

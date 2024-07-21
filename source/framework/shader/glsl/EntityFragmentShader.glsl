@@ -27,16 +27,18 @@ const float mapSize = 2048;
 // hypothetically we have some kind of normality value
 const float normality = 1;
 
+// local variable
+vec4 normalMapValue;
+
 vec3 normalTexture()
 {
-    vec4 normalMapValue = texture(normalMap, pass_textureCoords);
+    normalMapValue = texture(normalMap, pass_textureCoords);
 
     if(normalMapValue.r == 0 || normalMapValue.g == 0 || normalMapValue.b == 0)
         return normalize(surfaceNormal);
 
-    normalMapValue = (normalMapValue * 2) - 1;
-    normalMapValue *= normality;
-    return normalize(normalMapValue.xyz);
+    normalMapValue = ((normalMapValue * 2) - 1) * normality;
+    return normalize(normalMapValue.rgb);
 }
 
 void main(void)
@@ -89,4 +91,5 @@ void main(void)
 
     out_Color = vec4(totalDiffuse, 1.0) *  textureColor + vec4(totalSpecular, 1.0); // returns color of the pixel from the texture at specified texture coordinates
     out_Color = mix(vec4(skyColor, 1.0), out_Color, visibility);
+    //out_Color = normalMapValue;
 }

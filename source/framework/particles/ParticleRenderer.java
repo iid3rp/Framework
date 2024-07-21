@@ -5,17 +5,17 @@ import java.util.List;
 import java.util.Map;
 
 import framework.entity.Camera;
+import framework.loader.ModelLoader;
 import framework.model.Model;
-import framework.display.ModelLoader;
-import framework.toolbox.GeomMath;
+import framework.utils.GeomMath;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GL31;
-import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector3f;
 
 public class ParticleRenderer {
 	
@@ -29,8 +29,8 @@ public class ParticleRenderer {
 	private int pointer = 0;
 	
 	protected ParticleRenderer(Matrix4f projectionMatrix) {
-		vbo = ModelLoader.createEmptyVBO(INSTANCE_DATA_LENGTH * MAX_INSTANCE);
-		quad = ModelLoader.loadToVAO(VERTICES, 2);
+		vbo = ModelLoader.createEmptyVbo(INSTANCE_DATA_LENGTH * MAX_INSTANCE);
+		quad = ModelLoader.loadToVao(VERTICES, 2);
 
 		// instances go here
 		ModelLoader.addInstanceAttribs(quad.getVaoID(), vbo, 1, 4, INSTANCE_DATA_LENGTH, 0);
@@ -41,9 +41,9 @@ public class ParticleRenderer {
 		ModelLoader.addInstanceAttribs(quad.getVaoID(), vbo, 6, 4, INSTANCE_DATA_LENGTH, 20);
 
 		shader = new ParticleShader();
-		shader.start();
+		shader.bind();
 		shader.loadProjectionMatrix(projectionMatrix);
-		shader.stop();
+		shader.unbind();
 	}
 	
 	protected void render(Map<ParticleTexture, List<Particle>> particles, Camera camera){

@@ -1,4 +1,4 @@
-package framework.normals;
+package framework.normal;
 
 import org.joml.Vector3f;
 
@@ -9,13 +9,14 @@ public class VertexNormal
 {
 	
 	private static final int NO_INDEX = -1;
+	
 	private Vector3f position;
 	private int textureIndex = NO_INDEX;
 	private int normalIndex = NO_INDEX;
 	private VertexNormal duplicateVertex = null;
 	private int index;
 	private float length;
-	private List<Vector3f> tangents = new ArrayList<Vector3f>();
+	private List<Vector3f> tangents = new ArrayList<>();
 	private Vector3f averagedTangent = new Vector3f(0, 0, 0);
 	
 	public VertexNormal(int index, Vector3f position){
@@ -39,8 +40,9 @@ public class VertexNormal
 		if(tangents.isEmpty()){
 			return;
 		}
+		averagedTangent.set(0, 0, 0);
 		for(Vector3f tangent : tangents){
-			averagedTangent = averagedTangent.add(averagedTangent, tangent);
+			averagedTangent.add(tangent);
 		}
 		averagedTangent.normalize();
 	}
@@ -62,7 +64,7 @@ public class VertexNormal
 	}
 	
 	public boolean hasSameTextureAndNormal(int textureIndexOther, int normalIndexOther){
-		return textureIndexOther == textureIndex && normalIndexOther == normalIndex;
+		return textureIndexOther==textureIndex && normalIndexOther==normalIndex;
 	}
 	
 	public void setTextureIndex(int textureIndex){

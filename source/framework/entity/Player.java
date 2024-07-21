@@ -11,7 +11,7 @@ import static org.lwjgl.glfw.GLFW.*;
 public class Player extends Entity {
     private static final float RUN_SPEED = 70f;  // units per second
     private static final float TURN_SPEED = 160;    // degrees per second
-    private static final float GRAVITY = -50;
+    public static final float GRAVITY = -50;
     private static final float JUMP_POWER = 30;
     private float walkSpeed;
     private Vector3f position;

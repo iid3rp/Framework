@@ -1,7 +1,7 @@
 package framework.particles;
 
 import framework.entity.Camera;
-import org.lwjgl.util.vector.Matrix4f;
+import org.joml.Matrix4f;
 
 import java.util.ArrayList;
 import java.util.HashMap;

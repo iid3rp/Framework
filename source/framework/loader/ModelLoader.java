@@ -159,4 +159,13 @@ public final class ModelLoader {
         unbindVao();
         return new Model(id, indices.length);
     }
+
+    public static int loadToVao(float[] vertexPositions, float[] textureCoords)
+    {
+        int vaoId = createVao();
+        storeDataInAttributeList(0, 2, vertexPositions);
+        storeDataInAttributeList(1, 2, textureCoords);
+        unbindVao();
+        return vaoId;
+    }
 }

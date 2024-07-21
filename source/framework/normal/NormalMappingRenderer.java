@@ -1,4 +1,4 @@
-package framework.normals;
+package framework.normal;
 
 import framework.entity.Camera;
 import framework.entity.Entity;
@@ -18,7 +18,8 @@ import org.lwjgl.opengl.GL30;
 import java.util.List;
 import java.util.Map;
 
-public class NormalMappingRenderer {
+public class NormalMappingRenderer
+{
 
 	private NormalMappingShader shader;
 
@@ -42,21 +43,19 @@ public class NormalMappingRenderer {
 			}
 			unbindTexturedModel();
 		}
+		shader.unbind();
 	}
 	
-	public void dispose()
-	{
+	public void dispose(){
 		shader.dispose();
 	}
 
-	private void prepareTexturedModel(TexturedModel model)
-	{
+	private void prepareTexturedModel(TexturedModel model) {
 		Model rawModel = model.getModel();
 		GL30.glBindVertexArray(rawModel.getVaoId());
 		GL20.glEnableVertexAttribArray(0);
 		GL20.glEnableVertexAttribArray(1);
 		GL20.glEnableVertexAttribArray(2);
-		GL20.glEnableVertexAttribArray(3);
 		Texture texture = model.getTexture();
 		shader.loadNumberOfRows(texture.getNumberOfRows());
 		if (texture.hasTransparency()) {
@@ -65,8 +64,6 @@ public class NormalMappingRenderer {
 		shader.loadShineVariables(texture.getShineDampening(), texture.getReflectivity());
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.getTexture().getID());
-		GL13.glActiveTexture(GL13.GL_TEXTURE1);
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.getTexture().getNormalMap());
 	}
 
 	private void unbindTexturedModel() {
@@ -74,7 +71,6 @@ public class NormalMappingRenderer {
 		GL20.glDisableVertexAttribArray(0);
 		GL20.glDisableVertexAttribArray(1);
 		GL20.glDisableVertexAttribArray(2);
-		GL20.glDisableVertexAttribArray(3);
 		GL30.glBindVertexArray(0);
 	}
 
@@ -85,10 +81,10 @@ public class NormalMappingRenderer {
 		shader.loadOffset(entity.getTextureXOffset(), entity.getTextureYOffset());
 	}
 
-	private void prepare(Vector4f clipPlane, List<Light> lights, Camera camera)
-	{
+	private void prepare(Vector4f clipPlane, List<Light> lights, Camera camera) {
 		shader.loadClipPlane(clipPlane);
-		shader.loadSkyColor(MasterRenderer.SKY_RED, MasterRenderer.SKY_GREEN, MasterRenderer.SKY_BLUE);
+		//need to be public variables in MasterRenderer
+		shader.loadSkyColour(MasterRenderer.SKY_RED, MasterRenderer.SKY_GREEN, MasterRenderer.SKY_BLUE);
 		Matrix4f viewMatrix = GeomMath.createViewMatrix(camera);
 		
 		shader.loadLights(lights, viewMatrix);

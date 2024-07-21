@@ -7,7 +7,7 @@ import java.util.List;
  * the other day, so it may not be perfect or the most efficient! Feel free to
  * implement your own sorter instead.
  * 
- * @author Karl
+ * @author Karl Wimble
  *
  */
 public class InsertionSort {
