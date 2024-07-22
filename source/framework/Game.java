@@ -9,6 +9,7 @@ import framework.environment.Environment;
 import framework.environment.Scene;
 import framework.loader.TextureLoader;
 import framework.model.TexturedModel;
+import framework.renderer.MasterRenderer;
 import framework.scripting.Count;
 import framework.swing.ContentPane;
 import framework.swing.GUITexture;
@@ -54,7 +55,7 @@ public class Game
         Environment.setScene(scene);
 
 
-        Light lighting = new Light(new Vector3f(1_000_000, 1_000_000, 1_000_000), new Vector3f(1f, 1f, 1f));
+        Light lighting = new Light(new Vector3f(1_000_000, 1_000_000, -1_000_000), new Vector3f(1f, 1f, 1f));
 
         scene.getLights().add(lighting);
         scene.getLights().add(new Light(new Vector3f(0, 10, 0), new Vector3f(1, 0, 1), new Vector3f(1, 0f, 200f)));
@@ -95,12 +96,6 @@ public class Game
         //scene.getLights().add(player.getLight());
         scene.setCamera(player.getCamera());
 
-        GUITexture img = new PictureBox();
-        img.setBackgroundImage(barrel.getTexture().getNormalMap());
-        img.setSize(300, 300);
-        img.setLocation(20, 20);
-
-        //panel.add(img);
         scene.setContentPane(panel);
 
 
@@ -127,8 +122,8 @@ public class Game
             else i--;
         }
 
-        WaterTile tile = new WaterTile(0, 0,0);
-        scene.add(tile);
+        //WaterTile tile = new WaterTile(0, 0,0);
+        //scene.add(tile);
 
 
         Environment.run(new Count());

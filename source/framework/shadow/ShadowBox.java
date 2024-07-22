@@ -17,7 +17,7 @@ import org.joml.Vector4f;
  * rendered to the shadow map in the shadow render pass. Everything outside the
  * area won't be.
  * 
- * @author Karl Wimble
+ * @author
  *
  */
 public class ShadowBox {
@@ -25,7 +25,7 @@ public class ShadowBox {
 	private static final float OFFSET = 150.0f;
 	private static final Vector3f UP = new Vector3f(0, 1, 0);
 	private static final Vector3f FORWARD = new Vector3f(0, 0, -1);
-	private static float SHADOW_DISTANCE = 100;
+	private static float SHADOW_DISTANCE = 1000;
 
 	private float minX, maxX;
 	private float minY, maxY;
@@ -73,32 +73,15 @@ public class ShadowBox {
 		Vector4f[] points = calculateFrustumVertices(rotation, forwardVector, centerNear, centerFar);
 
 		boolean first = true;
+		minX = minY = minZ = Float.MAX_VALUE;
+		maxX = maxY = maxZ = -Float.MAX_VALUE;
 		for (Vector4f point : points) {
-			if (first) {
-				minX = point.x;
-				maxX = point.x;
-				minY = point.y;
-				maxY = point.y;
-				minZ = point.z;
-				maxZ = point.z;
-				first = false;
-				continue;
-			}
-			if (point.x > maxX) {
-				maxX = point.x;
-			} else if (point.x < minX) {
-				minX = point.x;
-			}
-			if (point.y > maxY) {
-				maxY = point.y;
-			} else if (point.y < minY) {
-				minY = point.y;
-			}
-			if (point.z > maxZ) {
-				maxZ = point.z;
-			} else if (point.z < minZ) {
-				minZ = point.z;
-			}
+			minX = Math.min(minX, point.x);
+			maxX = Math.max(maxX, point.x);
+			minY = Math.min(minY, point.y);
+			maxY = Math.max(maxY, point.y);
+			minZ = Math.min(minZ, point.z);
+			maxZ = Math.max(maxZ, point.z);
 		}
 		maxZ += OFFSET;
 

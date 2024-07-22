@@ -4,9 +4,11 @@ import framework.Display.DisplayManager;
 import framework.entity.Camera;
 import framework.entity.Entity;
 import framework.entity.Light;
+import framework.environment.Environment;
 import framework.model.TexturedModel;
 import framework.shader.EntityShader;
 import framework.shader.TerrainShader;
+import framework.shadow.ShadowMapMasterRenderer;
 import framework.skybox.SkyboxRenderer;
 import framework.terrains.Terrain;
 import framework.water.WaterFrameBufferObject;
@@ -16,6 +18,7 @@ import framework.water.WaterTile;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
 
+import javax.crypto.MacSpi;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,6 +47,8 @@ public class MasterRenderer {
     private static WaterRenderer waterRenderer;
     public static WaterFrameBufferObject buffer;
 
+    public static ShadowMapMasterRenderer shadowMapMasterRenderer;
+
     public static void setRenderer()
     {
         enableCulling();
@@ -60,6 +65,7 @@ public class MasterRenderer {
         waterShader = new WaterShader();
         buffer = new WaterFrameBufferObject();
         waterRenderer = new WaterRenderer(waterShader, projectionMatrix, buffer);
+        shadowMapMasterRenderer = new ShadowMapMasterRenderer(Environment.getScene().getCamera());
 
     }
 
@@ -134,9 +140,25 @@ public class MasterRenderer {
         terrainList.add(terrain);
     }
 
-    public static void destroy() {
+    public static void renderShadowMap(List<Entity> ent, Light sun)
+    {
+        for(Entity entity : ent)
+        {
+            processEntity(entity);
+        }
+        shadowMapMasterRenderer.render(entities, sun);
+        entities.clear();
+    }
+
+    public static int getShadowMapTexture()
+    {
+        return shadowMapMasterRenderer.getShadowMap();
+    }
+
+    public static void dispose() {
         entityShader.dispose();
         terrainShader.dispose();
+        shadowMapMasterRenderer.dispose();
     }
 
     private static void prepare() {

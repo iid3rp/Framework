@@ -9,7 +9,7 @@ void main(void)
 {
 
 	float alpha = texture(modelTexture, textureCoords).a;
-	if(alpha == 0)
+	if(alpha < 0.5)
 	{
 		discard;
 	}

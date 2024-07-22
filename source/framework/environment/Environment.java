@@ -6,6 +6,8 @@ import framework.loader.ModelLoader;
 import framework.event.MouseEvent;
 import framework.scripting.FrameworkScript;
 import framework.scripting.StackScript;
+import framework.swing.GUITexture;
+import framework.swing.PictureBox;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
@@ -15,6 +17,7 @@ public final class Environment
 {
     public static Scene scene;
     private static StackScript stack = new StackScript();
+
 
     // will be used in other tutorials in the future, don't worry!
     //public static FrameBufferObject multisample = new FrameBufferObject(Display.getWidth(), Display.getHeight());
@@ -48,6 +51,13 @@ public final class Environment
             //fps = new GUIText("fps count: 0", 1, font, new Vector2f(0, 0), 1f, false);
             //fps.setColor(1, 1, 0);
 
+            GUITexture img = new PictureBox();
+            img.setBackgroundImage(MasterRenderer.getShadowMapTexture());
+            img.setSize(300, 300);
+            img.setLocation(20, 20);
+
+            scene.getContentPane().add(img);
+
             loop();
             exit();
         }
@@ -63,6 +73,7 @@ public final class Environment
             scene.getEvent().update();
 
             //the shadow thingies
+            MasterRenderer.renderShadowMap(scene.getEntities(), scene.getMainLight());
 
             //particle
             //if(scene.getParticleSystem() != null) {
@@ -164,7 +175,7 @@ public final class Environment
         //ParticleMaster.dispose();
         //TextMasterRenderer.dispose();
         scene.getContentPane().dispose();
-        MasterRenderer.destroy();
+        MasterRenderer.dispose();
         ModelLoader.destroy();
         DisplayManager.closeDisplay();
     }

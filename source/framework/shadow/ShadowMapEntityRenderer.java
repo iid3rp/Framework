@@ -76,7 +76,7 @@ public class ShadowMapEntityRenderer {
 	private void bindModel(Model rawModel) {
 		GL30.glBindVertexArray(rawModel.getVaoId());
 		GL20.glEnableVertexAttribArray(0);
-		GL20.glEnableVertexAttribArray(1);
+		//GL20.glEnableVertexAttribArray(1);
 	}
 
 	/**
