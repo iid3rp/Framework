@@ -62,7 +62,7 @@ public final class Environment
             // mouseEvent stuff
             scene.getEvent().update();
 
-            // the shadow thingies
+            //the shadow thingies
 
             //particle
             //if(scene.getParticleSystem() != null) {
