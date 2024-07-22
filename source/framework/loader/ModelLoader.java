@@ -9,6 +9,7 @@ import framework.utils.Buffer;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL13;
+import org.lwjgl.opengl.GL15;
 
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -19,6 +20,7 @@ import java.util.List;
 
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL33.glVertexAttribDivisor;
 
 public final class ModelLoader {
     private static List<Integer> vaoList = new ArrayList<>();
@@ -146,6 +148,37 @@ public final class ModelLoader {
         for (int textureId : textureList) {
             glDeleteTextures(textureId);
         }
+    }
+
+    public static int createEmptyVbo(int floatCount)
+    {
+        int vbo = GL15.glGenBuffers();
+        ModelLoader.vboList.add(vbo);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glBufferData(GL_ARRAY_BUFFER, floatCount * 4L, GL_STATIC_DRAW);
+        return vbo;
+    }
+
+    public static void updateVbo(int vbo, float[] data, FloatBuffer buffer)
+    {
+        buffer.clear();
+        buffer.put(data);
+        buffer.flip();
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glBufferData(GL_ARRAY_BUFFER, buffer.capacity() * 4L, GL_STATIC_DRAW);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, buffer);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
+
+    public static void addInstanceAttribs(int vao, int vbo, int attrib, int data, int instanceLength, int offset)
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glBufferData(GL_ARRAY_BUFFER, data, GL_STREAM_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glVertexAttribPointer(attrib, data, GL_FLOAT, false, instanceLength * 4, offset * 4L);
+        glVertexAttribDivisor(attrib, 1);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
     }
 
     public static Model loadToVao(float[] pos, float[] coords, float[] normals, int[] indices, float[] tangents)
