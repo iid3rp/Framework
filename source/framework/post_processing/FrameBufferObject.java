@@ -4,8 +4,8 @@ package framework.post_processing;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
+import framework.Display.DisplayManager;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL14;
@@ -85,7 +85,7 @@ public class FrameBufferObject
 	 */
 	public void unbindFrameBuffer() {
 		GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
-		GL11.glViewport(0, 0, Display.getWidth(), Display.getHeight());
+		GL11.glViewport(0, 0, DisplayManager.getWindowWidth(), DisplayManager.getWindowHeight());
 	}
 
 	/**
@@ -130,7 +130,7 @@ public class FrameBufferObject
 		GL11.glDrawBuffer((GL11.GL_BACK));
 		GL30.glBlitFramebuffer(
 				0, 0, width, height,
-				0, 0 , Display.getWidth(), Display.getHeight(),
+				0, 0 , DisplayManager.getWindowWidth(), DisplayManager.getWindowHeight(),
 				GL11.GL_COLOR_BUFFER_BIT, GL11.GL_NEAREST);
 		unbindFrameBuffer();
 	}

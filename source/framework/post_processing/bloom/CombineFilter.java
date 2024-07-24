@@ -11,20 +11,20 @@ public class CombineFilter {
 	
 	public CombineFilter(int width, int height){
 		shader = new CombineShader();
-		shader.start();
+		shader.bind();
 		shader.connectTextureUnits();
-		shader.stop();
+		shader.unbind();
 		renderer = new ImageRenderer(width, height);
 	}
 	
 	public void render(int colourTexture, int highlightTexture){
-		shader.start();
+		shader.bind();
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, colourTexture);
 		GL13.glActiveTexture(GL13.GL_TEXTURE1);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, highlightTexture);
 		renderer.renderQuad();
-		shader.stop();
+		shader.unbind();
 	}
 
 	public int getOutputTexture()

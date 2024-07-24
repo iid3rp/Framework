@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class ParticleMaster
 {
-    private static Map<ParticleTexture, List<Particle>> particles = new HashMap<>();
+    public static Map<ParticleTexture, List<Particle>> particles = new HashMap<>();
     private static ParticleRenderer renderer;
     public static void initialize(Matrix4f projection)
     {
@@ -56,10 +56,6 @@ public class ParticleMaster
     {
         List<Particle> list = particles.computeIfAbsent(particle.getTexture(), k -> new ArrayList<>());
         list.add(particle);
-    }
-
-    public ParticleMaster()
-    {
-
+        System.out.println(list.size());
     }
 }

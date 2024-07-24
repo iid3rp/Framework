@@ -18,7 +18,6 @@ import framework.water.WaterTile;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
 
-import javax.crypto.MacSpi;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,7 +27,7 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 
 public class MasterRenderer {
-    public static final float FOV = 70;
+    public static final float FOV = 60;
     public static final float NEAR_PLANE = 0.1f;
     public static final float FAR_PLANE = 100_000;
     public static final float SKY_RED = 0.95f;
@@ -37,7 +36,7 @@ public class MasterRenderer {
 
     private static EntityShader entityShader;
     private static EntityRenderer entityRenderer;
-    private static Map<TexturedModel, List<Entity>> entities;
+    public static Map<TexturedModel, List<Entity>> entities;
     private static Matrix4f projectionMatrix;
     private static TerrainRenderer terrainRenderer;
     private static SkyboxRenderer skyboxRenderer;
@@ -47,9 +46,9 @@ public class MasterRenderer {
     private static WaterRenderer waterRenderer;
     public static WaterFrameBufferObject buffer;
 
-    public static ShadowMapMasterRenderer shadowMapMasterRenderer;
+    public static ShadowMapMasterRenderer shadowRender;
 
-    public static void setRenderer()
+    public static void setRenderer(Camera camera)
     {
         enableCulling();
         createProjectionMatrix();
@@ -65,8 +64,7 @@ public class MasterRenderer {
         waterShader = new WaterShader();
         buffer = new WaterFrameBufferObject();
         waterRenderer = new WaterRenderer(waterShader, projectionMatrix, buffer);
-        shadowMapMasterRenderer = new ShadowMapMasterRenderer(Environment.getScene().getCamera());
-
+        shadowRender = new ShadowMapMasterRenderer(camera);
     }
 
     public static void enableCulling() {
@@ -142,23 +140,20 @@ public class MasterRenderer {
 
     public static void renderShadowMap(List<Entity> ent, Light sun)
     {
-        for(Entity entity : ent)
-        {
-            processEntity(entity);
-        }
-        shadowMapMasterRenderer.render(entities, sun);
+        processAllEntities(ent);
+        shadowRender.render(entities, sun);
         entities.clear();
     }
 
     public static int getShadowMapTexture()
     {
-        return shadowMapMasterRenderer.getShadowMap();
+        return shadowRender.getShadowMap();
     }
 
     public static void dispose() {
+        shadowRender.dispose();
         entityShader.dispose();
         terrainShader.dispose();
-        shadowMapMasterRenderer.dispose();
     }
 
     private static void prepare() {

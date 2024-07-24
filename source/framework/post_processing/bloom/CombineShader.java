@@ -22,8 +22,8 @@ public class CombineShader extends GLShader
 	}
 	
 	protected void connectTextureUnits(){
-		super.loadInteger(location_colourTexture, 0);
-		super.loadInteger(location_highlightTexture, 1);
+		super.loadInt(location_colourTexture, 0);
+		super.loadInt(location_highlightTexture, 1);
 	}
 
 	@Override

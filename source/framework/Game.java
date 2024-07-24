@@ -9,16 +9,14 @@ import framework.environment.Environment;
 import framework.environment.Scene;
 import framework.loader.TextureLoader;
 import framework.model.TexturedModel;
-import framework.renderer.MasterRenderer;
+import framework.particles.ParticleSystem;
+import framework.particles.ParticleTexture;
 import framework.scripting.Count;
 import framework.swing.ContentPane;
-import framework.swing.GUITexture;
-import framework.swing.PictureBox;
 import framework.terrains.Terrain;
 import framework.textures.TerrainTexture;
 import framework.textures.TerrainTexturePack;
 import framework.textures.Texture;
-import framework.water.WaterTile;
 import org.joml.Vector3f;
 
 import java.util.Random;
@@ -55,7 +53,7 @@ public class Game
         Environment.setScene(scene);
 
 
-        Light lighting = new Light(new Vector3f(1_000_000, 1_000_000, -1_000_000), new Vector3f(1f, 1f, 1f));
+        Light lighting = new Light(new Vector3f(10_000, 10_000, -10_000), new Vector3f(1f, 1f, 1f));
 
         scene.getLights().add(lighting);
         scene.getLights().add(new Light(new Vector3f(0, 10, 0), new Vector3f(1, 0, 1), new Vector3f(1, 0f, 200f)));
@@ -121,6 +119,22 @@ public class Game
             }
             else i--;
         }
+
+
+        ParticleSystem system = new ParticleSystem(
+                100,
+                25,
+                .3f,
+                20,
+                5,
+                new ParticleTexture(ModelLoader.loadTexture("brat.png"), 1));
+        system.randomizeRotation();
+        system.setDirection(new Vector3f(0, 20, 10), .3f);
+        system.setLifeError(3f);
+        system.setSpeedError(3f);
+        system.setScaleError(2f);
+
+        scene.setParticleSystem(system);
 
         //WaterTile tile = new WaterTile(0, 0,0);
         //scene.add(tile);

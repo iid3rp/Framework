@@ -9,7 +9,7 @@ import static org.lwjgl.glfw.GLFW.*;
 public class Camera {
     private static final float MAX_DISTANCE = 1500;
     private static final float MIN_DISTANCE = 0;
-    private static float REFRESH_RATE = 60;
+    private static float REFRESH_RATE = 120;
     private static final float WALK_SPEED = .5f;
     private static final float ROTATIONAL_SPEED = 180 / REFRESH_RATE;
     private Vector3f position = new Vector3f(0, 0, 0);

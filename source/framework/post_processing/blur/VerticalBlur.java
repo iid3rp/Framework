@@ -4,25 +4,26 @@ import framework.post_processing.ImageRenderer;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 
-public class HorizontalBlur {
+public class VerticalBlur {
 	
 	private ImageRenderer renderer;
-	private HorizontalBlurShader shader;
+	private VerticalBlurShader shader;
 	
-	public HorizontalBlur(int targetFboWidth, int targetFboHeight){
-		shader = new HorizontalBlurShader();
-		shader.start();
-		shader.loadTargetWidth(targetFboWidth);
-		shader.stop();
+	public VerticalBlur(int targetFboWidth, int targetFboHeight){
+		shader = new VerticalBlurShader();
 		renderer = new ImageRenderer(targetFboWidth, targetFboHeight);
+		shader.bind();
+		shader.loadTargetHeight(targetFboHeight);
+		shader.unbind();
 	}
+
 	
 	public void render(int texture){
-		shader.start();
+		shader.bind();
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture);
 		renderer.renderQuad();
-		shader.stop();
+		shader.unbind();
 	}
 	
 	public int getOutputTexture(){
@@ -33,5 +34,4 @@ public class HorizontalBlur {
 		renderer.dispose();
 		shader.dispose();
 	}
-
 }

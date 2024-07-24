@@ -5,6 +5,7 @@ import framework.entity.Entity;
 import framework.entity.Light;
 import framework.entity.Player;
 import framework.event.MouseEvent;
+import framework.particles.ParticleSystem;
 import framework.swing.ContentPane;
 import framework.swing.GUITexture;
 import framework.terrains.Terrain;
@@ -16,7 +17,6 @@ import java.util.List;
 public class Scene
 {
     private List<Entity> entities;
-    //private List<Entity> normalMappedEntities;
     private List<Light> lights;
     private List<WaterTile> waters;
     private Terrain terrain;
@@ -25,7 +25,7 @@ public class Scene
     private Player player;
     private ContentPane pane;
     public MouseEvent event;
-    //private ParticleSystem particleSystem;
+    private ParticleSystem particleSystem;
 
     //private Vector4f clipPlane;
     public Scene()
@@ -120,7 +120,6 @@ public class Scene
     public void setCamera(Camera camera)
     {
         this.camera = camera;
-        //MasterRenderer.setShadowMap(this.camera);
     }
 
     public Camera getCamera()
@@ -171,5 +170,15 @@ public class Scene
     public List<WaterTile> getWaters()
     {
         return waters;
+    }
+
+    public ParticleSystem getParticleSystem()
+    {
+        return particleSystem;
+    }
+
+    public void setParticleSystem(ParticleSystem particleSystem)
+    {
+        this.particleSystem = particleSystem;
     }
 }

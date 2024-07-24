@@ -1,12 +1,12 @@
 package framework.post_processing;
 
-import framework.display.ModelLoader;
+import framework.Display.DisplayManager;
+import framework.loader.ModelLoader;
 import framework.model.Model;
 import framework.post_processing.bloom.BrightFilter;
 import framework.post_processing.bloom.CombineFilter;
 import framework.post_processing.blur.HorizontalBlur;
 import framework.post_processing.blur.VerticalBlur;
-import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
@@ -22,12 +22,12 @@ public class PostProcessing {
 	private static CombineFilter combineFilter;
 
 	public static void initialize(){
-		quad = ModelLoader.loadToVAO(POSITIONS, 2);
+		quad = ModelLoader.loadToVao(POSITIONS, 2);
 		changer = new ContrastChanger();
-		horizontalBlur = new HorizontalBlur(Display.getWidth() / 4, Display.getHeight() / 4);
-		verticalBlur = new VerticalBlur(Display.getWidth() / 4, Display.getHeight() / 4);
-		brightFilter = new BrightFilter(Display.getWidth() / 2, Display.getHeight() / 2);
-		combineFilter = new CombineFilter(Display.getWidth() / 2, Display.getHeight() / 2);
+		horizontalBlur = new HorizontalBlur(DisplayManager.getWindowWidth() / 4, DisplayManager.getWindowHeight() / 4);
+		verticalBlur = new VerticalBlur(DisplayManager.getWindowWidth() / 4, DisplayManager.getWindowHeight() / 4);
+		brightFilter = new BrightFilter(DisplayManager.getWindowWidth() / 2, DisplayManager.getWindowHeight() / 2);
+		combineFilter = new CombineFilter(DisplayManager.getWindowWidth() / 2, DisplayManager.getWindowHeight() / 2);
 	}
 	
 	public static void doPostProcessing(int colorTexture, int brightTexture){
@@ -57,7 +57,7 @@ public class PostProcessing {
 	}
 	
 	private static void start(){
-		GL30.glBindVertexArray(quad.getVaoID());
+		GL30.glBindVertexArray(quad.getVaoId());
 		GL20.glEnableVertexAttribArray(0);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
 	}

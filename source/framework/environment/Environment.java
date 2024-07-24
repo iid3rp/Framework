@@ -1,6 +1,11 @@
 package framework.environment;
 
 import framework.Display.DisplayManager;
+import framework.fontMeshCreator.FontType;
+import framework.fontMeshCreator.GUIText;
+import framework.particles.ParticleMaster;
+import framework.particles.ParticleRenderer;
+import framework.post_processing.PostProcessing;
 import framework.renderer.MasterRenderer;
 import framework.loader.ModelLoader;
 import framework.event.MouseEvent;
@@ -8,8 +13,8 @@ import framework.scripting.FrameworkScript;
 import framework.scripting.StackScript;
 import framework.swing.GUITexture;
 import framework.swing.PictureBox;
+import org.joml.Vector3f;
 import org.joml.Vector4f;
-import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
 
 // the commented codes will be uncommented once the game is set up!
@@ -30,16 +35,16 @@ public final class Environment
     }
 
     // intentional global-local variables
-    //static FontType font;
-    //static GUIText fps;
+    static FontType font;
+    static GUIText fps;
 
     public static void start()
     {
         // static method calling goes here:
-        MasterRenderer.setRenderer();
+        MasterRenderer.setRenderer(scene.getCamera());
         //PostProcessing.initialize();
         //TextMasterRenderer.initialize();
-        //ParticleMaster.initialize(MasterRenderer.getProjectionMatrix());
+        ParticleMaster.initialize(MasterRenderer.getProjectionMatrix());
 
         if(scene != null)
         {
@@ -47,16 +52,17 @@ public final class Environment
             event.setCamera(getScene().getCamera());
             event.setProjection(MasterRenderer.getProjectionMatrix());
             getScene().setEvent(event);
-            //font = new FontType(ModelLoader.loadTexture("comic"), "comic");
-            //fps = new GUIText("fps count: 0", 1, font, new Vector2f(0, 0), 1f, false);
-            //fps.setColor(1, 1, 0);
+//            font = new FontType(ModelLoader.loadTexture("comic.fnt"), "comic");
+//            fps = new GUIText("fps count: 0", 1, font, new Vector2f(0, 0), 1f, false);
+//            fps.setColor(1, 1, 0);
 
             GUITexture img = new PictureBox();
             img.setBackgroundImage(MasterRenderer.getShadowMapTexture());
             img.setSize(300, 300);
             img.setLocation(20, 20);
 
-            scene.getContentPane().add(img);
+            //scene.getContentPane().add(img);
+
 
             loop();
             exit();
@@ -73,13 +79,13 @@ public final class Environment
             scene.getEvent().update();
 
             //the shadow thingies
-            MasterRenderer.renderShadowMap(scene.getEntities(), scene.getMainLight());
+            //MasterRenderer.renderShadowMap(scene.getEntities(), scene.getMainLight());
 
             //particle
-            //if(scene.getParticleSystem() != null) {
-            //    ParticleMaster.update(scene.getCamera());
-            //    scene.getParticleSystem().generateParticles(scene.getPlayer().getPosition());
-            //}
+            if(scene.getParticleSystem() != null) {
+                ParticleMaster.update(scene.getCamera());
+                scene.getParticleSystem().generateParticles(new Vector3f(0, 10, 0));
+            }
             //ParticleMaster.renderParticles(scene.getCamera());
 
             // debuggers
@@ -93,23 +99,23 @@ public final class Environment
 
 
             // frame buffers thingy:
-            GL11.glEnable(GL30.GL_CLIP_DISTANCE1);
+//            GL11.glEnable(GL30.GL_CLIP_DISTANCE1);
 //
 //            // the reflection of the water
-            MasterRenderer.buffer.bindReflectionFrameBuffer();
-            float distance = 2 * (scene.getCamera().getPosition().y - 0);
-            scene.getCamera().getPosition().y -= distance;
-            scene.getCamera().invertPitch();
-            renderScene(new Vector4f(0, 1, 0, 0));
-//
-            //the refraction of the water
-            scene.getCamera().getPosition().y += distance;
-            scene.getCamera().invertPitch();
-            MasterRenderer.buffer.bindRefractionFrameBuffer();
-            renderScene(new Vector4f(0, -1, 0, 0));
-//
-            MasterRenderer.buffer.unbindCurrentFrameBuffer();
-            GL11.glDisable(GL30.GL_CLIP_DISTANCE1);
+//            MasterRenderer.buffer.bindReflectionFrameBuffer();
+//            float distance = 2 * (scene.getCamera().getPosition().y - 0);
+//            scene.getCamera().getPosition().y -= distance;
+//            scene.getCamera().invertPitch();
+//            renderScene(new Vector4f(0, 1, 0, 0));
+////
+//            //the refraction of the water
+//            scene.getCamera().getPosition().y += distance;
+//            scene.getCamera().invertPitch();
+//            MasterRenderer.buffer.bindRefractionFrameBuffer();
+//            renderScene(new Vector4f(0, -1, 0, 0));
+////
+//            MasterRenderer.buffer.unbindCurrentFrameBuffer();
+//            GL11.glDisable(GL30.GL_CLIP_DISTANCE1);
 
 
             //MasterRenderer.renderShadowMap(scene.getEntities(), scene.getMainLight());
@@ -117,6 +123,7 @@ public final class Environment
             //multisample.bindFrameBuffer();
             renderScene(new Vector4f(0, -1, 0, 1000000));
             MasterRenderer.renderWaters(scene.getWaters(), scene.getCamera(), scene.getMainLight());
+            ParticleMaster.renderParticles(scene.getCamera());
             //multisample.unbindFrameBuffer();
             //multisample.resolveToFrameBufferObject(GL30.GL_COLOR_ATTACHMENT0,out);
             //multisample.resolveToFrameBufferObject(GL30.GL_COLOR_ATTACHMENT1,bright);
@@ -149,10 +156,9 @@ public final class Environment
     private static void renderScene(Vector4f vec4)
     {
         // the 3D space stuff...
-            // the shadow thingies
+        // the shadow thingies
         MasterRenderer.processTerrain(scene.getTerrain());
         MasterRenderer.processAllEntities(scene.getEntities());
-        //MasterRenderer.processAllNormalMappedEntities(scene.getNormalMappedEntities());
         MasterRenderer.render(scene.getLights(), scene.getCamera(), vec4);
     }
 
@@ -172,7 +178,7 @@ public final class Environment
         //multisample.dispose();
         //out.dispose();
         //bright.dispose();
-        //ParticleMaster.dispose();
+        ParticleMaster.dispose();
         //TextMasterRenderer.dispose();
         scene.getContentPane().dispose();
         MasterRenderer.dispose();
