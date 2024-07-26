@@ -4,7 +4,6 @@ import framework.Display.DisplayManager;
 import framework.entity.Camera;
 import framework.entity.Entity;
 import framework.entity.Light;
-import framework.environment.Environment;
 import framework.model.TexturedModel;
 import framework.shader.EntityShader;
 import framework.shader.TerrainShader;

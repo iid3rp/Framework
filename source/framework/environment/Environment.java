@@ -58,7 +58,7 @@ public final class Environment
             img.setSize(300, 300);
             img.setLocation(20, 20);
 
-            //scene.getContentPane().add(img);
+            scene.getContentPane().add(img);
 
 
             loop();
@@ -76,7 +76,8 @@ public final class Environment
             scene.getEvent().update();
 
             //the shadow thingies
-            //MasterRenderer.renderShadowMap(scene.getEntities(), scene.getMainLight());
+            MasterRenderer.renderShadowMap(scene.getEntities(), scene.getMainLight());
+
             //particle
 
             if(scene.getParticleSystem() != null) {

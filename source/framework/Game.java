@@ -53,7 +53,7 @@ public class Game
         Environment.setScene(scene);
 
 
-        Light lighting = new Light(new Vector3f(10_000, 10_000, -10_000), new Vector3f(1f, 1f, 1f));
+        Light lighting = new Light(new Vector3f(100_000, 100_000, -100_000), new Vector3f(1f, 1f, .5f));
 
         scene.getLights().add(lighting);
         scene.getLights().add(new Light(new Vector3f(0, 10, 0), new Vector3f(1, 0, 1), new Vector3f(1, 0f, 200f)));

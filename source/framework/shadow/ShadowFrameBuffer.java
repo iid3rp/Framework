@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 
 import framework.Display.DisplayManager;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GL32;
@@ -12,7 +13,7 @@ import org.lwjgl.opengl.GL32;
  * The frame buffer for the shadow pass. This class sets up the depth texture
  * which can be rendered to during the shadow render pass, producing a shadow
  * map.
- *
+ * 
  * @author Karl
  *
  */
@@ -25,7 +26,7 @@ public class ShadowFrameBuffer {
 
 	/**
 	 * Initialises the frame buffer and shadow map of a certain size.
-	 *
+	 * 
 	 * @param width
 	 *            - the width of the shadow map in pixels.
 	 * @param height
@@ -74,25 +75,12 @@ public class ShadowFrameBuffer {
 	private void initialiseFrameBuffer() {
 		fbo = createFrameBuffer();
 		shadowMap = createDepthBufferAttachment(WIDTH, HEIGHT);
-
-		// Check if the framebuffer is complete
-		int status = GL30.glCheckFramebufferStatus(GL30.GL_FRAMEBUFFER);
-		if (status != GL30.GL_FRAMEBUFFER_COMPLETE) {
-			System.err.println("Framebuffer creation failed with status: " + status);
-			throw new RuntimeException("Framebuffer is not complete!");
-		}
-
-		if (GL30.glCheckFramebufferStatus(GL30.GL_FRAMEBUFFER) != GL30.GL_FRAMEBUFFER_COMPLETE) {
-			throw new RuntimeException("Could not create FrameBuffer");
-		}
-
 		unbindFrameBuffer();
-
 	}
 
 	/**
 	 * Binds the frame buffer as the current render target.
-	 *
+	 * 
 	 * @param frameBuffer
 	 *            - the frame buffer.
 	 * @param width
@@ -110,50 +98,36 @@ public class ShadowFrameBuffer {
 	 * Creates a frame buffer and binds it so that attachments can be added to
 	 * it. The draw buffer is set to none, indicating that there's no colour
 	 * buffer to be rendered to.
-	 *
+	 * 
 	 * @return The newly created frame buffer's ID.
 	 */
 	private static int createFrameBuffer() {
 		int frameBuffer = GL30.glGenFramebuffers();
 		GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, frameBuffer);
 		GL11.glDrawBuffer(GL11.GL_NONE);
-		//GL11.glReadBuffer(GL11.GL_NONE);
+		GL11.glReadBuffer(GL11.GL_NONE);
 		return frameBuffer;
 	}
 
-//	/**
-//	 * Creates a depth buffer texture attachment.
-//	 *
-//	 * @param width
-//	 *            - the width of the texture.
-//	 * @param height
-//	 *            - the height of the texture.
-//	 * @return The ID of the depth texture.
-//	 */
-//	private static int createDepthBufferAttachment(int width, int height) {
-//		int texture = GL11.glGenTextures();
-//		GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture);
-//		GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL14.GL_DEPTH_COMPONENT24, width, height, 0,
-//				GL11.GL_DEPTH_COMPONENT, GL11.GL_FLOAT, (ByteBuffer) null);
-//		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
-//		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
-//		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE);
-//		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE);
-//		GL32.glFramebufferTexture(GL30.GL_FRAMEBUFFER, GL30.GL_DEPTH_ATTACHMENT, texture, 0);
-//
-//		return texture;
-//	}
-
-	private int createDepthBufferAttachment(int width, int height){
+	/**
+	 * Creates a depth buffer texture attachment.
+	 * 
+	 * @param width
+	 *            - the width of the texture.
+	 * @param height
+	 *            - the height of the texture.
+	 * @return The ID of the depth texture.
+	 */
+	private static int createDepthBufferAttachment(int width, int height) {
 		int texture = GL11.glGenTextures();
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture);
-		GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL14.GL_DEPTH_COMPONENT24, width, height,
-				0, GL11.GL_DEPTH_COMPONENT, GL11.GL_FLOAT, (ByteBuffer) null);
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-		GL32.glFramebufferTexture(GL30.GL_FRAMEBUFFER, GL30.GL_DEPTH_ATTACHMENT,
-				texture, 0);
+		GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL14.GL_DEPTH_COMPONENT16, width, height, 0,
+				GL11.GL_DEPTH_COMPONENT, GL11.GL_FLOAT, (ByteBuffer) null);
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE);
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE);
+		GL32.glFramebufferTexture(GL30.GL_FRAMEBUFFER, GL30.GL_DEPTH_ATTACHMENT, texture, 0);
 		return texture;
 	}
-
 }

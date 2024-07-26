@@ -11,19 +11,17 @@ public class ShadowShader extends GLShader
 	
 	private int location_mvpMatrix;
 
-	public ShadowShader() {
+	protected ShadowShader() {
 		super(VERTEX_FILE, FRAGMENT_FILE);
 	}
 
 	@Override
 	protected void getAllUniformLocations() {
 		location_mvpMatrix = super.getUniformLocation("mvpMatrix");
-		// location_projectionMatrix = super.getUniformLocation("projectionMatrix");
-
-		// location_bonesMatrices = super.getUniformLocation("bonesMatrices");
+		
 	}
 	
-	public void loadMvpMatrix(Matrix4f mvpMatrix){
+	protected void loadMvpMatrix(Matrix4f mvpMatrix){
 		super.loadMatrix(location_mvpMatrix, mvpMatrix);
 	}
 
@@ -31,4 +29,5 @@ public class ShadowShader extends GLShader
 	protected void bindAttributes() {
 		super.bindAttribute(0, "in_position");
 	}
+
 }
