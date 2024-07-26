@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 public class ParticleMaster
 {
@@ -21,7 +20,7 @@ public class ParticleMaster
 
     public static void update(Camera camera)
     {
-        Iterator<Entry<ParticleTexture, List<Particle>>> it = particles.entrySet().iterator();
+        Iterator<Map.Entry<ParticleTexture, List<Particle>>> it = particles.entrySet().iterator();
         while(it.hasNext())
         {
             List<Particle> list = it.next().getValue();

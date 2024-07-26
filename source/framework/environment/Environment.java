@@ -4,8 +4,6 @@ import framework.Display.DisplayManager;
 import framework.fontMeshCreator.FontType;
 import framework.fontMeshCreator.GUIText;
 import framework.particles.ParticleMaster;
-import framework.particles.ParticleRenderer;
-import framework.post_processing.PostProcessing;
 import framework.renderer.MasterRenderer;
 import framework.loader.ModelLoader;
 import framework.event.MouseEvent;
@@ -15,7 +13,6 @@ import framework.swing.GUITexture;
 import framework.swing.PictureBox;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
-import org.lwjgl.opengl.GL30;
 
 // the commented codes will be uncommented once the game is set up!
 public final class Environment
@@ -80,12 +77,18 @@ public final class Environment
 
             //the shadow thingies
             //MasterRenderer.renderShadowMap(scene.getEntities(), scene.getMainLight());
-
             //particle
+
             if(scene.getParticleSystem() != null) {
+                Vector3f pos = new Vector3f(scene.getPlayer().getPosition());
+                pos.y += 300;
+                scene.getParticleSystem().generateParticles(pos);
                 ParticleMaster.update(scene.getCamera());
-                scene.getParticleSystem().generateParticles(new Vector3f(0, 10, 0));
             }
+
+
+            //if(scene.getParticleSystem() != null) {
+            //}
             //ParticleMaster.renderParticles(scene.getCamera());
 
             // debuggers
@@ -115,7 +118,7 @@ public final class Environment
 //            renderScene(new Vector4f(0, -1, 0, 0));
 ////
 //            MasterRenderer.buffer.unbindCurrentFrameBuffer();
-//            GL11.glDisable(GL30.GL_CLIP_DISTANCE1);
+            //GL11.glDisable(GL30.GL_CLIP_DISTANCE1);
 
 
             //MasterRenderer.renderShadowMap(scene.getEntities(), scene.getMainLight());
@@ -123,7 +126,10 @@ public final class Environment
             //multisample.bindFrameBuffer();
             renderScene(new Vector4f(0, -1, 0, 1000000));
             MasterRenderer.renderWaters(scene.getWaters(), scene.getCamera(), scene.getMainLight());
-            ParticleMaster.renderParticles(scene.getCamera());
+
+            if(scene.getParticleSystem() != null)
+                ParticleMaster.renderParticles(scene.getCamera());
+
             //multisample.unbindFrameBuffer();
             //multisample.resolveToFrameBufferObject(GL30.GL_COLOR_ATTACHMENT0,out);
             //multisample.resolveToFrameBufferObject(GL30.GL_COLOR_ATTACHMENT1,bright);

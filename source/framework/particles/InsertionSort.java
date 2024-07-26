@@ -20,13 +20,14 @@ public class InsertionSort {
 	 * @param list
 	 *            - the list of particles needing sorting.
 	 */
-	public static void sortHighToLow(List<Particle> list) {
+	public static List<Particle> sortHighToLow(List<Particle> list) {
 		for (int i = 1; i < list.size(); i++) {
 			Particle item = list.get(i);
 			if (item.getDistance() > list.get(i - 1).getDistance()) {
 				sortUpHighToLow(list, i);
 			}
 		}
+		return list;
 	}
 
 	private static void sortUpHighToLow(List<Particle> list, int i) {

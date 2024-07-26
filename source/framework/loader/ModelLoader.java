@@ -22,7 +22,8 @@ import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL33.glVertexAttribDivisor;
 
-public final class ModelLoader {
+public final class ModelLoader
+{
     private static List<Integer> vaoList = new ArrayList<>();
     private static List<Integer> vboList = new ArrayList<>();
     protected static List<Integer> textureList = new ArrayList<>();
@@ -155,7 +156,8 @@ public final class ModelLoader {
         int vbo = GL15.glGenBuffers();
         ModelLoader.vboList.add(vbo);
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, floatCount * 4L, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, floatCount * 4L, GL_STREAM_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
         return vbo;
     }
 
@@ -165,7 +167,7 @@ public final class ModelLoader {
         buffer.put(data);
         buffer.flip();
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, buffer.capacity() * 4L, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, buffer.capacity() * 4L, GL_STREAM_DRAW);
         glBufferSubData(GL_ARRAY_BUFFER, 0, buffer);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
@@ -173,8 +175,7 @@ public final class ModelLoader {
     public static void addInstanceAttribs(int vao, int vbo, int attrib, int data, int instanceLength, int offset)
     {
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, data, GL_STREAM_DRAW);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(vao);
         glVertexAttribPointer(attrib, data, GL_FLOAT, false, instanceLength * 4, offset * 4L);
         glVertexAttribDivisor(attrib, 1);
         glBindBuffer(GL_ARRAY_BUFFER, 0);

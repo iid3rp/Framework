@@ -1,5 +1,6 @@
 package framework.particles;
 
+
 import framework.Display.DisplayManager;
 import framework.entity.Camera;
 import framework.entity.Player;
@@ -7,27 +8,30 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 public class Particle {
+
     private Vector3f position;
     private Vector3f velocity;
     private float gravity;
     private float lifeLength;
     private float rotation;
     private float scale;
-    private ParticleTexture texture;
-    private Vector2f textureOffset1 = new Vector2f();
-    private Vector2f textureOffset2 = new Vector2f();
-    private float blendFactor;
-    private float distance;
-    private Vector3f change = new Vector3f();
 
     private float elapsedTime = 0;
+    private Vector3f change = new Vector3f();
+    private ParticleTexture texture;
+    private float distance;
 
-
-    public Particle(Vector3f position, Vector3f velocity, float gravity, float lifeLength, float rotation, float scale, ParticleTexture texture)
+    private Vector2f[] offset = new Vector2f[]
     {
-        this.texture = texture;
-        this.position = position;
-        this.velocity = velocity;
+            new Vector2f(),
+            new Vector2f()
+    };
+    private float blend;
+
+    public Particle(Vector3f position, Vector3f velocity, float gravity, float lifeLength, float rotation, float scale)
+    {
+        this.position = new Vector3f(position);
+        this.velocity = new Vector3f(velocity);
         this.gravity = gravity;
         this.lifeLength = lifeLength;
         this.rotation = rotation;
@@ -35,115 +39,21 @@ public class Particle {
         ParticleMaster.addParticle(this);
     }
 
-    public float getDistance()
+    public Particle(Vector3f position, Vector3f velocity, float gravity, float lifeLength, float rotation, float scale, ParticleTexture texture)
     {
-        return distance;
-    }
-
-    public Vector2f getTextureOffset1()
-    {
-        return textureOffset1;
-    }
-
-    public Vector2f getTextureOffset2()
-    {
-        return textureOffset2;
-    }
-
-    public float getBlendFactor()
-    {
-        return blendFactor;
+        this.position = position;
+        this.velocity = velocity;
+        this.gravity = gravity;
+        this.lifeLength = lifeLength;
+        this.rotation = rotation;
+        this.scale = scale;
+        this.texture = texture;
+        ParticleMaster.addParticle(this);
     }
 
     public ParticleTexture getTexture()
     {
         return texture;
-    }
-
-    public void setTexture(ParticleTexture texture)
-    {
-        this.texture = texture;
-    }
-
-    public Particle(Vector3f position,
-                    Vector3f velocity,
-                    float gravity,
-                    float lifeLength,
-                    float rotation,
-                    float scale)
-    {
-        this.position = position;
-        this.velocity = velocity;
-        this.gravity = gravity;
-        this.lifeLength = lifeLength;
-        this.rotation = rotation;
-        this.scale = scale;
-        ParticleMaster.addParticle(this);
-    }
-
-    public Vector3f getPosition()
-    {
-        return position;
-    }
-
-    public void setPosition(Vector3f position)
-    {
-        this.position = position;
-    }
-
-    public Vector3f getVelocity()
-    {
-        return velocity;
-    }
-
-    public void setVelocity(Vector3f velocity)
-    {
-        this.velocity = velocity;
-    }
-
-    public float getGravity()
-    {
-        return gravity;
-    }
-
-    public void setGravity(float gravity)
-    {
-        this.gravity = gravity;
-    }
-
-    public float getLifeLength()
-    {
-        return lifeLength;
-    }
-
-    public void setLifeLength(float lifeLength)
-    {
-        this.lifeLength = lifeLength;
-    }
-
-    public float getRotation()
-    {
-        return rotation;
-    }
-
-    public void setRotation(float rotation)
-    {
-        this.rotation = rotation;
-    }
-
-    public float getScale()
-    {
-        return scale;
-    }
-
-    public void setScale(float scale)
-    {
-        this.scale = scale;
-    }
-
-    public float getElapsedTime()
-    {
-        return elapsedTime;
     }
 
     protected boolean update(Camera camera)
@@ -152,29 +62,74 @@ public class Particle {
         change.set(velocity);
         change.mul(DisplayManager.getDeltaInSeconds());
         position.add(change);
-        distance = position.sub(camera.getPosition()).lengthSquared();
-        updateTextureCoordinates();
+        distance = new Vector3f(camera.getPosition()).sub(position).lengthSquared();
+        updateTextureCoordsInfo();
         elapsedTime += DisplayManager.getDeltaInSeconds();
         return elapsedTime < lifeLength;
     }
 
-    private void updateTextureCoordinates()
+    private void updateTextureCoordsInfo()
     {
         float lifeFactor = elapsedTime / lifeLength;
-        int stageCount = texture.getNumOfRows() * texture.getNumOfRows();
+        int stageCount = (int) Math.pow(texture.getNumOfRows(), 2);
         float atlasProgression = lifeFactor * stageCount;
         int index1 = (int) Math.floor(atlasProgression);
-        int index2 = index1 < stageCount - 1? index1 + 1 : index1;
-        this.blendFactor = atlasProgression % 1;
-        setTextureOffset(textureOffset1, index1);
-        setTextureOffset(textureOffset2, index2);
+        int index2 = index1 < stageCount - 1 ? index1 + 1 : index1;
+        this.blend = atlasProgression % 1;
+        setTextureOffset(offset[0], index1);
+        setTextureOffset(offset[1], index2);
     }
 
-    private void setTextureOffset(Vector2f offset,  int index)
+    private void setTextureOffset(Vector2f vec2, int index)
     {
-        int column = index % texture.getNumOfRows();
-        int row = index / texture.getNumOfRows();
-        offset.x = (float) column / texture.getNumOfRows();
-        offset.y = (float) row / texture.getNumOfRows();
+        int column = index % offset.length;
+        int row = index / offset.length;
+        vec2.x = (float) column / texture.getNumOfRows();
+        vec2.y = (float) row / texture.getNumOfRows();
+    }
+
+    public Vector3f getPosition()
+    {
+        return position;
+    }
+
+    public Vector3f getVelocity()
+    {
+        return velocity;
+    }
+
+    public float getGravity()
+    {
+        return gravity;
+    }
+
+    public float getLifeLength()
+    {
+        return lifeLength;
+    }
+
+    public float getRotation()
+    {
+        return rotation;
+    }
+
+    public float getScale()
+    {
+        return scale;
+    }
+
+    public float getBlend()
+    {
+        return blend;
+    }
+
+    public Vector2f[] getOffset()
+    {
+        return offset;
+    }
+
+    public float getDistance()
+    {
+        return distance;
     }
 }
