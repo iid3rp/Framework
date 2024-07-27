@@ -4,7 +4,7 @@ import framework.Display.DisplayManager;
 import framework.entity.Camera;
 import framework.environment.Environment;
 import framework.terrains.Terrain;
-import framework.utils.GeomMath;
+import framework.util.GeomMath;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;

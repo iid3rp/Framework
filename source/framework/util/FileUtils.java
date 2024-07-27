@@ -1,4 +1,4 @@
-package framework.utils;
+package framework.util;
 
 import framework.shader.GLShader;
 

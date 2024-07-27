@@ -7,7 +7,7 @@ import java.util.Objects;
 
 import framework.resources.Resources;
 import framework.textures.Texture;
-import framework.utils.Buffer;
+import framework.util.Buffer;
 
 import javax.imageio.ImageIO;
 

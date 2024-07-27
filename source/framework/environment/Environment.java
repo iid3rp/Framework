@@ -55,7 +55,7 @@ public final class Environment
 
             GUITexture img = new PictureBox();
             img.setBackgroundImage(MasterRenderer.getShadowMapTexture());
-            img.setSize(300, 300);
+            img.setSize(400, 225);
             img.setLocation(20, 20);
 
             scene.getContentPane().add(img);

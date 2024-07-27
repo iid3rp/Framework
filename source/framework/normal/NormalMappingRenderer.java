@@ -7,7 +7,7 @@ import framework.model.Model;
 import framework.model.TexturedModel;
 import framework.renderer.MasterRenderer;
 import framework.textures.Texture;
-import framework.utils.GeomMath;
+import framework.util.GeomMath;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL11;

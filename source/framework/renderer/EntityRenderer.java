@@ -5,7 +5,7 @@ import framework.model.Model;
 import framework.model.TexturedModel;
 import framework.shader.EntityShader;
 import framework.textures.Texture;
-import framework.utils.GeomMath;
+import framework.util.GeomMath;
 import org.joml.Matrix4f;
 
 import java.util.List;

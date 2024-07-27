@@ -2,10 +2,9 @@ package framework.shader;
 
 import framework.entity.Camera;
 import framework.entity.Light;
-import framework.utils.GeomMath;
+import framework.util.GeomMath;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import org.joml.Vector4dKt;
 import org.joml.Vector4f;
 
 import java.util.List;

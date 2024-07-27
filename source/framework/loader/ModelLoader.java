@@ -5,7 +5,7 @@ import de.matthiasmann.twl.utils.PNGDecoder.Format;
 import framework.model.Model;
 import framework.resources.Resources;
 import framework.textures.TextureData;
-import framework.utils.Buffer;
+import framework.util.Buffer;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL13;

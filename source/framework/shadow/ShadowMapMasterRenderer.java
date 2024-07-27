@@ -90,7 +90,7 @@ public class ShadowMapMasterRenderer {
 	 * @return The to-shadow-map-space matrix.
 	 */
 	public Matrix4f getToShadowMapSpaceMatrix() {
-		return offset.mul(projectionViewMatrix, new Matrix4f());
+		return new Matrix4f(offset).mul(projectionViewMatrix);
 	}
 
 	/**
@@ -175,14 +175,14 @@ public class ShadowMapMasterRenderer {
 		direction.normalize();
 		center.negate();
 		lightViewMatrix.identity();
-		float pitch = (float) Math.acos(new Vector2f(direction.x, direction.z).length());
-		lightViewMatrix.rotate(pitch, new Vector3f(1, 0, 0), lightViewMatrix);
+		float pitch = (float) Math.acos(new Vector2f(direction.x, direction.z).lengthSquared());
+		lightViewMatrix.rotate(pitch, new Vector3f(1, 0, 0));
 		System.out.println(lightViewMatrix);
-		float yaw = (float) Math.toDegrees(((float) Math.atan(direction.x / direction.z)));
+		float yaw = (float) Math.toDegrees(((float) Math.atan2(direction.x, direction.z)));
 		yaw = direction.z > 0 ? yaw - 180 : yaw;
-		lightViewMatrix.rotate((float) -Math.toRadians(yaw), new Vector3f(0, 1, 0), lightViewMatrix);
+		lightViewMatrix.rotate((float) -Math.toRadians(yaw), 0, 1, 0);
 		System.out.println(lightViewMatrix);
-		lightViewMatrix.translate(center, lightViewMatrix);
+		lightViewMatrix.translate(center);
 		System.out.println(lightViewMatrix);
 		System.out.println();
 	}

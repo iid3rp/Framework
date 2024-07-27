@@ -4,7 +4,7 @@ import framework.loader.ModelLoader;
 import framework.model.Model;
 import framework.textures.TerrainTexture;
 import framework.textures.TerrainTexturePack;
-import framework.utils.GeomMath;
+import framework.util.GeomMath;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 

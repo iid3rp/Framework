@@ -1,4 +1,4 @@
-package framework.utils;
+package framework.util;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

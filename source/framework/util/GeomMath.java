@@ -1,4 +1,4 @@
-package framework.utils;
+package framework.util;
 
 import framework.entity.Camera;
 import org.joml.Matrix4f;
