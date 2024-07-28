@@ -69,6 +69,12 @@ public class EntityRenderer {
         glBindTexture(GL_TEXTURE_2D, texturedModel.getTexture().getTextureId());   // sampler2D in fragment shader uses texture bank 0 by default
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, texturedModel.getTexture().getNormalMap()); // but then were using normals in the entities...
+
+        staticShader.loadHasSpecularMap(texture.hasSpecularMap());
+        if(texture.hasSpecularMap()) {
+            glActiveTexture(GL_TEXTURE2);
+            glBindTexture(GL_TEXTURE_2D, texturedModel.getTexture().getTextureId());
+        }
     }
 
     private void unbindTexturedModel() {

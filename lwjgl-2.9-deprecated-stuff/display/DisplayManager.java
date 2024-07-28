@@ -22,7 +22,6 @@ public class DisplayManager
             Display.setDisplayMode(new DisplayMode(width, height));
             Display.create(new PixelFormat().withDepthBits(24).withSamples(4), attributes);
            
-            GL11.glEnable(GL13.GL_MULTISAMPLE);
             System.out.println(GL11.glGetInteger(GL11.GL_DEPTH_BITS));
         }
         catch(LWJGLException e) {

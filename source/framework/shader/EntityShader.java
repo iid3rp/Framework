@@ -30,7 +30,8 @@ public class EntityShader extends GLShader
     private int location_offset;
     private int[] locationAttenuation;
     private int locationPlane;
-    private int locationNormalAvailability;
+    private int locationHasSpecularMap;
+    private int locationSpecularMap;
 
     public EntityShader() {
         super(VERTEX_FILE, FRAGMENT_FILE);
@@ -58,6 +59,8 @@ public class EntityShader extends GLShader
         locationPlane = super.getUniformLocation("plane");
         locationModelTexture = super.getUniformLocation("modelTexture");
         locationNormalMap = super.getUniformLocation("normalMap");
+        locationHasSpecularMap = super.getUniformLocation("hasSpecularMap");
+        locationSpecularMap = super.getUniformLocation("specularMap");
 
         location_lightPosition = new int[20];
         location_lightColor = new int[20];
@@ -110,14 +113,15 @@ public class EntityShader extends GLShader
         return new Vector3f(eyeSpacePos.x,eyeSpacePos.y,eyeSpacePos.z);
     }
 
-    protected void loadNormalMap(boolean flag)
-    {
-        super.loadBoolean(locationNormalAvailability, flag);
-    }
-
     public void connectTextureUnits(){
         super.loadInt(locationModelTexture, 0);
         super.loadInt(locationNormalMap, 1);
+        super.loadInt(locationSpecularMap, 2);
+    }
+
+    public void loadHasSpecularMap(boolean hasSpecularMap)
+    {
+        super.loadBoolean(locationHasSpecularMap, hasSpecularMap);
     }
 
     public void loadShineVariables(float shineDamper, float reflectivity) {

@@ -9,9 +9,13 @@ in vec3 toCameraVector;
 in float visibility;
 
 layout(location = 0) out vec4 out_Color;
+layout(location = 1) out vec4 out_Color1;
 
 uniform sampler2D modelTexture;
 uniform sampler2D normalMap;
+uniform sampler2D specularMap;
+uniform bool hasSpecularMap;
+
 uniform vec3 lightColor[lightAmount];
 uniform vec3 attenuation[lightAmount];
 uniform float shineDamper;
@@ -89,7 +93,20 @@ void main(void)
         discard;
     }
 
+    // TODO: make this transitional instead of cutting to two levels :3
+
+    if(hasSpecularMap)
+    {
+        vec4 mapInfo = texture(specularMap, pass_textureCoords);
+        totalSpecular *= mapInfo.r;
+        if(mapInfo.g > 0.5)
+        {
+            totalSpecular = vec3(1);
+        }
+    }
+
     out_Color = vec4(totalDiffuse, 1.0) *  textureColor + vec4(totalSpecular, 1.0); // returns color of the pixel from the texture at specified texture coordinates
     out_Color = mix(vec4(skyColor, 1.0), out_Color, visibility);
+    out_Color1 = vec4(1);
     //out_Color = normalMapValue;
 }

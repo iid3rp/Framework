@@ -4,6 +4,8 @@ import framework.Display.DisplayManager;
 import framework.fontMeshCreator.FontType;
 import framework.fontMeshCreator.GUIText;
 import framework.particles.ParticleMaster;
+import framework.post_processing.FrameBufferObject;
+import framework.post_processing.PostProcessing;
 import framework.renderer.MasterRenderer;
 import framework.loader.ModelLoader;
 import framework.event.MouseEvent;
@@ -13,6 +15,7 @@ import framework.swing.GUITexture;
 import framework.swing.PictureBox;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
+import org.lwjgl.opengl.GL30;
 
 // the commented codes will be uncommented once the game is set up!
 public final class Environment
@@ -22,9 +25,9 @@ public final class Environment
 
 
     // will be used in other tutorials in the future, don't worry!
-    //public static FrameBufferObject multisample = new FrameBufferObject(Display.getWidth(), Display.getHeight());
-    //public static FrameBufferObject out = new FrameBufferObject(Display.getWidth(), Display.getHeight(), FrameBufferObject.DEPTH_TEXTURE);
-    //public static FrameBufferObject bright = new FrameBufferObject(Display.getWidth(), Display.getHeight(), FrameBufferObject.DEPTH_TEXTURE);
+    public static FrameBufferObject multisample = new FrameBufferObject(DisplayManager.getWindowWidth(), DisplayManager.getWindowHeight());
+    public static FrameBufferObject out = new FrameBufferObject(DisplayManager.getWindowWidth(), DisplayManager.getWindowHeight(), FrameBufferObject.DEPTH_TEXTURE);
+    public static FrameBufferObject bright = new FrameBufferObject(DisplayManager.getWindowWidth(), DisplayManager.getWindowHeight(), FrameBufferObject.DEPTH_TEXTURE);
 
     public static void setScene(Scene scene)
     {
@@ -39,7 +42,7 @@ public final class Environment
     {
         // static method calling goes here:
         MasterRenderer.setRenderer(scene.getCamera());
-        //PostProcessing.initialize();
+        PostProcessing.initialize();
         //TextMasterRenderer.initialize();
         ParticleMaster.initialize(MasterRenderer.getProjectionMatrix());
 
@@ -124,22 +127,22 @@ public final class Environment
 
             //MasterRenderer.renderShadowMap(scene.getEntities(), scene.getMainLight());
             // frame buffer stuff
-            //multisample.bindFrameBuffer();
+            multisample.bindFrameBuffer();
             renderScene(new Vector4f(0, -1, 0, 1000000));
             MasterRenderer.renderWaters(scene.getWaters(), scene.getCamera(), scene.getMainLight());
-
             if(scene.getParticleSystem() != null)
                 ParticleMaster.renderParticles(scene.getCamera());
+            multisample.unbindFrameBuffer();
 
-            //multisample.unbindFrameBuffer();
-            //multisample.resolveToFrameBufferObject(GL30.GL_COLOR_ATTACHMENT0,out);
+            //multisample.resolveToScreen();
+            multisample.resolveToFrameBufferObject(out);
             //multisample.resolveToFrameBufferObject(GL30.GL_COLOR_ATTACHMENT1,bright);
-            //PostProcessing.doPostProcessing(out.getColorTexture(), bright.getColorTexture());
+
+            PostProcessing.doPostProcessing(out.getColorTexture());
 
             scene.getContentPane().render(scene.getContentPane().getComponents());
             //TextMasterRenderer.setText(fps, "fps count: " + FPSCounter.getCounter());
             //TextMasterRenderer.render();
-
             runAllScripts();
             DisplayManager.updateDisplay();
         }
@@ -181,9 +184,9 @@ public final class Environment
 
     private static void exit()
     {
-        //PostProcessing.dispose();
-        //multisample.dispose();
-        //out.dispose();
+        PostProcessing.dispose();
+        multisample.dispose();
+        out.dispose();
         //bright.dispose();
         ParticleMaster.dispose();
         //TextMasterRenderer.dispose();

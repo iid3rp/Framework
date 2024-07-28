@@ -4,6 +4,7 @@ import framework.entity.Camera;
 import framework.entity.Entity;
 import framework.entity.Light;
 import framework.model.TexturedModel;
+import framework.util.Mat4f;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -140,7 +141,7 @@ public class ShadowMapMasterRenderer {
 	private void prepare(Vector3f lightDirection, ShadowBox box) {
 		updateOrthographicProjectionMatrix(box.getWidth(), box.getHeight(), box.getLength());
 		updateLightViewMatrix(lightDirection, box.getCenter());
-		projectionMatrix.mul(lightViewMatrix, projectionMatrix);
+		Mat4f.mul(projectionMatrix, lightViewMatrix, projectionViewMatrix);
 		shadowFbo.bindFrameBuffer();
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
@@ -174,17 +175,14 @@ public class ShadowMapMasterRenderer {
 	private void updateLightViewMatrix(Vector3f direction, Vector3f center) {
 		direction.normalize();
 		center.negate();
-		lightViewMatrix.identity();
-		float pitch = (float) Math.acos(new Vector2f(direction.x, direction.z).lengthSquared());
-		lightViewMatrix.rotate(pitch, new Vector3f(1, 0, 0));
-		System.out.println(lightViewMatrix);
-		float yaw = (float) Math.toDegrees(((float) Math.atan2(direction.x, direction.z)));
+		lightViewMatrix = new Matrix4f();
+		float pitch = (float) Math.acos(new Vector2f(direction.x, direction.z).length());
+		Mat4f.rotate(pitch, new Vector3f(1, 0, 0), lightViewMatrix, lightViewMatrix);
+		float yaw = (float) Math.toDegrees(((float) Math.atan(direction.x / direction.z)));
 		yaw = direction.z > 0 ? yaw - 180 : yaw;
-		lightViewMatrix.rotate((float) -Math.toRadians(yaw), 0, 1, 0);
-		System.out.println(lightViewMatrix);
-		lightViewMatrix.translate(center);
-		System.out.println(lightViewMatrix);
-		System.out.println();
+		Mat4f.rotate((float) -Math.toRadians(yaw), new Vector3f(0, 1, 0), lightViewMatrix,
+				lightViewMatrix);
+		Mat4f.translate(center, lightViewMatrix, lightViewMatrix);
 	}
 
 	/**

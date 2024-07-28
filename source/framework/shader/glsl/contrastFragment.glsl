@@ -11,7 +11,7 @@ const float contrast = 0.3;
 
 void main(void){
 
-	outColor = texture(colorTecture, textureCoords);
+	outColor = texture(colorTecture, textureCoords).rgba;
 	outColor.rgb = (outColor.rgb - 0.5) * (1 + contrast) + 0.5;
 
 }

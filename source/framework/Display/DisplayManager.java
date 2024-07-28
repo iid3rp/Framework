@@ -3,6 +3,8 @@ package framework.Display;
 import framework.event.Keyboard;
 import framework.event.Mouse;
 import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL.*;
@@ -30,6 +32,7 @@ public class DisplayManager {
             throw new RuntimeException("ERROR: GLFW wasn't initialized");
         }
 
+        glfwWindowHint(GLFW_DEPTH_BITS, 24); // Set the depth bits to 24
         glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
@@ -64,6 +67,7 @@ public class DisplayManager {
         glfwSwapInterval(1);
 
         lastFrameTime = getCurrentTime();
+        GL11.glEnable(GL13.GL_MULTISAMPLE);
     }
 
     public static void updateDisplay() {

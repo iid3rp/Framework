@@ -4,6 +4,7 @@ import framework.entity.Entity;
 import framework.model.Model;
 import framework.model.TexturedModel;
 import framework.util.GeomMath;
+import framework.util.Mat4f;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
@@ -85,8 +86,7 @@ public class ShadowMapEntityRenderer {
 	private void prepareInstance(Entity entity) {
 		Matrix4f modelMatrix = GeomMath.createTransformationMatrix(entity.getPosition(),
 				entity.getRotationX(), entity.getRotationY(), entity.getRotationZ(), entity.getScale());
-		Matrix4f mvpMatrix = new Matrix4f();
-		projectionViewMatrix.mul(modelMatrix, mvpMatrix);
+		Matrix4f mvpMatrix = Mat4f.mul(projectionViewMatrix, modelMatrix, null);
 		shader.loadMvpMatrix(mvpMatrix);
 	}
 
