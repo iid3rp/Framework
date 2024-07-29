@@ -20,10 +20,6 @@ public class Mouse {
     private static double newY;
     private static double mouseScrollX;
     private static double mouseScrollY;
-    private static double oldScrollX;
-    private static double oldScrollY;
-    private static double newScrollX;
-    private static double newScrollY;
     private final GLFWCursorPosCallback mouseMove;
     private final GLFWMouseButtonCallback mouseButtons;
     private final GLFWScrollCallback mouseScroll;
@@ -102,7 +98,7 @@ public class Mouse {
         return buttons[button];
     }
 
-    public static double getMouseX() {
+    public static int getMouseX() {
         return mouseX;
     }
 
@@ -116,7 +112,7 @@ public class Mouse {
         return swipeY;
     }
 
-    public static double getMouseY() {
+    public static int getMouseY() {
         return mouseY;
     }
 

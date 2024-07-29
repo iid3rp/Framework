@@ -1,7 +1,14 @@
 package framework.entity;
 
+import framework.event.MouseAdapter;
+import framework.event.MouseListener;
+import framework.event.MouseEvent;
 import framework.model.TexturedModel;
 import org.joml.Vector3f;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 public class Entity {
     private TexturedModel texturedModel;
@@ -9,6 +16,7 @@ public class Entity {
     private float rotationX, rotationY, rotationZ;
     private float scale;
     private int textureAtlasIndex;
+    private List<MouseListener> listeners = new ArrayList<>();
 
     public Entity(TexturedModel texturedModel, Vector3f position, float rotationX, float rotationY, float rotationZ, float scale) {
         this.texturedModel = texturedModel;
@@ -17,6 +25,7 @@ public class Entity {
         this.rotationY = rotationY;
         this.rotationZ = rotationZ;
         this.scale = scale;
+
     }
 
     public Entity(TexturedModel texturedModel, int textureAtlasIndex, Vector3f position, float rotationX, float rotationY, float rotationZ, float scale) {
@@ -38,6 +47,7 @@ public class Entity {
         this.rotationZ = entity.getRotationZ();
         this.scale = entity.getScale();
         this.textureAtlasIndex = entity.textureAtlasIndex;
+        this.events = entity.events;
     }
 
     public void transformPosition(float dx, float dy, float dz) {
@@ -113,5 +123,12 @@ public class Entity {
     public void transformPosition(Vector3f vec3)
     {
         transformPosition(vec3.x, vec3.y, vec3.z);
+    }
+
+    public void addMouseListener(MouseListener listener)
+    {
+        if(!listeners.contains(listener)) {
+            listeners.add(listener);
+        }
     }
 }

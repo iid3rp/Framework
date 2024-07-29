@@ -8,6 +8,7 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
+import java.awt.Color;
 import java.util.List;
 
 public class EntityShader extends GLShader
@@ -32,6 +33,7 @@ public class EntityShader extends GLShader
     private int locationPlane;
     private int locationHasSpecularMap;
     private int locationSpecularMap;
+    private int locationMouseColor;
 
     public EntityShader() {
         super(VERTEX_FILE, FRAGMENT_FILE);
@@ -61,6 +63,7 @@ public class EntityShader extends GLShader
         locationNormalMap = super.getUniformLocation("normalMap");
         locationHasSpecularMap = super.getUniformLocation("hasSpecularMap");
         locationSpecularMap = super.getUniformLocation("specularMap");
+        locationMouseColor = super.getUniformLocation("mouseEvent"); // mouse Event support
 
         location_lightPosition = new int[20];
         location_lightColor = new int[20];
@@ -85,6 +88,16 @@ public class EntityShader extends GLShader
     public void loadViewMatrix(Camera camera) {
         Matrix4f viewMatrix = GeomMath.createViewMatrix(camera);
         super.loadMatrix(location_viewMatrix, viewMatrix);
+    }
+
+    public void loadMouseEventColor(Color color)
+    {
+        float r = color.getRed() / 255.0f;
+        float g = color.getGreen() / 255.0f;
+        float b = color.getBlue() / 255.0f;
+        float a = color.getAlpha() / 255.0f;
+        Vector4f vector4f = new Vector4f(r, g, b, a);
+        super.loadVector(locationMouseColor, vector4f);
     }
 
     public void loadLights(List<Light> lights, Camera camera) {

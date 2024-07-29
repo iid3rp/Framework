@@ -2,14 +2,21 @@ package framework.event;
 
 import framework.Display.DisplayManager;
 import framework.entity.Camera;
+import framework.entity.Entity;
 import framework.environment.Environment;
+import framework.post_processing.FrameBufferObject;
 import framework.terrains.Terrain;
 import framework.util.GeomMath;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
+
+import java.awt.Color;
+import java.nio.ByteBuffer;
+import java.util.HashMap;
 
 public class MouseEvent
 {
@@ -21,10 +28,9 @@ public class MouseEvent
     private Camera camera;
     private Terrain terrain;
     private Vector3f currentTerrainPoint;
+    private HashMap<Color, Entity> entityMouseEvents = new HashMap<>();
 
-    public MouseEvent() {
-        this.terrain = Environment.getScene().getTerrain();
-    }
+    public MouseEvent() {}
 
     public MouseEvent(Camera camera, Matrix4f projection)
     {
@@ -180,8 +186,38 @@ public class MouseEvent
         return terrain;
     }
 
-    private void getMouseEventVerifier(int x, int y)
+    public void verifyMousePick(int x, int y, FrameBufferObject src, FrameBufferObject dst)
     {
+        GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, src.getFrameBuffer());
+        GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, dst.getFrameBuffer());
+        GL11.glReadBuffer(GL30.GL_COLOR_ATTACHMENT2);
 
+        ByteBuffer pixelBuffer = ByteBuffer.allocateDirect(4);
+        GL30.glReadPixels(x, y, 1, 1, GL30.GL_RGB, GL30.GL_UNSIGNED_BYTE, pixelBuffer);
+        pixelBuffer.flip();
+
+        int r = pixelBuffer.get() & 0xff;
+        int g = pixelBuffer.get() & 0xff;
+        int b = pixelBuffer.get() & 0xff;
+        int a = pixelBuffer.get() & 0xff;
+
+        Color color = new Color(r, g, b, a);
+
+        // apparently, doing GL_LINEAR will not work...
+        // do note with this!
+        GL30.glBlitFramebuffer(
+                0, 0, dst.getWidth(), dst.getHeight(),
+                0, 0 , src.getWidth(), src.getHeight(),
+                GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT, GL11.GL_NEAREST);
+        dst.unbindFrameBuffer();
+
+        simulateEvent(color);
+    }
+
+    private void simulateEvent(Color color)
+    {
+        Entity entity = entityMouseEvents.get(color);
+        // todo this
+        if (entity != null) {}
     }
 }

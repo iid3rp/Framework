@@ -1,6 +1,7 @@
 package framework.environment;
 
 import framework.Display.DisplayManager;
+import framework.event.Mouse;
 import framework.fontMeshCreator.FontType;
 import framework.fontMeshCreator.GUIText;
 import framework.particles.ParticleMaster;
@@ -16,19 +17,19 @@ import framework.swing.PictureBox;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL30;
-import org.lwjgl.opengl.GL40;
+
+import java.awt.Color;
 
 // the commented codes will be uncommented once the game is set up!
 public final class Environment
 {
     public static Scene scene;
     private static StackScript stack = new StackScript();
-
-
     // will be used in other tutorials in the future, don't worry!
     public static FrameBufferObject multisample = new FrameBufferObject(DisplayManager.getWindowWidth(), DisplayManager.getWindowHeight());
     public static FrameBufferObject out = new FrameBufferObject(DisplayManager.getWindowWidth(), DisplayManager.getWindowHeight(), FrameBufferObject.DEPTH_TEXTURE);
     public static FrameBufferObject bright = new FrameBufferObject(DisplayManager.getWindowWidth(), DisplayManager.getWindowHeight(), FrameBufferObject.DEPTH_TEXTURE);
+    public static FrameBufferObject mouseEventBuffer = new FrameBufferObject(DisplayManager.getWindowWidth(), DisplayManager.getWindowHeight(), FrameBufferObject.DEPTH_TEXTURE);
 
     public static void setScene(Scene scene)
     {
@@ -137,7 +138,10 @@ public final class Environment
 
             //multisample.resolveToScreen();
             multisample.resolveToFrameBufferObject(GL30.GL_COLOR_ATTACHMENT0, out);
-            multisample.resolveToFrameBufferObject(GL30.GL_COLOR_ATTACHMENT1,bright);
+            multisample.resolveToFrameBufferObject(GL30.GL_COLOR_ATTACHMENT1, bright);
+            //multisample.resolveToFrameBufferObject(GL30.GL_COLOR_ATTACHMENT2, mouseEventBuffer);
+
+            scene.getEvent().verifyMousePick(Mouse.getMouseX(), Mouse.getMouseY(), bright, mouseEventBuffer);
 
             PostProcessing.doPostProcessing(out.getColorTexture(), bright.getColorTexture());
 
