@@ -3,7 +3,7 @@
 in vec3 textureCoords;
 
 layout(location = 0) out vec4 outColor;
-//layout(location = 1) out vec4 brightColor;
+layout(location = 1) out vec4 brightColor;
 
 uniform samplerCube cubeMap1;
 uniform samplerCube cubeMap2;
@@ -24,5 +24,5 @@ void main(void)
     amount = floor(amount * levels) / levels;
 
     outColor = finalColor;
-    //brightColor = finalColor;
+    brightColor = finalColor;
 }

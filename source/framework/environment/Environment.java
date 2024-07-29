@@ -16,6 +16,7 @@ import framework.swing.PictureBox;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL40;
 
 // the commented codes will be uncommented once the game is set up!
 public final class Environment
@@ -61,7 +62,7 @@ public final class Environment
             img.setSize(400, 225);
             img.setLocation(20, 20);
 
-            scene.getContentPane().add(img);
+            //scene.getContentPane().add(img);
 
 
             loop();
@@ -79,7 +80,7 @@ public final class Environment
             scene.getEvent().update();
 
             //the shadow thingies
-            MasterRenderer.renderShadowMap(scene.getEntities(), scene.getMainLight());
+            //MasterRenderer.renderShadowMap(scene.getEntities(), scene.getMainLight());
 
             //particle
 
@@ -135,10 +136,10 @@ public final class Environment
             multisample.unbindFrameBuffer();
 
             //multisample.resolveToScreen();
-            multisample.resolveToFrameBufferObject(out);
-            //multisample.resolveToFrameBufferObject(GL30.GL_COLOR_ATTACHMENT1,bright);
+            multisample.resolveToFrameBufferObject(GL30.GL_COLOR_ATTACHMENT0, out);
+            multisample.resolveToFrameBufferObject(GL30.GL_COLOR_ATTACHMENT1,bright);
 
-            PostProcessing.doPostProcessing(out.getColorTexture());
+            PostProcessing.doPostProcessing(out.getColorTexture(), bright.getColorTexture());
 
             scene.getContentPane().render(scene.getContentPane().getComponents());
             //TextMasterRenderer.setText(fps, "fps count: " + FPSCounter.getCounter());

@@ -2,11 +2,14 @@
 package framework.post_processing;
 
 import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 
 import framework.Display.DisplayManager;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL14;
+import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
 public class FrameBufferObject
@@ -27,6 +30,7 @@ public class FrameBufferObject
 
 	private int depthBuffer;
 	private int colorBuffer;
+	private int bloomBuffer;
 
 	/**
 	 * Creates an FBO of a specified width and height, with the desired type of
@@ -107,11 +111,11 @@ public class FrameBufferObject
 		return depthTexture;
 	}
 
-	public void resolveToFrameBufferObject(FrameBufferObject objects)
+	public void resolveToFrameBufferObject(int attachment, FrameBufferObject objects)
 	{
 		GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, objects.frameBuffer);
 		GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, this.frameBuffer);
-		//GL11.glReadBuffer(GL30.GL_COLOR_ATTACHMENT0);
+		GL11.glReadBuffer(attachment);
 
 		// apparently, doing GL_LINEAR will not work...
 		// do note with this!
@@ -146,7 +150,8 @@ public class FrameBufferObject
 		createFrameBuffer();
 
 		if(multiSampledTarget) {
-			createMultisampleColorAttachment();
+			colorBuffer = createMultisampleColorAttachment(GL30.GL_COLOR_ATTACHMENT0);
+			bloomBuffer = createMultisampleColorAttachment(GL30.GL_COLOR_ATTACHMENT1);
 		}
 		else {
 			createTextureAttachment();
@@ -174,7 +179,17 @@ public class FrameBufferObject
 	private void createFrameBuffer() {
 		frameBuffer = GL30.glGenFramebuffers();
 		GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, frameBuffer);
-		GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT0);
+		determineDrawBuffers();
+	}
+
+	private void determineDrawBuffers()
+	{
+		IntBuffer buffer = BufferUtils.createIntBuffer(2);
+		buffer.put(GL30.GL_COLOR_ATTACHMENT0);
+		if(multiSampledTarget)
+			buffer.put(GL30.GL_COLOR_ATTACHMENT1);
+		buffer.flip();
+		GL20.glDrawBuffers(buffer);
 	}
 
 	/**
@@ -208,13 +223,14 @@ public class FrameBufferObject
 		GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_DEPTH_ATTACHMENT, GL11.GL_TEXTURE_2D, depthTexture, 0);
 	}
 
-	private void createMultisampleColorAttachment()
+	private int createMultisampleColorAttachment(int attachment)
 	{
-		colorBuffer = GL30.glGenRenderbuffers();
+		int colorBuffer = GL30.glGenRenderbuffers();
 		GL30.glBindRenderbuffer(GL30.GL_RENDERBUFFER, colorBuffer);
 		GL30.glRenderbufferStorageMultisample(GL30.GL_RENDERBUFFER, 4, GL11.GL_RGBA8, width, height);
-		GL30.glFramebufferRenderbuffer(GL30.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, GL30.GL_RENDERBUFFER,
+		GL30.glFramebufferRenderbuffer(GL30.GL_FRAMEBUFFER, attachment, GL30.GL_RENDERBUFFER,
 				colorBuffer);
+		return colorBuffer;
 	}
 
 	/**

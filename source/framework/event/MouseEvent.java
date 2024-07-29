@@ -9,6 +9,7 @@ import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
+import org.lwjgl.opengl.GL30;
 
 public class MouseEvent
 {
@@ -177,5 +178,10 @@ public class MouseEvent
 
     private Terrain getTerrain(float worldX, float worldZ) {
         return terrain;
+    }
+
+    private void getMouseEventVerifier(int x, int y)
+    {
+
     }
 }

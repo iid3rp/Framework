@@ -9,6 +9,7 @@ in vec3 toCameraVector;
 in float visibility;
 
 layout(location = 0) out vec4 out_Color;
+layout(location = 1) out vec4 brightColor;
 
 uniform sampler2D backgroundTexture;
 uniform sampler2D rTexture;
@@ -78,4 +79,5 @@ void main(void) {
 
     out_Color = vec4(totalDiffuse, 1.0) *  totalColor + vec4(totalSpecular, 1.0);        // returns color of the pixel from the texture at specified texture coordinates
     out_Color = mix(vec4(skyColor, 1.0), out_Color, visibility);
+    brightColor = vec4(vec3(0), 1);
 }

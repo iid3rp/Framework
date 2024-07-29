@@ -9,12 +9,12 @@ public class CombineFilter {
 	private ImageRenderer renderer;
 	private CombineShader shader;
 	
-	public CombineFilter(int width, int height){
+	public CombineFilter(){
 		shader = new CombineShader();
 		shader.bind();
 		shader.connectTextureUnits();
 		shader.unbind();
-		renderer = new ImageRenderer(width, height);
+		renderer = new ImageRenderer();
 	}
 	
 	public void render(int colourTexture, int highlightTexture){

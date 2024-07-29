@@ -3,6 +3,7 @@ package framework.post_processing.bloom;
 import framework.post_processing.ImageRenderer;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
+import org.lwjgl.opengl.GL30;
 
 public class BrightFilter {
 

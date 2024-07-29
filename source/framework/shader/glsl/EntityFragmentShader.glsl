@@ -9,7 +9,8 @@ in vec3 toCameraVector;
 in float visibility;
 
 layout(location = 0) out vec4 out_Color;
-layout(location = 1) out vec4 out_Color1;
+layout(location = 1) out vec4 brightColor;
+layout(location = 2) out vec4 mouseEvent;
 
 uniform sampler2D modelTexture;
 uniform sampler2D normalMap;
@@ -21,6 +22,7 @@ uniform vec3 attenuation[lightAmount];
 uniform float shineDamper;
 uniform float reflectivity;
 uniform vec3 skyColor;
+uniform vec4 mouseEventColor;
 
 // make this uniform below:
 const float levels = 255;
@@ -95,18 +97,21 @@ void main(void)
 
     // TODO: make this transitional instead of cutting to two levels :3
 
+    brightColor = vec4(0);
     if(hasSpecularMap)
     {
         vec4 mapInfo = texture(specularMap, pass_textureCoords);
         totalSpecular *= mapInfo.r;
         if(mapInfo.g > 0.5)
         {
+            brightColor = textureColor + vec4(totalSpecular, 1);
             totalSpecular = vec3(1);
         }
     }
 
     out_Color = vec4(totalDiffuse, 1.0) *  textureColor + vec4(totalSpecular, 1.0); // returns color of the pixel from the texture at specified texture coordinates
     out_Color = mix(vec4(skyColor, 1.0), out_Color, visibility);
-    out_Color1 = vec4(1);
+    mouseEvent = mouseEventColor;
+    //brightColor = out_Color;
     //out_Color = normalMapValue;
 }

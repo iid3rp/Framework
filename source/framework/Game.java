@@ -9,9 +9,6 @@ import framework.environment.Environment;
 import framework.environment.Scene;
 import framework.loader.TextureLoader;
 import framework.model.TexturedModel;
-import framework.particles.ParticleSystem;
-import framework.particles.ParticleTexture;
-import framework.scripting.Count;
 import framework.swing.ContentPane;
 import framework.terrains.Terrain;
 import framework.textures.TerrainTexture;
@@ -99,7 +96,7 @@ public class Game
 
         //scene.add(new WaterTile(75, -75, 0));
 
-        TexturedModel chrysalis = new TexturedModel(ObjectLoader.loadObjModel("tree.obj"),new Texture(ModelLoader.loadTexture("grass.png")));
+        TexturedModel chrysalis = new TexturedModel(ObjectLoader.loadObjModel("tree.obj"), TextureLoader.generateTexture("grass.png"));
         chrysalis.getTexture().setShineDampening(1f);
         chrysalis.getTexture().setReflectivity(.1f);
 
@@ -139,7 +136,7 @@ public class Game
         //scene.add(tile);
 
 
-        Environment.run(new Count());
+        //Environment.run(new Count());
         Environment.start();
     }
 }

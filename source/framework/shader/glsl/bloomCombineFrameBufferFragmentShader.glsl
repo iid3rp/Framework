@@ -11,5 +11,5 @@ void main(void)
 {
     vec4 sceneColor = texture(colourTexture, textureCoords);
     vec4 highlight = texture(highlightTexture, textureCoords);
-    out_Colour = sceneColor + highlight * 1.1;
+    out_Colour = sceneColor + highlight * 1.3;
 }

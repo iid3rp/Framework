@@ -57,6 +57,6 @@ void main(void)
 {
     color = texture(colourTexture, textureCoords);
     brightness = setLuma(COLOR_IN_THIRDS);
-    out_Colour = getTransitionalColor();
-
+    //out_Colour = getTransitionalColor();
+    out_Colour = getEdgeColor(.45f);
 }

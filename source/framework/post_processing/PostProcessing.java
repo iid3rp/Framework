@@ -3,6 +3,8 @@ package framework.post_processing;
 import framework.Display.DisplayManager;
 import framework.loader.ModelLoader;
 import framework.model.Model;
+import framework.post_processing.bloom.BrightFilter;
+import framework.post_processing.bloom.CombineFilter;
 import framework.post_processing.blur.HorizontalBlur;
 import framework.post_processing.blur.VerticalBlur;
 import org.lwjgl.opengl.GL11;
@@ -16,22 +18,29 @@ public class PostProcessing {
 	private static ContrastChanger contrastChanger;
 	private static VerticalBlur verticalBlur;
 	private static HorizontalBlur horizontalBlur;
+	private static BrightFilter brightFilter;
+	private static CombineFilter combineFilter;
 
 
 	public static void initialize()
 	{
 		quad = ModelLoader.loadToVao(POSITIONS, 2);
 		contrastChanger = new ContrastChanger();
-		verticalBlur = new VerticalBlur(DisplayManager.getWindowWidth() / 4, DisplayManager.getWindowHeight() / 4);
-		horizontalBlur = new HorizontalBlur(DisplayManager.getWindowWidth() / 4, DisplayManager.getWindowHeight() / 4);
+		verticalBlur = new VerticalBlur(DisplayManager.getWindowWidth() / 2, DisplayManager.getWindowHeight() / 2);
+		horizontalBlur = new HorizontalBlur(DisplayManager.getWindowWidth() / 2, DisplayManager.getWindowHeight() / 2);
+		brightFilter = new BrightFilter(DisplayManager.getWindowWidth() / 2, DisplayManager.getWindowHeight() / 2);
+		combineFilter = new CombineFilter();
 	}
 	
-	public static void doPostProcessing(int colourTexture){
+	public static void doPostProcessing(int colorTexture, int brightTexture){
 		start();
 
-//		horizontalBlur.render(colourTexture);
+//		horizontalBlur.render(colorTexture);
 //		verticalBlur.render(horizontalBlur.getOutputTexture());
-		contrastChanger.render(colourTexture);
+		//brightFilter.render(colorTexture);
+		horizontalBlur.render(brightTexture);
+		verticalBlur.render(horizontalBlur.getOutputTexture());
+		combineFilter.render(colorTexture, verticalBlur.getOutputTexture());
 		end();
 	}
 	
@@ -39,6 +48,7 @@ public class PostProcessing {
 		contrastChanger.dispose();
 		verticalBlur.dispose();
 		horizontalBlur.dispose();
+		brightFilter.dispose();
 	}
 	
 	private static void start(){
