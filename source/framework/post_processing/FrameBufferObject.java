@@ -31,6 +31,7 @@ public class FrameBufferObject
 	private int depthBuffer;
 	private int colorBuffer;
 	private int bloomBuffer;
+	private int mouseEventBuffer;
 
 	/**
 	 * Creates an FBO of a specified width and height, with the desired type of
@@ -113,16 +114,21 @@ public class FrameBufferObject
 
 	public void resolveToFrameBufferObject(int attachment, FrameBufferObject objects)
 	{
+		// Bind the frame buffers
 		GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, objects.frameBuffer);
 		GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, this.frameBuffer);
+
+		// Set the read buffer to the correct attachment
 		GL11.glReadBuffer(attachment);
 
-		// apparently, doing GL_LINEAR will not work...
-		// do note with this!
+		// Blit the framebuffer to resolve multisampling and ensure pixel data is transferred
 		GL30.glBlitFramebuffer(
 				0, 0, width, height,
-				0, 0 , objects.width, objects.height,
-				GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT, GL11.GL_NEAREST);
+				0, 0, objects.width, objects.height,
+				GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT, GL11.GL_NEAREST
+		);
+
+		// Unbind the frame buffers
 		this.unbindFrameBuffer();
 	}
 
@@ -152,6 +158,7 @@ public class FrameBufferObject
 		if(multiSampledTarget) {
 			colorBuffer = createMultisampleColorAttachment(GL30.GL_COLOR_ATTACHMENT0);
 			bloomBuffer = createMultisampleColorAttachment(GL30.GL_COLOR_ATTACHMENT1);
+			mouseEventBuffer = createMultisampleColorAttachment(GL30.GL_COLOR_ATTACHMENT2);
 		}
 		else {
 			createTextureAttachment();
@@ -184,10 +191,12 @@ public class FrameBufferObject
 
 	private void determineDrawBuffers()
 	{
-		IntBuffer buffer = BufferUtils.createIntBuffer(2);
+		IntBuffer buffer = BufferUtils.createIntBuffer(3);
 		buffer.put(GL30.GL_COLOR_ATTACHMENT0);
-		if(multiSampledTarget)
+		if(multiSampledTarget) {
 			buffer.put(GL30.GL_COLOR_ATTACHMENT1);
+			buffer.put(GL30.GL_COLOR_ATTACHMENT2);
+		}
 		buffer.flip();
 		GL20.glDrawBuffers(buffer);
 	}

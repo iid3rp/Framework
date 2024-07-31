@@ -18,18 +18,16 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL30;
 
-import java.awt.Color;
-
 // the commented codes will be uncommented once the game is set up!
 public final class Environment
 {
     public static Scene scene;
     private static StackScript stack = new StackScript();
-    // will be used in other tutorials in the future, don't worry!
     public static FrameBufferObject multisample = new FrameBufferObject(DisplayManager.getWindowWidth(), DisplayManager.getWindowHeight());
     public static FrameBufferObject out = new FrameBufferObject(DisplayManager.getWindowWidth(), DisplayManager.getWindowHeight(), FrameBufferObject.DEPTH_TEXTURE);
     public static FrameBufferObject bright = new FrameBufferObject(DisplayManager.getWindowWidth(), DisplayManager.getWindowHeight(), FrameBufferObject.DEPTH_TEXTURE);
     public static FrameBufferObject mouseEventBuffer = new FrameBufferObject(DisplayManager.getWindowWidth(), DisplayManager.getWindowHeight(), FrameBufferObject.DEPTH_TEXTURE);
+    //private static PixelBufferObject pixel = new PixelBufferObject(DisplayManager.getWindowWidth() * DisplayManager.getWindowHeight() * 4, GL30.GL_PIXEL_PACK_BUFFER);
 
     public static void setScene(Scene scene)
     {
@@ -59,9 +57,10 @@ public final class Environment
 //            fps.setColor(1, 1, 0);
 
             GUITexture img = new PictureBox();
-            img.setBackgroundImage(MasterRenderer.getShadowMapTexture());
+            img.setBackgroundImage(mouseEventBuffer.getColorTexture());
             img.setSize(400, 225);
             img.setLocation(20, 20);
+            img.mirrorX();
 
             //scene.getContentPane().add(img);
 
@@ -139,9 +138,10 @@ public final class Environment
             //multisample.resolveToScreen();
             multisample.resolveToFrameBufferObject(GL30.GL_COLOR_ATTACHMENT0, out);
             multisample.resolveToFrameBufferObject(GL30.GL_COLOR_ATTACHMENT1, bright);
-            //multisample.resolveToFrameBufferObject(GL30.GL_COLOR_ATTACHMENT2, mouseEventBuffer);
+            multisample.resolveToFrameBufferObject(GL30.GL_COLOR_ATTACHMENT2, mouseEventBuffer);
 
-            scene.getEvent().verifyMousePick(Mouse.getMouseX(), Mouse.getMouseY(), bright, mouseEventBuffer);
+            multisample.resolveToScreen();
+            scene.getEvent().verifyMousePick(Mouse.getMouseX(), Mouse.getMouseY());
 
             PostProcessing.doPostProcessing(out.getColorTexture(), bright.getColorTexture());
 
@@ -189,10 +189,12 @@ public final class Environment
 
     private static void exit()
     {
+        //pixel.dispose();
         PostProcessing.dispose();
         multisample.dispose();
         out.dispose();
-        //bright.dispose();
+        mouseEventBuffer.dispose();
+        bright.dispose();
         ParticleMaster.dispose();
         //TextMasterRenderer.dispose();
         scene.getContentPane().dispose();

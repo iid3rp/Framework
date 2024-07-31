@@ -1,13 +1,12 @@
 package framework.entity;
 
-import framework.event.MouseAdapter;
-import framework.event.MouseListener;
 import framework.event.MouseEvent;
+import framework.event.MouseListener;
 import framework.model.TexturedModel;
 import org.joml.Vector3f;
 
+import java.awt.Color;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 public class Entity {
@@ -17,6 +16,7 @@ public class Entity {
     private float scale;
     private int textureAtlasIndex;
     private List<MouseListener> listeners = new ArrayList<>();
+    private Color mouseColor = new Color(0, 0, 0);
 
     public Entity(TexturedModel texturedModel, Vector3f position, float rotationX, float rotationY, float rotationZ, float scale) {
         this.texturedModel = texturedModel;
@@ -47,7 +47,8 @@ public class Entity {
         this.rotationZ = entity.getRotationZ();
         this.scale = entity.getScale();
         this.textureAtlasIndex = entity.textureAtlasIndex;
-        this.events = entity.events;
+        this.listeners = entity.listeners;
+        this.mouseColor = entity.mouseColor;
     }
 
     public void transformPosition(float dx, float dy, float dz) {
@@ -127,8 +128,31 @@ public class Entity {
 
     public void addMouseListener(MouseListener listener)
     {
-        if(!listeners.contains(listener)) {
+        if(!listeners.isEmpty()) {
+            if(!listeners.contains(listener)) {
+                listeners.add(listener);
+            }
+        }
+        else
+        {
+            MouseEvent.addMouseListener(this);
             listeners.add(listener);
         }
+
+    }
+
+    public List<MouseListener> getMouseListeners()
+    {
+        return listeners;
+    }
+
+    public void setMouseColor(Color color)
+    {
+        this.mouseColor = color;
+    }
+
+    public Color getMouseColor()
+    {
+        return mouseColor;
     }
 }

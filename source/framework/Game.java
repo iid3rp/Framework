@@ -1,8 +1,9 @@
 package framework;
 
+import framework.event.MouseAdapter;
+import framework.event.MouseEvent;
 import framework.loader.ModelLoader;
 import framework.loader.ObjectLoader;
-import framework.entity.Entity;
 import framework.entity.Light;
 import framework.entity.Player;
 import framework.environment.Environment;
@@ -14,6 +15,7 @@ import framework.terrains.Terrain;
 import framework.textures.TerrainTexture;
 import framework.textures.TerrainTexturePack;
 import framework.textures.Texture;
+import framework.entity.Entity;
 import org.joml.Vector3f;
 
 import java.util.Random;
@@ -111,6 +113,15 @@ public class Game
             float z = random.nextFloat(terrain.getSize()) - (terrain.getSize() / 2);
             float y = terrain.getHeightOfTerrain(x, z);
             Entity crystal = new Entity(chrysalis, new Vector3f(x, y, z), 0, 0, 0, 10f);
+            crystal.addMouseListener(new MouseAdapter()
+            {
+                @Override
+                public void mouseEntered(MouseEvent e)
+                {
+                    System.out.println("entity touched!");
+                    System.out.println("entity position x: " + crystal.getPosition().x());
+                }
+            });
             if(crystal.getPosition().y > 0) {
                 scene.getEntities().add(crystal);
             }

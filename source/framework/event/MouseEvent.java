@@ -4,19 +4,20 @@ import framework.Display.DisplayManager;
 import framework.entity.Camera;
 import framework.entity.Entity;
 import framework.environment.Environment;
-import framework.post_processing.FrameBufferObject;
 import framework.terrains.Terrain;
 import framework.util.GeomMath;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL30;
 
 import java.awt.Color;
-import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
 
 public class MouseEvent
 {
@@ -28,7 +29,9 @@ public class MouseEvent
     private Camera camera;
     private Terrain terrain;
     private Vector3f currentTerrainPoint;
-    private HashMap<Color, Entity> entityMouseEvents = new HashMap<>();
+    private static HashMap<Color, Entity> entityMouseEvents = new HashMap<>();
+    private Entity currentEntity;
+    private Color currentColor;
 
     public MouseEvent() {}
 
@@ -186,38 +189,68 @@ public class MouseEvent
         return terrain;
     }
 
-    public void verifyMousePick(int x, int y, FrameBufferObject src, FrameBufferObject dst)
+    public void verifyMousePick(int mouseX, int mouseY)
     {
-        GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, src.getFrameBuffer());
-        GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, dst.getFrameBuffer());
-        GL11.glReadBuffer(GL30.GL_COLOR_ATTACHMENT2);
+        IntBuffer pixelBuffer = BufferUtils.createIntBuffer(1);
+        GL11.glReadPixels(mouseX,(DisplayManager.getWindowHeight() - mouseY - 1), 1, 1, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, pixelBuffer);
 
-        ByteBuffer pixelBuffer = ByteBuffer.allocateDirect(4);
-        GL30.glReadPixels(x, y, 1, 1, GL30.GL_RGB, GL30.GL_UNSIGNED_BYTE, pixelBuffer);
-        pixelBuffer.flip();
+        int error = GL11.glGetError();
+        if(error != GL11.GL_NO_ERROR) {
+            System.err.println("OpenGL Error after glReadPixels: " + error);
+            return;
+        }
 
-        int r = pixelBuffer.get() & 0xff;
-        int g = pixelBuffer.get() & 0xff;
-        int b = pixelBuffer.get() & 0xff;
-        int a = pixelBuffer.get() & 0xff;
+        int[] pixels = new int[1];
+        pixelBuffer.get(pixels);
 
-        Color color = new Color(r, g, b, a);
+        int pixelInfo = pixels[0];
+        int r = pixelInfo & 0xFF;
+        int g = (pixelInfo >> 8) & 0xFF;
+        int b = (pixelInfo >> 16) & 0xFF;
+        int a = (pixelInfo >> 24) & 0xFF;
 
-        // apparently, doing GL_LINEAR will not work...
-        // do note with this!
-        GL30.glBlitFramebuffer(
-                0, 0, dst.getWidth(), dst.getHeight(),
-                0, 0 , src.getWidth(), src.getHeight(),
-                GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT, GL11.GL_NEAREST);
-        dst.unbindFrameBuffer();
+        // Create a color object from the RGB components (alpha is optional)
+        Color color = new Color(r, g, b, 255);
 
+        // Simulate the event based on the picked color
+        // dont mind this method:
         simulateEvent(color);
     }
 
+
     private void simulateEvent(Color color)
     {
-        Entity entity = entityMouseEvents.get(color);
-        // todo this
-        if (entity != null) {}
+        currentEntity = entityMouseEvents.get(color);
+
+        if (currentEntity != null)
+        {
+            currentColor = color;
+            List<MouseListener> listeners = currentEntity.getMouseListeners();
+            for(MouseListener listener : listeners)
+                listener.mouseEntered(this);
+        }
+        currentEntity = null;
+        currentColor = null;
+    }
+
+    public static void addMouseListener(Entity entity)
+    {
+        Color color = null;
+        while(!entityMouseEvents.containsKey(color))
+        {
+            Random r = new Random();
+            int red = r.nextInt(255);
+            int green = r.nextInt(255);
+            int blue = r.nextInt(255);
+            color = new Color(red, green, blue);
+            entityMouseEvents.put(color, entity);
+        }
+        entity.setMouseColor(color);
+        System.out.println("added color! Color: " + color);
+    }
+
+    public Color getColor()
+    {
+     return currentColor;
     }
 }

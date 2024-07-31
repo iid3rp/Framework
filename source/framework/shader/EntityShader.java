@@ -63,7 +63,7 @@ public class EntityShader extends GLShader
         locationNormalMap = super.getUniformLocation("normalMap");
         locationHasSpecularMap = super.getUniformLocation("hasSpecularMap");
         locationSpecularMap = super.getUniformLocation("specularMap");
-        locationMouseColor = super.getUniformLocation("mouseEvent"); // mouse Event support
+        locationMouseColor = super.getUniformLocation("mouseEventColor"); // mouse Event support
 
         location_lightPosition = new int[20];
         location_lightColor = new int[20];

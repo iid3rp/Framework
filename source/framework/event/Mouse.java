@@ -99,7 +99,7 @@ public class Mouse {
     }
 
     public static int getMouseX() {
-        return mouseX;
+        return (int) mouseX;
     }
 
     public static double getSwipeX()
@@ -113,7 +113,7 @@ public class Mouse {
     }
 
     public static int getMouseY() {
-        return mouseY;
+        return (int) mouseY;
     }
 
     public static double getMouseScrollX() {
