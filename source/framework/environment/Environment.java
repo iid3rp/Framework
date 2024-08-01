@@ -141,7 +141,7 @@ public final class Environment
             multisample.resolveToFrameBufferObject(GL30.GL_COLOR_ATTACHMENT2, mouseEventBuffer);
 
             multisample.resolveToScreen();
-            scene.getEvent().verifyMousePick(Mouse.getMouseX(), Mouse.getMouseY());
+            //scene.getEvent().verifyMousePick(Mouse.getMouseX(), Mouse.getMouseY());
 
             PostProcessing.doPostProcessing(out.getColorTexture(), bright.getColorTexture());
 
