@@ -134,6 +134,38 @@ public class TextureLoader
         return texture;
     }
 
+    public static int loadTexture(BufferedImage img)
+    {
+        int width = img.getWidth();
+        int height = img.getHeight();
+        int[] pixels = new int[width * height];
+        pixels = img.getRGB(0, 0, width, height, pixels, 0, width);
+
+        int[] data = new int[width * height];
+
+        for(int i = 0; i < width * height; i++) {
+            int a = (pixels[i] & 0xff000000) >> 24;
+            int r = (pixels[i] & 0xff0000) >> 16;
+            int g = (pixels[i] & 0xff00) >> 8;
+            int b = (pixels[i] & 0xff);
+
+            data[i] = a << 24 | b << 16 | g << 8 | r;
+        }
+
+        int result = glGenTextures();
+
+        glBindTexture(GL_TEXTURE_2D, result);
+        // linear makes everything non-pixelated...
+        // will be making a todo list for this...
+        // to make this customizable...
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE,
+                Buffer.createIntBuffer(data));
+        glBindTexture(GL_TEXTURE_2D, 0);
+        return result;
+    }
+
     public static int loadTexture(String path) {
         int[] pixels = new int[0];
         int result;
@@ -144,37 +176,11 @@ public class TextureLoader
             BufferedImage image = ImageIO.read(
                     Objects.requireNonNull(
                             Resources.class.getResourceAsStream("textures/" + path)));
-            width = image.getWidth();
-            height = image.getHeight();
-            pixels = new int[width * height];
-            pixels = image.getRGB(0, 0, width, height, pixels, 0, width);
+            return loadTexture(image);
         }
         catch (IOException e)
         {
             throw new RuntimeException(e);
         }
-        finally
-        {
-            int[] data = new int[width * height];
-
-            for(int i = 0; i < width * height; i++) {
-                int a = (pixels[i] & 0xff000000) >> 24;
-                int r = (pixels[i] & 0xff0000) >> 16;
-                int g = (pixels[i] & 0xff00) >> 8;
-                int b = (pixels[i] & 0xff);
-
-                data[i] = a << 24 | b << 16 | g << 8 | r;
-            }
-
-            result = glGenTextures();
-
-            glBindTexture(GL_TEXTURE_2D, result);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE,
-                    Buffer.createIntBuffer(data));
-            glBindTexture(GL_TEXTURE_2D, 0);
-        }
-        return result;
     }
 }

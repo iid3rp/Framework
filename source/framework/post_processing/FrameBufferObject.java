@@ -5,6 +5,8 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 import framework.Display.DisplayManager;
+import framework.event.PixelPicker;
+import framework.event.PixelShader;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -32,6 +34,7 @@ public class FrameBufferObject
 	private int colorBuffer;
 	private int bloomBuffer;
 	private int mouseEventBuffer;
+	private PixelShader shader;
 
 	/**
 	 * Creates an FBO of a specified width and height, with the desired type of
@@ -159,6 +162,7 @@ public class FrameBufferObject
 			colorBuffer = createMultisampleColorAttachment(GL30.GL_COLOR_ATTACHMENT0);
 			bloomBuffer = createMultisampleColorAttachment(GL30.GL_COLOR_ATTACHMENT1);
 			mouseEventBuffer = createMultisampleColorAttachment(GL30.GL_COLOR_ATTACHMENT2);
+			shader = new PixelShader();
 		}
 		else {
 			createTextureAttachment();
