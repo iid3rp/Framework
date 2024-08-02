@@ -6,6 +6,7 @@ import framework.fontMeshCreator.FontType;
 import framework.fontMeshCreator.GUIText;
 import framework.particles.ParticleMaster;
 import framework.post_processing.FrameBufferObject;
+import framework.post_processing.PixelPicker;
 import framework.post_processing.PostProcessing;
 import framework.renderer.MasterRenderer;
 import framework.loader.ModelLoader;
@@ -27,7 +28,8 @@ public final class Environment
     public static FrameBufferObject out = new FrameBufferObject(DisplayManager.getWindowWidth(), DisplayManager.getWindowHeight(), FrameBufferObject.DEPTH_TEXTURE);
     public static FrameBufferObject bright = new FrameBufferObject(DisplayManager.getWindowWidth(), DisplayManager.getWindowHeight(), FrameBufferObject.DEPTH_TEXTURE);
     public static FrameBufferObject mouseEventBuffer = new FrameBufferObject(DisplayManager.getWindowWidth(), DisplayManager.getWindowHeight(), FrameBufferObject.DEPTH_TEXTURE);
-    //private static PixelBufferObject pixel = new PixelBufferObject(DisplayManager.getWindowWidth() * DisplayManager.getWindowHeight() * 4, GL30.GL_PIXEL_PACK_BUFFER);
+    public static FrameBufferObject pixelBuffer = new FrameBufferObject(1280, 720, FrameBufferObject.DEPTH_TEXTURE);
+    //private static PixelPicker pixel = new PixelPicker();
 
     public static void setScene(Scene scene)
     {
@@ -57,12 +59,12 @@ public final class Environment
 //            fps.setColor(1, 1, 0);
 
             GUITexture img = new PictureBox();
-            img.setBackgroundImage(mouseEventBuffer.getColorTexture());
-            img.setSize(400, 225);
+            img.setBackgroundImage(pixelBuffer.getColorTexture());
+            img.setSize(160, 90);
             img.setLocation(20, 20);
-            img.mirrorX();
+            //img.mirrorX();
 
-            //scene.getContentPane().add(img);
+            scene.getContentPane().add(img);
 
 
             loop();
@@ -139,11 +141,12 @@ public final class Environment
             multisample.resolveToFrameBufferObject(GL30.GL_COLOR_ATTACHMENT0, out);
             multisample.resolveToFrameBufferObject(GL30.GL_COLOR_ATTACHMENT1, bright);
             multisample.resolveToFrameBufferObject(GL30.GL_COLOR_ATTACHMENT2, mouseEventBuffer);
-
+            scene.getEvent().resolvePixel(mouseEventBuffer, pixelBuffer);
+            //multisample.resolvePixel(mouseEventBuffer);
             multisample.resolveToScreen();
-            //scene.getEvent().verifyMousePick(Mouse.getMouseX(), Mouse.getMouseY());
+            //scene.getEvent().verifyMousePick();
 
-            PostProcessing.doPostProcessing(out.getColorTexture(), bright.getColorTexture());
+            //PostProcessing.doPostProcessing(out.getColorTexture(), bright.getColorTexture());
 
             scene.getContentPane().render(scene.getContentPane().getComponents());
             //TextMasterRenderer.setText(fps, "fps count: " + FPSCounter.getCounter());

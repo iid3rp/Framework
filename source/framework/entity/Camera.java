@@ -20,9 +20,9 @@ public class Camera {
     private float rotationalSpeed;
     private Player player;
 
-    private SmoothFloat angleAroundPlayer = new SmoothFloat(0, 10);
-    private SmoothFloat distanceFromPlayer = new SmoothFloat(30, 5);
-    private float pitch;
+    private SmoothFloat angleAroundPlayer = new SmoothFloat(0, .25f);
+    private SmoothFloat distanceFromPlayer = new SmoothFloat(30, .25f);
+    private SmoothFloat pitch = new SmoothFloat(30, .25f);
     private boolean playerCamera;
 
     public Camera(Player player)
@@ -93,7 +93,7 @@ public class Camera {
     }
 
     public float getPitch() {
-        return pitch;
+        return pitch.get();
     }
 
     public float getYaw() {
@@ -117,7 +117,7 @@ public class Camera {
     }
 
     public void setPitch(float pitch) {
-        this.pitch = pitch;
+        this.pitch.setTarget(pitch);
     }
 
     public void setYaw(float yaw) {
@@ -134,7 +134,7 @@ public class Camera {
 //        {
 //            float zoomLevel = (float) Mouse.getMouseScrollY() * 2;
 //            distanceFromPlayer =
-//                    distanceFromPlayer - zoomLevel > MAX_DISTANCE? MAX_DISTANCE :
+//                    distanceFromPlayer - zoomLevel > MAX_DISTANCE? MAX_DISTANCE:
 //                            Math.max(distanceFromPlayer - zoomLevel, MIN_DISTANCE);
 //        }
 //    }
@@ -143,14 +143,13 @@ public class Camera {
     {
         if(Mouse.isScrolling())
         {
-            float targetZoom = distanceFromPlayer.getTarget();
             float zoomLevel = (float) (Mouse.getMouseScrollY() * 2);
-            targetZoom -= zoomLevel;
-            if(targetZoom<1){
-                targetZoom = 1;
-            }
-            distanceFromPlayer.setTarget(targetZoom);
-            distanceFromPlayer.update(0.01f);
+            distanceFromPlayer.increaseTarget(-zoomLevel);
+            distanceFromPlayer.setTarget(
+                    distanceFromPlayer.get() - zoomLevel > MAX_DISTANCE? MAX_DISTANCE:
+                            Math.max(distanceFromPlayer.get() - zoomLevel, MIN_DISTANCE)
+            );
+            distanceFromPlayer.update();
         }
     }
 
@@ -158,8 +157,9 @@ public class Camera {
         if ((Mouse.isButtonDown(GLFW_MOUSE_BUTTON_RIGHT) || Mouse.isButtonDown(GLFW_MOUSE_BUTTON_LEFT)) && Mouse.isMoving())
         {
             float pitchChange = (float) Mouse.getSwipeY() * 0.2f;
-            pitch += pitchChange;
+            pitch.increaseTarget(pitchChange);
         }
+        pitch.update();
     }
 
 //    private void calculateAngleAroundPlayer() {
@@ -171,18 +171,18 @@ public class Camera {
 
     private void calculateAngleAroundPlayer(){
         if ((Mouse.isButtonDown(GLFW_MOUSE_BUTTON_RIGHT) || Mouse.isButtonDown(GLFW_MOUSE_BUTTON_LEFT)) && Mouse.isMoving()) {
-            float angleChange = (float) Mouse.getSwipeX() * 0.2f;
+            float angleChange = (float) Mouse.getSwipeX() * 0.1f;
             angleAroundPlayer.increaseTarget(-angleChange);
         }else if(Keyboard.isKeyDown(Keyboard.R)){
             angleAroundPlayer.increaseTarget(0.5f);
         }
-        angleAroundPlayer.update(0.01f);
+        angleAroundPlayer.update();
     }
 
     private void setCameraDefaultPosition() {
         position = new Vector3f(0, 0,0);
         distanceFromPlayer.setTarget(50);
-        pitch = 20;
+        pitch.setTarget(20);
         yaw = 0;
         roll = 0;
         angleAroundPlayer.setTarget(0);
@@ -202,15 +202,15 @@ public class Camera {
 
     public void invertPitch()
     {
-        this.pitch = -pitch;
+        this.pitch.setTarget(-pitch.get());
     }
 
     private float calculateHorizontalDistance() {
-        return (float) (distanceFromPlayer.get() * Math.cos(Math.toRadians(pitch)));
+        return (float) (distanceFromPlayer.get() * Math.cos(Math.toRadians(pitch.get())));
     }
 
     private float calculateVerticalDistance() {
-        return (float) (distanceFromPlayer.get() * Math.sin(Math.toRadians(pitch))) + 5;
+        return (float) (distanceFromPlayer.get() * Math.sin(Math.toRadians(pitch.get()))) + 5;
     }
 
     private void calculateCameraPosition(float horizontalDistanceFromPlayer, float verticalDistanceFromPlayer) {

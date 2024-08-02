@@ -1,11 +1,12 @@
-#version 410 core
+#version 150
 
-in vec2 pass_Position;
+in vec2 position;
 
-uniform vec2 position;
+out vec2 textureCoords;
 
-void main()
-{
-    gl_Position = vec4(position, 0, 0);
-    pass_Position = position;
+void main(void){
+
+    gl_Position = vec4(position, 0.0, 1.0);
+    textureCoords = position;
+
 }

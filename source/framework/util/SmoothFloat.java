@@ -2,19 +2,19 @@ package framework.util;
 
 public class SmoothFloat {
 
-    private final float agility;
+    private final float delta;
     private float target;
     private float actual;
 
-    public SmoothFloat(float initialValue, float agility){
+    public SmoothFloat(float initialValue, float delta){
         this.target = initialValue;
         this.actual = initialValue;
-        this.agility = agility;
+        this.delta = delta;
     }
 
-    public void update(float delta){
+    public void update(){
         float offset = target - actual;
-        float change = offset * delta * agility;
+        float change = offset * delta * 1;
         actual += change;
     }
 

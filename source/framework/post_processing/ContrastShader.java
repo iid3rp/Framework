@@ -13,8 +13,7 @@ public class ContrastShader extends GLShader
 	}
 
 	@Override
-	protected void getAllUniformLocations() {	
-	}
+	protected void getAllUniformLocations() {}
 
 	@Override
 	protected void bindAttributes() {

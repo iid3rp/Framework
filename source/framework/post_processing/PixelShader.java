@@ -1,4 +1,4 @@
-package framework.event;
+package framework.post_processing;
 
 import framework.shader.GLShader;
 import org.joml.Vector2f;
@@ -9,7 +9,7 @@ public class PixelShader extends GLShader
     public static final String FRAGMENT_FILE = "pixelFragmentShader.glsl";
     private int locationTexture;
     private int locationPosition;
-    private int locationTextureSize;
+    //private int locationTextureSize;
 
     public PixelShader()
     {
@@ -21,14 +21,9 @@ public class PixelShader extends GLShader
         super.loadInt(locationTexture, id);
     }
 
-    public void loadTexture(Vector2f position)
+    public void loadPosition(Vector2f position)
     {
         super.loadVector(locationPosition, position);
-    }
-
-    public void loadTextureSize(Vector2f size)
-    {
-        super.loadVector(locationTextureSize, size);
     }
 
     @Override
@@ -39,8 +34,11 @@ public class PixelShader extends GLShader
     @Override
     protected void getAllUniformLocations()
     {
-        locationTexture = super.getUniformLocation("texture");
-        //locationPosition = super.getUniformLocation("position");
-        locationTextureSize = super.getUniformLocation("textureSize");
+        locationTexture = super.getUniformLocation("screenTexture");
+        locationPosition = super.getUniformLocation("position");
+        //locationTextureSize = super.getUniformLocation("textureSize");
+    }
+
+    public void connectTextureUnits(){
     }
 }

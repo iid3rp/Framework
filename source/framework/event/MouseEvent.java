@@ -4,6 +4,7 @@ import framework.Display.DisplayManager;
 import framework.entity.Camera;
 import framework.entity.Entity;
 import framework.environment.Environment;
+import framework.post_processing.FrameBufferObject;
 import framework.terrains.Terrain;
 import framework.util.GeomMath;
 import org.joml.Matrix4f;
@@ -12,6 +13,8 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL30;
+import org.lwjgl.stb.STBImage;
 
 import java.awt.Color;
 import java.nio.IntBuffer;
@@ -189,10 +192,13 @@ public class MouseEvent
         return terrain;
     }
 
-    public void verifyMousePick(int mouseX, int mouseY)
+    public void verifyMousePick()
     {
+        int mouseX = Mouse.getMouseX();
+        int mouseY = DisplayManager.getWindowHeight() - Mouse.getMouseY();
+
         IntBuffer pixelBuffer = BufferUtils.createIntBuffer(1);
-        GL11.glReadPixels(mouseX,(DisplayManager.getWindowHeight() - mouseY - 1), 1, 1, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, pixelBuffer);
+        GL11.glReadPixels(0, 0, 1, 1, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, pixelBuffer);
 
         int error = GL11.glGetError();
         if(error != GL11.GL_NO_ERROR) {
@@ -252,5 +258,46 @@ public class MouseEvent
     public Color getColor()
     {
      return currentColor;
+    }
+
+    public void resolvePixel(FrameBufferObject eventFbo, FrameBufferObject pxFbo)
+    {
+        // Bind the frame buffers
+        GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, pxFbo.getFrameBuffer());
+        GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, eventFbo.getFrameBuffer());
+
+        GL11.glDrawBuffer(GL11.GL_BACK);
+
+        int mouseX = Mouse.getMouseX();
+        int mouseY = DisplayManager.getWindowHeight() - Mouse.getMouseY();
+
+        GL30.glBlitFramebuffer(
+                mouseX, mouseY, mouseX + 1, mouseY + 1,
+                0, 0, 1, 1,
+                GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT, GL11.GL_NEAREST
+        );
+
+        GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, pxFbo.getFrameBuffer());
+
+        IntBuffer pixelBuffer = BufferUtils.createIntBuffer(1);
+        GL11.glReadPixels(0, 0, 1, 1, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, pixelBuffer);
+
+        int pixel = pixelBuffer.get(0);
+
+        // Extract color components
+        int a = (pixel >> 24) & 0xFF;
+        int b = (pixel >> 16) & 0xFF;
+        int g = (pixel >> 8) & 0xFF;
+        int r = pixel & 0xFF;
+
+        GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, 0); // Unbind
+
+        Color color = new Color(r, g, b, a);
+        System.out.println(color);
+
+        pixelBuffer.clear();
+
+        // Unbind the frame buffers
+        eventFbo.unbindFrameBuffer();
     }
 }

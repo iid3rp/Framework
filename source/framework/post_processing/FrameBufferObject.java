@@ -1,12 +1,12 @@
 
 package framework.post_processing;
 
+import java.awt.Color;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 import framework.Display.DisplayManager;
-import framework.event.PixelPicker;
-import framework.event.PixelShader;
+import framework.event.Mouse;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -162,7 +162,7 @@ public class FrameBufferObject
 			colorBuffer = createMultisampleColorAttachment(GL30.GL_COLOR_ATTACHMENT0);
 			bloomBuffer = createMultisampleColorAttachment(GL30.GL_COLOR_ATTACHMENT1);
 			mouseEventBuffer = createMultisampleColorAttachment(GL30.GL_COLOR_ATTACHMENT2);
-			shader = new PixelShader();
+			//shader = new PixelShader();
 		}
 		else {
 			createTextureAttachment();
@@ -275,5 +275,41 @@ public class FrameBufferObject
 	public int getFrameBuffer()
 	{
 		return frameBuffer;
+	}
+
+	public void resolvePixel(FrameBufferObject objects)
+	{
+
+		// Bind the frame buffers
+		GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, objects.frameBuffer);
+
+		int mouseX = Mouse.getMouseX();
+		int mouseY = DisplayManager.getWindowHeight() - Mouse.getMouseY();
+
+		// Set the read buffer to the correct attachment
+		GL11.glDrawBuffer(GL11.GL_BACK);
+
+		// Blit the framebuffer to resolve multisampling and ensure pixel data is transferred
+		GL30.glBlitFramebuffer(
+				mouseX, mouseY, mouseX + 1, mouseY + 1,
+				0, 0, 200, 200,
+				GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT, GL11.GL_NEAREST
+		);
+
+		IntBuffer pixelBuffer = BufferUtils.createIntBuffer(1);
+		GL11.glReadPixels(0, 0, 1, 1, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, pixelBuffer);
+
+		int pixel = pixelBuffer.get(0);
+
+		// Extract color components
+		int r = (pixel >> 16) & 0xFF;
+		int g = (pixel >> 8) & 0xFF;
+		int b = pixel & 0xFF;
+		int a = (pixel >> 24) & 0xFF;
+
+		GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, 0); // Unbind
+
+		Color color = new Color(r, g, b, a);
+		System.out.println(color);
 	}
 }
