@@ -116,10 +116,45 @@ public class Game
             crystal.addMouseListener(new MouseAdapter()
             {
                 @Override
+                public void mouseClicked(MouseEvent e)
+                {
+                    System.out.println("clicked!");
+                }
+
+                @Override
+                public void mousePressed(MouseEvent e)
+                {
+                    System.out.println("pressed!");
+                }
+
+                @Override
+                public void mouseReleased(MouseEvent e)
+                {
+                    System.out.println("released");
+                }
+
+                @Override
+                public void mouseDragged(MouseEvent e)
+                {
+                    System.out.println("dragged!");
+                }
+
+                @Override
+                public void mouseMoved(MouseEvent e)
+                {
+                    System.out.println(".");
+                }
+
+                @Override
                 public void mouseEntered(MouseEvent e)
                 {
-                    System.out.println("entity touched!");
-                    System.out.println("entity position x: " + crystal.getPosition().x());
+                    System.out.println("entered!");
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e)
+                {
+                    System.out.println("exited!");
                 }
             });
             if(crystal.getPosition().y > 0) {

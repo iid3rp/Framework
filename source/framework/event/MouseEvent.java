@@ -14,7 +14,6 @@ import org.joml.Vector4f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
-import org.lwjgl.stb.STBImage;
 
 import java.awt.Color;
 import java.nio.IntBuffer;
@@ -35,6 +34,9 @@ public class MouseEvent
     private static HashMap<Color, Entity> entityMouseEvents = new HashMap<>();
     private Entity currentEntity;
     private Color currentColor;
+    private int currentMouseX;
+    private int currentMouseY;
+    private float clickInterval;
 
     public MouseEvent() {}
 
@@ -219,23 +221,75 @@ public class MouseEvent
         Color color = new Color(r, g, b, 255);
 
         // Simulate the event based on the picked color
-        // dont mind this method:
+        // don't mind this method:
         simulateEvent(color);
     }
 
 
     private void simulateEvent(Color color)
     {
-        currentEntity = entityMouseEvents.get(color);
-
-        if (currentEntity != null)
+        // todo
+        Entity eventEntity = entityMouseEvents.get(color);
+        if(eventEntity != null)
         {
             currentColor = color;
-            List<MouseListener> listeners = currentEntity.getMouseListeners();
+            boolean[] action = new boolean[] {false, false}; // 0 means clicked, 1 means pressed
+            List<MouseListener> listeners = eventEntity.getMouseListeners();
             for(MouseListener listener : listeners)
-                listener.mouseEntered(this);
+            {
+                if(FocusEvent.isNotFocused()) {
+                    listener.mouseEntered(this);
+                }
+
+                FocusEvent.setFocus(eventEntity);
+
+                if(Mouse.isMoving())
+                {
+                    listener.mouseMoved(this);
+                    if(Mouse.isAnyButtonDown())
+                    {
+                        if(Mouse.isMoving())
+                            listener.mouseDragged(this);
+                    }
+                }
+
+                if(Mouse.isAnyButtonDown())
+                {
+                    clickInterval += DisplayManager.getDeltaInSeconds();
+                    if(clickInterval > .5f && !action[1])
+                    {
+                        listener.mousePressed(this);
+                        action[1] = true;
+                    }
+                    else if(clickInterval < .3f && clickInterval > .05f && !action[0])
+                    {
+                        listener.mouseClicked(this);
+                        action[0] = true;
+                    }
+                }
+                else
+                {
+                    if(clickInterval <= .1f && clickInterval > 0)
+                        listener.mouseClicked(this);
+                    else if(clickInterval > .1f)
+                        listener.mouseReleased(this);
+                    clickInterval = 0;
+                }
+            }
         }
-        currentEntity = null;
+        else
+        {
+            FocusEvent.setFocus(null);
+            if(currentEntity != null)
+            {
+                List<MouseListener> listeners = currentEntity.getMouseListeners();
+                for(MouseListener listener : listeners)
+                {
+                    listener.mouseExited(this);
+                }
+            }
+        }
+        currentEntity = eventEntity;
         currentColor = null;
     }
 
@@ -255,21 +309,21 @@ public class MouseEvent
         System.out.println("added color! Color: " + color);
     }
 
-    public Color getColor()
+    public Color hashColor()
     {
      return currentColor;
     }
 
-    public void resolvePixel(FrameBufferObject eventFbo, FrameBufferObject pxFbo)
+    public void resolveColorPickFromPixel(FrameBufferObject eventFbo, FrameBufferObject pxFbo)
     {
+        int mouseX = Mouse.getMouseX();
+        int mouseY = DisplayManager.getWindowHeight() - Mouse.getMouseY();
+
         // Bind the frame buffers
         GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, pxFbo.getFrameBuffer());
         GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, eventFbo.getFrameBuffer());
 
         GL11.glDrawBuffer(GL11.GL_BACK);
-
-        int mouseX = Mouse.getMouseX();
-        int mouseY = DisplayManager.getWindowHeight() - Mouse.getMouseY();
 
         GL30.glBlitFramebuffer(
                 mouseX, mouseY, mouseX + 1, mouseY + 1,
@@ -282,6 +336,7 @@ public class MouseEvent
         IntBuffer pixelBuffer = BufferUtils.createIntBuffer(1);
         GL11.glReadPixels(0, 0, 1, 1, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, pixelBuffer);
 
+
         int pixel = pixelBuffer.get(0);
 
         // Extract color components
@@ -293,11 +348,57 @@ public class MouseEvent
         GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, 0); // Unbind
 
         Color color = new Color(r, g, b, a);
-        System.out.println(color);
+        // System.out.println(color); debuggers...
+        simulateEvent(color);
 
         pixelBuffer.clear();
 
         // Unbind the frame buffers
         eventFbo.unbindFrameBuffer();
+    }
+
+    public boolean isMouseDown(int button)
+    {
+        return Mouse.isButtonDown(button);
+    }
+
+    public boolean isScrolling()
+    {
+        return Mouse.isScrolling();
+    }
+
+    public boolean isMoving()
+    {
+        return Mouse.isMoving();
+    }
+
+    public int getMouseX()
+    {
+        return Mouse.getMouseX();
+    }
+
+    public int getMouseY()
+    {
+        return Mouse.getMouseY();
+    }
+
+    public double getScrollX()
+    {
+        return Mouse.getMouseScrollX();
+    }
+
+    public double getScrollY()
+    {
+        return Mouse.getMouseScrollY();
+    }
+
+    public String getRayCoordinates()
+    {
+        return "x: " + currentRay.x + "\n" + "y: " + currentRay.y + "\n" + "z: " + currentRay.z;
+    }
+
+    public String getTerrainPointCoordinates()
+    {
+        return "x: " + currentTerrainPoint.x + "\n" + "y: " + currentTerrainPoint.y + "\n" + "z: " + currentTerrainPoint.z;
     }
 }

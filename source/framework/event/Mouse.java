@@ -24,9 +24,31 @@ public class Mouse {
     private final GLFWMouseButtonCallback mouseButtons;
     private final GLFWScrollCallback mouseScroll;
 
+    /** Mouse buttons. See <a href="https://www.glfw.org/docs/latest/input.html#input_mouse_button">
+     * mouse button input</a> for how these are used.
+     * <p>
+     * Inputs were from GLFW
+     */
+    public static final int
+            ZERO    = 0,
+            ONE     = 1,
+            TWO     = 2,
+            THREE   = 3,
+            FOUR    = 4,
+            FIVE    = 5,
+            SIX     = 6,
+            SEVEN   = 7,
+            LAST    = SEVEN,
+            LEFT    = ZERO,
+            RIGHT   = ONE,
+            MIDDLE  = TWO;
+
+
+
     public Mouse() {
+
         swipeX = swipeY = 0;
-        buttons = new boolean[GLFW_MOUSE_BUTTON_LAST];
+        buttons = new boolean[LAST];
 
 
         mouseButtons = new GLFWMouseButtonCallback() {
@@ -61,6 +83,11 @@ public class Mouse {
     public static boolean isScrolling()
     {
         return mouseScrolled;
+    }
+
+    public static boolean isAnyButtonDown()
+    {
+        return Mouse.isButtonDown(Mouse.LEFT) || Mouse.isButtonDown(Mouse.RIGHT);
     }
 
     private void update(double xPos, double yPos)

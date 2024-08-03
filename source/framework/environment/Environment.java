@@ -1,12 +1,10 @@
 package framework.environment;
 
 import framework.Display.DisplayManager;
-import framework.event.Mouse;
 import framework.fontMeshCreator.FontType;
 import framework.fontMeshCreator.GUIText;
 import framework.particles.ParticleMaster;
 import framework.post_processing.FrameBufferObject;
-import framework.post_processing.PixelPicker;
 import framework.post_processing.PostProcessing;
 import framework.renderer.MasterRenderer;
 import framework.loader.ModelLoader;
@@ -141,12 +139,11 @@ public final class Environment
             multisample.resolveToFrameBufferObject(GL30.GL_COLOR_ATTACHMENT0, out);
             multisample.resolveToFrameBufferObject(GL30.GL_COLOR_ATTACHMENT1, bright);
             multisample.resolveToFrameBufferObject(GL30.GL_COLOR_ATTACHMENT2, mouseEventBuffer);
-            scene.getEvent().resolvePixel(mouseEventBuffer, pixelBuffer);
-            //multisample.resolvePixel(mouseEventBuffer);
             multisample.resolveToScreen();
-            //scene.getEvent().verifyMousePick();
+            //multisample.resolvePixel(mouseEventBuffer);
+            scene.getEvent().resolveColorPickFromPixel(mouseEventBuffer, pixelBuffer);
 
-            //PostProcessing.doPostProcessing(out.getColorTexture(), bright.getColorTexture());
+            PostProcessing.doPostProcessing(out.getColorTexture(), bright.getColorTexture());
 
             scene.getContentPane().render(scene.getContentPane().getComponents());
             //TextMasterRenderer.setText(fps, "fps count: " + FPSCounter.getCounter());

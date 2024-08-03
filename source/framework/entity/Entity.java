@@ -1,5 +1,6 @@
 package framework.entity;
 
+import framework.event.FocusListener;
 import framework.event.MouseEvent;
 import framework.event.MouseListener;
 import framework.model.TexturedModel;
@@ -15,7 +16,8 @@ public class Entity {
     private float rotationX, rotationY, rotationZ;
     private float scale;
     private int textureAtlasIndex;
-    private List<MouseListener> listeners = new ArrayList<>();
+    private List<MouseListener> mouseListeners = new ArrayList<>();
+    private List<FocusListener> focusListeners = new ArrayList<>();
     private Color mouseColor = new Color(0, 0, 0);
 
     public Entity(TexturedModel texturedModel, Vector3f position, float rotationX, float rotationY, float rotationZ, float scale) {
@@ -47,7 +49,7 @@ public class Entity {
         this.rotationZ = entity.getRotationZ();
         this.scale = entity.getScale();
         this.textureAtlasIndex = entity.textureAtlasIndex;
-        this.listeners = entity.listeners;
+        this.mouseListeners = entity.mouseListeners;
         this.mouseColor = entity.mouseColor;
     }
 
@@ -128,22 +130,35 @@ public class Entity {
 
     public void addMouseListener(MouseListener listener)
     {
-        if(!listeners.isEmpty()) {
-            if(!listeners.contains(listener)) {
-                listeners.add(listener);
+        if(!mouseListeners.isEmpty()) {
+            if(!mouseListeners.contains(listener)) {
+                mouseListeners.add(listener);
             }
         }
         else
         {
             MouseEvent.addMouseListener(this);
-            listeners.add(listener);
+            mouseListeners.add(listener);
+        }
+
+    }
+    public void addFocusListener(FocusListener listener)
+    {
+        if(!focusListeners.isEmpty()) {
+            if(!focusListeners.contains(listener)) {
+                focusListeners.add(listener);
+            }
+        }
+        else
+        {
+            focusListeners.add(listener);
         }
 
     }
 
     public List<MouseListener> getMouseListeners()
     {
-        return listeners;
+        return mouseListeners;
     }
 
     public void setMouseColor(Color color)
@@ -154,5 +169,10 @@ public class Entity {
     public Color getMouseColor()
     {
         return mouseColor;
+    }
+
+    public List<FocusListener> getFocusListeners()
+    {
+        return focusListeners;
     }
 }
