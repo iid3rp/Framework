@@ -9,7 +9,8 @@ import static org.lwjgl.glfw.GLFW.*;
 public class Mouse {
     public static boolean mouseMoved;
     public static boolean mouseScrolled;
-    private static boolean[] buttons;
+    private static boolean[] clicks;
+    private static boolean[] holds;
     private static double mouseX;
     private static double mouseY;
     private static double swipeX;
@@ -48,13 +49,15 @@ public class Mouse {
     public Mouse() {
 
         swipeX = swipeY = 0;
-        buttons = new boolean[LAST];
+        clicks = new boolean[LAST];
+        holds = new boolean[LAST];
 
 
         mouseButtons = new GLFWMouseButtonCallback() {
             @Override
             public void invoke(long window, int button, int action, int mods) {
-                buttons[button] = (action != GLFW_RELEASE);
+                clicks[button] = (action != GLFW_RELEASE);
+                holds[button] = (action == GLFW_PRESS);
             }
         };
 
@@ -87,7 +90,27 @@ public class Mouse {
 
     public static boolean isAnyButtonDown()
     {
-        return Mouse.isButtonDown(Mouse.LEFT) || Mouse.isButtonDown(Mouse.RIGHT);
+        for(boolean b : holds)
+            if(b)
+                return true;
+        return false;
+    }
+
+    public static boolean isAllButtonReleased()
+    {
+        boolean ref = true;
+        for(boolean b : holds)
+            if(!b)
+                return false;
+        return ref;
+    }
+
+    public static boolean isAnyButtonClicked()
+    {
+        for(boolean b : clicks)
+            if(b)
+                return true;
+        return false;
     }
 
     private void update(double xPos, double yPos)
@@ -122,7 +145,7 @@ public class Mouse {
     }
 
     public static boolean isButtonDown(int button) {
-        return buttons[button];
+        return clicks[button];
     }
 
     public static int getMouseX() {

@@ -36,7 +36,7 @@ public class MouseEvent
     private Color currentColor;
     private int currentMouseX;
     private int currentMouseY;
-    private float clickInterval;
+    private float clickInterval = 0;
 
     public MouseEvent() {}
 
@@ -228,67 +228,67 @@ public class MouseEvent
 
     private void simulateEvent(Color color)
     {
-        // todo
         Entity eventEntity = entityMouseEvents.get(color);
-        if(eventEntity != null)
-        {
-            currentColor = color;
-            boolean[] action = new boolean[] {false, false}; // 0 means clicked, 1 means pressed
-            List<MouseListener> listeners = eventEntity.getMouseListeners();
-            for(MouseListener listener : listeners)
-            {
-                if(FocusEvent.isNotFocused()) {
-                    listener.mouseEntered(this);
-                }
-
-                FocusEvent.setFocus(eventEntity);
-
-                if(Mouse.isMoving())
-                {
-                    listener.mouseMoved(this);
-                    if(Mouse.isAnyButtonDown())
-                    {
-                        if(Mouse.isMoving())
-                            listener.mouseDragged(this);
-                    }
-                }
-
-                if(Mouse.isAnyButtonDown())
-                {
-                    clickInterval += DisplayManager.getDeltaInSeconds();
-                    if(clickInterval > .5f && !action[1])
-                    {
-                        listener.mousePressed(this);
-                        action[1] = true;
-                    }
-                    else if(clickInterval < .3f && clickInterval > .05f && !action[0])
-                    {
-                        listener.mouseClicked(this);
-                        action[0] = true;
-                    }
-                }
-                else
-                {
-                    if(clickInterval <= .1f && clickInterval > 0)
-                        listener.mouseClicked(this);
-                    else if(clickInterval > .1f)
-                        listener.mouseReleased(this);
-                    clickInterval = 0;
-                }
-            }
-        }
-        else
+        boolean[] action = {false, false}; // 0 for clicked, 1 for pressed
+        if(eventEntity == null)
         {
             FocusEvent.setFocus(null);
-            if(currentEntity != null)
-            {
-                List<MouseListener> listeners = currentEntity.getMouseListeners();
-                for(MouseListener listener : listeners)
-                {
-                    listener.mouseExited(this);
-                }
-            }
+
+            if(currentEntity == null)
+                return;
+
+            List<MouseListener> listeners = currentEntity.getMouseListeners();
+            for(MouseListener listener : listeners)
+                listener.mouseExited(this);
+
+            currentEntity = null;
+            currentColor = null;
+            return;
         }
+
+        List<MouseListener> listeners = eventEntity.getMouseListeners();
+        currentColor = color;
+
+        if(FocusEvent.isNotFocused())
+            for(MouseListener l : listeners)
+                l.mouseEntered(this);
+
+        FocusEvent.setFocus(eventEntity);
+
+        if(Mouse.isMoving())
+            for(MouseListener l : listeners)
+                l.mouseMoved(this);
+
+        if(Mouse.isAnyButtonClicked()) {
+            clickInterval += DisplayManager.getDeltaInSeconds();
+            action[0] = true;
+            System.out.println("clicked!");
+        }
+
+        if(Mouse.isAnyButtonDown()) {
+            clickInterval += DisplayManager.getDeltaInSeconds();
+            action[1] = true;
+            System.out.println("hold");
+        }
+
+        if(Mouse.isAllButtonReleased()) {
+            if(clickInterval <= 1f && action[0]) {
+                action[0] = false;
+                for(MouseListener l : listeners)
+                    l.mouseClicked(this);
+            }
+            else if(clickInterval > 1f && !action[1]) {
+                for(MouseListener l : listeners)
+                    l.mouseReleased(this);
+            }
+            clickInterval = 0f;
+        }
+        else if(clickInterval > 1f && action[1]) {
+            action[1] = false;
+            for(MouseListener l : listeners)
+                l.mousePressed(this);
+        }
+
         currentEntity = eventEntity;
         currentColor = null;
     }
