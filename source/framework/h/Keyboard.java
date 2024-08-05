@@ -1,11 +1,11 @@
-package framework.event;
+package framework.h;
 
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWKeyCallback;
 
 import static org.lwjgl.glfw.GLFW.*;
 
-public class Keyboard extends GLFWKeyCallback {
+public final class Keyboard extends GLFWKeyCallback implements Hardware {
 
     /**
      * The keys for the keyboard. There are 348 in total.

@@ -1,6 +1,6 @@
 package framework.swing;
 
-import framework.Display.DisplayManager;
+import framework.h.Display;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
@@ -54,8 +54,8 @@ public class GUITexture
 
     public void setSize(int width, int height)
     {
-        float w = (float) width / DisplayManager.getWindowWidth();
-        float h = (float) height / DisplayManager.getWindowHeight();
+        float w = (float) width / Display.getWindowWidth();
+        float h = (float) height / Display.getWindowHeight();
         this.scale = new Vector2f(w, h);
         setLocation(this.x, this.y);
     }
@@ -64,8 +64,8 @@ public class GUITexture
     {
         this.x = x;
         this.y = y;
-        float posX = (((float) x / (DisplayManager.getWindowWidth())) * 2) - 1;
-        float posY = 1 - (((float) y / (DisplayManager.getWindowHeight())) * 2);
+        float posX = (((float) x / (Display.getWindowWidth())) * 2) - 1;
+        float posY = 1 - (((float) y / (Display.getWindowHeight())) * 2);
 
         posX += scale.x;
         posY -= scale.y;

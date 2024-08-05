@@ -1,6 +1,6 @@
 package framework.renderer;
 
-import framework.Display.DisplayManager;
+import framework.h.Display;
 import framework.entity.Camera;
 import framework.entity.Entity;
 import framework.entity.Light;
@@ -163,7 +163,7 @@ public class MasterRenderer {
 
     private static void createProjectionMatrix() {
         projectionMatrix = new Matrix4f();
-        float aspectRatio = (float) DisplayManager.getWindowWidth() / (float) DisplayManager.getWindowHeight();
+        float aspectRatio = (float) Display.getWindowWidth() / (float) Display.getWindowHeight();
         float yScale = (float) ((1f / Math.tan(Math.toRadians(FOV / 2f))));
         float xScale = yScale / aspectRatio;
         float frustumLength = FAR_PLANE - NEAR_PLANE;

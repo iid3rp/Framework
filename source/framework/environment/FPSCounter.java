@@ -1,6 +1,6 @@
 package framework.environment;
 
-import framework.Display.DisplayManager;
+import framework.h.Display;
 
 public class FPSCounter
 {
@@ -12,7 +12,7 @@ public class FPSCounter
 
     public static void update()
     {
-        totalTime += DisplayManager.getDeltaInSeconds();
+        totalTime += Display.getDeltaInSeconds();
         frameCount++;
 
         if (totalTime >= UPDATE_INTERVAL)

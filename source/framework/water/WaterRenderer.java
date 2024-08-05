@@ -1,6 +1,6 @@
 package framework.water;
 
-import framework.Display.DisplayManager;
+import framework.h.Display;
 import framework.entity.Camera;
 import framework.entity.Light;
 import framework.loader.ModelLoader;
@@ -59,7 +59,7 @@ public class WaterRenderer {
 	{
 		shader.bind();
 		shader.loadViewMatrix(camera);
-		moveFactor += WAVE_SPEED * DisplayManager.getDeltaInSeconds();
+		moveFactor += WAVE_SPEED * Display.getDeltaInSeconds();
 		moveFactor %= 1;
 		shader.loadLight(light);
 		shader.loadMoveFactor(moveFactor);

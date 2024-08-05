@@ -1,6 +1,6 @@
 package framework.skybox;
 
-import framework.Display.DisplayManager;
+import framework.h.Display;
 import framework.entity.Camera;
 import framework.shader.GLShader;
 import framework.util.GeomMath;
@@ -34,7 +34,7 @@ public class SkyboxShader extends GLShader
 		matrix.m30(0);
 		matrix.m31(0);
 		matrix.m32(0);
-		rotation += rotationSpeed * DisplayManager.getDeltaInSeconds();
+		rotation += rotationSpeed * Display.getDeltaInSeconds();
 		matrix.rotate((float) Math.toRadians(rotation), new Vector3f(0, 1, 0));
 		super.loadMatrix(location_viewMatrix, matrix);
 	}

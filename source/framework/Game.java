@@ -19,12 +19,11 @@ import framework.entity.Entity;
 import org.joml.Vector3f;
 
 import java.util.Random;
-import java.util.Vector;
 
-import static framework.Display.DisplayManager.createDisplay;
-import static framework.Display.DisplayManager.getLwjglVersionMessage;
-import static framework.Display.DisplayManager.getOpenGlVersionMessage;
-import static framework.Display.DisplayManager.setShowFPSTitle;
+import static framework.h.Display.createDisplay;
+import static framework.h.Display.getLwjglVersionMessage;
+import static framework.h.Display.getOpenGlVersionMessage;
+import static framework.h.Display.setShowFPSTitle;
 import static java.lang.management.ManagementFactory.getRuntimeMXBean;
 
 public class Game

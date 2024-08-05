@@ -1,42 +1,58 @@
 package framework.util;
 
-public class SmoothFloat {
+public class SmoothFloat
+{
 
-    private final float delta;
+    private float delta;
     private float target;
     private float actual;
 
-    public SmoothFloat(float initialValue, float delta){
+    public SmoothFloat()
+    {
+        delta = 1;
+        actual = 0;
+    }
+
+    public SmoothFloat(float initialValue, float delta)
+    {
         this.target = initialValue;
         this.actual = initialValue;
         this.delta = delta;
     }
 
-    public void update(){
+    public void update()
+    {
         float offset = target - actual;
         float change = offset * delta * 1;
         actual += change;
     }
 
-    public void increaseTarget(float dT){
+    public void increaseTarget(float dT)
+    {
         this.target += dT;
     }
 
-    public void setTarget(float target){
+    public void setTarget(float target)
+    {
         this.target = target;
     }
 
-    public void instantIncrease(float increase){
+    public void instantIncrease(float increase)
+    {
         this.actual += increase;
     }
 
-    public float get(){
+    public float get()
+    {
         return actual;
     }
 
-    public void force(){}
+    public void force()
+    {
+    }
 
-    public float getTarget(){
+    public float getTarget()
+    {
         return target;
     }
 

@@ -2,7 +2,7 @@ package framework.shadow;
 
 import java.nio.ByteBuffer;
 
-import framework.Display.DisplayManager;
+import framework.h.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL14;
@@ -59,7 +59,7 @@ public class ShadowFrameBuffer {
 	 */
 	protected void unbindFrameBuffer() {
 		GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
-		GL11.glViewport(0, 0, DisplayManager.getWindowWidth(), DisplayManager.getWindowHeight());
+		GL11.glViewport(0, 0, Display.getWindowWidth(), Display.getWindowHeight());
 	}
 
 	/**

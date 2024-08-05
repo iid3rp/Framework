@@ -1,7 +1,7 @@
 package framework.entity;
 
-import framework.Display.DisplayManager;
-import framework.event.Keyboard;
+import framework.h.Display;
+import framework.h.Keyboard;
 import framework.model.TexturedModel;
 import framework.terrains.Terrain;
 import org.joml.Vector3f;
@@ -53,15 +53,15 @@ public class Player extends Entity {
         checkInputs();
 
         // Calculate movement
-        super.transformRotation(0, currentTurnSpeed * DisplayManager.getDeltaInSeconds(), 0);
-        float distance = currentSpeed * DisplayManager.getDeltaInSeconds();
+        super.transformRotation(0, currentTurnSpeed * Display.getDeltaInSeconds(), 0);
+        float distance = currentSpeed * Display.getDeltaInSeconds();
         float dx = (float) (distance * Math.sin(Math.toRadians(super.getRotationY())));
         float dz = (float) (distance * Math.cos(Math.toRadians(super.getRotationY())));
         super.transformPosition(dx, 0, dz);
 
         // Calculate jump
-        upwardSpeed += GRAVITY * DisplayManager.getDeltaInSeconds();
-        super.transformPosition(0, upwardSpeed * DisplayManager.getDeltaInSeconds(), 0);
+        upwardSpeed += GRAVITY * Display.getDeltaInSeconds();
+        super.transformPosition(0, upwardSpeed * Display.getDeltaInSeconds(), 0);
 
         // Player terrain collision detection
         float terrainHeight = terrain.getHeightOfTerrain(super.getPosition().x, super.getPosition().z);
@@ -75,7 +75,7 @@ public class Player extends Entity {
     {
         // player movement radian...
         float angleInRadians = (float) Math.toRadians(camera.getYaw());
-        float distance = walkSpeed * DisplayManager.getDeltaInSeconds();
+        float distance = walkSpeed * Display.getDeltaInSeconds();
 
         // camera angle distance
         float startingAngle = Math.abs((camera.getYaw() + 180) % 360);
@@ -135,11 +135,11 @@ public class Player extends Entity {
         {
             if(getRotationY() % 360 != angleRotationBase)
             {
-                transformRotation(0, shortestAngle * DisplayManager.getDeltaInSeconds() * 12, 0);
+                transformRotation(0, shortestAngle * Display.getDeltaInSeconds() * 12, 0);
             }
         }
-        upwardSpeed += GRAVITY * DisplayManager.getDeltaInSeconds();
-        transformPosition(0, upwardSpeed * DisplayManager.getDeltaInSeconds(), 0);
+        upwardSpeed += GRAVITY * Display.getDeltaInSeconds();
+        transformPosition(0, upwardSpeed * Display.getDeltaInSeconds(), 0);
         float terrainHeight = terrain.getHeightOfTerrain(getPosition().x, getPosition().z);
         if(getPosition().y < terrainHeight)
         {

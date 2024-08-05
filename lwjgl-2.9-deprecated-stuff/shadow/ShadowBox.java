@@ -1,6 +1,6 @@
 package framework.shadow;
 
-import framework.Display.DisplayManager;
+import framework.h.DisplayManager;
 import framework.entity.Camera;
 import framework.renderer.MasterRenderer;
 import org.joml.Matrix4f;

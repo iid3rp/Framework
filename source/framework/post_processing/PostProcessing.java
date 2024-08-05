@@ -1,6 +1,6 @@
 package framework.post_processing;
 
-import framework.Display.DisplayManager;
+import framework.h.Display;
 import framework.loader.ModelLoader;
 import framework.model.Model;
 import framework.post_processing.bloom.BrightFilter;
@@ -26,9 +26,9 @@ public class PostProcessing {
 	{
 		quad = ModelLoader.loadToVao(POSITIONS, 2);
 		contrastChanger = new ContrastChanger();
-		verticalBlur = new VerticalBlur(DisplayManager.getWindowWidth() / 2, DisplayManager.getWindowHeight() / 2);
-		horizontalBlur = new HorizontalBlur(DisplayManager.getWindowWidth() / 2, DisplayManager.getWindowHeight() / 2);
-		brightFilter = new BrightFilter(DisplayManager.getWindowWidth() / 2, DisplayManager.getWindowHeight() / 2);
+		verticalBlur = new VerticalBlur(Display.getWindowWidth() / 2, Display.getWindowHeight() / 2);
+		horizontalBlur = new HorizontalBlur(Display.getWindowWidth() / 2, Display.getWindowHeight() / 2);
+		brightFilter = new BrightFilter(Display.getWindowWidth() / 2, Display.getWindowHeight() / 2);
 		combineFilter = new CombineFilter();
 	}
 	

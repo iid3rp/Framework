@@ -1,6 +1,6 @@
 package framework.particles;
 
-import framework.Display.DisplayManager;
+import framework.h.DisplayManager;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 

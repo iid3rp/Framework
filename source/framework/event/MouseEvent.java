@@ -1,9 +1,10 @@
 package framework.event;
 
-import framework.Display.DisplayManager;
+import framework.h.Display;
 import framework.entity.Camera;
 import framework.entity.Entity;
 import framework.environment.Environment;
+import framework.h.Mouse;
 import framework.post_processing.FrameBufferObject;
 import framework.terrains.Terrain;
 import framework.util.GeomMath;
@@ -72,7 +73,6 @@ public class MouseEvent
     {
         view = GeomMath.createViewMatrix(camera);
         currentRay = calculateMouseRay();
-        currentRay = calculateMouseRay();
         if(intersectionInRange(0, rayRange, currentRay))
         {
             currentTerrainPoint = binarySearch(0, 0, rayRange, currentRay);
@@ -81,17 +81,6 @@ public class MouseEvent
         {
             currentTerrainPoint = null;
         }
-    }
-
-    private Vector3f calculateMouseRay()
-    {
-        float mouseX = (float) Mouse.getMouseX();
-        float mouseY = DisplayManager.getWindowHeight() - (float) Mouse.getMouseY();
-        Vector2f normalizedCoordinates = getNormalizedDeviceCoordinates(mouseX,  mouseY);
-        Vector4f clipCoords = new Vector4f(normalizedCoordinates.x, normalizedCoordinates.y, -1f, 1f);
-        Vector4f eyeCoordinates = toEyeCoordinates(clipCoords);
-        Vector3f worldRay = toWorldCoordinates(eyeCoordinates);
-        return  worldRay;
     }
 
     public Matrix4f getProjection()
@@ -125,10 +114,22 @@ public class MouseEvent
         this.view = GeomMath.createViewMatrix(camera);
     }
 
+    private Vector3f calculateMouseRay()
+    {
+        float mouseX = (float) Mouse.getMouseX();
+        float mouseY = Display.getWindowHeight() - (float) Mouse.getMouseY();
+        Vector2f normalizedCoordinates = getNormalizedDeviceCoordinates(mouseX,  mouseY);
+        Vector4f clipCoords = new Vector4f(normalizedCoordinates.x, normalizedCoordinates.y, -1f, 1f);
+        Vector4f eyeCoordinates = toEyeCoordinates(clipCoords);
+        Vector3f worldRay = toWorldCoordinates(eyeCoordinates);
+        //System.out.println(worldRay.x + " " + worldRay.y + " " + worldRay.z);
+        return  worldRay;
+    }
+
     private Vector3f toWorldCoordinates(Vector4f eyeCoordinates)
     {
         Matrix4f invertedView = new Matrix4f();
-        invertedView.invert(view);
+        view.invert(invertedView);
         Vector4f rayWorld = new Vector4f();
         invertedView.transform(eyeCoordinates, rayWorld);
         Vector3f mouseRay = new Vector3f(rayWorld.x, rayWorld.y, rayWorld.z);
@@ -139,7 +140,7 @@ public class MouseEvent
     private Vector4f toEyeCoordinates(Vector4f clipCoordinates)
     {
         Matrix4f invertedProjection = new Matrix4f();
-        invertedProjection.invert(projection);
+        projection.invert(invertedProjection);
         Vector4f eyeCoordinates = new Vector4f();
         invertedProjection.transform(clipCoordinates, eyeCoordinates);
         return new Vector4f(eyeCoordinates.x, eyeCoordinates.y, -1f, 0f);
@@ -147,8 +148,8 @@ public class MouseEvent
 
     private Vector2f getNormalizedDeviceCoordinates(float mouseX, float mouseY)
     {
-        float x = (2f * mouseX) / DisplayManager.getWindowWidth() - 1;
-        float y = (2f * mouseY) / DisplayManager.getWindowHeight() - 1;
+        float x = (2f * mouseX) / Display.getWindowWidth() - 1;
+        float y = (2f * mouseY) / Display.getWindowHeight() - 1;
         return new Vector2f(x, y);
     }
 
@@ -156,7 +157,7 @@ public class MouseEvent
         Vector3f camPos = camera.getPosition();
         Vector3f start = new Vector3f(camPos.x, camPos.y, camPos.z);
         Vector3f scaledRay = new Vector3f(ray.x * distance, ray.y * distance, ray.z * distance);
-        return scaledRay.add(start, scaledRay);
+        return scaledRay.add(start);
     }
 
     private Vector3f binarySearch(int count, float start, float finish, Vector3f ray) {
@@ -199,7 +200,7 @@ public class MouseEvent
     public void verifyMousePick()
     {
         int mouseX = Mouse.getMouseX();
-        int mouseY = DisplayManager.getWindowHeight() - Mouse.getMouseY();
+        int mouseY = Display.getWindowHeight() - Mouse.getMouseY();
 
         IntBuffer pixelBuffer = BufferUtils.createIntBuffer(1);
         GL11.glReadPixels(0, 0, 1, 1, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, pixelBuffer);
@@ -309,7 +310,7 @@ public class MouseEvent
     public void resolveColorPickFromPixel(FrameBufferObject eventFbo, FrameBufferObject pxFbo)
     {
         int mouseX = Mouse.getMouseX();
-        int mouseY = DisplayManager.getWindowHeight() - Mouse.getMouseY();
+        int mouseY = Display.getWindowHeight() - Mouse.getMouseY();
 
         // Bind the frame buffers
         GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, pxFbo.getFrameBuffer());
@@ -324,9 +325,8 @@ public class MouseEvent
         );
 
         GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, pxFbo.getFrameBuffer());
-
         IntBuffer pixelBuffer = BufferUtils.createIntBuffer(1);
-        GL11.glReadPixels(0, 0, 1, 1, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, pixelBuffer);
+        //GL11.glReadPixels(0, 0, 1, 1, GL30.GL_RGBA, GL11.GL_UNSIGNED_BYTE, pixelBuffer);
 
 
         int pixel = pixelBuffer.get(0);

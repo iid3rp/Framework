@@ -1,4 +1,4 @@
-package framework.event;
+package framework.h;
 
 import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
@@ -6,7 +6,8 @@ import org.lwjgl.glfw.GLFWScrollCallback;
 
 import static org.lwjgl.glfw.GLFW.*;
 
-public class Mouse {
+public final class Mouse implements Hardware
+{
     public static boolean mouseMoved;
     public static boolean mouseScrolled;
     private static boolean[] buttons;

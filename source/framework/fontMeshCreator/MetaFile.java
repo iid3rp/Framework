@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
-import framework.Display.DisplayManager;
+import framework.h.Display;
 import framework.resources.Resources;
 
 /**
@@ -49,7 +49,7 @@ public class MetaFile {
 	 *            - the font file.
 	 */
 	protected MetaFile(String file) {
-		this.aspectRatio = (double) DisplayManager.getWindowWidth() / (double) DisplayManager.getWindowHeight();
+		this.aspectRatio = (double) Display.getWindowWidth() / (double) Display.getWindowHeight();
 		InputStream stream = Resources.class.getResourceAsStream("font/" + file + ".fnt");
 		openFile(stream);
 		loadPaddingData();

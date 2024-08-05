@@ -1,6 +1,6 @@
 package framework.shadow;
 
-import framework.Display.DisplayManager;
+import framework.h.Display;
 import framework.entity.Camera;
 import framework.renderer.MasterRenderer;
 import framework.util.Mat4f;
@@ -244,7 +244,7 @@ public class ShadowBox {
 	 * @return The aspect ratio of the display (width:height ratio).
 	 */
 	private float getAspectRatio() {
-		return (float) DisplayManager.getWindowWidth() / (float) DisplayManager.getWindowHeight();
+		return (float) Display.getWindowWidth() / (float) Display.getWindowHeight();
 	}
 
 }

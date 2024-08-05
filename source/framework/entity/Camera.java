@@ -1,7 +1,7 @@
 package framework.entity;
 
-import framework.event.Keyboard;
-import framework.event.Mouse;
+import framework.h.Keyboard;
+import framework.h.Mouse;
 import framework.util.SmoothFloat;
 import org.joml.Vector3f;
 
@@ -20,9 +20,9 @@ public class Camera {
     private float rotationalSpeed;
     private Player player;
 
-    private SmoothFloat angleAroundPlayer = new SmoothFloat(0, .25f);
-    private SmoothFloat distanceFromPlayer = new SmoothFloat(30, .25f);
-    private SmoothFloat pitch = new SmoothFloat(30, .25f);
+    private SmoothFloat angleAroundPlayer = new SmoothFloat(0, .1f);
+    private SmoothFloat distanceFromPlayer = new SmoothFloat(30, .1f);
+    private SmoothFloat pitch = new SmoothFloat(30, .1f);
     private boolean playerCamera;
 
     public Camera(Player player)
@@ -140,7 +140,7 @@ public class Camera {
     {
         if(Mouse.isScrolling())
         {
-            float zoomLevel = (float) (Mouse.getMouseScrollY() * 2);
+            float zoomLevel = (float) (Mouse.getMouseScrollY() * 6);
             distanceFromPlayer.increaseTarget(-zoomLevel);
             distanceFromPlayer.setTarget(
                     distanceFromPlayer.get() - zoomLevel > MAX_DISTANCE? MAX_DISTANCE:

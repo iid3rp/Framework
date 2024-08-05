@@ -1,6 +1,6 @@
 package framework.post_processing;
 
-import framework.Display.DisplayManager;
+import framework.h.DisplayManager;
 import framework.loader.ModelLoader;
 import framework.model.Model;
 import framework.post_processing.bloom.BrightFilter;

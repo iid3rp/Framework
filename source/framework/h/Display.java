@@ -1,7 +1,5 @@
-package framework.Display;
+package framework.h;
 
-import framework.event.Keyboard;
-import framework.event.Mouse;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
@@ -10,10 +8,10 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL.*;
 import static org.lwjgl.opengl.GL11.*;
 
-public class DisplayManager
+public final class Display implements Hardware
 {
-    private static final int WINDOW_WIDTH = 1280;
-    private static final int WINDOW_HEIGHT = 720;
+    private static final int WINDOW_WIDTH = 1000;
+    private static final int WINDOW_HEIGHT = 600;
     private static final int REFRESH_RATE = 120;
     private static long window;
     private static final String TITLE = "";
@@ -26,7 +24,7 @@ public class DisplayManager
     private static Mouse mouse;
 
     // Hide the constructor
-    private DisplayManager() {}
+    private Display() {}
 
     public static void createDisplay() {
         if (!glfwInit()) {
@@ -65,7 +63,7 @@ public class DisplayManager
         glfwShowWindow(window);
 
         // Setting the value to 1 should limit to 60 FPS
-        glfwSwapInterval(1);
+        glfwSwapInterval(0);
 
         lastFrameTime = getCurrentTime();
         GL11.glEnable(GL13.GL_MULTISAMPLE);
@@ -114,7 +112,7 @@ public class DisplayManager
 
     public static void setShowFPSTitle(boolean showFPSTitle)
     {
-        DisplayManager.showFPSTitle = showFPSTitle;
+        Display.showFPSTitle = showFPSTitle;
 
         if (!showFPSTitle) {
             frames = 0;

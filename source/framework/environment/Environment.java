@@ -1,7 +1,6 @@
 package framework.environment;
 
-import framework.Display.DisplayManager;
-import framework.event.Mouse;
+import framework.h.Display;
 import framework.fontMeshCreator.FontType;
 import framework.fontMeshCreator.GUIText;
 import framework.particles.ParticleMaster;
@@ -23,12 +22,11 @@ public final class Environment
 {
     public static Scene scene;
     private static StackScript stack = new StackScript();
-    public static FrameBufferObject multisample = new FrameBufferObject(DisplayManager.getWindowWidth(), DisplayManager.getWindowHeight());
-    public static FrameBufferObject out = new FrameBufferObject(DisplayManager.getWindowWidth(), DisplayManager.getWindowHeight(), FrameBufferObject.DEPTH_TEXTURE);
-    public static FrameBufferObject bright = new FrameBufferObject(DisplayManager.getWindowWidth(), DisplayManager.getWindowHeight(), FrameBufferObject.DEPTH_TEXTURE);
-    public static FrameBufferObject mouseEventBuffer = new FrameBufferObject(DisplayManager.getWindowWidth(), DisplayManager.getWindowHeight(), FrameBufferObject.DEPTH_TEXTURE);
+    public static FrameBufferObject multisample = new FrameBufferObject(Display.getWindowWidth(), Display.getWindowHeight());
+    public static FrameBufferObject out = new FrameBufferObject(Display.getWindowWidth(), Display.getWindowHeight(), FrameBufferObject.DEPTH_TEXTURE);
+    public static FrameBufferObject bright = new FrameBufferObject(Display.getWindowWidth(), Display.getWindowHeight(), FrameBufferObject.DEPTH_TEXTURE);
+    public static FrameBufferObject mouseEventBuffer = new FrameBufferObject(Display.getWindowWidth(), Display.getWindowHeight(), FrameBufferObject.DEPTH_TEXTURE);
     public static FrameBufferObject pixelBuffer = new FrameBufferObject(1280, 720, FrameBufferObject.DEPTH_TEXTURE);
-    //private static PixelPicker pixel = new PixelPicker();
 
     public static void setScene(Scene scene)
     {
@@ -74,7 +72,7 @@ public final class Environment
 
     public static void loop()
     {
-        while(DisplayManager.shouldDisplayClose())
+        while(Display.shouldDisplayClose())
         {
             //FPSCounter.update();
             // mouseEvent stuff
@@ -150,7 +148,7 @@ public final class Environment
             //TextMasterRenderer.setText(fps, "fps count: " + FPSCounter.getCounter());
             //TextMasterRenderer.render();
             runAllScripts();
-            DisplayManager.updateDisplay();
+            Display.updateDisplay();
         }
     }
 
@@ -201,6 +199,6 @@ public final class Environment
         scene.getContentPane().dispose();
         MasterRenderer.dispose();
         ModelLoader.destroy();
-        DisplayManager.closeDisplay();
+        Display.closeDisplay();
     }
 }

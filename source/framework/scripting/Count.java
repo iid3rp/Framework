@@ -1,6 +1,6 @@
 package framework.scripting;
 
-import framework.Display.DisplayManager;
+import framework.h.Display;
 import framework.environment.Scene;
 
 public class Count implements FrameworkScript
@@ -16,7 +16,7 @@ public class Count implements FrameworkScript
             i = 0; // Reset the counter after printing
             System.out.println("player location: " + scene.getPlayer().getPosition().x + ", " + scene.getPlayer().getPosition().y + ", " + scene.getPlayer().getPosition().z);
         }
-        i += (1000 * DisplayManager.getDeltaInSeconds());
+        i += (1000 * Display.getDeltaInSeconds());
     }
 
     @Override

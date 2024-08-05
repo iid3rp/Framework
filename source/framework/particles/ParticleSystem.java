@@ -1,5 +1,5 @@
 package framework.particles;
-import framework.Display.DisplayManager;
+import framework.h.Display;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -73,7 +73,7 @@ public class ParticleSystem {
 
     public void generateParticles(Vector3f systemCenter) {
         Vector3f position = new Vector3f(systemCenter);
-        float delta = DisplayManager.getDeltaInSeconds();
+        float delta = Display.getDeltaInSeconds();
         float particlesToCreate = pps * delta;
         int count = (int) Math.floor(particlesToCreate);
         float partialParticle = particlesToCreate % 1;

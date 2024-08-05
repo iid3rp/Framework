@@ -1,7 +1,7 @@
 package framework.particles;
 
 
-import framework.Display.DisplayManager;
+import framework.h.Display;
 import framework.entity.Camera;
 import framework.entity.Player;
 import org.joml.Vector2f;
@@ -58,13 +58,13 @@ public class Particle {
 
     protected boolean update(Camera camera)
     {
-        velocity.y += Player.GRAVITY * gravity * DisplayManager.getDeltaInSeconds();
+        velocity.y += Player.GRAVITY * gravity * Display.getDeltaInSeconds();
         change.set(velocity);
-        change.mul(DisplayManager.getDeltaInSeconds());
+        change.mul(Display.getDeltaInSeconds());
         position.add(change);
         distance = new Vector3f(camera.getPosition()).sub(position).lengthSquared();
         updateTextureCoordsInfo();
-        elapsedTime += DisplayManager.getDeltaInSeconds();
+        elapsedTime += Display.getDeltaInSeconds();
         return elapsedTime < lifeLength;
     }
 

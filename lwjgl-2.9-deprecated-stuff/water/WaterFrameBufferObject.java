@@ -2,7 +2,7 @@ package framework.water;
 
 import java.nio.ByteBuffer;
 
-import framework.Display.DisplayManager;
+import framework.h.DisplayManager;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL30;
