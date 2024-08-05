@@ -10,7 +10,8 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL.*;
 import static org.lwjgl.opengl.GL11.*;
 
-public class DisplayManager {
+public class DisplayManager
+{
     private static final int WINDOW_WIDTH = 1280;
     private static final int WINDOW_HEIGHT = 720;
     private static final int REFRESH_RATE = 120;
@@ -70,7 +71,11 @@ public class DisplayManager {
         GL11.glEnable(GL13.GL_MULTISAMPLE);
     }
 
-    public static void updateDisplay() {
+    public static void updateDisplay()
+    {
+        Mouse.mouseMoved = false;
+        Mouse.mouseScrolled = false;
+        Mouse.mouseDragged = false;
         glfwPollEvents();
         glfwSwapBuffers(window);
 

@@ -1,6 +1,7 @@
 package framework.environment;
 
 import framework.Display.DisplayManager;
+import framework.event.Mouse;
 import framework.fontMeshCreator.FontType;
 import framework.fontMeshCreator.GUIText;
 import framework.particles.ParticleMaster;

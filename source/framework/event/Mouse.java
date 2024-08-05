@@ -9,8 +9,7 @@ import static org.lwjgl.glfw.GLFW.*;
 public class Mouse {
     public static boolean mouseMoved;
     public static boolean mouseScrolled;
-    private static boolean[] clicks;
-    private static boolean[] holds;
+    private static boolean[] buttons;
     private static double mouseX;
     private static double mouseY;
     private static double swipeX;
@@ -43,21 +42,19 @@ public class Mouse {
             LEFT    = ZERO,
             RIGHT   = ONE,
             MIDDLE  = TWO;
-
+    public static boolean mouseDragged;
 
 
     public Mouse() {
 
         swipeX = swipeY = 0;
-        clicks = new boolean[LAST];
-        holds = new boolean[LAST];
+        buttons = new boolean[LAST];
 
 
         mouseButtons = new GLFWMouseButtonCallback() {
             @Override
             public void invoke(long window, int button, int action, int mods) {
-                clicks[button] = (action != GLFW_RELEASE);
-                holds[button] = (action == GLFW_PRESS);
+                buttons[button] = (action != GLFW_RELEASE);
             }
         };
 
@@ -65,6 +62,7 @@ public class Mouse {
             @Override
             public void invoke(long window, double xPos, double yPos) {
                 mouseMoved = true;
+                mouseDragged = Mouse.isAnyButtonPressed();
                 mouseX = xPos;
                 mouseY = yPos;
                 newX = xPos;
@@ -88,29 +86,26 @@ public class Mouse {
         return mouseScrolled;
     }
 
-    public static boolean isAnyButtonDown()
-    {
-        for(boolean b : holds)
-            if(b)
-                return true;
-        return false;
-    }
-
     public static boolean isAllButtonReleased()
     {
         boolean ref = true;
-        for(boolean b : holds)
-            if(!b)
+        for(boolean b : buttons)
+            if(b)
                 return false;
         return ref;
     }
 
-    public static boolean isAnyButtonClicked()
+    public static boolean isAnyButtonPressed()
     {
-        for(boolean b : clicks)
+        for(boolean b : buttons)
             if(b)
                 return true;
         return false;
+    }
+
+    public static boolean isDragged()
+    {
+        return mouseDragged;
     }
 
     private void update(double xPos, double yPos)
@@ -145,7 +140,7 @@ public class Mouse {
     }
 
     public static boolean isButtonDown(int button) {
-        return clicks[button];
+        return buttons[button];
     }
 
     public static int getMouseX() {

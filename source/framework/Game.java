@@ -19,6 +19,7 @@ import framework.entity.Entity;
 import org.joml.Vector3f;
 
 import java.util.Random;
+import java.util.Vector;
 
 import static framework.Display.DisplayManager.createDisplay;
 import static framework.Display.DisplayManager.getLwjglVersionMessage;
@@ -44,6 +45,8 @@ public class Game
         System.out.println("OpenGL: " + getOpenGlVersionMessage());
         System.out.println("LWJGL: " + getLwjglVersionMessage());
     }
+
+    private static Vector3f offset;
 
     public static void main(String[] args) {
         start();
@@ -98,7 +101,7 @@ public class Game
 
         //scene.add(new WaterTile(75, -75, 0));
 
-        TexturedModel chrysalis = new TexturedModel(ObjectLoader.loadObjModel("tree.obj"), TextureLoader.generateTexture("grass.png"));
+        TexturedModel chrysalis = new TexturedModel(ObjectLoader.loadObjModel("tree.obj"), new Texture(ModelLoader.loadTexture("grass.png")));
         chrysalis.getTexture().setShineDampening(1f);
         chrysalis.getTexture().setReflectivity(.1f);
 
@@ -115,16 +118,12 @@ public class Game
             Entity crystal = new Entity(chrysalis, new Vector3f(x, y, z), 0, 0, 0, 10f);
             crystal.addMouseListener(new MouseAdapter()
             {
-                @Override
-                public void mouseClicked(MouseEvent e)
-                {
-                    System.out.println("clicked!");
-                }
 
                 @Override
                 public void mousePressed(MouseEvent e)
                 {
-                    System.out.println("pressed!");
+                    offset = crystal.getPosition();
+                    System.out.println(crystal.getPosition().x + " " + crystal.getPosition().z);
                 }
 
                 @Override
@@ -136,7 +135,10 @@ public class Game
                 @Override
                 public void mouseDragged(MouseEvent e)
                 {
-                    System.out.println("dragged!");
+                    System.out.println(e.getCurrentRay());
+                    Vector3f position = new Vector3f(e.getCurrentRay()).sub(offset);
+                    float y = terrain.getHeightOfTerrain(position.x, position.z);
+                    crystal.transformPosition(position.x, y, position.z);
                 }
 
                 @Override

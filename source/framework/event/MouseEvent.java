@@ -37,6 +37,8 @@ public class MouseEvent
     private int currentMouseX;
     private int currentMouseY;
     private float clickInterval = 0;
+    private boolean mousePressed;
+    private boolean mouseReleased;
 
     public MouseEvent() {}
 
@@ -229,7 +231,6 @@ public class MouseEvent
     private void simulateEvent(Color color)
     {
         Entity eventEntity = entityMouseEvents.get(color);
-        boolean[] action = {false, false}; // 0 for clicked, 1 for pressed
         if(eventEntity == null)
         {
             FocusEvent.setFocus(null);
@@ -255,38 +256,29 @@ public class MouseEvent
 
         FocusEvent.setFocus(eventEntity);
 
-        if(Mouse.isMoving())
-            for(MouseListener l : listeners)
-                l.mouseMoved(this);
-
-        if(Mouse.isAnyButtonClicked()) {
-            clickInterval += DisplayManager.getDeltaInSeconds();
-            action[0] = true;
-            System.out.println("clicked!");
-        }
-
-        if(Mouse.isAnyButtonDown()) {
-            clickInterval += DisplayManager.getDeltaInSeconds();
-            action[1] = true;
-            System.out.println("hold");
-        }
-
-        if(Mouse.isAllButtonReleased()) {
-            if(clickInterval <= 1f && action[0]) {
-                action[0] = false;
-                for(MouseListener l : listeners)
-                    l.mouseClicked(this);
-            }
-            else if(clickInterval > 1f && !action[1]) {
-                for(MouseListener l : listeners)
-                    l.mouseReleased(this);
-            }
-            clickInterval = 0f;
-        }
-        else if(clickInterval > 1f && action[1]) {
-            action[1] = false;
+        if(Mouse.isAnyButtonPressed() && !mousePressed) {
+            mousePressed = true;
+            mouseReleased = false;
             for(MouseListener l : listeners)
                 l.mousePressed(this);
+        }
+
+        if(Mouse.isDragged()) {
+            for(MouseListener l : listeners)
+                l.mouseDragged(this);
+        }
+        else if(Mouse.isMoving()) {
+            for(MouseListener l : listeners)
+                l.mouseMoved(this);
+        }
+
+
+        if(Mouse.isAllButtonReleased() && !mouseReleased)
+        {
+            mousePressed = false;
+            mouseReleased = true;
+            for(MouseListener l : listeners)
+                l.mouseReleased(this);
         }
 
         currentEntity = eventEntity;

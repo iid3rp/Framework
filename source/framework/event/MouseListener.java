@@ -2,8 +2,6 @@ package framework.event;
 
 public interface MouseListener
 {
-    void mouseClicked(MouseEvent e);
-
     void mousePressed(MouseEvent e);
 
     void mouseReleased(MouseEvent e);
