@@ -17,7 +17,9 @@ import framework.textures.TerrainTexturePack;
 import framework.textures.Texture;
 import framework.entity.Entity;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 
+import java.awt.Color;
 import java.util.Random;
 
 import static framework.h.Display.createDisplay;
@@ -44,8 +46,6 @@ public class Game
         System.out.println("OpenGL: " + getOpenGlVersionMessage());
         System.out.println("LWJGL: " + getLwjglVersionMessage());
     }
-
-    private static Vector3f offset;
 
     public static void main(String[] args) {
         start();
@@ -98,17 +98,16 @@ public class Game
         scene.setContentPane(panel);
 
 
-        //scene.add(new WaterTile(75, -75, 0));
-
-        TexturedModel chrysalis = new TexturedModel(ObjectLoader.loadObjModel("tree.obj"), new Texture(ModelLoader.loadTexture("grass.png")));
-        chrysalis.getTexture().setShineDampening(1f);
-        chrysalis.getTexture().setReflectivity(.1f);
-
         Entity entity = new Entity(new TexturedModel(
                 ObjectLoader.loadObject("crate.obj"),
                 new Texture(ModelLoader.loadTexture("brat.png"))),
                 new Vector3f(0, 0, 0), 0f, 0f, 0f, 1f);
         //scene.add(entity);
+        //scene.add(new WaterTile(75, -75, 0));
+
+        TexturedModel chrysalis = new TexturedModel(ObjectLoader.loadObjModel("tree.obj"), new Texture(ModelLoader.loadTexture("grass.png")));
+        chrysalis.getTexture().setShineDampening(1f);
+        chrysalis.getTexture().setReflectivity(.1f);
 
         for(int i = 0 ; i < 100; i++) {
             float x = random.nextFloat(terrain.getSize()) - (terrain.getSize() / 2);
@@ -117,45 +116,14 @@ public class Game
             Entity crystal = new Entity(chrysalis, new Vector3f(x, y, z), 0, 0, 0, 10f);
             crystal.addMouseListener(new MouseAdapter()
             {
-
                 @Override
-                public void mousePressed(MouseEvent e)
-                {
-                    offset = crystal.getPosition();
-                    System.out.println(crystal.getPosition().x + " " + crystal.getPosition().z);
+                public void mouseEntered(MouseEvent e) {
+                    crystal.setHighlightColor(new Vector4f(1, 0, 0, 1));
                 }
 
                 @Override
-                public void mouseReleased(MouseEvent e)
-                {
-                    System.out.println("released");
-                }
-
-                @Override
-                public void mouseDragged(MouseEvent e)
-                {
-                    System.out.println(e.getCurrentRay());
-                    Vector3f position = new Vector3f(e.getCurrentRay()).sub(offset);
-                    float y = terrain.getHeightOfTerrain(position.x, position.z);
-                    crystal.transformPosition(position.x, y, position.z);
-                }
-
-                @Override
-                public void mouseMoved(MouseEvent e)
-                {
-                    System.out.println(".");
-                }
-
-                @Override
-                public void mouseEntered(MouseEvent e)
-                {
-                    System.out.println("entered!");
-                }
-
-                @Override
-                public void mouseExited(MouseEvent e)
-                {
-                    System.out.println("exited!");
+                public void mouseExited(MouseEvent e) {
+                    crystal.setHighlightColor(new Vector4f(0, 0, 0, 0));
                 }
             });
             if(crystal.getPosition().y > 0) {

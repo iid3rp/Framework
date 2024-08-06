@@ -5,6 +5,7 @@ import framework.event.MouseEvent;
 import framework.event.MouseListener;
 import framework.model.TexturedModel;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ public class Entity {
     private List<MouseListener> mouseListeners = new ArrayList<>();
     private List<FocusListener> focusListeners = new ArrayList<>();
     private Color mouseColor = new Color(0, 0, 0);
+    private Vector4f highlightColor = new Vector4f(0f);
 
     public Entity(TexturedModel texturedModel, Vector3f position, float rotationX, float rotationY, float rotationZ, float scale) {
         this.texturedModel = texturedModel;
@@ -174,5 +176,15 @@ public class Entity {
     public List<FocusListener> getFocusListeners()
     {
         return focusListeners;
+    }
+
+    public void setHighlightColor(Vector4f highlightColor)
+    {
+        this.highlightColor = highlightColor;
+    }
+
+    public Vector4f getHighlightColor()
+    {
+        return highlightColor;
     }
 }

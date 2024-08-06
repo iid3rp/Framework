@@ -16,6 +16,7 @@ public class EntityShader extends GLShader
     private static final String VERTEX_FILE = "EntityVertexShader.glsl";
     private static final String FRAGMENT_FILE = "EntityFragmentShader.glsl";
 
+    public int locationHighlightColor;
     private int locationModelTexture;
     private int locationNormalMap;
     private int location_transformationMatrix;
@@ -64,6 +65,7 @@ public class EntityShader extends GLShader
         locationHasSpecularMap = super.getUniformLocation("hasSpecularMap");
         locationSpecularMap = super.getUniformLocation("specularMap");
         locationMouseColor = super.getUniformLocation("mouseEventColor"); // mouse Event support
+        locationHighlightColor = super.getUniformLocation("highlightColor");
 
         location_lightPosition = new int[20];
         location_lightColor = new int[20];
@@ -162,4 +164,11 @@ public class EntityShader extends GLShader
     {
         super.loadVector(locationPlane, vec4);
     }
+
+    public void loadHighlightColor(Vector4f highlightColor)
+    {
+        super.loadVector(locationHighlightColor, highlightColor);
+    }
 }
+
+

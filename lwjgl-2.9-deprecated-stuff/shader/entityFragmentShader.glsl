@@ -11,6 +11,7 @@ uniform float damper;
 uniform float reflectivity;
 uniform vec3 skyColor;
 uniform sampler2D shadowMap;
+uniform vec4 highlightColor;
 
 in vec2 passTextureCoordinates;
 in vec3 surfaceNormal;
@@ -101,4 +102,5 @@ void main(void)
 
     outColor = vec4(totalDiffuse, 1.0) * textureColor + vec4(totalSpecular, 1.0);
     outColor = mix(vec4(skyColor, 1.0), outColor, visibility);
+    outColor = vec4(1);
 }

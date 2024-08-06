@@ -23,6 +23,7 @@ uniform float shineDamper;
 uniform float reflectivity;
 uniform vec3 skyColor;
 uniform vec4 mouseEventColor;
+uniform vec4 highlightColor;
 
 // make this uniform below:
 const float levels = 255;
@@ -111,6 +112,7 @@ void main(void)
 
     out_Color = vec4(totalDiffuse, 1.0) *  textureColor + vec4(totalSpecular, 1.0); // returns color of the pixel from the texture at specified texture coordinates
     out_Color = mix(vec4(skyColor, 1.0), out_Color, visibility);
+    out_Color = out_Color + highlightColor;
     mouseEvent = mouseEventColor;
     //brightColor = out_Color;
     //out_Color = normalMapValue;

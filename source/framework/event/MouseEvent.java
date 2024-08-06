@@ -13,6 +13,7 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
 
@@ -232,6 +233,7 @@ public class MouseEvent
     private void simulateEvent(Color color)
     {
         Entity eventEntity = entityMouseEvents.get(color);
+
         if(eventEntity == null)
         {
             FocusEvent.setFocus(null);
@@ -245,6 +247,17 @@ public class MouseEvent
 
             currentEntity = null;
             currentColor = null;
+            return;
+        }
+
+        if(currentEntity != null && currentEntity != eventEntity)
+        {
+            List<MouseListener> listeners = currentEntity.getMouseListeners();
+            for(MouseListener l : listeners)
+                l.mouseExited(this);
+            FocusEvent.setFocus(null);
+            currentEntity = eventEntity;
+            currentColor = color;
             return;
         }
 
@@ -325,9 +338,11 @@ public class MouseEvent
         );
 
         GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, pxFbo.getFrameBuffer());
+        //GL30.glReadBuffer(GL30.GL_COLOR_ATTACHMENT2);
         IntBuffer pixelBuffer = BufferUtils.createIntBuffer(1);
-        //GL11.glReadPixels(0, 0, 1, 1, GL30.GL_RGBA, GL11.GL_UNSIGNED_BYTE, pixelBuffer);
-
+        GL30.glReadPixels(0, 0, 1, 1, GL30.GL_RGBA, GL11.GL_UNSIGNED_BYTE, pixelBuffer);
+        //GL30.glReadBuffer(GL11.GL_NONE);
+        GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, 0);
 
         int pixel = pixelBuffer.get(0);
 
@@ -336,8 +351,6 @@ public class MouseEvent
         int b = (pixel >> 16) & 0xFF;
         int g = (pixel >> 8) & 0xFF;
         int r = pixel & 0xFF;
-
-        GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, 0); // Unbind
 
         Color color = new Color(r, g, b, a);
         // System.out.println(color); debuggers...

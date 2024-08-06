@@ -89,6 +89,7 @@ public class EntityRenderer {
     private void prepareEntity(Entity entity) {
         Matrix4f transformationMatrix = GeomMath.createTransformationMatrix(entity.getPosition(), entity.getRotationX(), entity.getRotationY(), entity.getRotationZ(), entity.getScale());
         staticShader.loadTransformationMatrix(transformationMatrix);
+        staticShader.loadHighlightColor(entity.getHighlightColor());
         staticShader.loadMouseEventColor(entity.getMouseColor());
         staticShader.loadOffset(entity.getTextureXOffset(), entity.getTextureYOffset());
     }

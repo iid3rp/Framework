@@ -3,6 +3,7 @@ package framework.environment;
 import framework.h.Display;
 import framework.fontMeshCreator.FontType;
 import framework.fontMeshCreator.GUIText;
+import framework.h.Keyboard;
 import framework.particles.ParticleMaster;
 import framework.post_processing.FrameBufferObject;
 import framework.post_processing.PostProcessing;
@@ -26,7 +27,7 @@ public final class Environment
     public static FrameBufferObject out = new FrameBufferObject(Display.getWindowWidth(), Display.getWindowHeight(), FrameBufferObject.DEPTH_TEXTURE);
     public static FrameBufferObject bright = new FrameBufferObject(Display.getWindowWidth(), Display.getWindowHeight(), FrameBufferObject.DEPTH_TEXTURE);
     public static FrameBufferObject mouseEventBuffer = new FrameBufferObject(Display.getWindowWidth(), Display.getWindowHeight(), FrameBufferObject.DEPTH_TEXTURE);
-    public static FrameBufferObject pixelBuffer = new FrameBufferObject(1280, 720, FrameBufferObject.DEPTH_TEXTURE);
+    public static FrameBufferObject pixelBuffer = new FrameBufferObject(2, 2, FrameBufferObject.DEPTH_TEXTURE);
 
     public static void setScene(Scene scene)
     {
@@ -61,7 +62,7 @@ public final class Environment
             img.setLocation(20, 20);
             //img.mirrorX();
 
-            scene.getContentPane().add(img);
+            //scene.getContentPane().add(img);
 
 
             loop();
@@ -72,6 +73,7 @@ public final class Environment
 
     public static void loop()
     {
+        long i = 0;
         while(Display.shouldDisplayClose())
         {
             //FPSCounter.update();
@@ -140,9 +142,12 @@ public final class Environment
             multisample.resolveToFrameBufferObject(GL30.GL_COLOR_ATTACHMENT2, mouseEventBuffer);
             multisample.resolveToScreen();
             //multisample.resolvePixel(mouseEventBuffer);
-            scene.getEvent().resolveColorPickFromPixel(mouseEventBuffer, pixelBuffer);
+            if(i % 4 == 0)
+                scene.getEvent().resolveColorPickFromPixel(mouseEventBuffer, pixelBuffer);
+            i++;
 
-            PostProcessing.doPostProcessing(out.getColorTexture(), bright.getColorTexture());
+            if(!Keyboard.isKeyDown(Keyboard.E))
+                PostProcessing.doPostProcessing(out.getColorTexture(), bright.getColorTexture());
 
             scene.getContentPane().render(scene.getContentPane().getComponents());
             //TextMasterRenderer.setText(fps, "fps count: " + FPSCounter.getCounter());

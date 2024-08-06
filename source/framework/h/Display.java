@@ -10,8 +10,8 @@ import static org.lwjgl.opengl.GL11.*;
 
 public final class Display implements Hardware
 {
-    private static final int WINDOW_WIDTH = 1000;
-    private static final int WINDOW_HEIGHT = 600;
+    private static final int WINDOW_WIDTH = 1280;
+    private static final int WINDOW_HEIGHT = 720;
     private static final int REFRESH_RATE = 120;
     private static long window;
     private static final String TITLE = "";

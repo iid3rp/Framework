@@ -1,5 +1,7 @@
 package framework.textures;
 
+import org.joml.Vector4f;
+
 import java.nio.IntBuffer;
 
 public class Texture
@@ -24,11 +26,13 @@ public class Texture
         this.diffuseMap = id;
         this.normalMap = 0;
         this.specularMap = 0;
+
     }
 
     public Texture()
     {
         diffuseMap = normalMap = specularMap = 0;
+
     }
 
     public void setSpecularMap(int specularMap)
