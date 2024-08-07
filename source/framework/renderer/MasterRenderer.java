@@ -163,7 +163,7 @@ public class MasterRenderer {
 
     private static void createProjectionMatrix() {
         projectionMatrix = new Matrix4f();
-        float aspectRatio = (float) Display.getWindowWidth() / (float) Display.getWindowHeight();
+        float aspectRatio = (float) Display.getWidth() / (float) Display.getHeight();
         float yScale = (float) ((1f / Math.tan(Math.toRadians(FOV / 2f))));
         float xScale = yScale / aspectRatio;
         float frustumLength = FAR_PLANE - NEAR_PLANE;

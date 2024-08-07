@@ -11,8 +11,6 @@ import framework.loader.ModelLoader;
 import framework.event.MouseEvent;
 import framework.scripting.FrameworkScript;
 import framework.scripting.StackScript;
-import framework.swing.GUITexture;
-import framework.swing.PictureBox;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL30;
@@ -22,10 +20,10 @@ public final class Environment
 {
     public static Scene scene;
     private static StackScript stack = new StackScript();
-    public static FrameBufferObject multisample = new FrameBufferObject(Display.getWindowWidth(), Display.getWindowHeight());
-    public static FrameBufferObject out = new FrameBufferObject(Display.getWindowWidth(), Display.getWindowHeight(), FrameBufferObject.DEPTH_TEXTURE);
-    public static FrameBufferObject bright = new FrameBufferObject(Display.getWindowWidth(), Display.getWindowHeight(), FrameBufferObject.DEPTH_TEXTURE);
-    public static FrameBufferObject mouseEventBuffer = new FrameBufferObject(Display.getWindowWidth(), Display.getWindowHeight(), FrameBufferObject.DEPTH_TEXTURE);
+    public static FrameBufferObject multisample = new FrameBufferObject(Display.getWidth(), Display.getHeight());
+    public static FrameBufferObject out = new FrameBufferObject(Display.getWidth(), Display.getHeight(), FrameBufferObject.DEPTH_TEXTURE);
+    public static FrameBufferObject bright = new FrameBufferObject(Display.getWidth(), Display.getHeight(), FrameBufferObject.DEPTH_TEXTURE);
+    public static FrameBufferObject mouseEventBuffer = new FrameBufferObject(Display.getWidth(), Display.getHeight(), FrameBufferObject.DEPTH_TEXTURE);
     public static FrameBufferObject pixelBuffer = new FrameBufferObject(2, 2, FrameBufferObject.DEPTH_TEXTURE);
 
     public static void setScene(Scene scene)
@@ -54,12 +52,6 @@ public final class Environment
 //            font = new FontType(ModelLoader.loadTexture("comic.fnt"), "comic");
 //            fps = new GUIText("fps count: 0", 1, font, new Vector2f(0, 0), 1f, false);
 //            fps.setColor(1, 1, 0);
-
-            GUITexture img = new PictureBox();
-            img.setBackgroundImage(pixelBuffer.getColorTexture());
-            img.setSize(160, 90);
-            img.setLocation(20, 20);
-            //img.mirrorX();
 
             //scene.getContentPane().add(img);
 

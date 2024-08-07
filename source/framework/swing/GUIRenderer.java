@@ -23,20 +23,19 @@ public class GUIRenderer
         float[] positions = { -1, 1, -1, -1, 1, 1, 1, -1 };
         quad = ModelLoader.loadToVao(positions, 2);
         shader = new GUIShader();
-        size = new Vector2f();
+        size = new Vector2f(1, 1);
     }
 
     public void setSize(int x, int y)
     {
-        float normalizeX = (float) x / Display.getWindowWidth();
-        float normalizeY = (float) y / Display.getWindowHeight();
+        float normalizeX = (float) x / Display.getWidth();
+        float normalizeY = (float) y / Display.getHeight();
         size.set(normalizeX, normalizeY);
     }
 
     public void render(List<GUITexture> guis)
     {
         shader.bind();
-        shader.loadSize(size);
         GL30.glBindVertexArray(quad.getVaoId());
         GL20.glEnableVertexAttribArray(0);
         GL11.glEnable(GL11.GL_BLEND);
@@ -49,6 +48,8 @@ public class GUIRenderer
             GL13.glActiveTexture(GL13.GL_TEXTURE0);
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture.getTexture());
             Matrix4f matrix = GeomMath.createTransformationMatrix(texture.getPosition(), texture.getRotation(), texture.getScale());
+            shader.loadPosition(texture.getRawPosition());
+            shader.loadSize(texture.getSize());
             shader.loadTransformation(matrix);
             GL11.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, quad.getVertexCount());
         }

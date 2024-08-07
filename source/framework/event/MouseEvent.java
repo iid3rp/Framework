@@ -13,7 +13,6 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
 
@@ -118,7 +117,7 @@ public class MouseEvent
     private Vector3f calculateMouseRay()
     {
         float mouseX = (float) Mouse.getMouseX();
-        float mouseY = Display.getWindowHeight() - (float) Mouse.getMouseY();
+        float mouseY = Display.getHeight() - (float) Mouse.getMouseY();
         Vector2f normalizedCoordinates = getNormalizedDeviceCoordinates(mouseX,  mouseY);
         Vector4f clipCoords = new Vector4f(normalizedCoordinates.x, normalizedCoordinates.y, -1f, 1f);
         Vector4f eyeCoordinates = toEyeCoordinates(clipCoords);
@@ -149,8 +148,8 @@ public class MouseEvent
 
     private Vector2f getNormalizedDeviceCoordinates(float mouseX, float mouseY)
     {
-        float x = (2f * mouseX) / Display.getWindowWidth() - 1;
-        float y = (2f * mouseY) / Display.getWindowHeight() - 1;
+        float x = (2f * mouseX) / Display.getWidth() - 1;
+        float y = (2f * mouseY) / Display.getHeight() - 1;
         return new Vector2f(x, y);
     }
 
@@ -201,7 +200,7 @@ public class MouseEvent
     public void verifyMousePick()
     {
         int mouseX = Mouse.getMouseX();
-        int mouseY = Display.getWindowHeight() - Mouse.getMouseY();
+        int mouseY = Display.getHeight() - Mouse.getMouseY();
 
         IntBuffer pixelBuffer = BufferUtils.createIntBuffer(1);
         GL11.glReadPixels(0, 0, 1, 1, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, pixelBuffer);
@@ -312,7 +311,6 @@ public class MouseEvent
             entityMouseEvents.put(color, entity);
         }
         entity.setMouseColor(color);
-        System.out.println("added color! Color: " + color);
     }
 
     public Color hashColor()
@@ -323,7 +321,7 @@ public class MouseEvent
     public void resolveColorPickFromPixel(FrameBufferObject eventFbo, FrameBufferObject pxFbo)
     {
         int mouseX = Mouse.getMouseX();
-        int mouseY = Display.getWindowHeight() - Mouse.getMouseY();
+        int mouseY = Display.getHeight() - Mouse.getMouseY();
 
         // Bind the frame buffers
         GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, pxFbo.getFrameBuffer());

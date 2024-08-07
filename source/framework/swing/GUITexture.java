@@ -6,6 +6,7 @@ import org.joml.Vector3f;
 
 public class GUITexture
 {
+    private Vector2f size;
     private int texture;
     private Vector2f position;
     private Vector2f scale;
@@ -16,18 +17,23 @@ public class GUITexture
     private int y;
     private int zLayer;
     private int desiredZLayer;
+    private Vector2f rawPosition;
+
     public GUITexture()
     {
         texture = 0;
         position = new Vector2f(0, 0);
         scale = new Vector2f(0, 0);
         rotation = new Vector3f(0, 0, 0);
+        size = new Vector2f(0, 0);
+        rawPosition = new Vector2f(0, 0);
     }
 
-    public GUITexture(int texture, Vector2f position, Vector2f scale)
+    public GUITexture(int texture, Vector2f position, Vector2f scale, Vector2f size)
     {
         this.texture = texture;
         this.position = position;
+        this.size = size;
         this.scale = scale;
     }
 
@@ -52,25 +58,36 @@ public class GUITexture
         desiredZLayer = z;
     }
 
-    public void setSize(int width, int height)
+    public void setScale(int width, int height)
     {
-        float w = (float) width / Display.getWindowWidth();
-        float h = (float) height / Display.getWindowHeight();
+        float w = (float) width / Display.getWidth();
+        float h = (float) height / Display.getHeight();
         this.scale = new Vector2f(w, h);
         setLocation(this.x, this.y);
+    }
+
+    public void setSize(int width, int height)
+    {
+        float w = (float) width / Display.getWidth();
+        float h = (float) height / Display.getHeight();
+        System.out.println(w + " " + h);
+        this.size = new Vector2f(w, h);
     }
 
     public void setLocation(int x, int y)
     {
         this.x = x;
         this.y = y;
-        float posX = (((float) x / (Display.getWindowWidth())) * 2) - 1;
-        float posY = 1 - (((float) y / (Display.getWindowHeight())) * 2);
+        float posX = (((float) x / (Display.getWidth())) * 2) - 1;
+        float posY = (((float) y / (Display.getHeight())) * 2) - 1;
+        float negPosY = 1 - (((float) y / (Display.getHeight())) * 2);
+        System.out.println(posY);
+        this.rawPosition = new Vector2f(posX, posY);
 
         posX += scale.x;
-        posY -= scale.y;
+        negPosY -= scale.y;
 
-        this.position = new Vector2f(posX, posY);
+        this.position = new Vector2f(posX, negPosY);
     }
 
     public int getWidth()
@@ -125,8 +142,20 @@ public class GUITexture
     public void mirrorY()
     {
         rotation.y += 180;
-    }public void mirrorZ()
+    }
+
+    public Vector2f getRawPosition()
+    {
+        return rawPosition;
+    }
+
+    public void mirrorZ()
     {
         rotation.z += 180;
+    }
+
+    public Vector2f getSize()
+    {
+        return size;
     }
 }

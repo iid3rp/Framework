@@ -120,11 +120,11 @@ public final class Display implements Hardware
         }
     }
 
-    public static int getWindowWidth() {
+    public static int getWidth() {
         return WINDOW_WIDTH;
     }
 
-    public static int getWindowHeight() {
+    public static int getHeight() {
         return WINDOW_HEIGHT;
     }
 

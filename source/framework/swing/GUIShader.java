@@ -11,6 +11,7 @@ public class GUIShader extends GLShader
 	private static final String FRAGMENT_FILE = "GUIFragmentShader.glsl";
 	private int locationTransformationMatrix;
 	private int locationSize;
+	private int locationPosition;
 
 	public GUIShader()
 	{
@@ -27,6 +28,7 @@ public class GUIShader extends GLShader
 	{
 		locationTransformationMatrix = super.getUniformLocation("transformationMatrix");
 		locationSize = super.getUniformLocation("size");
+		locationPosition = super.getUniformLocation("pos");
 	}
 
 	@Override
@@ -39,5 +41,10 @@ public class GUIShader extends GLShader
 	public void loadSize(Vector2f size)
 	{
 		super.loadVector(locationSize, size);
+	}
+
+	public void loadPosition(Vector2f position)
+	{
+		super.loadVector(locationPosition, position);
 	}
 }

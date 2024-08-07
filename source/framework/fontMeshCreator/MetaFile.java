@@ -49,7 +49,7 @@ public class MetaFile {
 	 *            - the font file.
 	 */
 	protected MetaFile(String file) {
-		this.aspectRatio = (double) Display.getWindowWidth() / (double) Display.getWindowHeight();
+		this.aspectRatio = (double) Display.getWidth() / (double) Display.getHeight();
 		InputStream stream = Resources.class.getResourceAsStream("font/" + file + ".fnt");
 		openFile(stream);
 		loadPaddingData();

@@ -10,8 +10,8 @@ import org.lwjgl.opengl.GL32;
 
 public class WaterFrameBufferObject
 {
-	protected static final int REFRACTION_WIDTH = Display.getWindowWidth();
-	private static final int REFRACTION_HEIGHT = Display.getWindowHeight();
+	protected static final int REFRACTION_WIDTH = Display.getWidth();
+	private static final int REFRACTION_HEIGHT = Display.getHeight();
 	protected static final int REFLECTION_WIDTH = REFRACTION_WIDTH / 4;
 	private static final int REFLECTION_HEIGHT = REFRACTION_HEIGHT / 4;
 	private static int SCREEN_WIDTH = REFLECTION_WIDTH / 4;
@@ -66,7 +66,7 @@ public class WaterFrameBufferObject
 
 	public void unbindCurrentFrameBuffer() {//call to switch to default frame buffer
 		GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
-		GL11.glViewport(0, 0, Display.getWindowWidth(), Display.getWindowHeight());
+		GL11.glViewport(0, 0, Display.getWidth(), Display.getHeight());
 	}
 
 	public int getScreenTexture()

@@ -11,6 +11,7 @@ import framework.environment.Scene;
 import framework.loader.TextureLoader;
 import framework.model.TexturedModel;
 import framework.swing.ContentPane;
+import framework.swing.PictureBox;
 import framework.terrains.Terrain;
 import framework.textures.TerrainTexture;
 import framework.textures.TerrainTexturePack;
@@ -20,7 +21,6 @@ import framework.water.WaterTile;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
-import java.awt.Color;
 import java.util.Random;
 
 import static framework.h.Display.createDisplay;
@@ -86,6 +86,17 @@ public class Game
         scene.getEntities().add(barrelEntity);
         Random random = new Random();
         int progress = 0;
+
+        PictureBox image = new PictureBox();
+        image.setBackgroundImage(ModelLoader.loadTexture("brat.png"));
+        image.setLocation(0, 0);
+        image.setScale(200, 200);
+        image.setSize(200, 200);
+        panel.add(image);
+
+        System.out.println(image.getPosition().x + image.getRawPosition().x + image.getSize().x);
+        System.out.println(image.getPosition().x + image.getRawPosition().x);
+
 
 
         Player player = new Player(barrelEntity);

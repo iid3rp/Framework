@@ -72,7 +72,7 @@ public class GeomMath
     {
         Matrix4f matrix = new Matrix4f();
         matrix.identity();
-        matrix.translate(new Vector3f(translation.x, translation.y, 1f), matrix);
+        matrix.translate(new Vector3f(translation.x, translation.y, 1), matrix);
         matrix.scale(scale.x, scale.y, 1f);
         return matrix;
     }

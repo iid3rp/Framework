@@ -87,7 +87,7 @@ public class FrameBufferObject
 	 */
 	public void unbindFrameBuffer() {
 		GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
-		GL11.glViewport(0, 0, Display.getWindowWidth(), Display.getWindowHeight());
+		GL11.glViewport(0, 0, Display.getWidth(), Display.getHeight());
 	}
 
 	/**
@@ -140,7 +140,7 @@ public class FrameBufferObject
 		GL11.glDrawBuffer(GL11.GL_BACK);
 		GL30.glBlitFramebuffer(
 				0, 0, width, height,
-				0, 0 , Display.getWindowWidth(), Display.getWindowHeight(),
+				0, 0 , Display.getWidth(), Display.getHeight(),
 				GL11.GL_COLOR_BUFFER_BIT, GL11.GL_LINEAR);
 		unbindFrameBuffer();
 	}
