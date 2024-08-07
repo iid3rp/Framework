@@ -3,7 +3,6 @@ package framework.environment;
 import framework.h.Display;
 import framework.fontMeshCreator.FontType;
 import framework.fontMeshCreator.GUIText;
-import framework.h.Keyboard;
 import framework.particles.ParticleMaster;
 import framework.post_processing.FrameBufferObject;
 import framework.post_processing.PostProcessing;
@@ -68,7 +67,7 @@ public final class Environment
             loop();
             exit();
         }
-        else throw new NullPointerException();
+        else throw new NullPointerException("no scene applied in the render.");
     }
 
     public static void loop()
@@ -142,12 +141,12 @@ public final class Environment
             multisample.resolveToFrameBufferObject(GL30.GL_COLOR_ATTACHMENT2, mouseEventBuffer);
             multisample.resolveToScreen();
             //multisample.resolvePixel(mouseEventBuffer);
-            if(i % 4 == 0)
+            if(i % 2 == 0)
                 scene.getEvent().resolveColorPickFromPixel(mouseEventBuffer, pixelBuffer);
             i++;
 
-            if(!Keyboard.isKeyDown(Keyboard.E))
-                PostProcessing.doPostProcessing(out.getColorTexture(), bright.getColorTexture());
+            //if(!Keyboard.isKeyDown(Keyboard.E))
+            PostProcessing.doPostProcessing(out.getColorTexture(), bright.getColorTexture());
 
             scene.getContentPane().render(scene.getContentPane().getComponents());
             //TextMasterRenderer.setText(fps, "fps count: " + FPSCounter.getCounter());

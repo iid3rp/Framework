@@ -196,7 +196,7 @@ public class Terrain {
     private Model generateTerrain(int seed)
     {
         HeightGenerator gen = new HeightGenerator();
-        int vertexCount = 128;
+        int vertexCount = 32;
         heights = new float[vertexCount][vertexCount];
 
         int count = vertexCount * vertexCount;

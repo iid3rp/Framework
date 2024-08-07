@@ -2,6 +2,7 @@ package framework.swing;
 
 import framework.shader.GLShader;
 import org.joml.Matrix4f;
+import org.joml.Vector2f;
 
 public class GUIShader extends GLShader
 {
@@ -9,6 +10,7 @@ public class GUIShader extends GLShader
 	private static final String VERTEX_FILE = "GUIVertexShader.glsl";
 	private static final String FRAGMENT_FILE = "GUIFragmentShader.glsl";
 	private int locationTransformationMatrix;
+	private int locationSize;
 
 	public GUIShader()
 	{
@@ -24,6 +26,7 @@ public class GUIShader extends GLShader
 	protected void getAllUniformLocations()
 	{
 		locationTransformationMatrix = super.getUniformLocation("transformationMatrix");
+		locationSize = super.getUniformLocation("size");
 	}
 
 	@Override
@@ -31,8 +34,10 @@ public class GUIShader extends GLShader
 	{
 		super.bindAttribute(0, "position");
 	}
-	
-	
-	
 
+
+	public void loadSize(Vector2f size)
+	{
+		super.loadVector(locationSize, size);
+	}
 }

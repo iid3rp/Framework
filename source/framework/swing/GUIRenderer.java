@@ -1,9 +1,11 @@
 package framework.swing;
 
+import framework.h.Display;
 import framework.loader.ModelLoader;
 import framework.model.Model;
 import framework.util.GeomMath;
 import org.joml.Matrix4f;
+import org.joml.Vector2f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
@@ -15,16 +17,26 @@ public class GUIRenderer
 {
     private final Model quad;
     private GUIShader shader;
+    private Vector2f size;
     public GUIRenderer()
     {
         float[] positions = { -1, 1, -1, -1, 1, 1, 1, -1 };
         quad = ModelLoader.loadToVao(positions, 2);
         shader = new GUIShader();
+        size = new Vector2f();
+    }
+
+    public void setSize(int x, int y)
+    {
+        float normalizeX = (float) x / Display.getWindowWidth();
+        float normalizeY = (float) y / Display.getWindowHeight();
+        size.set(normalizeX, normalizeY);
     }
 
     public void render(List<GUITexture> guis)
     {
         shader.bind();
+        shader.loadSize(size);
         GL30.glBindVertexArray(quad.getVaoId());
         GL20.glEnableVertexAttribArray(0);
         GL11.glEnable(GL11.GL_BLEND);

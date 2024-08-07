@@ -16,6 +16,7 @@ import framework.textures.TerrainTexture;
 import framework.textures.TerrainTexturePack;
 import framework.textures.Texture;
 import framework.entity.Entity;
+import framework.water.WaterTile;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
@@ -63,11 +64,12 @@ public class Game
         scene.getLights().add(new Light(new Vector3f(-20, 0, 60), new Vector3f(1, 0, 0), new Vector3f(1, 0.01f, 0.02f)));
         scene.getLights().add(new Light(new Vector3f(0, 0, -80), new Vector3f(1, 0, 1), new Vector3f(1, 0.1f, 0.002f)));
 
+        int grass = ModelLoader.loadTexture("grass.png");
         TerrainTexturePack bg = new TerrainTexturePack(
-                new TerrainTexture(ModelLoader.loadTexture("grass.png")),
-                new TerrainTexture(ModelLoader.loadTexture("mud.png")),
-                new TerrainTexture(ModelLoader.loadTexture("path.png")),
-                new TerrainTexture(ModelLoader.loadTexture("pine.png"))
+                new TerrainTexture(grass),
+                new TerrainTexture(grass),
+                new TerrainTexture(grass),
+                new TerrainTexture(grass)
         );
         TerrainTexture blend = new TerrainTexture(ModelLoader.loadTexture("blendMap.png"));
         Terrain terrain = new Terrain(0, 0, bg, blend);
@@ -103,7 +105,7 @@ public class Game
                 new Texture(ModelLoader.loadTexture("brat.png"))),
                 new Vector3f(0, 0, 0), 0f, 0f, 0f, 1f);
         //scene.add(entity);
-        //scene.add(new WaterTile(75, -75, 0));
+        scene.add(new WaterTile(0,0, 0));
 
         TexturedModel chrysalis = new TexturedModel(ObjectLoader.loadObjModel("tree.obj"), new Texture(ModelLoader.loadTexture("grass.png")));
         chrysalis.getTexture().setShineDampening(1f);

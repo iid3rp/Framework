@@ -21,7 +21,7 @@ public class Camera {
     private Player player;
 
     private SmoothFloat angleAroundPlayer = new SmoothFloat(0, .1f);
-    private SmoothFloat distanceFromPlayer = new SmoothFloat(30, .1f);
+    private SmoothFloat distanceFromPlayer = new SmoothFloat(30, .75f);
     private SmoothFloat pitch = new SmoothFloat(30, .1f);
     private boolean playerCamera;
 

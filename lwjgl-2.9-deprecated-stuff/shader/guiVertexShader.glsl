@@ -5,6 +5,8 @@ in vec2 position;
 out vec2 textureCoords;
 
 uniform mat4 transformationMatrix;
+uniform vec2 size; // make this clip based on the location of the size
+// assume that this is already normalized... (1, 1)
 
 void main(void)
 {
