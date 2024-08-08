@@ -50,6 +50,7 @@ public class GUIRenderer
             Matrix4f matrix = GeomMath.createTransformationMatrix(texture.getPosition(), texture.getRotation(), texture.getScale());
             shader.loadPosition(texture.getRawPosition());
             shader.loadSize(texture.getSize());
+            shader.loadScale(texture.getScale());
             shader.loadTransformation(matrix);
             GL11.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, quad.getVertexCount());
         }

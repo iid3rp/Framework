@@ -70,7 +70,7 @@ public class GUITexture
     {
         float w = (float) width / Display.getWidth();
         float h = (float) height / Display.getHeight();
-        System.out.println(w + " " + h);
+        System.out.println(w + " <- width | height -> " + h);
         this.size = new Vector2f(w, h);
     }
 
@@ -79,15 +79,16 @@ public class GUITexture
         this.x = x;
         this.y = y;
         float posX = (((float) x / (Display.getWidth())) * 2) - 1;
-        float posY = (((float) y / (Display.getHeight())) * 2) - 1;
-        float negPosY = 1 - (((float) y / (Display.getHeight())) * 2);
-        System.out.println(posY);
-        this.rawPosition = new Vector2f(posX, posY);
+        float posY = 1 - (((float) y / (Display.getHeight())) * 2);
+
+        float _x = (float) this.x / Display.getWidth();
+        float _y = (float) this.y / Display.getHeight();
+        this.rawPosition = new Vector2f(_x, _y);
 
         posX += scale.x;
-        negPosY -= scale.y;
+        posY -= scale.y;
 
-        this.position = new Vector2f(posX, negPosY);
+        this.position = new Vector2f(posX, posY);
     }
 
     public int getWidth()
