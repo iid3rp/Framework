@@ -6,6 +6,7 @@ in vec2 texturePosition;
 out vec4 out_Color;
 
 uniform sampler2D guiTexture;
+uniform sampler2D clipTexture;
 uniform vec2 size;
 uniform vec2 pos;
 uniform vec2 scale;
@@ -27,7 +28,11 @@ void main(void)
 	// size must be based on the position
 	if(texturePosition.x >= normTop.x && texturePosition.x <= normTop.y &&
 	   texturePosition.y <= normBot.x && texturePosition.y >= normBot.y)
-	out_Color =
-		texture(guiTexture,textureCoords);
+	{
+		vec4 color = texture(guiTexture,textureCoords);
+		vec4 clip = texture(clipTexture, textureCoords);
+		color = color * (clip.b);
+		out_Color = color;
+	}
 	else out_Color = vec4(1);
 }

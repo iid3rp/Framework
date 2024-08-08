@@ -7,7 +7,8 @@ import org.joml.Vector3f;
 public class GUITexture
 {
     private Vector2f size;
-    private int texture;
+    private int diffuse;
+    private int clipTexture;
     private Vector2f position;
     private Vector2f scale;
     private Vector3f rotation;
@@ -21,7 +22,7 @@ public class GUITexture
 
     public GUITexture()
     {
-        texture = 0;
+        diffuse = 0;
         position = new Vector2f(0, 0);
         scale = new Vector2f(0, 0);
         rotation = new Vector3f(0, 0, 0);
@@ -31,7 +32,7 @@ public class GUITexture
 
     public GUITexture(int texture, Vector2f position, Vector2f scale, Vector2f size)
     {
-        this.texture = texture;
+        this.diffuse = texture;
         this.position = position;
         this.size = size;
         this.scale = scale;
@@ -49,7 +50,7 @@ public class GUITexture
 
     public void setBackgroundImage(int texture)
     {
-        this.texture = texture;
+        this.diffuse = texture;
     }
 
 
@@ -123,7 +124,7 @@ public class GUITexture
 
     public int getTexture()
     {
-        return texture;
+        return diffuse;
     }
 
     public Vector2f getPosition()
@@ -158,5 +159,15 @@ public class GUITexture
     public Vector2f getSize()
     {
         return size;
+    }
+
+    public int getClipTexture()
+    {
+        return clipTexture;
+    }
+
+    public void setClipTexture(int clipTexture)
+    {
+        this.clipTexture = clipTexture;
     }
 }
