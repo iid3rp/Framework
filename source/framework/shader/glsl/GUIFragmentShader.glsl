@@ -13,12 +13,6 @@ uniform vec2 scale;
 
 void main(void)
 {
-	// pos with size must be within bounds of the textureCoords...
-	// top left position vec2[-1, 1];
-	// pos must be
-	// tex.x + pos.x + size.x;
-	// tex.y - pos.y - size.y;
-	// vec2 rectangleWidth = vec2(tex.x + pos.x, tex.x + pos.x + size.x);
 	float sizeX = size.x <= scale.x? size.x / scale.x : 1;
 	float sizeY = size.y <= scale.y? size.y / scale.y : 1;
 	vec2 normSize = vec2(sizeX, sizeY);
@@ -31,8 +25,9 @@ void main(void)
 	{
 		vec4 color = texture(guiTexture,textureCoords);
 		vec4 clip = texture(clipTexture, textureCoords);
-		color = color * (clip.b);
+		color = color * (1 - clip.b);
 		out_Color = color;
+		// debug: out_Color = vec4(.4, .2, .4, .4f);
 	}
 	else out_Color = vec4(1);
 }

@@ -90,8 +90,8 @@ public class Game
         PictureBox image = new PictureBox();
         image.setBackgroundImage(ModelLoader.loadTexture("brat.png"));
         image.setLocation(0, 0);
-        image.setScale(400, 400);
-        image.setSize(200, 200);
+        image.setScale(100, 100);
+        image.setSize(100, 100);
         panel.add(image);
 
         System.out.println(image.getSize().x + " " + image.getSize().y);

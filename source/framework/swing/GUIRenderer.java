@@ -20,7 +20,7 @@ public class GUIRenderer
     private Vector2f size;
     public GUIRenderer()
     {
-        float[] positions = { -1, 1, -1, -1, 1, 1, 1, -1 };
+        float[] positions = { -1, -1, -1, 1, 1, -1, 1, -1, -1, 1, 1, 1};
         quad = ModelLoader.loadToVao(positions, 2);
         shader = new GUIShader();
         size = new Vector2f(1, 1);
@@ -54,7 +54,7 @@ public class GUIRenderer
             shader.loadSize(texture.getSize());
             shader.loadScale(texture.getScale());
             shader.loadTransformation(matrix);
-            GL11.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, quad.getVertexCount());
+            GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, quad.getVertexCount());
         }
         GL11.glEnable((GL11.GL_DEPTH_TEST));
         GL11.glEnable(GL11.GL_CULL_FACE);
