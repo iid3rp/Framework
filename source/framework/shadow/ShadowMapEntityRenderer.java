@@ -4,7 +4,6 @@ import framework.entity.Entity;
 import framework.model.Model;
 import framework.model.TexturedModel;
 import framework.util.GeomMath;
-import framework.util.Mat4f;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
@@ -13,13 +12,6 @@ import org.lwjgl.opengl.GL30;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Entity renderer for the shadows
- *
- * @author Karl Wimble (LWJGL v2.9)
- * @author iid3rp (LWJGL v3.3)
- * @since 1
- */
 public class ShadowMapEntityRenderer {
 
 	private Matrix4f projectionViewMatrix;
@@ -39,9 +31,8 @@ public class ShadowMapEntityRenderer {
 	}
 
 	/**
-	 * Renders entities to the shadow map.
-	 * Each model is first bound and then all
-	 *  the entities using that model are rendered to the shadow map.
+	 * Renders entieis to the shadow map. Each model is first bound and then all
+	 * of the entities using that model are rendered to the shadow map.
 	 * 
 	 * @param entities
 	 *            - the entities to be rendered to the shadow map.
@@ -61,8 +52,7 @@ public class ShadowMapEntityRenderer {
 	}
 
 	/**
-	 * Binds a raw model before rendering.
-	 * Only attribute 0 is enabled here
+	 * Binds a raw model before rendering. Only the attribute 0 is enabled here
 	 * because that is where the positions are stored in the VAO, and only the
 	 * positions are required in the vertex shader.
 	 * 
@@ -77,7 +67,7 @@ public class ShadowMapEntityRenderer {
 	/**
 	 * Prepares an entity to be rendered. The model matrix is created in the
 	 * usual way and then multiplied with the projection and view matrix (often
-	 * in the past, we've done this in the vertex shader) to create the
+	 * in the past we've done this in the vertex shader) to create the
 	 * mvp-matrix. This is then loaded to the vertex shader as a uniform.
 	 * 
 	 * @param entity
@@ -86,7 +76,7 @@ public class ShadowMapEntityRenderer {
 	private void prepareInstance(Entity entity) {
 		Matrix4f modelMatrix = GeomMath.createTransformationMatrix(entity.getPosition(),
 				entity.getRotationX(), entity.getRotationY(), entity.getRotationZ(), entity.getScale());
-		Matrix4f mvpMatrix = Mat4f.mul(projectionViewMatrix, modelMatrix, null);
+		Matrix4f mvpMatrix = new Matrix4f(projectionViewMatrix).mul(modelMatrix);
 		shader.loadMvpMatrix(mvpMatrix);
 	}
 

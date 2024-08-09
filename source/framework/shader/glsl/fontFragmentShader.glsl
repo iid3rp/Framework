@@ -54,7 +54,7 @@ void main(void)
 
         outColor = vec4(overallColor, overallAlpha);
     }
-    else outColor = vec4(1);
+    else outColor = vec4(.5);
 
 
 }

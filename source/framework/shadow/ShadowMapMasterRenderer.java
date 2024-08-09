@@ -4,7 +4,6 @@ import framework.entity.Camera;
 import framework.entity.Entity;
 import framework.entity.Light;
 import framework.model.TexturedModel;
-import framework.util.Mat4f;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -14,15 +13,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This class is in charge of using all the classes in the shadow package to
- * carry out the shadow render pass, i.e., rendering the scene to the shadow map
- * texture.
- * This is the only class in the shadow package that needs to be
- * referenced from outside the shadow package.
+ * This class is in charge of using all of the classes in the shadows package to
+ * carry out the shadow render pass, i.e. rendering the scene to the shadow map
+ * texture. This is the only class in the shadows package which needs to be
+ * referenced from outside the shadows package.
  * 
- * @author Karl Wimble (LWJGL v2.9)
- * @author iid3rp (LWJGL v3.3)
- * @since 1
+ * @author Karl
  *
  */
 public class ShadowMapMasterRenderer {
@@ -59,19 +55,18 @@ public class ShadowMapMasterRenderer {
 
 	/**
 	 * Carries out the shadow render pass. This renders the entities to the
-	 * shadow map. First, the shadow box is updated to calculate the size and
+	 * shadow map. First the shadow box is updated to calculate the size and
 	 * position of the "view cuboid". The light direction is assumed to be
 	 * "-lightPosition" which will be fairly accurate assuming that the light is
 	 * very far from the scene. It then prepares to render, renders the entities
 	 * to the shadow map, and finishes rendering.
 	 * 
 	 * @param entities
-	 *            The lists of entities to be rendered.
-	 *            Each list is
-	 *            associated with the {@link TexturedModel} that all the
+	 *            - the lists of entities to be rendered. Each list is
+	 *            associated with the {@link TexturedModel} that all of the
 	 *            entities in that list use.
 	 * @param sun
-	 *            the light acting as the sun in the scene.
+	 *            - the light acting as the sun in the scene.
 	 */
 	public void render(Map<TexturedModel, List<Entity>> entities, Light sun) {
 		shadowBox.update();
@@ -91,7 +86,7 @@ public class ShadowMapMasterRenderer {
 	 * @return The to-shadow-map-space matrix.
 	 */
 	public Matrix4f getToShadowMapSpaceMatrix() {
-		return new Matrix4f(offset).mul(projectionViewMatrix);
+		return new Matrix4f(projectionViewMatrix).mul(offset);
 	}
 
 	/**
@@ -128,8 +123,8 @@ public class ShadowMapMasterRenderer {
 	 * projection-view matrix. This matrix determines the size, position, and
 	 * orientation of the "view cuboid" in the world. This method also binds the
 	 * shadows FBO so that everything rendered after this gets rendered to the
-	 * FBO. It also enables depth testing and clears any data in the
-	 * FBOs depth attachment from the last frame. The simple shader program is also
+	 * FBO. It also enables depth testing, and clears any data that is in the
+	 * FBOs depth attachment from last frame. The simple shader program is also
 	 * started.
 	 * 
 	 * @param lightDirection
@@ -139,9 +134,9 @@ public class ShadowMapMasterRenderer {
 	 *            "view cuboid".
 	 */
 	private void prepare(Vector3f lightDirection, ShadowBox box) {
-		updateOrthographicProjectionMatrix(box.getWidth(), box.getHeight(), box.getLength());
+		updateOrthoProjectionMatrix(box.getWidth(), box.getHeight(), box.getLength());
 		updateLightViewMatrix(lightDirection, box.getCenter());
-		Mat4f.mul(projectionMatrix, lightViewMatrix, projectionViewMatrix);
+		projectionViewMatrix = new Matrix4f(projectionMatrix).mul(lightViewMatrix);
 		shadowFbo.bindFrameBuffer();
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
@@ -175,14 +170,13 @@ public class ShadowMapMasterRenderer {
 	private void updateLightViewMatrix(Vector3f direction, Vector3f center) {
 		direction.normalize();
 		center.negate();
-		lightViewMatrix = new Matrix4f();
+		lightViewMatrix.identity();
 		float pitch = (float) Math.acos(new Vector2f(direction.x, direction.z).length());
-		Mat4f.rotate(pitch, new Vector3f(1, 0, 0), lightViewMatrix, lightViewMatrix);
+		lightViewMatrix.rotate(pitch, new Vector3f(1, 0, 0));
 		float yaw = (float) Math.toDegrees(((float) Math.atan(direction.x / direction.z)));
 		yaw = direction.z > 0 ? yaw - 180 : yaw;
-		Mat4f.rotate((float) -Math.toRadians(yaw), new Vector3f(0, 1, 0), lightViewMatrix,
-				lightViewMatrix);
-		Mat4f.translate(center, lightViewMatrix, lightViewMatrix);
+		lightViewMatrix.rotate((float) -Math.toRadians(yaw), new Vector3f(0, 1, 0));
+		lightViewMatrix.translate(center);
 	}
 
 	/**
@@ -197,7 +191,7 @@ public class ShadowMapMasterRenderer {
 	 * @param length
 	 *            - shadow box length.
 	 */
-	private void updateOrthographicProjectionMatrix(float width, float height, float length) {
+	private void updateOrthoProjectionMatrix(float width, float height, float length) {
 		projectionMatrix.identity();
 		projectionMatrix.m00(2f / width);
 		projectionMatrix.m11(2f / height);
@@ -208,14 +202,14 @@ public class ShadowMapMasterRenderer {
 	/**
 	 * Create the offset for part of the conversion to shadow map space. This
 	 * conversion is necessary to convert from one coordinate system to the
-	 * coordinate system that we can use to sample to a shadow map.
+	 * coordinate system that we can use to sample to shadow map.
 	 * 
 	 * @return The offset as a matrix (so that it's easy to apply to other matrices).
 	 */
 	private static Matrix4f createOffset() {
 		Matrix4f offset = new Matrix4f();
 		offset.translate(new Vector3f(0.5f, 0.5f, 0.5f));
-		offset.scale(.5f);
+		offset.scale(new Vector3f(0.5f, 0.5f, 0.5f));
 		return offset;
 	}
 }

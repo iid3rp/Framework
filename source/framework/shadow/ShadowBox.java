@@ -1,21 +1,19 @@
 package framework.shadow;
 
-import framework.h.Display;
 import framework.entity.Camera;
+import framework.h.Display;
 import framework.renderer.MasterRenderer;
-import framework.util.Mat4f;
-import framework.util.Vec3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 /**
- * Represents the 3D cuboid area of the world in which objects will cast
+ * Represents the 3D cuboidal area of the world in which objects will cast
  * shadows (basically represents the orthographic projection area for the shadow
  * render pass). It is updated each frame to optimise the area, making it as
  * small as possible (to allow for optimal shadow map resolution) while not
  * being too small to avoid objects not having shadows when they should.
- * Everything inside the cuboid area represented by this object will be
+ * Everything inside the cuboidal area represented by this object will be
  * rendered to the shadow map in the shadow render pass. Everything outside the
  * area won't be.
  * 
@@ -43,13 +41,12 @@ public class ShadowBox {
 	 * and (possibly adjusted) far plane.
 	 * 
 	 * @param lightViewMatrix
-	 *            Basically the "view matrix" of the light.
-	 *            Can be used to
-	 *            transform a point from world space into "light" space (i.e.,
+	 *            - basically the "view matrix" of the light. Can be used to
+	 *            transform a point from world space into "light" space (i.e.
 	 *            changes a point's coordinates from being in relation to the
 	 *            world's axis to being in terms of the light's local axis).
 	 * @param camera
-	 *            the in-game camera.
+	 *            - the in-game camera.
 	 */
 	protected ShadowBox(Matrix4f lightViewMatrix, Camera camera) {
 		this.lightViewMatrix = lightViewMatrix;
@@ -59,22 +56,21 @@ public class ShadowBox {
 
 	/**
 	 * Updates the bounds of the shadow box based on the light direction and the
-	 * camera's view frustum.
-	 * This is to make sure that the box covers the smallest area
+	 * camera's view frustum, to make sure that the box covers the smallest area
 	 * possible while still ensuring that everything inside the camera's view
 	 * (within a certain range) will cast shadows.
 	 */
 	protected void update() {
 		Matrix4f rotation = calculateCameraRotationMatrix();
-		Vector4f forwardVec4 = new Vector4f(Mat4f.transform(rotation, FORWARD, null));
-		Vector3f forwardVector = new Vector3f(forwardVec4.x, forwardVec4.y, forwardVec4.z);
+		Vector4f _f = rotation.transform(FORWARD);
+		Vector3f forwardVector = new Vector3f(_f.x, _f.y, _f.z);
 
 		Vector3f toFar = new Vector3f(forwardVector);
 		toFar.mul(SHADOW_DISTANCE);
 		Vector3f toNear = new Vector3f(forwardVector);
 		toNear.mul(MasterRenderer.NEAR_PLANE);
-		Vector3f centerNear = Vec3f.add(toNear, cam.getPosition(), null);
-		Vector3f centerFar = Vec3f.add(toFar, cam.getPosition(), null);
+		Vector3f centerNear = toNear.add(cam.getPosition());
+		Vector3f centerFar = toFar.add(cam.getPosition());
 
 		Vector4f[] points = calculateFrustumVertices(rotation, forwardVector, centerNear,
 				centerFar);
@@ -108,6 +104,7 @@ public class ShadowBox {
 			}
 		}
 		maxZ += OFFSET;
+
 	}
 
 	/**
@@ -121,10 +118,10 @@ public class ShadowBox {
 		float y = (minY + maxY) / 2f;
 		float z = (minZ + maxZ) / 2f;
 		Vector4f cen = new Vector4f(x, y, z, 1);
-		Matrix4f invertedLight = new Matrix4f();
-		Mat4f.invert(lightViewMatrix, invertedLight);
-		Vector4f center4f = new Vector4f(Mat4f.transform(invertedLight, cen, null));
-		return new Vector3f(center4f.x, center4f.y, center4f.z);
+        new Matrix4f();
+        Matrix4f invertedLight = new Matrix4f(lightViewMatrix).invert();
+		Vector4f _f = invertedLight.transform(cen);
+		return new Vector3f(_f.x, _f.y, _f.z);
 	}
 
 	/**
@@ -149,8 +146,8 @@ public class ShadowBox {
 	}
 
 	/**
-	 * Calculates the position of the vertex in each corner of the view frustum
-	 * in light space (eight vertices in total, so this returns eight positions).
+	 * Calculates the position of the vertex at each corner of the view frustum
+	 * in light space (8 vertices in total, so this returns 8 positions).
 	 * 
 	 * @param rotation
 	 *            - camera's rotation.
@@ -162,25 +159,23 @@ public class ShadowBox {
 	 * @param centerFar
 	 *            - the center point of the frustum's (possibly adjusted) far
 	 *            plane.
-	 * @return The positions of the vertices from the frustum in light space.
+	 * @return The positions of the vertices of the frustum in light space.
 	 */
 	private Vector4f[] calculateFrustumVertices(Matrix4f rotation, Vector3f forwardVector,
-												Vector3f centerNear, Vector3f centerFar)
-	{
-		Vector4f upVec4 = new Vector4f(Mat4f.transform(rotation, UP, null));
-		Vector3f upVector = new Vector3f(upVec4.x, upVec4.y, upVec4.z);
-
-		Vector3f rightVector = Vec3f.cross(forwardVector, upVector, null);
+			Vector3f centerNear, Vector3f centerFar) {
+		Vector4f _f = rotation.transform(UP);
+		Vector3f upVector = new Vector3f(_f.x, _f.y, _f.z);
+		Vector3f rightVector = forwardVector.cross(upVector);
 		Vector3f downVector = new Vector3f(-upVector.x, -upVector.y, -upVector.z);
 		Vector3f leftVector = new Vector3f(-rightVector.x, -rightVector.y, -rightVector.z);
-		Vector3f farTop = Vec3f.add(centerFar, new Vector3f(upVector.x * farHeight,
-				upVector.y * farHeight, upVector.z * farHeight), null);
-		Vector3f farBottom = Vec3f.add(centerFar, new Vector3f(downVector.x * farHeight,
-				downVector.y * farHeight, downVector.z * farHeight), null);
-		Vector3f nearTop = Vec3f.add(centerNear, new Vector3f(upVector.x * nearHeight,
-				upVector.y * nearHeight, upVector.z * nearHeight), null);
-		Vector3f nearBottom = Vec3f.add(centerNear, new Vector3f(downVector.x * nearHeight,
-				downVector.y * nearHeight, downVector.z * nearHeight), null);
+		Vector3f farTop = new Vector3f(centerFar).add(new Vector3f(upVector.x * farHeight,
+				upVector.y * farHeight, upVector.z * farHeight));
+		Vector3f farBottom = new Vector3f(centerFar).add(new Vector3f(downVector.x * farHeight,
+				downVector.y * farHeight, downVector.z * farHeight));
+		Vector3f nearTop = new Vector3f(centerNear).add(new Vector3f(upVector.x * nearHeight,
+				upVector.y * nearHeight, upVector.z * nearHeight));
+		Vector3f nearBottom = new Vector3f(centerNear).add(new Vector3f(downVector.x * nearHeight,
+				downVector.y * nearHeight, downVector.z * nearHeight));
 		Vector4f[] points = new Vector4f[8];
 		points[0] = calculateLightSpaceFrustumCorner(farTop, rightVector, farWidth);
 		points[1] = calculateLightSpaceFrustumCorner(farTop, leftVector, farWidth);
@@ -206,11 +201,11 @@ public class ShadowBox {
 	 * @return - The relevant corner vertex of the view frustum in light space.
 	 */
 	private Vector4f calculateLightSpaceFrustumCorner(Vector3f startPoint, Vector3f direction,
-													  float width) {
-		Vector3f point = Vec3f.add(startPoint,
-				new Vector3f(direction.x * width, direction.y * width, direction.z * width), null);
+			float width) {
+		Vector3f point = new Vector3f(startPoint).add(
+				new Vector3f(direction.x * width, direction.y * width, direction.z * width));
 		Vector4f point4f = new Vector4f(point.x, point.y, point.z, 1f);
-		Mat4f.transform(lightViewMatrix, point4f, point4f);
+		point4f = lightViewMatrix.transform(point4f);
 		return point4f;
 	}
 
@@ -225,11 +220,9 @@ public class ShadowBox {
 	}
 
 	/**
-	 * Calculates the width and height of the near and far planes from the
-	 * camera's view frustum.
-	 * However, this doesn't have to use the "actual" far
-	 * plane of the view frustum.
-	 * It can use a shortened view frustum if desired
+	 * Calculates the width and height of the near and far planes of the
+	 * camera's view frustum. However, this doesn't have to use the "actual" far
+	 * plane of the view frustum. It can use a shortened view frustum if desired
 	 * by bringing the far-plane closer, which would increase shadow resolution
 	 * but means that distant objects wouldn't cast shadows.
 	 */
@@ -240,6 +233,7 @@ public class ShadowBox {
 		farHeight = farWidth / getAspectRatio();
 		nearHeight = nearWidth / getAspectRatio();
 	}
+
 	/**
 	 * @return The aspect ratio of the display (width:height ratio).
 	 */

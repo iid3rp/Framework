@@ -12,6 +12,9 @@ import framework.loader.ModelLoader;
 import framework.event.MouseEvent;
 import framework.scripting.FrameworkScript;
 import framework.scripting.StackScript;
+import framework.shadow.ShadowMapEntityRenderer;
+import framework.shadow.ShadowMapMasterRenderer;
+import framework.swing.PictureBox;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -42,7 +45,7 @@ public final class Environment
         // static method calling goes here:
         MasterRenderer.setRenderer(scene.getCamera());
         PostProcessing.initialize();
-        TextMasterRenderer.initialize();
+        //TextMasterRenderer.initialize();;
         ParticleMaster.initialize(MasterRenderer.getProjectionMatrix());
 
         if(scene != null)
@@ -52,12 +55,18 @@ public final class Environment
             event.setProjection(MasterRenderer.getProjectionMatrix());
             getScene().setEvent(event);
             font = new FontType(ModelLoader.loadTexture("comic.png"), "comic");
-            fps = new GUIText("fps count: 0", 2, font, new Vector2f(.02f, .02f), 1f, false);
+            fps = new GUIText("fps count: 0", 2, font, new Vector2f(.05f, .05f), 1f, false);
             fps.setColor(1, 1, 0);
             fps.setSize(120, 100);
-            scene.getContentPane().add(fps);
+            //scene.getContentPane().add(fps);
             //scene.getContentPane().add(img);
 
+            PictureBox pb = new PictureBox();
+            pb.setTexture(MasterRenderer.getShadowMapTexture());
+            pb.setLocation(20, 20);
+            pb.setScale(200, 200);
+            pb.setSize(200, 200);
+            scene.getContentPane().add(pb);
 
             loop();
             exit();
@@ -75,7 +84,7 @@ public final class Environment
             scene.getEvent().update();
 
             //the shadow thingies
-            //MasterRenderer.renderShadowMap(scene.getEntities(), scene.getMainLight());
+            MasterRenderer.renderShadowMap(scene.getEntities(), scene.getMainLight());
 
             //particle
 
@@ -145,8 +154,7 @@ public final class Environment
 
             scene.getContentPane().render(scene.getContentPane().getComponents());
             //fps.setText("fps count: " + FPSCounter.getCounter());
-            fps.setText("fps count: " + Display.getCurrentFPSCount());
-            TextMasterRenderer.render();
+            //TextMasterRenderer.render();
             runAllScripts();
             Display.updateDisplay();
         }
@@ -195,7 +203,7 @@ public final class Environment
         mouseEventBuffer.dispose();
         bright.dispose();
         ParticleMaster.dispose();
-        TextMasterRenderer.dispose();
+        //TextMasterRenderer.dispose();
         scene.getContentPane().dispose();
         MasterRenderer.dispose();
         ModelLoader.destroy();
