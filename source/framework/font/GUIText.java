@@ -1,5 +1,6 @@
 package framework.font;
 
+import framework.h.Display;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
@@ -21,6 +22,7 @@ public class GUIText {
 	private Vector3f color = new Vector3f(0f, 0f, 0f);
 
 	private Vector2f position;
+	private Vector2f size;
 	private float lineMaxSize;
 	private int numberOfLines;
 
@@ -61,6 +63,23 @@ public class GUIText {
 		this.position = position;
 		this.lineMaxSize = maxLineLength;
 		this.centerText = centered;
+		this.size = new Vector2f(1f);
+	}
+
+	public void setPosition(int x, int y)
+	{
+		float _x = (float) x / Display.getWidth();
+		float _y = (float) y / Display.getHeight();
+		this.position.x = _x;
+		this.position.y = _y;
+	}
+
+	public void setSize(int width, int height)
+	{
+		float _w = (float) width / Display.getWidth();
+		float _h = (float) height / Display.getHeight();
+		this.size.x = _w;
+		this.size.y = _h;
 	}
 
 	public void setText(String text)
@@ -199,4 +218,8 @@ public class GUIText {
 		return textString;
 	}
 
+	public Vector2f getSize()
+	{
+		return size;
+	}
 }

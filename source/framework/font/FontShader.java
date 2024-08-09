@@ -11,7 +11,9 @@ public class FontShader extends GLShader
 	private static final String FRAGMENT_FILE = "fontFragmentShader.glsl";
 	private int locationColor;
 	private int locationTranslation;
-	
+	private int locationSize;
+	private int locationLineWidth;
+
 	public FontShader() {
 		super(VERTEX_FILE, FRAGMENT_FILE);
 	}
@@ -21,6 +23,8 @@ public class FontShader extends GLShader
 	{
 		locationColor = super.getUniformLocation("color");
 		locationTranslation = super.getUniformLocation("translation");
+		locationSize = super.getUniformLocation("size");
+		locationLineWidth = super.getUniformLocation("lineWidth");
 	}
 
 	@Override
@@ -40,4 +44,13 @@ public class FontShader extends GLShader
 	}
 
 
+	public void loadSize(Vector2f size)
+	{
+		super.loadVector(locationSize, size);
+	}
+
+	public void loadLineWidth(float maxLineSize)
+	{
+		super.loadFloat(locationLineWidth, maxLineSize);
+	}
 }
