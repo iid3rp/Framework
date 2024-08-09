@@ -10,12 +10,13 @@ uniform sampler2D clipTexture;
 uniform vec2 size;
 uniform vec2 pos;
 uniform vec2 scale;
+uniform mat4 transformationMatrix;
 uniform mat4 invertTransformationMatrix;
 
 void main(void)
 {
 	// Transform the texture position back to its original space using the inverse transformation matrix
-	vec4 transformedPosition = transformationMatrix * vec4(texturePosition, 0.0, 1.0);
+	vec4 transformedPosition = invertTransformationMatrix * vec4(texturePosition, 1, 1.0);
 	vec2 textPos = transformedPosition.xy;
 
 	float sizeX = size.x <= scale.x? size.x / scale.x : 1;

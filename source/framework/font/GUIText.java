@@ -66,7 +66,7 @@ public class GUIText {
 	public void setText(String text)
 	{
 		this.textString = text;
-		if(!TextMasterRenderer.loadText(this))
+		if(TextMasterRenderer.find(this))
 			TextMasterRenderer.setText(this, this.textString);
 	}
 
@@ -74,7 +74,8 @@ public class GUIText {
 	 * Remove the text from the screen.
 	 */
 	public void remove() {
-		// remove text
+		if(TextMasterRenderer.find(this))
+			TextMasterRenderer.remove(this);
 	}
 
 	/**

@@ -94,7 +94,7 @@ public class Game
         image.setLocation(0, 0);
         image.setScale(100, 100);
         image.setSize(100, 100);
-        panel.add(image);
+        //panel.add(image);
 
         Environment.run(new FrameworkScript()
         {

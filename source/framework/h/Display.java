@@ -22,6 +22,7 @@ public final class Display implements Hardware
     private static double deltaInSeconds;
     private static Keyboard keyboard;
     private static Mouse mouse;
+    private static int currentFPSCount;
 
     // Hide the constructor
     private Display() {}
@@ -83,6 +84,7 @@ public final class Display implements Hardware
             if (System.currentTimeMillis() > time + 1000) {
                 glfwSetWindowTitle(window, TITLE + " | FPS: " + frames);
                 time = System.currentTimeMillis();
+                currentFPSCount = frames;
                 frames = 0;
             }
         }
@@ -118,6 +120,11 @@ public final class Display implements Hardware
             frames = 0;
             time = 0;
         }
+    }
+
+    public static int getCurrentFPSCount()
+    {
+        return currentFPSCount;
     }
 
     public static int getWidth() {

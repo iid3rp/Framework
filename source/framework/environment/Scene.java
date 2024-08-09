@@ -6,6 +6,7 @@ import framework.entity.Light;
 import framework.entity.Player;
 import framework.event.MouseEvent;
 import framework.particles.ParticleSystem;
+import framework.swing.Container;
 import framework.swing.ContentPane;
 import framework.swing.GUITexture;
 import framework.terrains.Terrain;
@@ -87,7 +88,7 @@ public class Scene
         lights.add(light);
     }
 
-    public void add(GUITexture texture)
+    public void add(Container texture)
     {
         pane.add(texture);
     }

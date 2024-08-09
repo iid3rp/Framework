@@ -1,5 +1,6 @@
 package framework.environment;
 
+import framework.font.TextMasterRenderer;
 import framework.h.Display;
 import framework.font.FontType;
 import framework.font.GUIText;
@@ -11,6 +12,7 @@ import framework.loader.ModelLoader;
 import framework.event.MouseEvent;
 import framework.scripting.FrameworkScript;
 import framework.scripting.StackScript;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL30;
@@ -40,7 +42,7 @@ public final class Environment
         // static method calling goes here:
         MasterRenderer.setRenderer(scene.getCamera());
         PostProcessing.initialize();
-        //TextMasterRenderer.initialize();
+        TextMasterRenderer.initialize();
         ParticleMaster.initialize(MasterRenderer.getProjectionMatrix());
 
         if(scene != null)
@@ -49,10 +51,10 @@ public final class Environment
             event.setCamera(getScene().getCamera());
             event.setProjection(MasterRenderer.getProjectionMatrix());
             getScene().setEvent(event);
-//            font = new FontType(ModelLoader.loadTexture("comic.fnt"), "comic");
-//            fps = new GUIText("fps count: 0", 1, font, new Vector2f(0, 0), 1f, false);
-//            fps.setColor(1, 1, 0);
-
+            font = new FontType(ModelLoader.loadTexture("comic.png"), "comic");
+            fps = new GUIText("fps count: 0", 2, font, new Vector2f(0, 0), 1f, false);
+            fps.setColor(1, 1, 0);
+            scene.getContentPane().add(fps);
             //scene.getContentPane().add(img);
 
 
@@ -141,8 +143,9 @@ public final class Environment
             PostProcessing.doPostProcessing(out.getColorTexture(), bright.getColorTexture());
 
             scene.getContentPane().render(scene.getContentPane().getComponents());
-            //TextMasterRenderer.setText(fps, "fps count: " + FPSCounter.getCounter());
-            //TextMasterRenderer.render();
+            //fps.setText("fps count: " + FPSCounter.getCounter());
+            fps.setText("fps count: " + Display.getCurrentFPSCount());
+            TextMasterRenderer.render();
             runAllScripts();
             Display.updateDisplay();
         }
@@ -191,7 +194,7 @@ public final class Environment
         mouseEventBuffer.dispose();
         bright.dispose();
         ParticleMaster.dispose();
-        //TextMasterRenderer.dispose();
+        TextMasterRenderer.dispose();
         scene.getContentPane().dispose();
         MasterRenderer.dispose();
         ModelLoader.destroy();

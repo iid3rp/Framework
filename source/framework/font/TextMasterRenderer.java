@@ -24,8 +24,9 @@ public class TextMasterRenderer
 
     public static boolean loadText(GUIText text)
     {
-        if(texts.get(text.getFont()).contains(text))
-            return false;
+        if(texts.get(text.getFont()) != null)
+            if(texts.get(text.getFont()).contains(text))
+                return false;
 
         FontType fontType = text.getFont();
         TextMeshData data = fontType.loadText(text);
@@ -33,7 +34,6 @@ public class TextMasterRenderer
         text.setMeshInfo(vao, data.getVertexCount());
         List<GUIText> textSection = texts.computeIfAbsent(fontType, func -> new ArrayList<>());
         textSection.add(text);
-
         return true;
     }
 
@@ -58,5 +58,13 @@ public class TextMasterRenderer
     public static void dispose()
     {
         fontRenderer.dispose();
+    }
+
+    public static boolean find(GUIText text)
+    {
+        if(texts.get(text.getFont()) == null)
+            return false;
+
+        return texts.get(text.getFont()).contains(text);
     }
 }
