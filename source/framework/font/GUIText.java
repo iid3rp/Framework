@@ -1,8 +1,9 @@
-package framework.fontMeshCreator;
+package framework.font;
 
-import framework.fontRendering.TextMasterRenderer;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+
+import java.awt.Color;
 
 /**
  * Represents a piece of text in the game.
@@ -60,12 +61,13 @@ public class GUIText {
 		this.position = position;
 		this.lineMaxSize = maxLineLength;
 		this.centerText = centered;
-		TextMasterRenderer.loadText(this);
 	}
 
 	public void setText(String text)
 	{
 		this.textString = text;
+		if(!TextMasterRenderer.loadText(this))
+			TextMasterRenderer.setText(this, this.textString);
 	}
 
 	/**
@@ -94,6 +96,14 @@ public class GUIText {
 	 */
 	public void setColor(float r, float g, float b) {
 		color.set(r, g, b);
+	}
+
+	public void setColor(Color color)
+	{
+		float r = (float) color.getRed() / 255;
+		float g = (float) color.getGreen() / 255;
+		float b = (float) color.getBlue() / 255;
+		setColor(r, g, b);
 	}
 
 	/**

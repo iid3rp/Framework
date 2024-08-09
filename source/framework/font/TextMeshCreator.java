@@ -1,4 +1,4 @@
-package framework.fontMeshCreator;
+package framework.font;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,9 +67,9 @@ public class TextMeshCreator {
 			for (Word word : line.getWords()) {
 				for (Character letter : word.getCharacters()) {
 					addVerticesForCharacter(cursorX, cursorY, letter, text.getFontSize(), vertices);
-					addTexCoords(textureCoords, letter.getxTextureCoord(), letter.getyTextureCoord(),
-							letter.getXMaxTextureCoord(), letter.getYMaxTextureCoord());
-					cursorX += letter.getxAdvance() * text.getFontSize();
+					addTexCoords(textureCoords, letter.getXTextureCoordinates(), letter.getYTextureCoordinates(),
+							letter.getXMaxTextureCoordinates(), letter.getYMaxTextureCoordinates());
+					cursorX += letter.getXAdvance() * text.getFontSize();
 				}
 				cursorX += metaData.getSpaceWidth() * text.getFontSize();
 			}
@@ -81,8 +81,8 @@ public class TextMeshCreator {
 
 	private void addVerticesForCharacter(double cursorX, double cursorY, Character character, double fontSize,
 			List<Float> vertices) {
-		double x = cursorX + (character.getxOffset() * fontSize);
-		double y = cursorY + (character.getyOffset() * fontSize);
+		double x = cursorX + (character.getXOffset() * fontSize);
+		double y = cursorY + (character.getYOffset() * fontSize);
 		double maxX = x + (character.getSizeX() * fontSize);
 		double maxY = y + (character.getSizeY() * fontSize);
 		double properX = (2 * x) - 1;

@@ -1,4 +1,4 @@
-package framework.fontMeshCreator;
+package framework.font;
 
 /**
  * Simple data structure class holding information about a certain glyph in the
@@ -65,27 +65,27 @@ public class Character {
 		return id;
 	}
 
-	protected double getxTextureCoord() {
+	protected double getXTextureCoordinates() {
 		return xTextureCoordinates;
 	}
 
-	protected double getyTextureCoord() {
+	protected double getYTextureCoordinates() {
 		return yTextureCoordinates;
 	}
 
-	protected double getXMaxTextureCoord() {
+	protected double getXMaxTextureCoordinates() {
 		return xMaxTextureCoordinates;
 	}
 
-	protected double getYMaxTextureCoord() {
+	protected double getYMaxTextureCoordinates() {
 		return yMaxTextureCoordinates;
 	}
 
-	protected double getxOffset() {
+	protected double getXOffset() {
 		return xOffset;
 	}
 
-	protected double getyOffset() {
+	protected double getYOffset() {
 		return yOffset;
 	}
 
@@ -97,7 +97,7 @@ public class Character {
 		return sizeY;
 	}
 
-	protected double getxAdvance() {
+	protected double getXAdvance() {
 		return xAdvance;
 	}
 

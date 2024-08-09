@@ -1,4 +1,4 @@
-package framework.fontMeshCreator;
+package framework.font;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +28,7 @@ public class Word {
 	 */
 	protected void addCharacter(Character character){
 		characters.add(character);
-		width += character.getxAdvance() * fontSize;
+		width += character.getXAdvance() * fontSize;
 	}
 	
 	/**

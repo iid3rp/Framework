@@ -2,6 +2,7 @@ package framework;
 
 import framework.event.MouseAdapter;
 import framework.event.MouseEvent;
+import framework.h.Display;
 import framework.loader.ModelLoader;
 import framework.loader.ObjectLoader;
 import framework.entity.Light;
@@ -10,6 +11,7 @@ import framework.environment.Environment;
 import framework.environment.Scene;
 import framework.loader.TextureLoader;
 import framework.model.TexturedModel;
+import framework.scripting.FrameworkScript;
 import framework.swing.ContentPane;
 import framework.swing.PictureBox;
 import framework.terrains.Terrain;
@@ -88,11 +90,29 @@ public class Game
         int progress = 0;
 
         PictureBox image = new PictureBox();
-        image.setBackgroundImage(ModelLoader.loadTexture("brat.png"));
+        image.setTexture(ModelLoader.loadTexture("brat.png"));
         image.setLocation(0, 0);
         image.setScale(100, 100);
         image.setSize(100, 100);
         panel.add(image);
+
+        Environment.run(new FrameworkScript()
+        {
+            int i = 0;
+            @Override
+            public boolean whilst()
+            {
+                return true;
+            }
+
+            @Override
+            public void run(Scene scene)
+            {
+                if(i > 100 && i < 600)
+                    image.transformRotation(new Vector3f(0, 0, 360 * Display.getDeltaInSeconds()));
+                i++;
+            }
+        });
 
         System.out.println(image.getSize().x + " " + image.getSize().y);
 

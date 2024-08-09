@@ -1,7 +1,7 @@
 package framework.fontRendering;
 
-import framework.fontMeshCreator.FontType;
-import framework.fontMeshCreator.GUIText;
+import framework.font.FontType;
+import framework.font.GUIText;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;

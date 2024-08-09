@@ -1,4 +1,4 @@
-package framework.fontRendering;
+package framework.font;
 
 import framework.shader.GLShader;
 import org.joml.Vector2f;

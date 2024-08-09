@@ -1,4 +1,4 @@
-package framework.fontMeshCreator;
+package framework.font;
 
 /**
  * Simple data structure class holding information about a certain glyph in the

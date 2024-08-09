@@ -73,7 +73,7 @@ public abstract class GLShader
         // Error check shader program code after trying to compile it
         if (glGetShaderi(vertexShaderId, GL_COMPILE_STATUS) == GL_FALSE) {
             // The shader program didn't compile
-            throw new RuntimeException("Vertex Shader: " + glGetShaderInfoLog(vertexShaderId));
+            throw new RuntimeException("\nVertex Shader: " + glGetShaderInfoLog(vertexShaderId));
         }
 
         // The shader code did successfully compile
@@ -85,7 +85,7 @@ public abstract class GLShader
         // Error check fragment shader program code after attempt to compile it
         if (glGetShaderi(fragmentShaderId, GL_COMPILE_STATUS) == GL_FALSE) {
             // The fragment shader program didn't compile
-            throw new RuntimeException("Fragment Shader: " + glGetShaderInfoLog(fragmentShaderId));
+            throw new RuntimeException("\nFragment Shader: " + glGetShaderInfoLog(fragmentShaderId));
         }
 
         // The fragment shader code did successfully compile

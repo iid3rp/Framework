@@ -1,4 +1,4 @@
-package framework.fontMeshCreator;
+package framework.font;
 
 import java.util.ArrayList;
 import java.util.List;

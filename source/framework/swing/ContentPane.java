@@ -1,23 +1,33 @@
 package framework.swing;
 
+import framework.font.GUIText;
+import framework.font.TextMasterRenderer;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class ContentPane extends GUIRenderer
+public class ContentPane extends GUIRenderer implements SwingInterface
 {
-    List<GUITexture> containers;
+    List<Container> containers;
     public ContentPane()
     {
         super();
         containers = new ArrayList<>();
     }
 
-    public void add(GUITexture texture)
+    @Override
+    public void add(Container texture)
     {
         containers.add(texture);
     }
 
-    public List<GUITexture> getComponents()
+    @Override
+    public void remove(Container c)
+    {
+        containers.remove(c);
+    }
+
+    public List<Container> getComponents()
     {
         return containers;
     }

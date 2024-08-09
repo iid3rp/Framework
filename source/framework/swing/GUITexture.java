@@ -4,12 +4,16 @@ import framework.h.Display;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
-public class GUITexture
+import java.util.ArrayList;
+import java.util.List;
+
+public class GUITexture implements SwingInterface
 {
     private Vector2f size;
     private int diffuse;
     private int clipTexture;
     private Vector2f position;
+    private Vector2f rawPosition;
     private Vector2f scale;
     private Vector3f rotation;
     private int width;
@@ -18,7 +22,7 @@ public class GUITexture
     private int y;
     private int zLayer;
     private int desiredZLayer;
-    private Vector2f rawPosition;
+    private List<Container> children;
 
     public GUITexture()
     {
@@ -28,6 +32,7 @@ public class GUITexture
         rotation = new Vector3f(0, 0, 0);
         size = new Vector2f(0, 0);
         rawPosition = new Vector2f(0, 0);
+        children = new ArrayList<>();
     }
 
     public GUITexture(int texture, Vector2f position, Vector2f scale, Vector2f size)
@@ -48,7 +53,14 @@ public class GUITexture
         this.rotation = rotation;
     }
 
-    public void setBackgroundImage(int texture)
+    public void transformRotation(Vector3f rotation)
+    {
+        this.rotation.x += rotation.x;
+        this.rotation.y += rotation.y;
+        this.rotation.z += rotation.z;
+    }
+
+    public void setTexture(int texture)
     {
         this.diffuse = texture;
     }
@@ -169,5 +181,22 @@ public class GUITexture
     public void setClipTexture(int clipTexture)
     {
         this.clipTexture = clipTexture;
+    }
+
+    @Override
+    public void add(Container c)
+    {
+        children.add(c);
+    }
+
+    @Override
+    public void remove(Container c)
+    {
+        children.remove(c);
+    }
+
+    protected List<Container> getChildren()
+    {
+        return children;
     }
 }

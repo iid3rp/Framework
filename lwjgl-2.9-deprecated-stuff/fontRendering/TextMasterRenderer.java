@@ -1,8 +1,8 @@
 package framework.fontRendering;
 
-import framework.fontMeshCreator.FontType;
-import framework.fontMeshCreator.GUIText;
-import framework.fontMeshCreator.TextMeshData;
+import framework.font.FontType;
+import framework.font.GUIText;
+import framework.font.TextMeshData;
 import framework.display.ModelLoader;
 
 import java.util.ArrayList;

@@ -10,9 +10,14 @@ uniform sampler2D clipTexture;
 uniform vec2 size;
 uniform vec2 pos;
 uniform vec2 scale;
+uniform mat4 invertTransformationMatrix;
 
 void main(void)
 {
+	// Transform the texture position back to its original space using the inverse transformation matrix
+	vec4 transformedPosition = transformationMatrix * vec4(texturePosition, 0.0, 1.0);
+	vec2 textPos = transformedPosition.xy;
+
 	float sizeX = size.x <= scale.x? size.x / scale.x : 1;
 	float sizeY = size.y <= scale.y? size.y / scale.y : 1;
 	vec2 normSize = vec2(sizeX, sizeY);
@@ -20,10 +25,10 @@ void main(void)
 	vec2 normBot = vec2((pos.y * -2) + 1, normSize.y * -2 + 1);
 
 	// size must be based on the position
-	if(texturePosition.x >= normTop.x && texturePosition.x <= normTop.y &&
-	   texturePosition.y <= normBot.x && texturePosition.y >= normBot.y)
+	if(textPos.x >= normTop.x && textPos.x <= normTop.y &&
+	   textPos.y <= normBot.x && textPos.y >= normBot.y)
 	{
-		vec4 color = texture(guiTexture,textureCoords);
+		vec4 color = texture(guiTexture, textureCoords);
 		vec4 clip = texture(clipTexture, textureCoords);
 		color = color * (1 - clip.b);
 		out_Color = color;

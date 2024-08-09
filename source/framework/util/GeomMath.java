@@ -11,10 +11,10 @@ public class GeomMath
         Matrix4f matrix = new Matrix4f();
         matrix.identity();
         matrix.translate(translation.x, translation.y, translation.z);
+        matrix.scale(new Vector3f(scale, scale, scale));
         matrix.rotate((float) Math.toRadians(rx), new Vector3f(1, 0, 0));
         matrix.rotate((float) Math.toRadians(ry), new Vector3f(0, 1, 0));
         matrix.rotate((float) Math.toRadians(rz), new Vector3f(0, 0, 1));
-        matrix.scale(new Vector3f(scale, scale, scale));
         return matrix;
     }
 
@@ -72,8 +72,8 @@ public class GeomMath
     {
         Matrix4f matrix = new Matrix4f();
         matrix.identity();
-        matrix.translate(new Vector3f(translation.x, translation.y, 1), matrix);
         matrix.scale(scale.x, scale.y, 1f);
+        matrix.translate(new Vector3f(translation.x, translation.y, 1), matrix);
         return matrix;
     }
 
@@ -95,10 +95,10 @@ public class GeomMath
         Matrix4f matrix = new Matrix4f();
         matrix.identity();
         matrix.translate(position.x, position.y, 1f);
-        matrix.rotate((float) java.lang.Math.toRadians(rotation.x), new Vector3f(1, 0, 0));
-        matrix.rotate((float) java.lang.Math.toRadians(rotation.y), new Vector3f(0, 1, 0));
-        matrix.rotate((float) java.lang.Math.toRadians(rotation.z), new Vector3f(0, 0, 1));
         matrix.scale(scale.x, scale.y, 1f);
+        matrix.rotate((float) Math.toRadians(rotation.x), new Vector3f(1, 0, 0));
+        matrix.rotate((float) Math.toRadians(rotation.y), new Vector3f(0, 1, 0));
+        matrix.rotate((float) Math.toRadians(rotation.z), new Vector3f(0, 0, 1));
         return matrix;
     }
 

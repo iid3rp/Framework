@@ -1,8 +1,8 @@
 package framework.environment;
 
 import framework.h.Display;
-import framework.fontMeshCreator.FontType;
-import framework.fontMeshCreator.GUIText;
+import framework.font.FontType;
+import framework.font.GUIText;
 import framework.particles.ParticleMaster;
 import framework.post_processing.FrameBufferObject;
 import framework.post_processing.PostProcessing;

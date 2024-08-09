@@ -1,4 +1,4 @@
-package framework.fontMeshCreator;
+package framework.font;
 
 import framework.fontRendering.TextMasterRenderer;
 import org.lwjgl.util.vector.Vector2f;

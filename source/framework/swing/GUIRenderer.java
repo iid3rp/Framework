@@ -6,6 +6,7 @@ import framework.model.Model;
 import framework.util.GeomMath;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
+import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
@@ -18,9 +19,10 @@ public class GUIRenderer
     private final Model quad;
     private GUIShader shader;
     private Vector2f size;
+
     public GUIRenderer()
     {
-        float[] positions = { -1, -1, -1, 1, 1, -1, 1, -1, -1, 1, 1, 1};
+        float[] positions = {-1, -1, -1, 1, 1, -1, 1, -1, -1, 1, 1, 1};
         quad = ModelLoader.loadToVao(positions, 2);
         shader = new GUIShader();
         size = new Vector2f(1, 1);
@@ -33,7 +35,7 @@ public class GUIRenderer
         size.set(normalizeX, normalizeY);
     }
 
-    public void render(List<GUITexture> guis)
+    public void render(List<Container> guis)
     {
         shader.bind();
         GL30.glBindVertexArray(quad.getVaoId());
@@ -43,17 +45,19 @@ public class GUIRenderer
         GL11.glDisable(GL11.GL_CULL_FACE);
         GL11.glDisable(GL11.GL_DEPTH_TEST);
         // rendering
-        for(GUITexture texture : guis)
+        for(Container texture : guis)
         {
             GL13.glActiveTexture(GL13.GL_TEXTURE0);
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture.getTexture());
             GL13.glActiveTexture(GL13.GL_TEXTURE1);
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture.getClipTexture());
             Matrix4f matrix = GeomMath.createTransformationMatrix(texture.getPosition(), texture.getRotation(), texture.getScale());
+            Matrix4f invMatrix = GeomMath.createTransformationMatrix(texture.getPosition(), new Vector3f(), texture.getScale());
             shader.loadPosition(texture.getRawPosition());
             shader.loadSize(texture.getSize());
             shader.loadScale(texture.getScale());
             shader.loadTransformation(matrix);
+            shader.loadInvertTransformationMatrix(invMatrix);
             GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, quad.getVertexCount());
         }
         GL11.glEnable((GL11.GL_DEPTH_TEST));

@@ -1,8 +1,5 @@
-package framework.fontRendering;
+package framework.font;
 
-import framework.fontMeshCreator.FontType;
-import framework.fontMeshCreator.GUIText;
-import framework.fontMeshCreator.TextMeshData;
 import framework.loader.ModelLoader;
 
 import java.util.ArrayList;
@@ -24,17 +21,23 @@ public class TextMasterRenderer
     {
         fontRenderer.render(texts);
     }
-    public static void loadText(GUIText text)
+
+    public static boolean loadText(GUIText text)
     {
+        if(texts.get(text.getFont()).contains(text))
+            return false;
+
         FontType fontType = text.getFont();
         TextMeshData data = fontType.loadText(text);
         int vao = ModelLoader.loadToVao(data.getVertexPositions(), data.getTextureCoords());
         text.setMeshInfo(vao, data.getVertexCount());
         List<GUIText> textSection = texts.computeIfAbsent(fontType, func -> new ArrayList<>());
         textSection.add(text);
+
+        return true;
     }
 
-    public static void removeText(GUIText text)
+    public static void remove(GUIText text)
     {
         List<GUIText> textBatch = texts.get(text.getFont());
         textBatch.remove(text);
@@ -43,9 +46,10 @@ public class TextMasterRenderer
             texts.remove(text.getFont());
         }
     }
+
     public static void setText(GUIText gui, String text)
     {
-        removeText(gui);
+        remove(gui);
         GUIText newText = gui;
         gui.setText(text);
         loadText(newText);

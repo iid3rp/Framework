@@ -1,7 +1,7 @@
-package framework.fontMeshCreator;
+package framework.font;
 
-import framework.fontMeshCreator.GUIText;
-import framework.fontMeshCreator.MetaFile;
+import framework.font.GUIText;
+import framework.font.MetaFile;
 
 import java.io.File;
 import java.util.ArrayList;

@@ -1,6 +1,6 @@
-package framework.fontMeshCreator;
+package framework.font;
 
-import framework.fontMeshCreator.GUIText;
+import framework.font.GUIText;
 
 import java.io.File;
 

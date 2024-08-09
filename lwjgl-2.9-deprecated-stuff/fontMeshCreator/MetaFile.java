@@ -1,4 +1,4 @@
-package framework.fontMeshCreator;
+package framework.font;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package framework.fontMeshCreator;
+package framework.font;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +14,7 @@ public class Line {
 	private double maxLength;
 	private double spaceSize;
 
-	private List<Word> words = new ArrayList<Word>();
+	private List<Word> words = new ArrayList<>();
 	private double currentLineLength = 0;
 
 	/**

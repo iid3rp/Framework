@@ -1,4 +1,4 @@
-package framework.fontMeshCreator;
+package framework.font;
 
 /**
  * Stores the vertex data for all the quads on which a text will be rendered.
