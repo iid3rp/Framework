@@ -1,13 +1,14 @@
 #version 400 core
 
 in vec2 passTextureCoordinates;
+in vec2 passLocation;
 
 out vec4 outColor;
 
 uniform vec3 color;
 uniform sampler2D fontAtlas;
 
-// implementatio of bounds stuff
+// implementation of bounds stuff
 uniform vec2 size;
 uniform vec2 translation;
 uniform float lineWidth;
@@ -36,8 +37,8 @@ void main(void)
     vec2 normBot = vec2((translation.y * -2) + 1, normSize.y * -2 + 1);
     //
 
-    if(translation.x >= normTop.x && translation.x <= normTop.y &&
-        translation.y <= normBot.x && translation.y >= normBot.y)
+    if(passLocation.x >= normTop.x && passLocation.x <= normTop.y &&
+        passLocation.y <= normBot.x && passLocation.y >= normBot.y)
     {
 
         float distance = 1.0 - texture(fontAtlas, passTextureCoordinates).a;
