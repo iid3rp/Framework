@@ -33,12 +33,14 @@ void main(void)
     float sizeX = size.x <= lineWidth? size.x / lineWidth : 1;
     float sizeY = size.y <= lineWidth? size.y / lineWidth : 1;
     vec2 normSize = vec2(sizeX, sizeY);
-    vec2 normTop = vec2((translation.x * 2) - 1, normSize.x * 2 - 1);
-    vec2 normBot = vec2((translation.y * -2) + 1, normSize.y * -2 + 1);
+    vec2 normTop = vec2(-1, (normSize.x * 2) - 1);
+    vec2 normBot = vec2(1, (normSize.y * -2) + 1);
     //
 
-    if(passLocation.x >= normTop.x && passLocation.x <= normTop.y &&
-        passLocation.y <= normBot.x && passLocation.y >= normBot.y)
+    vec2 loc = passLocation;
+
+    if(loc.x >= normTop.x && loc.x <= normTop.y &&
+        loc.y <= normBot.x && loc.y >= normBot.y)
     {
 
         float distance = 1.0 - texture(fontAtlas, passTextureCoordinates).a;

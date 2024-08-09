@@ -52,7 +52,7 @@ public final class Environment
             event.setProjection(MasterRenderer.getProjectionMatrix());
             getScene().setEvent(event);
             font = new FontType(ModelLoader.loadTexture("comic.png"), "comic");
-            fps = new GUIText("fps count: 0", 2, font, new Vector2f(0, 0), 1f, false);
+            fps = new GUIText("fps count: 0", 2, font, new Vector2f(.02f, .02f), 1f, false);
             fps.setColor(1, 1, 0);
             fps.setSize(120, 100);
             scene.getContentPane().add(fps);
