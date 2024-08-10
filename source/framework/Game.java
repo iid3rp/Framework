@@ -2,6 +2,9 @@ package framework;
 
 import framework.event.MouseAdapter;
 import framework.event.MouseEvent;
+import framework.fontExperiment.Char;
+import framework.fontExperiment.Font;
+import framework.fontExperiment.FontFile;
 import framework.h.Display;
 import framework.loader.ModelLoader;
 import framework.loader.ObjectLoader;
@@ -23,6 +26,7 @@ import framework.water.WaterTile;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
+import java.util.List;
 import java.util.Random;
 
 import static framework.h.Display.createDisplay;
@@ -182,6 +186,14 @@ public class Game
         //WaterTile tile = new WaterTile(0, 0,0);
         //scene.add(tile);
 
+        // example implementation...
+        Font x = FontFile.readFont("comic");
+        System.out.println(x);
+        List<Char> chars = x.getCharacters();
+        for(Char c : chars)
+        {
+            System.out.println(c);
+        }
 
         //Environment.run(new Count());
         Environment.start();
