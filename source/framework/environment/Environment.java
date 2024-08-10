@@ -1,6 +1,5 @@
 package framework.environment;
 
-import framework.font.TextMasterRenderer;
 import framework.h.Display;
 import framework.font.FontType;
 import framework.font.GUIText;
@@ -12,8 +11,6 @@ import framework.loader.ModelLoader;
 import framework.event.MouseEvent;
 import framework.scripting.FrameworkScript;
 import framework.scripting.StackScript;
-import framework.shadow.ShadowMapEntityRenderer;
-import framework.shadow.ShadowMapMasterRenderer;
 import framework.swing.PictureBox;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -25,21 +22,16 @@ public final class Environment
 {
     public static Scene scene;
     private static StackScript stack = new StackScript();
-    public static FrameBufferObject multisample = new FrameBufferObject(Display.getWidth(), Display.getHeight());
+    public static FrameBufferObject multi = new FrameBufferObject(Display.getWidth(), Display.getHeight());
     public static FrameBufferObject out = new FrameBufferObject(Display.getWidth(), Display.getHeight(), FrameBufferObject.DEPTH_TEXTURE);
     public static FrameBufferObject bright = new FrameBufferObject(Display.getWidth(), Display.getHeight(), FrameBufferObject.DEPTH_TEXTURE);
     public static FrameBufferObject mouseEventBuffer = new FrameBufferObject(Display.getWidth(), Display.getHeight(), FrameBufferObject.DEPTH_TEXTURE);
     public static FrameBufferObject pixelBuffer = new FrameBufferObject(2, 2, FrameBufferObject.DEPTH_TEXTURE);
 
-    public static void setScene(Scene scene)
-    {
-        Environment.scene = scene;
-    }
-
     // intentional global-local variables
+
     static FontType font;
     static GUIText fps;
-
     public static void start()
     {
         // static method calling goes here:
@@ -132,19 +124,19 @@ public final class Environment
 
             //MasterRenderer.renderShadowMap(scene.getEntities(), scene.getMainLight());
             // frame buffer stuff
-            multisample.bindFrameBuffer();
+            multi.bindFrameBuffer();
             renderScene(new Vector4f(0, -1, 0, 1000000));
             MasterRenderer.renderWaters(scene.getWaters(), scene.getCamera(), scene.getMainLight());
             if(scene.getParticleSystem() != null)
                 ParticleMaster.renderParticles(scene.getCamera());
-            multisample.unbindFrameBuffer();
+            multi.unbindFrameBuffer();
 
-            //multisample.resolveToScreen();
-            multisample.resolveToFrameBufferObject(GL30.GL_COLOR_ATTACHMENT0, out);
-            multisample.resolveToFrameBufferObject(GL30.GL_COLOR_ATTACHMENT1, bright);
-            multisample.resolveToFrameBufferObject(GL30.GL_COLOR_ATTACHMENT2, mouseEventBuffer);
-            multisample.resolveToScreen();
-            //multisample.resolvePixel(mouseEventBuffer);
+            //multi.resolveToScreen();
+            multi.resolveToFrameBufferObject(GL30.GL_COLOR_ATTACHMENT0, out);
+            multi.resolveToFrameBufferObject(GL30.GL_COLOR_ATTACHMENT1, bright);
+            multi.resolveToFrameBufferObject(GL30.GL_COLOR_ATTACHMENT2, mouseEventBuffer);
+            multi.resolveToScreen();
+            //multi.resolvePixel(mouseEventBuffer);
             if(i % 2 == 0)
                 scene.getEvent().resolveColorPickFromPixel(mouseEventBuffer, pixelBuffer);
             i++;
@@ -189,6 +181,11 @@ public final class Environment
         stack.run(script);
     }
 
+    public static void setScene(Scene scene)
+    {
+        Environment.scene = scene;
+    }
+
     public static Scene getScene()
     {
         return scene;
@@ -198,7 +195,7 @@ public final class Environment
     {
         //pixel.dispose();
         PostProcessing.dispose();
-        multisample.dispose();
+        multi.dispose();
         out.dispose();
         mouseEventBuffer.dispose();
         bright.dispose();
