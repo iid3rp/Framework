@@ -1,0 +1,21 @@
+#version 400 core
+
+in vec2 textPos;
+in vec2 textureCoords;
+
+out vec4 out_Color;
+
+uniform sampler2D guiTexture;
+uniform vec2 pos;
+uniform vec2 scale;
+uniform mat4 transformationMatrix;
+uniform vec2 texturePosition;
+
+void main(void)
+{
+    vec2 position = vec2((textureCoords.x * 2) - 1, (textureCoords.y * -2) + 1);
+
+    vec4 color = texture(guiTexture, position);
+    out_Color = color;
+
+}

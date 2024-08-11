@@ -5,6 +5,7 @@ import framework.event.MouseEvent;
 import framework.fontExperiment.Char;
 import framework.fontExperiment.Font;
 import framework.fontExperiment.FontFile;
+import framework.fontExperiment.Text;
 import framework.h.Display;
 import framework.loader.ModelLoader;
 import framework.loader.ObjectLoader;
@@ -186,14 +187,7 @@ public class Game
         //WaterTile tile = new WaterTile(0, 0,0);
         //scene.add(tile);
 
-        // example implementation...
-        Font x = FontFile.readFont("comic");
-        System.out.println(x);
-        List<Char> chars = x.getCharacters();
-        for(Char c : chars)
-        {
-            System.out.println(c);
-        }
+
 
         //Environment.run(new Count());
         Environment.start();

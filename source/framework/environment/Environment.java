@@ -1,5 +1,10 @@
 package framework.environment;
 
+import framework.fontExperiment.Char;
+import framework.fontExperiment.Font;
+import framework.fontExperiment.FontFile;
+import framework.fontExperiment.Text;
+import framework.fontExperiment.TextEntityRenderer;
 import framework.h.Display;
 import framework.font.FontType;
 import framework.font.GUIText;
@@ -17,10 +22,13 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL30;
 
+import java.util.List;
+
 // the commented codes will be uncommented once the game is set up!
 public final class Environment
 {
     public static Scene scene;
+    private static TextEntityRenderer textEntityRenderer = new TextEntityRenderer();
     private static StackScript stack = new StackScript();
     public static FrameBufferObject multi = new FrameBufferObject(Display.getWidth(), Display.getHeight());
     public static FrameBufferObject out = new FrameBufferObject(Display.getWidth(), Display.getHeight(), FrameBufferObject.DEPTH_TEXTURE);
@@ -53,12 +61,17 @@ public final class Environment
             //scene.getContentPane().add(fps);
             //scene.getContentPane().add(img);
 
+
+            //
+            // these are just example of implementations for future debugging...
+            //
             PictureBox pb = new PictureBox();
-            pb.setTexture(MasterRenderer.getShadowMapTexture());
+            pb.setTexture(ModelLoader.loadTexture("brat.png"));
             pb.setLocation(20, 20);
             pb.setScale(200, 200);
             pb.setSize(200, 200);
             scene.getContentPane().add(pb);
+
 
             loop();
             exit();
@@ -69,6 +82,15 @@ public final class Environment
     public static void loop()
     {
         long i = 0;
+
+        // example implementation...
+        Font x = FontFile.readFont("comic");
+        System.out.println(x);
+        List<Char> chars = x.getCharacters();
+        Text text = new Text();
+        text.setText("h");
+        text.setSize(200, 500);
+
         while(Display.shouldDisplayClose())
         {
             //FPSCounter.update();
@@ -144,6 +166,7 @@ public final class Environment
             //if(!Keyboard.isKeyDown(Keyboard.E))
             PostProcessing.doPostProcessing(out.getColorTexture(), bright.getColorTexture());
 
+            textEntityRenderer.render(x, text);
             scene.getContentPane().render(scene.getContentPane().getComponents());
             //fps.setText("fps count: " + FPSCounter.getCounter());
             //TextMasterRenderer.render();

@@ -12,6 +12,10 @@ public class TextShader extends GLShader
     private int locationSize;
     private int locationPosition;
     private int locationScale;
+    private int locationTexturePosition;
+    private int locationDimension;
+    private int locationOffset;
+    private int locationScaleMatrix;
 
     public TextShader()
     {
@@ -25,13 +29,17 @@ public class TextShader extends GLShader
         locationSize = super.getUniformLocation("size");
         locationPosition = super.getUniformLocation("pos");
         locationScale = super.getUniformLocation("scale");
+        locationTexturePosition = super.getUniformLocation("texturePosition");
+        locationDimension = super.getUniformLocation("dimension");
+        locationOffset = super.getUniformLocation("offset");
+        locationScaleMatrix = super.getUniformLocation("scaleMatrix");
 
     }
 
     @Override
-    protected void bindAttributes()
-    {
+    protected void bindAttributes() {
         super.bindAttribute(0, "position");
+        //super.bindAttribute(1, "textureCoords");
     }
 
 
@@ -53,5 +61,20 @@ public class TextShader extends GLShader
     public void loadTransformation(Matrix4f matrix)
     {
         super.loadMatrix(locationTransformationMatrix, matrix);
+    }
+
+    public void loadTexturePosition(Vector2f normal)
+    {
+        super.loadVector(locationTexturePosition, normal);
+    }
+
+    public void loadOffset(Vector2f normal)
+    {
+        super.loadVector(locationOffset, normal);
+    }
+
+    public void loadScaleMatrix(Matrix4f scaleMatrix)
+    {
+        super.loadMatrix(locationScaleMatrix, scaleMatrix);
     }
 }

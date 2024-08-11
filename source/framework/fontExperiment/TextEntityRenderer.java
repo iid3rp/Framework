@@ -59,11 +59,22 @@ public class TextEntityRenderer
         List<Char> chars = new ArrayList<>();
         for(char c : text.getText().toCharArray()) {
             if(c == ' ')
+            {
                 setWord(font, chars, text);
+                chars = new ArrayList<>();
+            }
             else if(c == '\n')
+            {
+                setWord(font, chars, text);
                 cursorY += font.getLineHeight();
-            else chars.add(font.getCharacterMap().get(c));
+                chars = new ArrayList<>();
+            }
+            else
+            {
+                chars.add(font.getCharacterMap().get(c));
+            }
         }
+        setWord(font, chars, text);
     }
 
     private void setWord(Font font, List<Char> chars, Text text)
@@ -72,13 +83,13 @@ public class TextEntityRenderer
         cursorX += font.getCharacterMap().get(' ').getWidth(); // space character
         for(Char c : chars)
             width += c.getWidth();
-        if(width > text.getMaxWidth()) {
-            cursorY += font.getLineHeight();
-            cursorX = 0;
-        }
+//        if (width > text.getMaxWidth()) {
+//            cursorY += font.getLineHeight();
+//            cursorX = 0;
+//        }
         for(Char c : chars) {
             renderCharacter(c, font, text);
-            cursorX += c.getWidth();
+            cursorX += c.getXAdvance();
         }
 
     }
@@ -86,19 +97,33 @@ public class TextEntityRenderer
     private void renderCharacter(Char c, Font font, Text text)
     {
         GL13.glActiveTexture(GL13.GL_TEXTURE0);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, font.getTexture());
 
-        // set the transformation matrix of the character
-        Matrix4f matrix = GeomMath.createTransformationMatrix(
-                getNormal(c.getX(), c.getY()),
+        Vector2f pos = getNormal(cursorX + c.getXOffset(), cursorY + c.getYOffset());
+
+        // set the transformation matrix of the whole font texture
+        Matrix4f letterMatrix = GeomMath.createTransformationMatrix(
+                (pos),
                 new Vector3f(0),
-                getNormal(c.getWidth(), c.getHeight())
+                getNormal(c.getWidth(), c.getHeight()).mul(6)
         );
 
+        // set the transformation matrix of each letter...
+        Matrix4f scaleMatrix = GeomMath.createTransformationMatrix(
+                getNormal(c.getX(), c.getY()),
+                new Vector3f(0),
+                getNormal(font.getScaleW(), font.getScaleH())
+        );
+
+        shader.loadTexturePosition(getNormal(c.getX(), c.getY()));
+        shader.loadOffset(getNormal(c.getXOffset(), c.getYOffset()));
         shader.loadPosition(getNormal(c.getX(), c.getY()));
+        shader.loadSize(getNormal(font.getScaleW(), font.getScaleH()));
         shader.loadScale(getNormal(c.getWidth(), c.getHeight()));
-        shader.loadTransformation(matrix);
-        GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 0);
+        shader.loadScaleMatrix(scaleMatrix);
+        shader.loadTransformation(letterMatrix);
+        GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, quad.getVertexCount());
+        //System.out.println(c + " cursorX: " + cursorX + " cursorY: " + cursorY);
     }
 
     public Vector2f getNormal(int x, int y)

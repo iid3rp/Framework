@@ -5,6 +5,7 @@ in vec2 textureCoordinates;
 
 out vec2 passTextureCoordinates;
 out vec2 passLocation;
+out vec2 textureCoords;
 
 uniform vec2 translation;
 

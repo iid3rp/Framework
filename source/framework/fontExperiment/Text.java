@@ -15,6 +15,9 @@ public class Text
     private Color color;
     private Point position;
     private float fontSize;
+    private int height;
+    private int width;
+
     public Text() {}
 
     public Text(String text)
@@ -59,6 +62,12 @@ public class Text
 
     public int getMaxWidth()
     {
-        return 0;
+        return 1280;
+    }
+
+    public void setSize(int width, int height)
+    {
+        this.width = width;
+        this.height = height;
     }
 }
