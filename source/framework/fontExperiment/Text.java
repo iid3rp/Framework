@@ -51,4 +51,14 @@ public class Text
     {
         return null;
     }
+
+    public String getText()
+    {
+        return text;
+    }
+
+    public int getMaxWidth()
+    {
+        return 0;
+    }
 }
