@@ -69,7 +69,7 @@ public final class Environment
             PictureBox pb = new PictureBox();
             pb.setTexture(ModelLoader.loadTexture("brat.png"));
             pb.setLocation(20, 20);
-            pb.setImageLocation(-100, -100);
+            pb.setImageLocation(-100, 100);
             pb.setScale(200, 200);
             pb.setSize(200, 200);
             scene.getContentPane().add(pb);

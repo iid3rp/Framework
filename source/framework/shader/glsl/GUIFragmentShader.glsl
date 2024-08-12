@@ -12,18 +12,19 @@ uniform vec2 pos;
 uniform vec2 scale;
 uniform mat4 transformationMatrix;
 uniform mat4 invertTransformationMatrix;
+uniform vec2 imageLocation;
 
 void main(void)
 {
 	// Transform the texture position back to its original space using the inverse transformation matrix
-	vec4 transformedPosition = invertTransformationMatrix * vec4(texturePosition, 0, 1.0);
-	vec2 textPos = transformedPosition.xy;
+	//vec4 transformedPosition = transformationMatrix * vec4(texturePosition, 0, 1.0);
+	vec2 textPos = texturePosition;
 
 	float sizeX = size.x <= scale.x? size.x / scale.x : 1;
 	float sizeY = size.y <= scale.y? size.y / scale.y : 1;
 	vec2 normSize = vec2(sizeX, sizeY);
-	vec2 normTop = vec2((pos.x * 2) - 1, normSize.x * 2 - 1);
-	vec2 normBot = vec2((pos.y * -2) + 1, normSize.y * -2 + 1);
+	vec2 normTop = vec2((pos.x * 2) - 1, (normSize.x * 2) - 1);
+	vec2 normBot = vec2((pos.y * -2) + 1, (normSize.y * -2) + 1);
 
 	// size must be based on the position
 	if(textPos.x >= normTop.x && textPos.x <= normTop.y &&

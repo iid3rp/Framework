@@ -52,7 +52,7 @@ public class GUIRenderer
             GL13.glActiveTexture(GL13.GL_TEXTURE1);
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture.getClipTexture());
             Matrix4f matrix = GeomMath.createTransformationMatrix(texture.getPosition(), texture.getRotation(), texture.getScale());
-            Matrix4f invMatrix = GeomMath.createTransformationMatrix(texture.getPosition(), new Vector3f(), texture.getScale());
+            Matrix4f invMatrix = GeomMath.createTransformationMatrix(texture.getImageLocation(), new Vector3f(), texture.getScale());
             shader.loadPosition(texture.getRawPosition());
             shader.loadSize(texture.getSize());
             shader.loadScale(texture.getScale());
