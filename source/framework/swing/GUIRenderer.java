@@ -57,6 +57,7 @@ public class GUIRenderer
             shader.loadSize(texture.getSize());
             shader.loadScale(texture.getScale());
             shader.loadTransformation(matrix);
+            shader.loadImageLocation(texture.getImageLocation());
             shader.loadInvertTransformationMatrix(invMatrix);
             GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, quad.getVertexCount());
         }

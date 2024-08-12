@@ -80,7 +80,6 @@ public class TextEntityRenderer
     private void setWord(Font font, List<Char> chars, Text text)
     {
         int width = 0;
-        cursorX += font.getCharacterMap().get(' ').getWidth(); // space character
         for(Char c : chars)
             width += c.getWidth();
 //        if (width > text.getMaxWidth()) {
@@ -91,7 +90,7 @@ public class TextEntityRenderer
             renderCharacter(c, font, text);
             cursorX += c.getXAdvance();
         }
-
+        cursorX += font.getCharacterMap().get(' ').getXAdvance(); // space character
     }
 
     private void renderCharacter(Char c, Font font, Text text)
@@ -99,13 +98,14 @@ public class TextEntityRenderer
         GL13.glActiveTexture(GL13.GL_TEXTURE0);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, font.getTexture());
 
-        Vector2f pos = getNormal(cursorX + c.getXOffset(), cursorY + c.getYOffset());
+        Vector2f size = setSize(c.getWidth(), c.getHeight());
+        Vector2f pos = setLocation(cursorX + c.getXOffset(), cursorY + c.getYOffset(), size);
 
         // set the transformation matrix of the whole font texture
         Matrix4f letterMatrix = GeomMath.createTransformationMatrix(
                 (pos),
                 new Vector3f(0),
-                getNormal(c.getWidth(), c.getHeight()).mul(6)
+                (size)
         );
 
         // set the transformation matrix of each letter...
@@ -124,6 +124,24 @@ public class TextEntityRenderer
         shader.loadTransformation(letterMatrix);
         GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, quad.getVertexCount());
         //System.out.println(c + " cursorX: " + cursorX + " cursorY: " + cursorY);
+    }
+
+    public Vector2f setSize(int width, int height)
+    {
+        float w = (float) width / Display.getWidth();
+        float h = (float) height / Display.getHeight();
+        return new Vector2f(w, h);
+    }
+
+    public Vector2f setLocation(int x, int y, Vector2f size)
+    {
+        float posX = (((float) x / (Display.getWidth())) * 2) - 1;
+        float posY = 1 - (((float) y / (Display.getHeight())) * 2);
+
+        posX += size.x;
+        posY -= size.y;
+
+        return new Vector2f(posX, posY);
     }
 
     public Vector2f getNormal(int x, int y)

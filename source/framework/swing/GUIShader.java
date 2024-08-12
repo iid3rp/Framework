@@ -14,6 +14,7 @@ public class GUIShader extends GLShader
 	private int locationPosition;
 	private int locationScale;
 	private int locationInvertTransformationMatrix;
+	private int locationImageLocation;
 
 	public GUIShader()
 	{
@@ -33,6 +34,7 @@ public class GUIShader extends GLShader
 		locationPosition = super.getUniformLocation("pos");
 		locationScale = super.getUniformLocation("scale");
 		locationInvertTransformationMatrix = super.getUniformLocation("invertTransformationMatrix");
+		locationImageLocation = super.getUniformLocation("imageLocation");
 	}
 
 	@Override
@@ -60,5 +62,10 @@ public class GUIShader extends GLShader
 	public void loadInvertTransformationMatrix(Matrix4f invMatrix)
 	{
 		super.loadMatrix(locationInvertTransformationMatrix, invMatrix);
+	}
+
+	public void loadImageLocation(Vector2f imageLocation)
+	{
+		super.loadVector(locationImageLocation, imageLocation);
 	}
 }

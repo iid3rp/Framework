@@ -16,7 +16,7 @@ uniform mat4 invertTransformationMatrix;
 void main(void)
 {
 	// Transform the texture position back to its original space using the inverse transformation matrix
-	vec4 transformedPosition = invertTransformationMatrix * vec4(texturePosition, 1, 1.0);
+	vec4 transformedPosition = invertTransformationMatrix * vec4(texturePosition, 0, 1.0);
 	vec2 textPos = transformedPosition.xy;
 
 	float sizeX = size.x <= scale.x? size.x / scale.x : 1;

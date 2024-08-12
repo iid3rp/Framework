@@ -23,6 +23,7 @@ public class GUITexture implements SwingInterface
     private int zLayer;
     private int desiredZLayer;
     private List<Container> children;
+    private Vector2f imageLocation;
 
     public GUITexture()
     {
@@ -77,6 +78,18 @@ public class GUITexture implements SwingInterface
         float h = (float) height / Display.getHeight();
         this.scale = new Vector2f(w, h);
         setLocation(this.x, this.y);
+    }
+
+    public void setImageLocation(int x, int y)
+    {
+        float _x = (float) x / Display.getWidth();
+        float _y = (float) y / Display.getHeight();
+        imageLocation = new Vector2f(_x, _y);
+    }
+
+    public Vector2f getImageLocation()
+    {
+        return imageLocation;
     }
 
     public void setSize(int width, int height)
