@@ -80,7 +80,7 @@ public class GUITexture implements SwingInterface
         float h = (float) height / Display.getHeight();
         this.scale = new Vector2f(w, h);
         setLocation(this.x, this.y);
-        setImageLocation(this.imgX, this.imgY);
+        //setImageLocation(this.imgX, this.imgY);
     }
 
     public void setImageLocation(int x, int y)

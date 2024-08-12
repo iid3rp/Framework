@@ -13,7 +13,8 @@ uniform vec2 size;
 void main(void)
 {
 	gl_Position = transformationMatrix * vec4(position, 0.0, 1.0);
-	vec2 imgLoc = imageLocation / size;
-	textureCoords = vec2((position.x - imgLoc.x + 1.0) / 2.0, 1 - (position.y + imgLoc.y + 1.0) / 2.0);
-	texturePosition = vec2(position.x - imgLoc.x, position.y + imgLoc.y);
+	vec2 imgLoc = imageLocation;
+	textureCoords = vec2(((position.x + 1.0) / 2.0), (1 - (position.y + 1.0) / 2.0));
+	textureCoords = vec2(textureCoords.x + imgLoc.x, textureCoords.y - imgLoc.y);
+	texturePosition = position;
 }
