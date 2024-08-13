@@ -30,7 +30,7 @@ public class TextMasterRenderer
 
         FontType fontType = text.getFont();
         TextMeshData data = fontType.loadText(text);
-        int vao = ModelLoader.loadToVao(data.getVertexPositions(), data.getTextureCoords());
+        int vao = ModelLoader.loadToVaoInt(data.getVertexPositions(), data.getTextureCoords());
         text.setMeshInfo(vao, data.getVertexCount());
         List<GUIText> textSection = texts.computeIfAbsent(fontType, func -> new ArrayList<>());
         textSection.add(text);

@@ -56,7 +56,7 @@ public final class ModelLoader
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
     }
 
-    public static Model loadToVao(float[] positions, float[] textureCoords, float[] normals, int[] indices) {
+    public static Model loadToVaoInt(float[] positions, float[] textureCoords, float[] normals, int[] indices) {
         int vaoId = createVao();
         bindIndicesBuffer(indices);
         storeDataInAttributeList(0, 3, positions);     // using VAO attribute 0. Could be any 0 through 15
@@ -67,7 +67,7 @@ public final class ModelLoader
     }
 
     // for the GUI rendering system
-    public static Model loadToVao(float[] positions, int dimensions)
+    public static Model loadToVaoInt(float[] positions, int dimensions)
     {
         int VaoId = createVao();
         storeDataInAttributeList(0, dimensions, positions);
@@ -183,7 +183,7 @@ public final class ModelLoader
         glBindVertexArray(0);
     }
 
-    public static Model loadToVao(float[] pos, float[] coords, float[] normals, int[] indices, float[] tangents)
+    public static Model loadToVaoInt(float[] pos, float[] coords, float[] normals, int[] indices, float[] tangents)
     {
         int id = createVao();
         bindIndicesBuffer(indices);
@@ -195,12 +195,18 @@ public final class ModelLoader
         return new Model(id, indices.length);
     }
 
-    public static int loadToVao(float[] vertexPositions, float[] textureCoords)
+    public static int loadToVaoInt(float[] vertexPositions, float[] textureCoords)
     {
         int vaoId = createVao();
         storeDataInAttributeList(0, 2, vertexPositions);
         storeDataInAttributeList(1, 2, textureCoords);
         unbindVao();
         return vaoId;
+    }
+
+    public static Model loadToVao(float[] vertexPositions, float[] textureCoords)
+    {
+        int vaoId = loadToVaoInt(vertexPositions, textureCoords);
+        return new Model(vaoId, vertexPositions.length);
     }
 }

@@ -41,6 +41,7 @@ public class GUIShader extends GLShader
 	protected void bindAttributes()
 	{
 		super.bindAttribute(0, "position");
+		super.bindAttribute(1, "textureCoords");
 	}
 
 

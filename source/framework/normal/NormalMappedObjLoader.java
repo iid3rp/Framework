@@ -81,7 +81,7 @@ public class NormalMappedObjLoader {
 		convertDataToArrays(vertices, textures, normals, verticesArray, texturesArray, normalsArray, tangentsArray);
 		int[] indicesArray = convertIndicesListToArray(indices);
 
-		return ModelLoader.loadToVao(verticesArray, texturesArray, normalsArray, indicesArray, tangentsArray);
+		return ModelLoader.loadToVaoInt(verticesArray, texturesArray, normalsArray, indicesArray, tangentsArray);
 	}
 
 	private static void calculateTangents(VertexNormal v0, VertexNormal v1, VertexNormal v2, List<Vector2f> textures) {

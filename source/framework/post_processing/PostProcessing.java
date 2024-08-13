@@ -24,7 +24,7 @@ public class PostProcessing {
 
 	public static void initialize()
 	{
-		quad = ModelLoader.loadToVao(POSITIONS, 2);
+		quad = ModelLoader.loadToVaoInt(POSITIONS, 2);
 		contrastChanger = new ContrastChanger();
 		verticalBlur = new VerticalBlur(Display.getWidth() / 2, Display.getHeight() / 2);
 		horizontalBlur = new HorizontalBlur(Display.getWidth() / 2, Display.getHeight() / 2);

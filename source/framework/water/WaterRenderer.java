@@ -92,6 +92,6 @@ public class WaterRenderer {
 	{
 		// Just x and z vertex positions here, y is set to 0 in v.shader
 		float[] vertices = { -1, -1, -1, 1, 1, -1, 1, -1, -1, 1, 1, 1};
-		quad = ModelLoader.loadToVao(vertices, 2);
+		quad = ModelLoader.loadToVaoInt(vertices, 2);
 	}
 }

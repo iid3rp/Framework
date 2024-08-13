@@ -190,7 +190,7 @@ public class Terrain {
             }
         }
 
-        return ModelLoader.loadToVao(vertices, textureCoords, normals, indices);
+        return ModelLoader.loadToVaoInt(vertices, textureCoords, normals, indices);
     }
 
     private Model generateTerrain(int seed)
@@ -240,7 +240,7 @@ public class Terrain {
                 indices[pointer++] = bottomRight;
             }
         }
-        return ModelLoader.loadToVao(vertices, textureCoords, normals, indices);
+        return ModelLoader.loadToVaoInt(vertices, textureCoords, normals, indices);
     }
 
     private float getHeight(int x, int z,  BufferedImage bufferedImage) {

@@ -117,7 +117,7 @@ public class ObjectLoader
             indicesArray[i] = indices.get(i);
         }
 
-        return ModelLoader.loadToVao(verticesArray, texturesArray, normalsArray, indicesArray);
+        return ModelLoader.loadToVaoInt(verticesArray, texturesArray, normalsArray, indicesArray);
     }
 
     private static void processVertex(String[] vertexData, List<Integer> indices, List<Vector2f> textures, List<Vector3f> normals, float[] textureArray, float[] normalsArray) {
@@ -203,7 +203,7 @@ public class ObjectLoader
         convertDataToArrays(vertices, textures, normals, verticesArray, texturesArray, normalsArray, tangentsArray);
         int[] indicesArray = convertIndicesListToArray(indices);
 
-        return ModelLoader.loadToVao(verticesArray, texturesArray, normalsArray, indicesArray, tangentsArray);
+        return ModelLoader.loadToVaoInt(verticesArray, texturesArray, normalsArray, indicesArray, tangentsArray);
     }
 
     private static void calculateTangents(VertexNormal v0, VertexNormal v1, VertexNormal v2, List<Vector2f> textures) {

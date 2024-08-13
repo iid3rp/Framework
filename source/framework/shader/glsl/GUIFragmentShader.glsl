@@ -1,53 +1,28 @@
 #version 400 core
 
-in vec2 textureCoords;
 in vec2 texturePosition;
+in vec2 coords;
+in vec2 passTextureCoords;
 
 out vec4 out_Color;
 
 uniform sampler2D guiTexture;
 uniform sampler2D clipTexture;
-uniform vec2 size;
-uniform vec2 pos;
-uniform vec2 scale;
-uniform mat4 transformationMatrix;
-uniform mat4 invertTransformationMatrix;
-uniform vec2 imageLocation;
 
-// Transform the texture position back to its original space using the inverse transformation matrix
-//vec4 transformedPosition = transformationMatrix * vec4(texturePosition, 0, 1.0);
-vec2 textPos = (transformationMatrix * vec4(texturePosition, 0, 1)).xy;
-
-float sizeX = size.x < scale.x? size.x / scale.x : 1;
-float sizeY = size.y < scale.y? size.y / scale.y : 1;
-
-vec2 normSize = vec2(sizeX, sizeY);
-
-vec2 normTop = vec2((pos.x * 2) - 1, (normSize.x * 2) - 1);
-vec2 normBot = vec2((pos.y * -2) + 1, (normSize.y * -2) + 1);
-
-bool boundSize()
+bool bound()
 {
-	return textPos.x >= normTop.x && textPos.x <= normTop.y &&
-	textPos.y <= normBot.x && textPos.y >= normBot.y;
+	return !(texturePosition.x < 0.0 || texturePosition.x > 1.0 ||
+	texturePosition.y < 0.0 || texturePosition.y > 1.0);
 }
-
-//bool boundImage()
-//{
-//	return textPos.x >= normImgTop.x && textPos.x <= normImgTop.y &&
-//	textPos.y <= normImgBot.x && textPos.y >= normImgBot.y;
-//}
 
 void main(void)
 {
-	// size must be based on the position
-	if(boundSize())
+	if(bound())
 	{
-		vec4 color = texture(guiTexture, textureCoords);
-		vec4 clip = texture(clipTexture, textureCoords);
+		vec4 color = texture(guiTexture, texturePosition);
+		vec4 clip = texture(clipTexture, texturePosition);
 		color = color * (1 - clip.b);
 		out_Color = color;
-		// debug: out_Color = vec4(.4, .2, .4, .4f);
 	}
 	else out_Color = vec4(1);
 }

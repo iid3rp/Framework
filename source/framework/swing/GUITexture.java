@@ -102,8 +102,8 @@ public class GUITexture implements SwingInterface
     {
         float w = (float) width / Display.getWidth();
         float h = (float) height / Display.getHeight();
-        System.out.println(w + " <- width | height -> " + h);
         this.size = new Vector2f(w, h);
+        setLocation(this.x, this.y);
     }
 
     public void setLocation(int x, int y)
@@ -113,12 +113,8 @@ public class GUITexture implements SwingInterface
         float posX = (((float) x / (Display.getWidth())) * 2) - 1;
         float posY = 1 - (((float) y / (Display.getHeight())) * 2);
 
-        float _x = (float) this.x / Display.getWidth();
-        float _y = (float) this.y / Display.getHeight();
-        this.rawPosition = new Vector2f(_x, _y);
-
-        posX += scale.x;
-        posY -= scale.y;
+        posX += size.x;
+        posY -= size.y;
 
         this.position = new Vector2f(posX, posY);
     }

@@ -25,7 +25,7 @@ public class TextEntityRenderer
     public TextEntityRenderer()
     {
         float[] positions = {-1, -1, -1, 1, 1, -1, 1, -1, -1, 1, 1, 1};
-        quad = ModelLoader.loadToVao(positions, 2);
+        quad = ModelLoader.loadToVaoInt(positions, 2);
         size = new Vector2f(1, 1);
         shader = new TextShader();
     }
