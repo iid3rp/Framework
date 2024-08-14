@@ -68,7 +68,8 @@ public class TextEntityRenderer
             else if(c == '\n')
             {
                 setWord(font, chars, text);
-                cursorY += font.getLineHeight();
+                cursorY += font.getLineHeight() - 16;
+                cursorX = 0;
                 chars = new ArrayList<>();
             }
             else
@@ -84,15 +85,15 @@ public class TextEntityRenderer
         int width = 0;
         for(Char c : chars)
             width += c.getWidth();
-//        if (width > text.getMaxWidth()) {
-//            cursorY += font.getLineHeight();
-//            cursorX = 0;
-//        }
+        if (cursorX + width > text.getMaxWidth()) {
+            cursorY += font.getLineHeight() - 16;
+            cursorX = 0;
+        }
         for(Char c : chars) {
             renderCharacter(c, font, text);
             cursorX += c.getXAdvance() - 16;
         }
-        cursorX += font.getCharacterMap().get(' ').getXAdvance(); // space character
+        cursorX += font.getCharacterMap().get(' ').getXAdvance() - 16; // space character
     }
 
     private void renderCharacter(Char c, Font font, Text text)
@@ -122,6 +123,15 @@ public class TextEntityRenderer
     public Vector2f setLocation(int x, int y, Vector2f size)
     {
         float posX = (((float) x / (Display.getWidth())) * 2) - 1;
+
+
+        if(false) {
+            posX = (((float) x / Display.getWidth()) * 2) - 1 - size.x;
+        }
+        if(false) {
+            posX = (((float) x / Display.getWidth()) * 2) - 1 - (size.x / 2);
+        }
+
         float posY = 1 - (((float) y / (Display.getHeight())) * 2);
 
         posX += size.x;

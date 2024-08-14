@@ -17,6 +17,7 @@ public class Text
     private float fontSize;
     private int height;
     private int width;
+    private int maxWidth;
 
     public Text() {}
 
@@ -62,12 +63,17 @@ public class Text
 
     public int getMaxWidth()
     {
-        return 1280;
+        return maxWidth;
     }
 
     public void setSize(int width, int height)
     {
         this.width = width;
         this.height = height;
+    }
+
+    public void setMaxWidth(int maxWidth)
+    {
+        this.maxWidth = maxWidth;
     }
 }

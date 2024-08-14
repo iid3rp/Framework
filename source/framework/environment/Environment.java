@@ -1,5 +1,6 @@
 package framework.environment;
 
+import framework.Scratch;
 import framework.fontExperiment.Char;
 import framework.fontExperiment.Font;
 import framework.fontExperiment.FontFile;
@@ -89,7 +90,8 @@ public final class Environment
         System.out.println(x);
         List<Char> chars = x.getCharacters();
         Text text = new Text();
-        text.setText("help! worlq!");
+        text.setText(Scratch.guess);
+        text.setMaxWidth(1000);
         text.setSize(200, 500);
 
         for(Char c : chars) {
