@@ -1,19 +1,23 @@
 #version 400 core
 
-in vec2 position;
+layout(location = 0) in vec2 position;
+layout(location = 1) in vec2 textureCoords;
 
-out vec2 textPos;
-out vec2 textureCoords;
+out vec2 texturePosition;
+out vec2 passTextureCoords;
 
 uniform mat4 transformationMatrix;
-uniform mat4 scaleMatrix;
-uniform vec2 pos;
-uniform vec2 offset;
+uniform vec2 fontLocation;
+uniform vec2 size;
+uniform vec2 scale;
 
 void main(void)
 {
-    // putting the final position as the final size itself
-    gl_Position = transformationMatrix * vec4(position, 0.0, 1.0);
-    textureCoords = vec2((position.x + 1.0) / 2.0, 1 - (position.y + 1.0) / 2.0);
-    textPos = position;
+    gl_Position = transformationMatrix * vec4(position , 0.0, 1.0);
+
+    // Offset the texture coordinates based on the image location
+    vec2 multiplier = size / scale;
+
+    // Scale and offset the texture coordinates
+    texturePosition = (textureCoords * multiplier) - (fontLocation / scale);
 }

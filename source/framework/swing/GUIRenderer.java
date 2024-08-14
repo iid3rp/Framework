@@ -19,23 +19,28 @@ public class GUIRenderer
     private GUIShader shader;
     private Vector2f size;
 
+    public static float[] positions =
+    {
+            -1, -1,
+            -1, 1,
+            1, -1,
+            1, -1,
+            -1, 1,
+            1, 1
+    };
+
+    public static float[] coords = {
+            0, 1,
+            0, 0,
+            1, 1,
+            1, 1,
+            0, 0,
+            1, 0
+    };
+
+
     public GUIRenderer()
     {
-        float[] positions = {
-                -1, -1,
-                -1, 1,
-                1, -1,
-                1, -1,
-                -1, 1,
-                1, 1};
-        float[] coords = {
-                0, 1,
-                0, 0,
-                1, 1,
-                1, 1,
-                0, 0,
-                1, 0
-        };
         quad = ModelLoader.loadToVao(positions, coords);
         shader = new GUIShader();
         size = new Vector2f(1, 1);
@@ -66,13 +71,12 @@ public class GUIRenderer
             GL13.glActiveTexture(GL13.GL_TEXTURE1);
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture.getClipTexture());
             Matrix4f matrix = GeomMath.createTransformationMatrix(texture.getPosition(), texture.getRotation(), texture.getSize());
-            //Matrix4f invMatrix = GeomMath.createTransformationMatrix(new Vector2f(-.5f), texture.getRotation(), new Vector2f(.5f));
-            shader.loadPosition(texture.getRawPosition());
+
             shader.loadSize(texture.getSize());
             shader.loadScale(texture.getScale());
             shader.loadTransformation(matrix);
             shader.loadImageLocation(texture.getImageLocation());
-            //shader.loadInvertTransformationMatrix(invMatrix);
+
             GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, quad.getVertexCount());
         }
         GL11.glEnable((GL11.GL_DEPTH_TEST));

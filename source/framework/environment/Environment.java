@@ -21,7 +21,6 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL30;
-import org.lwjgl.vulkan.EXTSubpassMergeFeedback;
 
 import java.util.List;
 
@@ -68,11 +67,11 @@ public final class Environment
             //
             PictureBox pb = new PictureBox();
             pb.setTexture(ModelLoader.loadTexture("brat.png"));
-            pb.setLocation(0, 0);
-            pb.setImageLocation(0,  0);
-            pb.setScale(300, 300);
+            pb.setLocation(20, 20);
+            pb.setImageLocation(-100,  -100);
+            pb.setScale(500, 500);
             pb.setSize(400, 400);
-            scene.getContentPane().add(pb);
+            //scene.getContentPane().add(pb);
 
 
             loop();
@@ -90,7 +89,7 @@ public final class Environment
         System.out.println(x);
         List<Char> chars = x.getCharacters();
         Text text = new Text();
-        text.setText("Hello World!");
+        text.setText("help! worlq!");
         text.setSize(200, 500);
 
         for(Char c : chars) {

@@ -3,6 +3,7 @@ package framework.fontExperiment;
 import framework.h.Display;
 import framework.loader.ModelLoader;
 import framework.model.Model;
+import framework.swing.GUIRenderer;
 import framework.util.GeomMath;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
@@ -24,8 +25,7 @@ public class TextEntityRenderer
     private int cursorY;
     public TextEntityRenderer()
     {
-        float[] positions = {-1, -1, -1, 1, 1, -1, 1, -1, -1, 1, 1, 1};
-        quad = ModelLoader.loadToVaoInt(positions, 2);
+        quad = ModelLoader.loadToVao(GUIRenderer.positions, GUIRenderer.coords);
         size = new Vector2f(1, 1);
         shader = new TextShader();
     }
@@ -35,6 +35,7 @@ public class TextEntityRenderer
         shader.bind();
         GL30.glBindVertexArray(quad.getVaoId());
         GL20.glEnableVertexAttribArray(0);
+        GL20.glEnableVertexAttribArray(1);
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glDisable(GL11.GL_CULL_FACE);
@@ -45,6 +46,7 @@ public class TextEntityRenderer
         GL11.glEnable((GL11.GL_DEPTH_TEST));
         GL11.glEnable(GL11.GL_CULL_FACE);
         GL11.glDisable(GL11.GL_BLEND);
+        GL20.glDisableVertexAttribArray(1);
         GL20.glDisableVertexAttribArray(0);
         GL30.glBindVertexArray(0);
         shader.unbind();
@@ -88,7 +90,7 @@ public class TextEntityRenderer
 //        }
         for(Char c : chars) {
             renderCharacter(c, font, text);
-            cursorX += c.getXAdvance();
+            cursorX += c.getXAdvance() - 16;
         }
         cursorX += font.getCharacterMap().get(' ').getXAdvance(); // space character
     }
@@ -98,8 +100,8 @@ public class TextEntityRenderer
         GL13.glActiveTexture(GL13.GL_TEXTURE0);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, font.getTexture());
 
-        Vector2f size = setSize(c.getWidth(), c.getHeight());
-        Vector2f pos = setLocation(cursorX + c.getXOffset(), cursorY + c.getYOffset(), size);
+        Vector2f size = getNormal(c.getWidth(), c.getHeight());
+        Vector2f pos = setLocation(cursorX + c.getXOffset() + 5, cursorY + c.getYOffset() + 5, size);
 
         // set the transformation matrix of the whole font texture
         Matrix4f letterMatrix = GeomMath.createTransformationMatrix(
@@ -108,29 +110,13 @@ public class TextEntityRenderer
                 (size)
         );
 
-        // set the transformation matrix of each letter...
-        Matrix4f scaleMatrix = GeomMath.createTransformationMatrix(
-                getNormal(c.getX(), c.getY()),
-                new Vector3f(0),
-                getNormal(font.getScaleW(), font.getScaleH())
-        );
-
-        shader.loadTexturePosition(getNormal(c.getX(), c.getY()));
-        shader.loadOffset(getNormal(c.getXOffset(), c.getYOffset()));
-        shader.loadPosition(getNormal(c.getX(), c.getY()));
-        shader.loadSize(getNormal(font.getScaleW(), font.getScaleH()));
-        shader.loadScale(getNormal(c.getWidth(), c.getHeight()));
-        shader.loadScaleMatrix(scaleMatrix);
+        shader.loadSize(size);
+        shader.loadScale(getNormal(font.getScaleW(), font.getScaleH()));
         shader.loadTransformation(letterMatrix);
+        shader.loadFontLocation(getNormal(-c.getX(), -c.getY()));
+
         GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, quad.getVertexCount());
         //System.out.println(c + " cursorX: " + cursorX + " cursorY: " + cursorY);
-    }
-
-    public Vector2f setSize(int width, int height)
-    {
-        float w = (float) width / Display.getWidth();
-        float h = (float) height / Display.getHeight();
-        return new Vector2f(w, h);
     }
 
     public Vector2f setLocation(int x, int y, Vector2f size)
