@@ -15,6 +15,7 @@ import framework.post_processing.PostProcessing;
 import framework.renderer.MasterRenderer;
 import framework.loader.ModelLoader;
 import framework.event.MouseEvent;
+import framework.scripting.Count;
 import framework.scripting.FrameworkScript;
 import framework.scripting.StackScript;
 import framework.swing.PictureBox;
@@ -90,13 +91,23 @@ public final class Environment
         System.out.println(x);
         List<Char> chars = x.getCharacters();
         Text text = new Text();
-        text.setText(Scratch.guess);
+        text.setText(Scratch.guess.toLowerCase()
+                .replace("a", "")
+                .replace("e", "")
+                .replace("i", "")
+                .replace("o", "")
+                .replace("u", "")
+                );
         text.setMaxWidth(1000);
         text.setSize(200, 500);
+        text.setAlignment(Text.LEFT);
 
         for(Char c : chars) {
             System.out.println(c);
         }
+
+        Count count = new Count();
+        run(count);
 
         while(Display.shouldDisplayClose())
         {
@@ -105,7 +116,7 @@ public final class Environment
             scene.getEvent().update();
 
             //the shadow thingies
-            MasterRenderer.renderShadowMap(scene.getEntities(), scene.getMainLight());
+            //MasterRenderer.renderShadowMap(scene.getEntities(), scene.getMainLight());
 
             //particle
 
@@ -155,7 +166,7 @@ public final class Environment
             // frame buffer stuff
             multi.bindFrameBuffer();
             renderScene(new Vector4f(0, -1, 0, 1000000));
-            MasterRenderer.renderWaters(scene.getWaters(), scene.getCamera(), scene.getMainLight());
+            //MasterRenderer.renderWaters(scene.getWaters(), scene.getCamera(), scene.getMainLight());
             if(scene.getParticleSystem() != null)
                 ParticleMaster.renderParticles(scene.getCamera());
             multi.unbindFrameBuffer();
@@ -175,7 +186,7 @@ public final class Environment
 
             textEntityRenderer.render(x, text);
             scene.getContentPane().render(scene.getContentPane().getComponents());
-            //fps.setText("fps count: " + FPSCounter.getCounter());
+            //text.setText("seconds: " + count.seconds);
             //TextMasterRenderer.render();
             runAllScripts();
             Display.updateDisplay();

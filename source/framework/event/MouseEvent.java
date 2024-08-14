@@ -336,11 +336,13 @@ public class MouseEvent
         );
 
         GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, pxFbo.getFrameBuffer());
-        //GL30.glReadBuffer(GL30.GL_COLOR_ATTACHMENT2);
+
         IntBuffer pixelBuffer = BufferUtils.createIntBuffer(1);
         GL30.glReadPixels(0, 0, 1, 1, GL30.GL_RGBA, GL11.GL_UNSIGNED_BYTE, pixelBuffer);
-        //GL30.glReadBuffer(GL11.GL_NONE);
+
+        // clean within ourselves...
         GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, 0);
+        GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, 0);
 
         int pixel = pixelBuffer.get(0);
 

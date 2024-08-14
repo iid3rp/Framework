@@ -122,6 +122,11 @@ public final class Display implements Hardware
         }
     }
 
+    public static int getVolatileFPS()
+    {
+        return frames;
+    }
+
     public static int getCurrentFPSCount()
     {
         return currentFPSCount;

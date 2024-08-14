@@ -9,6 +9,9 @@ import java.awt.Point;
 
 public class Text
 {
+    public static final int LEFT = 0;
+    public static final int CENTER = 1;
+    public static final int RIGHT = 2;
     private String text;
     private Vector2f position2f;
     private Vector4f color4f;
@@ -18,6 +21,7 @@ public class Text
     private int height;
     private int width;
     private int maxWidth;
+    private int alignment;
 
     public Text() {}
 
@@ -66,10 +70,20 @@ public class Text
         return maxWidth;
     }
 
+    public void setAlignment(int alignment)
+    {
+        this.alignment = alignment;
+    }
+
     public void setSize(int width, int height)
     {
         this.width = width;
         this.height = height;
+    }
+
+    public int getAlignment()
+    {
+        return alignment;
     }
 
     public void setMaxWidth(int maxWidth)
