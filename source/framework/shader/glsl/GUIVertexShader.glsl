@@ -17,10 +17,8 @@ void main(void)
 	gl_Position = transformationMatrix * vec4(position , 0.0, 1.0);
 
 	// Offset the texture coordinates based on the image location
-	vec2 offset = imageLocation / size;
+	vec2 multiplier = size / scale;
 
 	// Scale and offset the texture coordinates
-	texturePosition = vec2(textureCoords / scale) - offset;
-
-	//texturePosition = textureCoords - (imageLocation / size);
+	texturePosition = (textureCoords * multiplier) - (imageLocation / scale);
 }
