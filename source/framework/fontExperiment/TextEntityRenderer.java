@@ -23,7 +23,7 @@ public class TextEntityRenderer
     private Vector2f size;
     private int cursorX;
     private int cursorY;
-    private int width;
+    //private int width;
     public TextEntityRenderer()
     {
         quad = ModelLoader.loadToVao(GUIRenderer.positions, GUIRenderer.coords);
@@ -60,83 +60,126 @@ public class TextEntityRenderer
     {
         cursorX = 0;
         cursorY = 0;
-        width = 0;
 
         // rendering
         List<Char> chars = new ArrayList<>();
-        for(char c : text.getText().toCharArray())
-        {
-            if(c == '\n')
+        for(char c : text.getText().toCharArray()) {
+            if(c == ' ')
             {
-                renderLine(font, chars, text);
+                setWord(font, chars, text);
+                chars = new ArrayList<>();
+            }
+            else if(c == '\n')
+            {
+                setWord(font, chars, text);
                 cursorY += font.getLineHeight() - 16;
-                chars.clear();
+                chars = new ArrayList<>();
             }
             else
+            {
                 chars.add(font.getCharacterMap().get(c));
+            }
         }
-        renderLine(font, chars, text);
+        setWord(font, chars, text);
     }
 
-    private void renderLine(Font font, List<Char> chars, Text text)
+    private void setWord(Font font, List<Char> chars, Text text)
     {
-        List<Char> wrap = new ArrayList<>();
-        List<Char> forWord = new ArrayList<>();
-        Word word = null;
+        int width = 0;
         for(Char c : chars)
-        {
-            if(c.getCharacter() == ' ')
-            {
-                wrap.add(c);
-                forWord.add(c);
-                word = new Word(forWord);
-                System.out.println(word);
-                width += word.getWidth();
-                forWord = new ArrayList<>();
-            }
-
-            if(width > text.getMaxWidth())
-            {
-                cursorY += font.getLineHeight() - 16;
-                assert word != null;
-                width -= word.getWidth() + font.getCharacterMap().get(' ').getXAdvance() + 16;
-                renderWords(font, wrap, text);
-                wrap.clear();
-                width = 0;
-            }
-            else
-            {
-                wrap.add(c);
-                forWord.add(c);
-            }
+            width += c.getWidth();
+        if (cursorX + width > text.getMaxWidth()) {
+            cursorY += font.getLineHeight() - 16;
+            cursorX = 0;
         }
-        renderWords(font, wrap, text);
-        wrap.clear();
-        width = 0;
-    }
-
-    private void renderWords(Font font, List<Char> chars, Text text)
-    {
-        List<Char> wrap = new ArrayList<>();
-        for(Char c : chars)
-        {
-            if(c.getCharacter() == ' ')
-            {
-                renderWord(font, wrap, text);
-            }
-            else wrap.add(c);
-        }
-        renderWord(font, wrap, text);
-    }
-
-    private void renderWord(Font font, List<Char> chars, Text text)
-    {
         for(Char c : chars) {
             renderCharacter(c, font, text);
             cursorX += c.getXAdvance() - 16;
         }
         cursorX += font.getCharacterMap().get(' ').getXAdvance() - 16; // space character
     }
+
+//    private void renderText(Font font, Text text)
+//    {
+//        cursorX = 0;
+//        cursorY = 0;
+//        width = 0;
+//
+//        // rendering
+//        List<Char> chars = new ArrayList<>();
+//        for(char c : text.getText().toCharArray())
+//        {
+//            if(c == '\n')
+//            {
+//                renderLine(font, chars, text);
+//                cursorY += font.getLineHeight() - 16;
+//                chars.clear();
+//            }
+//            else
+//                chars.add(font.getCharacterMap().get(c));
+//        }
+//        renderLine(font, chars, text);
+//    }
+
+//    private void renderLine(Font font, List<Char> chars, Text text)
+//    {
+//        List<Char> wrap = new ArrayList<>();
+//        List<Char> forWord = new ArrayList<>();
+//        Word word = null;
+//        for(Char c : chars)
+//        {
+//            if(c.getCharacter() == ' ')
+//            {
+//                wrap.add(c);
+//                forWord.add(c);
+//                word = new Word(forWord);
+//                System.out.println(word);
+//                width += word.getWidth();
+//                forWord = new ArrayList<>();
+//            }
+//
+//            if(width > text.getMaxWidth())
+//            {
+//                cursorY += font.getLineHeight() - 16;
+//                assert word != null;
+//                width -= word.getWidth() + font.getCharacterMap().get(' ').getXAdvance() + 16;
+//                renderWords(font, wrap, text);
+//                wrap.clear();
+//                width = 0;
+//            }
+//            else
+//            {
+//                wrap.add(c);
+//                forWord.add(c);
+//            }
+//        }
+//        renderWords(font, wrap, text);
+//        wrap.clear();
+//        width = 0;
+//    }
+
+//    private void renderWords(Font font, List<Char> chars, Text text)
+//    {
+//        List<Char> wrap = new ArrayList<>();
+//        for(Char c : chars)
+//        {
+//            if(c.getCharacter() == ' ')
+//            {
+//                renderWord(font, wrap, text);
+//            }
+//            else wrap.add(c);
+//        }
+//        renderWord(font, wrap, text);
+//    }
+//
+//    private void renderWord(Font font, List<Char> chars, Text text)
+//    {
+//        for(Char c : chars) {
+//            renderCharacter(c, font, text);
+//            cursorX += c.getXAdvance() - 16;
+//        }
+//        cursorX += font.getCharacterMap().get(' ').getXAdvance() - 16; // space character
+//    }
 
     private void renderCharacter(Char c, Font font, Text text)
     {
@@ -163,8 +206,8 @@ public class TextEntityRenderer
         x = switch(text.getAlignment())
         {
             case Text.LEFT -> x;
-            case Text.CENTER -> (x + text.getMaxWidth() - width) / 2;
-            case Text.RIGHT -> x + text.getMaxWidth() - width;
+            //case Text.CENTER -> (x + text.getMaxWidth() - width) / 2;
+            //case Text.RIGHT -> x + text.getMaxWidth() - width;
             default -> throw new IllegalStateException("Unexpected value: " + text.getAlignment());
         };
 
