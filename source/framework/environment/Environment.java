@@ -91,13 +91,7 @@ public final class Environment
         System.out.println(x);
         List<Char> chars = x.getCharacters();
         Text text = new Text();
-        text.setText(Scratch.guess.toLowerCase()
-                .replace("a", "")
-                .replace("e", "")
-                .replace("i", "")
-                .replace("o", "")
-                .replace("u", "")
-                );
+        text.setText(Scratch.guess.toLowerCase());
         text.setMaxWidth(1000);
         text.setSize(200, 500);
         text.setAlignment(Text.LEFT);

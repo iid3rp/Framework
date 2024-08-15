@@ -13,8 +13,6 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
-import java.awt.AWTEventMulticaster;
-import java.security.cert.Certificate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,67 +60,76 @@ public class TextEntityRenderer
     {
         cursorX = 0;
         cursorY = 0;
+        width = 0;
 
         // rendering
-        width = 0;
-        int w = 0;
         List<Char> chars = new ArrayList<>();
         for(char c : text.getText().toCharArray())
         {
             if(c == '\n')
             {
-                cursorY += font.getLineHeight() - 16;
-                cursorX = 0;
                 renderLine(font, chars, text);
-                width = 0;
-                w = 0;
-                chars = new ArrayList<>();
-            }
-            else if(cursorX + w > text.getMaxWidth())
-            {
-                cursorX = 0;
                 cursorY += font.getLineHeight() - 16;
-                renderLine(font, chars, text);
-                width = 0;
-                w = 0;
-                chars = new ArrayList<>();
-            }
-            else if(c != ' ')
-            {
-                Char ch = font.getCharacterMap().get(c);
-                cursorX += ch.getXAdvance() - 16;
-                w += ch.getXAdvance() - 16;
-                chars.add(ch);
+                chars.clear();
             }
             else
-            {
-                Char ch = font.getCharacterMap().get(c);
-                cursorX += ch.getXAdvance() - 16;
-                w = 0;
-                chars.add(ch);
-            }
-            System.out.println(width);
+                chars.add(font.getCharacterMap().get(c));
         }
-        cursorX = 0;
-        width = 0;
         renderLine(font, chars, text);
     }
 
     private void renderLine(Font font, List<Char> chars, Text text)
     {
-        List<Char> lineChars = new ArrayList<>();
+        List<Char> wrap = new ArrayList<>();
+        List<Char> forWord = new ArrayList<>();
+        Word word = null;
         for(Char c : chars)
         {
-            if(c.getCharacter() == ' ') {
-                setWord(font, lineChars, text);
-                lineChars = new ArrayList<>();
+            if(c.getCharacter() == ' ')
+            {
+                wrap.add(c);
+                forWord.add(c);
+                word = new Word(forWord);
+                System.out.println(word);
+                width += word.getWidth();
+                forWord = new ArrayList<>();
             }
-            else lineChars.add(c);
+
+            if(width > text.getMaxWidth())
+            {
+                cursorY += font.getLineHeight() - 16;
+                assert word != null;
+                width -= word.getWidth() + font.getCharacterMap().get(' ').getXAdvance() + 16;
+                renderWords(font, wrap, text);
+                wrap.clear();
+                width = 0;
+            }
+            else
+            {
+                wrap.add(c);
+                forWord.add(c);
+            }
         }
-        setWord(font, lineChars, text);
+        renderWords(font, wrap, text);
+        wrap.clear();
+        width = 0;
     }
 
-    private void setWord(Font font, List<Char> chars, Text text)
+    private void renderWords(Font font, List<Char> chars, Text text)
+    {
+        List<Char> wrap = new ArrayList<>();
+        for(Char c : chars)
+        {
+            if(c.getCharacter() == ' ')
+            {
+                renderWord(font, wrap, text);
+            }
+            else wrap.add(c);
+        }
+        renderWord(font, wrap, text);
+    }
+
+    private void renderWord(Font font, List<Char> chars, Text text)
     {
         for(Char c : chars) {
             renderCharacter(c, font, text);
@@ -149,7 +156,6 @@ public class TextEntityRenderer
         shader.loadFontLocation(getNormal(-c.getX(), -c.getY()));
 
         GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, quad.getVertexCount());
-        //System.out.println(c + " cursorX: " + cursorX + " cursorY: " + cursorY);
     }
 
     public Vector2f setLocation(Text text, int x, int y, Vector2f size)
