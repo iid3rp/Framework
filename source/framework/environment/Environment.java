@@ -179,12 +179,12 @@ public final class Environment
             //if(!Keyboard.isKeyDown(Keyboard.E))
             PostProcessing.doPostProcessing(out.getColorTexture(), bright.getColorTexture());
 
-            textEntityRenderer.render(x, text);
+            //textEntityRenderer.render(x, text);
+            textEntityRenderer.rt(x, text);
             scene.getContentPane().render(scene.getContentPane().getComponents());
             //text.setText("seconds: " + count.seconds);
             //TextMasterRenderer.render();
             runAllScripts();
-            System.out.println(Display.getDeltaInSeconds());
             Display.updateDisplay();
         }
     }

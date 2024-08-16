@@ -14,6 +14,7 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class TextEntityRenderer
@@ -56,6 +57,71 @@ public class TextEntityRenderer
         GL20.glDisableVertexAttribArray(0);
         GL30.glBindVertexArray(0);
         shader.unbind();
+    }
+
+    public void rt(Font font, Text text)
+    {
+        fontSize = (text.getFontSize() / font.getLineHeight());
+        cursorX = cursorY = 0;
+
+        String[] lines = text.getText().split("\n");
+        for(String s : lines)
+            rl(font, text, s);
+    }
+
+    private void rl(Font font, Text text, String line)
+    {
+        float[] width = {0, 0};
+        String[] words = line.split(" ");
+        List<String> w = new ArrayList<>();
+        List<Character> chars = new ArrayList<>();
+        for(String word : words)
+        {
+            for(char c : word.toCharArray())
+            {
+                width[0] += font.getCharacterMap()
+                        .get(c)
+                        .getXAdvance() - 16;
+            }
+            width[0] += font.getCharacterMap()
+                    .get(' ')
+                    .getXAdvance() - 16;
+
+            if(width[0] > text.getMaxWidth())
+            {
+                rw(font, text, chars);
+                System.out.println("line: " + Arrays.toString(chars.toArray()) + "  >>>  width = " + width[1]);
+                width = new float[] { 0, 0 };
+                chars.clear();
+                for(char c : word.toCharArray())
+                {
+                    width[0] += font.getCharacterMap()
+                            .get(c)
+                            .getXAdvance() - 16;
+                    chars.add(c);
+                }
+                width[0] += font.getCharacterMap()
+                        .get(' ')
+                        .getXAdvance() - 16;
+                chars.add(' ');
+            }
+            else
+            {
+                width[1] = width[0];
+                for(char c : word.toCharArray())
+                    chars.add(c);
+                chars.add(' ');
+            }
+        }
+        System.out.println("line: " + Arrays.toString(chars.toArray()) + "  >>>  width = " + width[1]);
+        rw(font, text, chars);
+
+        System.out.println();
+    }
+
+    private void rw(Font font, Text text, List<Character> chars)
+    {
+
     }
 
     private void renderText(Font font, Text text)

@@ -9,5 +9,5 @@ public class Scratch
             "You wanna put 'em in your mouth, pull 'em all down south " +
             "You wanna turn this shit out, that's what I'm talking about " +
             "Pu-pu-put 'em in your mouth, pull 'em all down south " +
-            "You wanna turn this shit out, that's what I'm talking about (yeah)";
+            "You wanna turn this shit out, that's what I'm talking about yeah yeah yeah";
 }
