@@ -93,9 +93,9 @@ public final class Environment
         Text text = new Text();
         text.setText(Scratch.guess.toUpperCase());
         text.setMaxWidth(1000);
-        text.setFontSize(30);
+        text.setFontSize(60);
         text.setSize(200, 500);
-        text.setAlignment(Text.LEFT);
+        text.setAlignment(Text.CENTER);
 
         for(Char c : chars) {
             System.out.println(c);
@@ -179,8 +179,8 @@ public final class Environment
             //if(!Keyboard.isKeyDown(Keyboard.E))
             PostProcessing.doPostProcessing(out.getColorTexture(), bright.getColorTexture());
 
-            //textEntityRenderer.render(x, text);
-            textEntityRenderer.rt(x, text);
+            textEntityRenderer.render(x, text);
+            //textEntityRenderer.rt(x, text);
             scene.getContentPane().render(scene.getContentPane().getComponents());
             //text.setText("seconds: " + count.seconds);
             //TextMasterRenderer.render();

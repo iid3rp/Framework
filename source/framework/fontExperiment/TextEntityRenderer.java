@@ -14,7 +14,6 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class TextEntityRenderer
@@ -48,7 +47,7 @@ public class TextEntityRenderer
         GL13.glActiveTexture(GL13.GL_TEXTURE0);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, font.getTexture());
 
-        renderText(font, text);
+        renderString(font, text);
 
         GL11.glEnable((GL11.GL_DEPTH_TEST));
         GL11.glEnable(GL11.GL_CULL_FACE);
@@ -59,71 +58,123 @@ public class TextEntityRenderer
         shader.unbind();
     }
 
-    public void rt(Font font, Text text)
+    public void renderString(Font font, Text text)
     {
         fontSize = (text.getFontSize() / font.getLineHeight());
         cursorX = cursorY = 0;
 
         String[] lines = text.getText().split("\n");
         for(String s : lines)
-            rl(font, text, s);
+        {
+            renderLine(font, text, s);
+            System.out.println();
+        }
     }
 
-    private void rl(Font font, Text text, String line)
+    private void renderLine(Font font, Text text, String line)
     {
         float[] width = {0, 0};
+        cursorX = 0;
         String[] words = line.split(" ");
         List<String> w = new ArrayList<>();
-        List<Character> chars = new ArrayList<>();
+        List<Char> chars = new ArrayList<>();
         for(String word : words)
         {
             for(char c : word.toCharArray())
             {
-                width[0] += font.getCharacterMap()
-                        .get(c)
-                        .getXAdvance() - 16;
+                width[0] += (font.getCharacterMap().get(c)
+                            .getXAdvance() - 16) * fontSize;
             }
-            width[0] += font.getCharacterMap()
-                    .get(' ')
-                    .getXAdvance() - 16;
+            width[0] += (font.getCharacterMap().get(' ')
+                            .getXAdvance() - 16) * fontSize;
 
             if(width[0] > text.getMaxWidth())
             {
-                rw(font, text, chars);
-                System.out.println("line: " + Arrays.toString(chars.toArray()) + "  >>>  width = " + width[1]);
+                cursorX = 0;
+                renderWord(font, text, chars, width[1]);
+                cursorY += (font.getLineHeight() - 16) * fontSize;
+
                 width = new float[] { 0, 0 };
                 chars.clear();
                 for(char c : word.toCharArray())
                 {
-                    width[0] += font.getCharacterMap()
-                            .get(c)
-                            .getXAdvance() - 16;
-                    chars.add(c);
+                    Char ch = font.getCharacterMap().get(c);
+                    width[0] += (ch.getXAdvance() - 16) * fontSize;
+                    chars.add(ch);
                 }
-                width[0] += font.getCharacterMap()
-                        .get(' ')
-                        .getXAdvance() - 16;
-                chars.add(' ');
+                Char ch = font.getCharacterMap().get(' ');
+                width[0] += (ch.getXAdvance() - 16) * fontSize;
+                chars.add(ch);
+                width[1] = width[0];
             }
             else
             {
                 width[1] = width[0];
                 for(char c : word.toCharArray())
-                    chars.add(c);
-                chars.add(' ');
+                    chars.add(font.getCharacterMap().get(c));
+                chars.add(font.getCharacterMap().get(' '));
             }
         }
-        System.out.println("line: " + Arrays.toString(chars.toArray()) + "  >>>  width = " + width[1]);
-        rw(font, text, chars);
+        cursorX = 0;
+        renderWord(font, text, chars, width[1]);
+        cursorY += (font.getLineHeight() - 16) * fontSize;
 
-        System.out.println();
     }
 
-    private void rw(Font font, Text text, List<Character> chars)
+    private void renderWord(Font font, Text text, List<Char> chars, float width)
     {
-
+        for(Char c : chars)
+        {
+            renderChar(c, font, text, width);
+            cursorX += (c.getXAdvance() - 16) * fontSize;
+        }
     }
 
+    private void renderChar(Char c, Font font, Text text, float width)
+    {
+        Vector2f size = getNormal(c.getWidth() * fontSize, c.getHeight() * fontSize);
+        Vector2f pos = sl(text,
+                cursorX + ((c.getXOffset() + 5) * fontSize),
+                cursorY + ((c.getYOffset() + 5) * fontSize), size, width);
+
+        System.out.println(c.getCharacter() + " >> cursor X = " + cursorX + " >> cursor Y = " + cursorY);
+
+        // set the transformation matrix of the whole font texture
+        Matrix4f letterMatrix = GeomMath.createTransformationMatrix(
+                (pos),
+                new Vector3f(0),
+                (size)
+        );
+
+        shader.loadSize(size);
+        shader.loadScale(getNormal(font.getScaleW() * fontSize, font.getScaleH() * fontSize));
+        shader.loadTransformation(letterMatrix);
+        shader.loadFontLocation(getNormal(-c.getX() * fontSize, -c.getY() * fontSize));
+
+        GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, quad.getVertexCount());
+    }
+
+    private Vector2f sl(Text text, float x, float y, Vector2f size, float width)
+    {
+        if(text.getAlignment() == Text.RIGHT)
+        {
+            x = x + text.getMaxWidth() - width;
+        }
+        else if(text.getAlignment() == Text.CENTER)
+        {
+            x = x + ((text.getMaxWidth() - width) / 2);
+        }
+
+        float posX = ((x / (Display.getWidth())) * 2) - 1;
+        float posY = 1 - ((y / (Display.getHeight())) * 2);
+
+        posX += size.x;
+        posY -= size.y;
+
+        return new Vector2f(posX, posY);
+    }
+
+    @Deprecated
     private void renderText(Font font, Text text)
     {
         fontSize = (text.getFontSize() / font.getLineHeight());
@@ -149,6 +200,7 @@ public class TextEntityRenderer
         setWord(font, chars, text);
     }
 
+    @Deprecated
     private void setWord(Font font, List<Char> chars, Text text)
     {
         float width = 0;
@@ -165,12 +217,13 @@ public class TextEntityRenderer
         cursorX += (font.getCharacterMap().get(' ').getXAdvance() - 16) * fontSize; // space character
     }
 
+    @Deprecated
     private void renderCharacter(Char c, Font font, Text text)
     {
         Vector2f size = getNormal(c.getWidth() * fontSize, c.getHeight() * fontSize);
-        Vector2f pos = setLocation(text,
+        Vector2f pos = getNormal(
                 cursorX + ((c.getXOffset() + 5) * fontSize),
-                cursorY + ((c.getYOffset() + 5) * fontSize), size);
+                cursorY + ((c.getYOffset() + 5) * fontSize));
 
         // set the transformation matrix of the whole font texture
         Matrix4f letterMatrix = GeomMath.createTransformationMatrix(
@@ -185,27 +238,6 @@ public class TextEntityRenderer
         shader.loadFontLocation(getNormal(-c.getX() * fontSize, -c.getY() * fontSize));
 
         GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, quad.getVertexCount());
-    }
-
-    public Vector2f setLocation(Text text, float x, float y, Vector2f size)
-    {
-        x = switch(text.getAlignment())
-        {
-            case Text.LEFT -> x;
-            //case Text.CENTER -> (x + text.getMaxWidth() - width) / 2;
-            //case Text.RIGHT -> x + text.getMaxWidth() - width;
-            default -> throw new IllegalStateException("Unexpected value: " + text.getAlignment());
-        };
-
-        //System.out.println(text.getMaxWidth() + " " + width);
-
-        float posX = ((x / (Display.getWidth())) * 2) - 1;
-        float posY = 1 - ((y / (Display.getHeight())) * 2);
-
-        posX += size.x;
-        posY -= size.y;
-
-        return new Vector2f(posX, posY);
     }
 
     public Vector2f getNormal(float x, float y)
