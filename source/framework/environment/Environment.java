@@ -91,8 +91,9 @@ public final class Environment
         System.out.println(x);
         List<Char> chars = x.getCharacters();
         Text text = new Text();
-        text.setText(Scratch.guess.toLowerCase());
+        text.setText(Scratch.guess.toUpperCase());
         text.setMaxWidth(1000);
+        text.setFontSize(30);
         text.setSize(200, 500);
         text.setAlignment(Text.LEFT);
 
@@ -183,6 +184,7 @@ public final class Environment
             //text.setText("seconds: " + count.seconds);
             //TextMasterRenderer.render();
             runAllScripts();
+            System.out.println(Display.getDeltaInSeconds());
             Display.updateDisplay();
         }
     }

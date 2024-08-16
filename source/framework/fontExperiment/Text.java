@@ -52,9 +52,9 @@ public class Text
         return color;
     }
 
-    public void setFontSize(float fontSize)
+    public void setFontSize(float pixels)
     {
-        this.fontSize = fontSize;
+        this.fontSize = pixels;
     }
 
     public Model getQuad()
@@ -91,5 +91,10 @@ public class Text
     public void setMaxWidth(int maxWidth)
     {
         this.maxWidth = maxWidth;
+    }
+
+    public float getFontSize()
+    {
+        return fontSize;
     }
 }

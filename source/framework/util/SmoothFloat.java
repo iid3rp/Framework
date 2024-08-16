@@ -1,5 +1,7 @@
 package framework.util;
 
+import framework.h.Display;
+
 public class SmoothFloat
 {
 
@@ -23,7 +25,7 @@ public class SmoothFloat
     public void update()
     {
         float offset = target - actual;
-        float change = offset * delta * 1;
+        float change = offset * delta;
         actual += change;
     }
 

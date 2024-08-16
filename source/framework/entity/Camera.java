@@ -1,5 +1,6 @@
 package framework.entity;
 
+import framework.h.Display;
 import framework.h.Keyboard;
 import framework.h.Mouse;
 import framework.util.SmoothFloat;
@@ -140,7 +141,7 @@ public class Camera {
     {
         if(Mouse.isScrolling())
         {
-            float zoomLevel = (float) (Mouse.getMouseScrollY() * 6);
+            float zoomLevel = (float) (Mouse.getMouseScrollY() * 6f * (1 + Display.getDeltaInSeconds()));
             distanceFromPlayer.increaseTarget(-zoomLevel);
             distanceFromPlayer.setTarget(
                     distanceFromPlayer.get() - zoomLevel > MAX_DISTANCE? MAX_DISTANCE:
@@ -153,10 +154,11 @@ public class Camera {
     private void calculatePitch() {
         if ((Mouse.isButtonDown(GLFW_MOUSE_BUTTON_RIGHT) || Mouse.isButtonDown(GLFW_MOUSE_BUTTON_LEFT)) && Mouse.isMoving())
         {
-            float pitchChange = (float) Mouse.getSwipeY() * 0.2f;
+            float pitchChange = (float) Mouse.getSwipeY() * .2f * (1 + Display.getDeltaInSeconds());
             pitch.increaseTarget(pitchChange);
         }
         pitch.update();
+
     }
 
 //    private void calculateAngleAroundPlayer() {
@@ -168,7 +170,7 @@ public class Camera {
 
     private void calculateAngleAroundPlayer(){
         if ((Mouse.isButtonDown(GLFW_MOUSE_BUTTON_RIGHT) || Mouse.isButtonDown(GLFW_MOUSE_BUTTON_LEFT)) && Mouse.isMoving()) {
-            float angleChange = (float) Mouse.getSwipeX() * 0.1f;
+            float angleChange = (float) Mouse.getSwipeX() * .2f * (1 + Display.getDeltaInSeconds());
             angleAroundPlayer.increaseTarget(-angleChange);
         }else if(Keyboard.isKeyDown(Keyboard.R)){
             angleAroundPlayer.increaseTarget(0.5f);
