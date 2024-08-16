@@ -146,10 +146,18 @@ public class TextEntityRenderer
                 (size)
         );
 
-        shader.loadSize(size);
-        shader.loadScale(getNormal(font.getScaleW() * fontSize, font.getScaleH() * fontSize));
         shader.loadTransformation(letterMatrix);
+        shader.loadSize(size);
         shader.loadFontLocation(getNormal(-c.getX() * fontSize, -c.getY() * fontSize));
+        shader.loadScale(getNormal(font.getScaleW() * fontSize, font.getScaleH() * fontSize));
+
+        shader.loadWidth(text.getSmoothWidth());
+        shader.loadEdge(text.getEdge());
+        shader.loadForegroundColor(text.getForegroundColor());
+        shader.loadOutlineColor(text.getOutlineColor());
+        shader.loadBorderWidth(text.getBorderWidth());
+        shader.loadBorderEdge(text.getBorderEdge());
+        shader.loadOffset(text.getOffset());
 
         GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, quad.getVertexCount());
     }

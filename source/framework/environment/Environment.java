@@ -24,6 +24,7 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL30;
 
+import java.awt.Color;
 import java.util.List;
 
 // the commented codes will be uncommented once the game is set up!
@@ -93,9 +94,10 @@ public final class Environment
         Text text = new Text();
         text.setText(Scratch.guess.toUpperCase());
         text.setMaxWidth(1000);
-        text.setFontSize(60);
+        text.setFontSize(40);
         text.setSize(200, 500);
         text.setAlignment(Text.CENTER);
+        text.setForegroundColor(new Color(0x8ace00));
 
         for(Char c : chars) {
             System.out.println(c);

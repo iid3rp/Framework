@@ -3,6 +3,10 @@ package framework.fontExperiment;
 import framework.shader.GLShader;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
+
+import java.awt.Color;
 
 public class TextShader extends GLShader
 {
@@ -13,9 +17,13 @@ public class TextShader extends GLShader
     private int locationPosition;
     private int locationScale;
     private int locationFontLocation;
-    private int locationDimension;
     private int locationOffset;
-    private int locationScaleMatrix;
+    private int locationWidth;
+    private int locationEdge;
+    private int locationBorderWidth;
+    private int locationBorderEdge;
+    private int locationOutlineColor;
+    private int locationForegroundColor;
 
     public TextShader()
     {
@@ -25,10 +33,20 @@ public class TextShader extends GLShader
     @Override
     protected void getAllUniformLocations()
     {
+        // vertex shader uniforms
         locationTransformationMatrix = super.getUniformLocation("transformationMatrix");
+        locationFontLocation = super.getUniformLocation("fontLocation");
         locationSize = super.getUniformLocation("size");
         locationScale = super.getUniformLocation("scale");
-        locationFontLocation = super.getUniformLocation("fontLocation");
+
+        // fragment shader uniforms
+        locationWidth = super.getUniformLocation("width");
+        locationEdge = super.getUniformLocation("edge");
+        locationBorderWidth = super.getUniformLocation("borderWidth");
+        locationBorderEdge = super.getUniformLocation("borderEdge");
+        locationOffset = super.getUniformLocation("offset");
+        locationOutlineColor = super.getUniformLocation("outlineColor");
+        locationForegroundColor = super.getUniformLocation("foregroundColor");
     }
 
     @Override
@@ -68,8 +86,43 @@ public class TextShader extends GLShader
         super.loadVector(locationOffset, normal);
     }
 
-    public void loadScaleMatrix(Matrix4f scaleMatrix)
+    public void loadBorderWidth(float width)
     {
-        super.loadMatrix(locationScaleMatrix, scaleMatrix);
+        super.loadFloat(locationBorderWidth, width);
+    }
+
+    public void loadBorderEdge(float edge)
+    {
+        super.loadFloat(locationBorderEdge, edge);
+    }
+
+    public void loadEdge(float edge)
+    {
+        super.loadFloat(locationEdge, edge);
+    }
+
+    public void loadOutlineColor(Color color)
+    {
+        Vector3f c = new Vector3f(
+                color.getRed() / 255f,
+                color.getGreen() / 255f,
+                color.getBlue() / 255f
+        );
+        super.loadVector(locationOutlineColor, c);
+    }
+
+    public void loadForegroundColor(Color color)
+    {
+        Vector3f vector3f = new Vector3f(
+                color.getRed() / 255f,
+                color.getGreen() / 255f,
+                color.getBlue() / 255f
+        );
+        super.loadVector(locationForegroundColor, vector3f);
+    }
+
+    public void loadWidth(float width)
+    {
+        super.loadFloat(locationWidth, width);
     }
 }
