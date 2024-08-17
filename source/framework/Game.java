@@ -2,11 +2,7 @@ package framework;
 
 import framework.event.MouseAdapter;
 import framework.event.MouseEvent;
-import framework.fontExperiment.Char;
-import framework.fontExperiment.Font;
-import framework.fontExperiment.FontFile;
-import framework.fontExperiment.Text;
-import framework.h.Display;
+import framework.hardware.Display;
 import framework.loader.ModelLoader;
 import framework.loader.ObjectLoader;
 import framework.entity.Light;
@@ -27,13 +23,12 @@ import framework.water.WaterTile;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
-import java.util.List;
 import java.util.Random;
 
-import static framework.h.Display.createDisplay;
-import static framework.h.Display.getLwjglVersionMessage;
-import static framework.h.Display.getOpenGlVersionMessage;
-import static framework.h.Display.setShowFPSTitle;
+import static framework.hardware.Display.createDisplay;
+import static framework.hardware.Display.getLwjglVersionMessage;
+import static framework.hardware.Display.getOpenGlVersionMessage;
+import static framework.hardware.Display.setShowFPSTitle;
 import static java.lang.management.ManagementFactory.getRuntimeMXBean;
 
 public class Game

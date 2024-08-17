@@ -1,4 +1,4 @@
-package framework.h;
+package framework.hardware;
 
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL11;

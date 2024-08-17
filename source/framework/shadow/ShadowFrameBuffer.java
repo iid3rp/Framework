@@ -2,7 +2,7 @@ package framework.shadow;
 
 import java.nio.ByteBuffer;
 
-import framework.h.Display;
+import framework.hardware.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL14;

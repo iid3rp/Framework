@@ -1,6 +1,6 @@
 package framework.renderer;
 
-import framework.h.Display;
+import framework.hardware.Display;
 import framework.entity.Camera;
 import framework.entity.Entity;
 import framework.entity.Light;

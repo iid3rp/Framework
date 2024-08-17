@@ -1,6 +1,6 @@
 package framework.particles;
 
-import framework.h.DisplayManager;
+import framework.hardware.DisplayManager;
 import framework.entity.Camera;
 import framework.entity.Player;
 import org.joml.Vector2f;

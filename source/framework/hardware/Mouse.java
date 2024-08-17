@@ -1,4 +1,4 @@
-package framework.h;
+package framework.hardware;
 
 import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;

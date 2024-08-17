@@ -1,7 +1,5 @@
 package framework.util;
 
-import framework.h.Display;
-
 public class SmoothFloat
 {
 

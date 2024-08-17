@@ -1,6 +1,6 @@
 package framework.skybox;
 
-import framework.h.Display;
+import framework.hardware.Display;
 import framework.entity.Camera;
 import framework.shader.GLShader;
 import framework.util.GeomMath;

@@ -1,12 +1,12 @@
 package framework.environment;
 
 import framework.Scratch;
-import framework.fontExperiment.Char;
-import framework.fontExperiment.Font;
-import framework.fontExperiment.FontFile;
-import framework.fontExperiment.Text;
-import framework.fontExperiment.TextEntityRenderer;
-import framework.h.Display;
+import framework.font.Char;
+import framework.font.Font;
+import framework.font.FontFile;
+import framework.font.Text;
+import framework.font.TextEntityRenderer;
+import framework.hardware.Display;
 import framework.font.FontType;
 import framework.font.GUIText;
 import framework.particles.ParticleMaster;

@@ -1,10 +1,10 @@
 package framework.event;
 
-import framework.h.Display;
+import framework.hardware.Display;
 import framework.entity.Camera;
 import framework.entity.Entity;
 import framework.environment.Environment;
-import framework.h.Mouse;
+import framework.hardware.Mouse;
 import framework.post_processing.FrameBufferObject;
 import framework.terrains.Terrain;
 import framework.util.GeomMath;

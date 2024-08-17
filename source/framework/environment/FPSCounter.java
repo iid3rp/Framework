@@ -1,6 +1,6 @@
 package framework.environment;
 
-import framework.h.Display;
+import framework.hardware.Display;
 
 public class FPSCounter
 {

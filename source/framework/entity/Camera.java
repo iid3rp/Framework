@@ -1,8 +1,8 @@
 package framework.entity;
 
-import framework.h.Display;
-import framework.h.Keyboard;
-import framework.h.Mouse;
+import framework.hardware.Display;
+import framework.hardware.Keyboard;
+import framework.hardware.Mouse;
 import framework.util.SmoothFloat;
 import org.joml.Vector3f;
 

@@ -1,7 +1,7 @@
 package framework.entity;
 
-import framework.h.Display;
-import framework.h.Keyboard;
+import framework.hardware.Display;
+import framework.hardware.Keyboard;
 import framework.model.TexturedModel;
 import framework.terrains.Terrain;
 import org.joml.Vector3f;

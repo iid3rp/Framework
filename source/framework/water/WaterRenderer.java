@@ -1,6 +1,6 @@
 package framework.water;
 
-import framework.h.Display;
+import framework.hardware.Display;
 import framework.entity.Camera;
 import framework.entity.Light;
 import framework.loader.ModelLoader;

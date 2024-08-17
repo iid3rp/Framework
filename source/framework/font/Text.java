@@ -1,4 +1,4 @@
-package framework.fontExperiment;
+package framework.font;
 
 import framework.model.Model;
 import org.joml.Vector2f;

@@ -1,4 +1,4 @@
-package framework.h;
+package framework.hardware;
 
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWKeyCallback;

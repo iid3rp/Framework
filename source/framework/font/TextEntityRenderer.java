@@ -1,6 +1,6 @@
-package framework.fontExperiment;
+package framework.font;
 
-import framework.h.Display;
+import framework.hardware.Display;
 import framework.loader.ModelLoader;
 import framework.model.Model;
 import framework.swing.GUIRenderer;

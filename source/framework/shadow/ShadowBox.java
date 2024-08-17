@@ -1,7 +1,7 @@
 package framework.shadow;
 
 import framework.entity.Camera;
-import framework.h.Display;
+import framework.hardware.Display;
 import framework.renderer.MasterRenderer;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;

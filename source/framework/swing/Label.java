@@ -1,6 +1,6 @@
 package framework.swing;
 
-import framework.h.Display;
+import framework.hardware.Display;
 import framework.post_processing.FrameBufferObject;
 
 public class Label extends GUITexture implements SwingInterface
