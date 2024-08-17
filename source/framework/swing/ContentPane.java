@@ -1,8 +1,5 @@
 package framework.swing;
 
-import framework.font.GUIText;
-import framework.font.TextMasterRenderer;
-
 import java.util.ArrayList;
 import java.util.List;
 

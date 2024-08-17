@@ -137,8 +137,6 @@ public class TextEntityRenderer
                 cursorX + ((c.getXOffset() + 5) * fontSize),
                 cursorY + ((c.getYOffset() + 5) * fontSize), size, width);
 
-        System.out.println(c.getCharacter() + " >> cursor X = " + cursorX + " >> cursor Y = " + cursorY);
-
         // set the transformation matrix of the whole font texture
         Matrix4f letterMatrix = GeomMath.createTransformationMatrix(
                 (pos),

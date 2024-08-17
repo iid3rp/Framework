@@ -81,7 +81,7 @@ public final class ModelLoader
         glGenerateMipmap(GL_TEXTURE_2D);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, 10f);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, 20f);
         textureList.add(textureId);
         return textureId;
     }

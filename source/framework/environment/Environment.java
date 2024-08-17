@@ -7,8 +7,6 @@ import framework.font.FontFile;
 import framework.font.Text;
 import framework.font.TextEntityRenderer;
 import framework.hardware.Display;
-import framework.font.FontType;
-import framework.font.GUIText;
 import framework.particles.ParticleMaster;
 import framework.post_processing.FrameBufferObject;
 import framework.post_processing.PostProcessing;
@@ -39,10 +37,6 @@ public final class Environment
     public static FrameBufferObject mouseEventBuffer = new FrameBufferObject(Display.getWidth(), Display.getHeight(), FrameBufferObject.DEPTH_TEXTURE);
     public static FrameBufferObject pixelBuffer = new FrameBufferObject(2, 2, FrameBufferObject.DEPTH_TEXTURE);
 
-    // intentional global-local variables
-
-    static FontType font;
-    static GUIText fps;
     public static void start()
     {
         // static method calling goes here:
@@ -57,10 +51,6 @@ public final class Environment
             event.setCamera(getScene().getCamera());
             event.setProjection(MasterRenderer.getProjectionMatrix());
             getScene().setEvent(event);
-            font = new FontType(ModelLoader.loadTexture("comic.png"), "comic");
-            fps = new GUIText("fps count: 0", 2, font, new Vector2f(.05f, .05f), 1f, false);
-            fps.setColor(1, 1, 0);
-            fps.setSize(120, 100);
             //scene.getContentPane().add(fps);
             //scene.getContentPane().add(img);
 
@@ -69,12 +59,12 @@ public final class Environment
             // these are just example of implementations for future debugging...
             //
             PictureBox pb = new PictureBox();
-            pb.setTexture(ModelLoader.loadTexture("brat.png"));
+            pb.setTexture(MasterRenderer.getShadowMapTexture());
             pb.setLocation(20, 20);
             pb.setImageLocation(-100,  -100);
             pb.setScale(500, 500);
             pb.setSize(400, 400);
-            //scene.getContentPane().add(pb);
+            scene.getContentPane().add(pb);
 
 
             loop();
@@ -113,7 +103,7 @@ public final class Environment
             scene.getEvent().update();
 
             //the shadow thingies
-            //MasterRenderer.renderShadowMap(scene.getEntities(), scene.getMainLight());
+            MasterRenderer.renderShadowMap(scene.getEntities(), scene.getMainLight());
 
             //particle
 
@@ -181,7 +171,7 @@ public final class Environment
             //if(!Keyboard.isKeyDown(Keyboard.E))
             PostProcessing.doPostProcessing(out.getColorTexture(), bright.getColorTexture());
 
-            textEntityRenderer.render(x, text);
+            //textEntityRenderer.render(x, text);
             //textEntityRenderer.rt(x, text);
             scene.getContentPane().render(scene.getContentPane().getComponents());
             //text.setText("seconds: " + count.seconds);
