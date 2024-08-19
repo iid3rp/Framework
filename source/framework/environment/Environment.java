@@ -17,7 +17,6 @@ import framework.scripting.Count;
 import framework.scripting.FrameworkScript;
 import framework.scripting.StackScript;
 import framework.swing.PictureBox;
-import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL30;
@@ -42,7 +41,6 @@ public final class Environment
         // static method calling goes here:
         MasterRenderer.setRenderer(scene.getCamera());
         PostProcessing.initialize();
-        //TextMasterRenderer.initialize();;
         ParticleMaster.initialize(MasterRenderer.getProjectionMatrix());
 
         if(scene != null)
@@ -52,18 +50,15 @@ public final class Environment
             event.setProjection(MasterRenderer.getProjectionMatrix());
             getScene().setEvent(event);
             //scene.getContentPane().add(fps);
-            //scene.getContentPane().add(img);
 
-
-            //
             // these are just example of implementations for future debugging...
             //
             PictureBox pb = new PictureBox();
             pb.setTexture(MasterRenderer.getShadowMapTexture());
             pb.setLocation(20, 20);
-            pb.setImageLocation(-100,  -100);
-            pb.setScale(500, 500);
-            pb.setSize(400, 400);
+            pb.setImageLocation(0,  0);
+            pb.setScale(200, 200);
+            pb.setSize(200, 200);
             scene.getContentPane().add(pb);
 
 
@@ -86,8 +81,7 @@ public final class Environment
         text.setMaxWidth(1000);
         text.setFontSize(40);
         text.setSize(200, 500);
-        text.setAlignment(Text.CENTER);
-        text.setForegroundColor(new Color(0x8ace00));
+        text.setForegroundColor(new Color(0x2B35CD));
 
         for(Char c : chars) {
             System.out.println(c);
@@ -149,7 +143,8 @@ public final class Environment
             //GL11.glDisable(GL30.GL_CLIP_DISTANCE1);
 
 
-            //MasterRenderer.renderShadowMap(scene.getEntities(), scene.getMainLight());
+            MasterRenderer.renderShadowMap(scene.getEntities(), scene.getMainLight());
+
             // frame buffer stuff
             multi.bindFrameBuffer();
             renderScene(new Vector4f(0, -1, 0, 1000000));
@@ -171,8 +166,10 @@ public final class Environment
             //if(!Keyboard.isKeyDown(Keyboard.E))
             PostProcessing.doPostProcessing(out.getColorTexture(), bright.getColorTexture());
 
+            // text renderer
+            // wont be rendered for now...
             //textEntityRenderer.render(x, text);
-            //textEntityRenderer.rt(x, text);
+
             scene.getContentPane().render(scene.getContentPane().getComponents());
             //text.setText("seconds: " + count.seconds);
             //TextMasterRenderer.render();

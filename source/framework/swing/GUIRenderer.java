@@ -1,11 +1,13 @@
 package framework.swing;
 
+import framework.environment.Scene;
 import framework.hardware.Display;
 import framework.loader.ModelLoader;
 import framework.model.Model;
 import framework.util.GeomMath;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
+import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
@@ -71,11 +73,13 @@ public class GUIRenderer
             GL13.glActiveTexture(GL13.GL_TEXTURE1);
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture.getClipTexture());
             Matrix4f matrix = GeomMath.createTransformationMatrix(texture.getPosition(), texture.getRotation(), texture.getSize());
+            Matrix4f displayMatrix = GeomMath.createTransformationMatrix(Scene.offset, new Vector3f(),  new Vector2f(1));
 
             shader.loadSize(texture.getSize());
             shader.loadScale(texture.getScale());
             shader.loadTransformation(matrix);
             shader.loadImageLocation(texture.getImageLocation());
+            shader.loadDisplayMatrix(displayMatrix);
 
             GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, quad.getVertexCount());
         }

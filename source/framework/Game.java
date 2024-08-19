@@ -11,6 +11,8 @@ import framework.environment.Environment;
 import framework.environment.Scene;
 import framework.loader.TextureLoader;
 import framework.model.TexturedModel;
+import framework.particles.ParticleSystem;
+import framework.particles.ParticleTexture;
 import framework.scripting.FrameworkScript;
 import framework.swing.ContentPane;
 import framework.swing.PictureBox;
@@ -128,6 +130,7 @@ public class Game
         scene.setCamera(player.getCamera());
 
         scene.setContentPane(panel);
+        Scene.setOffset(0, 0);
 
 
         Entity entity = new Entity(new TexturedModel(
@@ -164,23 +167,23 @@ public class Game
             else i--;
         }
 
-//        ParticleSystem system = new ParticleSystem(
-//                1000,
-//                25,
-//                .075f,
-//                30,
-//                1,
-//                new ParticleTexture(
-//                        ModelLoader.loadTexture("particleStar.png"),1, true
-//                )
-//        );
-//        //system.setDirection(new Vector3f(20, 100, 20), .5f);
-//        system.setLifeError(.1f);
-//        system.setScaleError(1f);
-//        system.setSpeedError(.7f);
-//        scene.setParticleSystem(system);
-        //WaterTile tile = new WaterTile(0, 0,0);
-        //scene.add(tile);
+        ParticleSystem system = new ParticleSystem(
+                100,
+                25,
+                .075f,
+                30,
+                1,
+                new ParticleTexture(
+                        ModelLoader.loadTexture("particleStar.png"),1, true
+                )
+        );
+        //system.setDirection(new Vector3f(20, 100, 20), .5f);
+        system.setLifeError(.1f);
+        system.setScaleError(1f);
+        system.setSpeedError(.7f);
+        scene.setParticleSystem(system);
+        WaterTile tile = new WaterTile(0, 0,0);
+        scene.add(tile);
 
 
 

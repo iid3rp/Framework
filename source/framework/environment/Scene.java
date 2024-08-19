@@ -5,18 +5,21 @@ import framework.entity.Entity;
 import framework.entity.Light;
 import framework.entity.Player;
 import framework.event.MouseEvent;
+import framework.hardware.Display;
 import framework.particles.ParticleSystem;
 import framework.swing.Container;
 import framework.swing.ContentPane;
 import framework.swing.GUITexture;
 import framework.terrains.Terrain;
 import framework.water.WaterTile;
+import org.joml.Vector2f;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Scene
 {
+    public static Vector2f offset;
     private List<Entity> entities;
     private List<Light> lights;
     private List<WaterTile> waters;
@@ -36,7 +39,19 @@ public class Scene
         lights = new ArrayList<>();
         terrain = new Terrain();
         waters = new ArrayList<>();
-        //normalMappedEntities = new ArrayList<>();
+        offset = new Vector2f();
+    }
+
+    public static Vector2f getOffset()
+    {
+        return offset;
+    }
+
+    public static void setOffset(int x, int y)
+    {
+        float _x = (float) x / Display.getWidth();
+        float _y = (float) y / Display.getHeight();
+        offset = new Vector2f(_x, _y);
     }
 
     public List<Entity> getEntities()
@@ -53,16 +68,6 @@ public class Scene
     {
         return terrain;
     }
-
-    /*public Vector4f getClipPlane()
-    {
-        return clipPlane;
-    }
-
-    public void setClipPlane(Vector4f clipPlane)
-    {
-        this.clipPlane = clipPlane;
-    }*/
 
     public void add(WaterTile water)
     {
@@ -138,21 +143,6 @@ public class Scene
     {
         return lights.getFirst();
     }
-
-//    public List<Entity> getNormalMappedEntities()
-//    {
-//        return normalMappedEntities;
-//    }
-
-//    public void setParticleSystem(ParticleSystem particleSystem)
-//    {
-//        this.particleSystem = particleSystem;
-//    }
-//
-//    public ParticleSystem getParticleSystem()
-//    {
-//        return particleSystem;
-//    }
 
     @Override
     public String toString() {

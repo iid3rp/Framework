@@ -39,6 +39,9 @@ public final class Display implements Hardware
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
         glfwWindowHint(GLFW_REFRESH_RATE, 60);
+        glfwWindowHint(GLFW_DOUBLEBUFFER, GL_TRUE);
+        glfwWindowHint(GLFW_DECORATED,
+                GL_FALSE);
 
         window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, TITLE, 0, 0);
 
@@ -55,6 +58,8 @@ public final class Display implements Hardware
 
         // register keyboard input callback
         glfwSetKeyCallback(window, keyboard);
+
+
         glfwSetCursorPosCallback(window, mouse.getMouseMoveCallback());
         glfwSetMouseButtonCallback(window, mouse.getMouseButtonsCallback());
         glfwSetScrollCallback(window, mouse.getMouseScrollCallback());
