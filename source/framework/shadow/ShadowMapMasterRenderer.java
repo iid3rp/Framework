@@ -175,7 +175,7 @@ public class ShadowMapMasterRenderer {
 		lightViewMatrix.rotate(pitch, new Vector3f(1, 0, 0));
 		float yaw = (float) Math.toDegrees(((float) Math.atan(direction.x / direction.z)));
 		yaw = direction.z > 0 ? yaw - 180 : yaw;
-		lightViewMatrix.rotate((float) -Math.toRadians(yaw), new Vector3f(0, 1, 0), lightViewMatrix);
+		lightViewMatrix.rotate((float) -Math.toRadians(yaw), new Vector3f(0, 1, 0));
 		lightViewMatrix.translate(center, lightViewMatrix);
 	}
 
@@ -209,7 +209,7 @@ public class ShadowMapMasterRenderer {
 	private static Matrix4f createOffset() {
 		Matrix4f offset = new Matrix4f();
 		offset.translate(new Vector3f(0.5f, 0.5f, 0.5f));
-		offset.scale(new Vector3f(0.5f, 0.5f, 0.5f));
+		offset.scale(0.5f);
 		return offset;
 	}
 }
