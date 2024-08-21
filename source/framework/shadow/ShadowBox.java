@@ -25,7 +25,7 @@ public class ShadowBox {
 	private static final float OFFSET = 10;
 	private static final Vector4f UP = new Vector4f(0, 1, 0, 0);
 	private static final Vector4f FORWARD = new Vector4f(0, 0, -1, 0);
-	private static final float SHADOW_DISTANCE = 100;
+	private static final float SHADOW_DISTANCE = 1000;
 
 	private float minX, maxX;
 	private float minY, maxY;
@@ -41,8 +41,8 @@ public class ShadowBox {
 	 * and (possibly adjusted) far plane.
 	 * 
 	 * @param lightViewMatrix
-	 *            - basically the "view matrix" of the light. Can be used to
-	 *            transform a point from world space into "light" space (i.e.
+	 *            - Basically the "view matrix" of the light.
+	 *            Can be used to transform a point from world space into "light" space (i.e.,
 	 *            changes a point's coordinates from being in relation to the
 	 *            world's axis to being in terms of the light's local axis).
 	 * @param camera
@@ -56,7 +56,8 @@ public class ShadowBox {
 
 	/**
 	 * Updates the bounds of the shadow box based on the light direction and the
-	 * camera's view frustum, to make sure that the box covers the smallest area
+	 * camera's view frustum.
+	 * This is to make sure that the box covers the smallest area
 	 * possible while still ensuring that everything inside the camera's view
 	 * (within a certain range) will cast shadows.
 	 */
@@ -161,8 +162,8 @@ public class ShadowBox {
 	}
 
 	/**
-	 * Calculates the position of the vertex at each corner of the view frustum
-	 * in light space (8 vertices in total, so this returns 8 positions).
+	 * Calculates the position of the vertex in each corner of the view frustum
+	 * in light space (eight vertices in total, so this returns eight positions).
 	 * 
 	 * @param rotation
 	 *            - camera's rotation.

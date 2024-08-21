@@ -59,7 +59,7 @@ public final class Environment
             pb.setImageLocation(0,  0);
             pb.setScale(200, 200);
             pb.setSize(200, 200);
-            scene.getContentPane().add(pb);
+            //scene.getContentPane().add(pb);
 
 
             loop();
@@ -142,8 +142,6 @@ public final class Environment
 //            MasterRenderer.buffer.unbindCurrentFrameBuffer();
             //GL11.glDisable(GL30.GL_CLIP_DISTANCE1);
 
-
-            MasterRenderer.renderShadowMap(scene.getEntities(), scene.getMainLight());
 
             // frame buffer stuff
             multi.bindFrameBuffer();

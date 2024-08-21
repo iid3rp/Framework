@@ -6,6 +6,7 @@ in vec2 pass_textureCoords;
 in vec3 surfaceNormal;
 in vec3 toLightVector[lightAmount];
 in vec3 toCameraVector;
+in vec4 shadowCoords;
 in float visibility;
 
 layout(location = 0) out vec4 out_Color;
@@ -16,6 +17,7 @@ uniform sampler2D rTexture;
 uniform sampler2D gTexture;
 uniform sampler2D bTexture;
 uniform sampler2D blendMap;
+uniform sampler2D shadowMap;
 
 uniform vec3 lightColor[lightAmount];
 uniform vec3 attenuation[lightAmount];
@@ -30,6 +32,14 @@ const float totalTexels = pow((pcfCount * 2 + 1), 2);
 const float mapSize = 2048;
 
 void main(void) {
+
+    float objectNearest = texture(shadowMap, shadowCoords.xy).r;
+    float lightFactor = 1;
+
+    if(shadowCoords.z > objectNearest)
+        lightFactor = 1 - 0.4;
+
+
 
     // multitexturing
     vec4 blendMapColor = texture(blendMap, pass_textureCoords);
@@ -75,7 +85,7 @@ void main(void) {
     }
     // for shadows later :))
     //totalDiffuse = max(totalDiffuse * lightFactor, 0.5);
-    totalDiffuse = max(totalDiffuse, 0.5);
+    totalDiffuse = max(totalDiffuse, 0.5) * lightFactor;
 
     out_Color = vec4(totalDiffuse, 1.0) *  totalColor + vec4(totalSpecular, 1.0);        // returns color of the pixel from the texture at specified texture coordinates
     out_Color = mix(vec4(skyColor, 1.0), out_Color, visibility);

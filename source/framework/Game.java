@@ -167,23 +167,23 @@ public class Game
             else i--;
         }
 
-        ParticleSystem system = new ParticleSystem(
-                100,
-                25,
-                .075f,
-                30,
-                1,
-                new ParticleTexture(
-                        ModelLoader.loadTexture("particleStar.png"),1, true
-                )
-        );
-        //system.setDirection(new Vector3f(20, 100, 20), .5f);
-        system.setLifeError(.1f);
-        system.setScaleError(1f);
-        system.setSpeedError(.7f);
-        scene.setParticleSystem(system);
-        WaterTile tile = new WaterTile(0, 0,0);
-        scene.add(tile);
+//        ParticleSystem system = new ParticleSystem(
+//                100,
+//                25,
+//                .075f,
+//                30,
+//                1,
+//                new ParticleTexture(
+//                        ModelLoader.loadTexture("particleStar.png"),1, true
+//                )
+//        );
+//        //system.setDirection(new Vector3f(20, 100, 20), .5f);
+//        system.setLifeError(.1f);
+//        system.setScaleError(1f);
+//        system.setSpeedError(.7f);
+//        scene.setParticleSystem(system);
+//        WaterTile tile = new WaterTile(0, 0,0);
+//        scene.add(tile);
 
 
 

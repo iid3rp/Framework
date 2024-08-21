@@ -16,6 +16,8 @@ import framework.water.WaterShader;
 import framework.water.WaterTile;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -107,7 +109,7 @@ public class MasterRenderer {
         terrainShader.loadSkyColor(SKY_RED, SKY_GREEN, SKY_BLUE);
         terrainShader.loadLights(lights);
         terrainShader.loadViewMatrix(camera);
-        terrainRenderer.render(terrainList);
+        terrainRenderer.render(terrainList, shadowRender.getToShadowMapSpaceMatrix());
         terrainShader.unbind();
 
         // skybox rendering
@@ -159,6 +161,9 @@ public class MasterRenderer {
         glEnable(GL_DEPTH_TEST);    // test which triangles are in front and render them in the correct order
         glClearColor(SKY_RED, SKY_GREEN, SKY_BLUE, 1);      // Load selected color into the color buffer
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);     // Clear the screen and draw with color in color buffer
+
+        GL13.glActiveTexture(GL13.GL_TEXTURE5);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, getShadowMapTexture());
     }
 
     private static void createProjectionMatrix() {
