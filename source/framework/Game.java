@@ -130,7 +130,6 @@ public class Game
         scene.setCamera(player.getCamera());
 
         scene.setContentPane(panel);
-        Scene.setOffset(0, 0);
 
 
         Entity entity = new Entity(new TexturedModel(

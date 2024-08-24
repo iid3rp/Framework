@@ -13,7 +13,6 @@ import framework.post_processing.PostProcessing;
 import framework.renderer.MasterRenderer;
 import framework.loader.ModelLoader;
 import framework.event.MouseEvent;
-import framework.scripting.Count;
 import framework.scripting.FrameworkScript;
 import framework.scripting.StackScript;
 import framework.swing.PictureBox;
@@ -41,7 +40,7 @@ public final class Environment
         // static method calling goes here:
         MasterRenderer.setRenderer(scene.getCamera());
         PostProcessing.initialize();
-        ParticleMaster.initialize(MasterRenderer.getProjectionMatrix());
+        //ParticleMaster.initialize(MasterRenderer.getProjectionMatrix());
 
         if(scene != null)
         {
@@ -59,7 +58,7 @@ public final class Environment
             pb.setImageLocation(0,  0);
             pb.setScale(200, 200);
             pb.setSize(200, 200);
-            //scene.getContentPane().add(pb);
+            scene.getContentPane().add(pb);
 
 
             loop();
@@ -86,9 +85,6 @@ public final class Environment
         for(Char c : chars) {
             System.out.println(c);
         }
-
-        Count count = new Count();
-        run(count);
 
         while(Display.shouldDisplayClose())
         {
@@ -148,7 +144,10 @@ public final class Environment
             renderScene(new Vector4f(0, -1, 0, 1000000));
             //MasterRenderer.renderWaters(scene.getWaters(), scene.getCamera(), scene.getMainLight());
             if(scene.getParticleSystem() != null)
+            {
                 ParticleMaster.renderParticles(scene.getCamera());
+                System.out.println("Dfs");
+            }
             multi.unbindFrameBuffer();
 
             //multi.resolveToScreen();
@@ -223,7 +222,7 @@ public final class Environment
         out.dispose();
         mouseEventBuffer.dispose();
         bright.dispose();
-        ParticleMaster.dispose();
+        //ParticleMaster.dispose();
         //TextMasterRenderer.dispose();
         scene.getContentPane().dispose();
         MasterRenderer.dispose();

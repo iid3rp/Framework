@@ -27,6 +27,16 @@ public class SmoothFloat
         actual += change;
     }
 
+    public float getDelta()
+    {
+        return delta;
+    }
+
+    public void setDelta(float delta)
+    {
+        this.delta = delta;
+    }
+
     public void increaseTarget(float dT)
     {
         this.target += dT;

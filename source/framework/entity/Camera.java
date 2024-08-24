@@ -22,7 +22,7 @@ public class Camera {
     private Player player;
 
     private SmoothFloat angleAroundPlayer = new SmoothFloat(0, .1f);
-    private SmoothFloat distanceFromPlayer = new SmoothFloat(30, .75f);
+    private SmoothFloat distanceFromPlayer = new SmoothFloat(30, 1f);
     private SmoothFloat pitch = new SmoothFloat(30, .1f);
     private boolean playerCamera;
 
@@ -157,6 +157,7 @@ public class Camera {
             float pitchChange = (float) Mouse.getSwipeY() * .2f * (1 + Display.getDeltaInSeconds());
             pitch.increaseTarget(pitchChange);
         }
+        pitch.setDelta(1);
         pitch.update();
 
     }
@@ -175,6 +176,7 @@ public class Camera {
         }else if(Keyboard.isKeyDown(Keyboard.R)){
             angleAroundPlayer.increaseTarget(0.5f);
         }
+        angleAroundPlayer.setDelta(1);
         angleAroundPlayer.update();
     }
 

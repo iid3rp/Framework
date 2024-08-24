@@ -15,12 +15,14 @@ out vec3 toLightVector[lightAmount];
 out vec3 toCameraVector;
 out vec3 surfaceNormal; // just to check if the texture for normal is null, it will depend on the surface instead.
 out float visibility;
+out vec4 shadowCoords;
 // --------------------
 
 // uniform variables...
 uniform mat4 transformationMatrix;
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
+uniform mat4 toShadowMapSpace;
 uniform vec3 lightPosition[lightAmount];
 uniform float useFakeLighting;
 uniform float numberOfRowsInTextureAtlas;
@@ -51,11 +53,15 @@ vec4 relativeToCamera()
 void main(void)
 {
     worldPosition = transformationMatrix * vec4(position, 1.0);
+    shadowCoords = toShadowMapSpace * worldPosition;
+
     gl_ClipDistance[1] = dot(worldPosition, plane);
 
     modelViewMatrix = viewMatrix * transformationMatrix;
     vec4 positionRelativeToCamera = relativeToCamera();
     gl_Position = projectionMatrix * positionRelativeToCamera;
+
+
     pass_textureCoords = (textureCoords / numberOfRowsInTextureAtlas) + offset;
 
     vec3 actualNormal = normal;
@@ -85,16 +91,18 @@ void main(void)
         toLightVector[i] = lightPosition[i] - worldPosition.xyz;// world position is a 4d vector. again, use a swizzle to get a 3d vector from it
     }
 
+    // it has a tangent space, hypothetically...
     if(hasNormal)
-        // it has a tangent space, hypothetically...
         toCameraVector = toTangentSpace * (-positionRelativeToCamera.xyz);
+    // This shader does not have the "camera" position, but the view matrix
+    // position is the inverse of the camera, so the inverse of the view matrix
+    // is the camera position. multiply this matrix by an  empty 4d matrix and
+    // subract the worldPosition of the vertex gives the distance between them
     else
-        // This shader does not have the "camera" position, but the view matrix position is the inverse of the camera, so the inverse of the view matrix is the camera position
-        // multiply this matrix by an  empty 4d matrix and subract the worldPosition of the vertex gives the distance between them
         toCameraVector = (inverse(viewMatrix) * vec4(0.0, 0.0, 0.0, 1.0)).xyz - worldPosition.xyz;
 
     // Calculate fog
-    float distanceFromCamera = length(positionRelativeToCamera.xyz);
-    visibility = exp(-pow((distanceFromCamera * fogDensity), fogGradient));
+    float distance = length(positionRelativeToCamera.xyz);
+    visibility = exp(-pow((distance * fogDensity), fogGradient));
     visibility = clamp(visibility, 0.0, 1.0);
 }

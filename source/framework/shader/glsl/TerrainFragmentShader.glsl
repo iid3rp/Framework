@@ -33,22 +33,40 @@ const float mapSize = 2048;
 
 void main(void) {
 
-    float objectNearest = texture(shadowMap, shadowCoords.xy).r;
-    float lightFactor = 1;
+//    float objectNearest = texture(shadowMap, shadowCoords.xy).r;
+//    float lightFactor = 1;
+//
+//    if(shadowCoords.z > objectNearest)
+//        lightFactor = 1 - 0.4;
 
-    if(shadowCoords.z > objectNearest)
-        lightFactor = 1 - 0.4;
 
+    float texelSize = 1 / mapSize;
+    float total = 0;
+
+    for(int x = -pcfCount; x <= pcfCount; x++)
+    {
+        for (int y = -pcfCount; y <= pcfCount ; y++)
+        {
+            float objectNearLight = texture(shadowMap, shadowCoords.xy + vec2(x, y) * texelSize).r;
+            if(shadowCoords.z > objectNearLight)
+            {
+                total += 1;
+            }
+        }
+    }
+
+    total /= totalTexels;
+    float lightFactor = 1.0 - (total * shadowCoords.w * .75);
 
 
     // multitexturing
     vec4 blendMapColor = texture(blendMap, pass_textureCoords);
     float backTextureAmount = 1 - (blendMapColor.r + blendMapColor.g + blendMapColor.b);
     vec2 tiledCoordinates = pass_textureCoords * 40.0;
-    vec4 backgroundTextureColor = texture(backgroundTexture, tiledCoordinates) * backTextureAmount;
+    vec4 backgroundTextureColor = texture(rTexture, tiledCoordinates) * backTextureAmount;
     vec4 rTextureColor = texture(rTexture, tiledCoordinates) * blendMapColor.r;
-    vec4 gTextureColor = texture(gTexture, tiledCoordinates) * blendMapColor.g;
-    vec4 bTextureColor = texture(bTexture, tiledCoordinates) * blendMapColor.b;
+    vec4 gTextureColor = texture(rTexture, tiledCoordinates) * blendMapColor.g;
+    vec4 bTextureColor = texture(rTexture, tiledCoordinates) * blendMapColor.b;
     vec4 totalColor = backgroundTextureColor + rTextureColor + gTextureColor + bTextureColor;
 
     vec3 unitNormal = normalize(surfaceNormal); // normalize makes the size of the vector = 1. Only direction of the vector matters here. Size is irrelevant

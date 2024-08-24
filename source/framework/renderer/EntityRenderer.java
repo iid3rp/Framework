@@ -11,9 +11,7 @@ import org.joml.Matrix4f;
 import java.util.List;
 import java.util.Map;
 
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL40.*;
 
 public class EntityRenderer {
     private final EntityShader staticShader;
@@ -34,7 +32,8 @@ public class EntityRenderer {
         staticShader.unbind();
     }
 
-    public void render(Map<TexturedModel, List<Entity>> entities) {
+    public void render(Map<TexturedModel, List<Entity>> entities, Matrix4f shadow) {
+        staticShader.loadShadowMatrix(shadow);
         for (TexturedModel texturedModel : entities.keySet()) {
             prepareTexturedModel(texturedModel);
             List<Entity> entityList = entities.get(texturedModel);

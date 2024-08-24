@@ -122,10 +122,10 @@ public class TerrainShader extends GLShader
     }
 
     public void connectTextureUnits() {
-        super.loadInt(location_backgroundTexture, 0);
+        //super.loadInt(location_backgroundTexture, 0);
         super.loadInt(location_rTexture, 1);
-        super.loadInt(location_gTexture, 2);
-        super.loadInt(location_bTexture, 3);
+        //super.loadInt(location_gTexture, 2);
+        //super.loadInt(location_bTexture, 3);
         super.loadInt(location_blendMap, 4);
         super.loadInt(locationShadowMap, 5);
     }
