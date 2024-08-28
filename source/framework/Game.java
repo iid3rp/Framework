@@ -159,6 +159,7 @@ public class Game
                 public void mouseExited(MouseEvent e) {
                     crystal.setHighlightColor(new Vector4f(0, 0, 0, 0));
                 }
+
             });
             if(crystal.getPosition().y > 0) {
                 scene.getEntities().add(crystal);

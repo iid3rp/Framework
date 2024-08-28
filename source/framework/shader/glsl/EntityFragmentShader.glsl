@@ -60,7 +60,7 @@ void main(void)
         for (int y = -pcfCount; y <= pcfCount; y++)
         {
             float objectNearLight = texture(shadowMap, shadowCoords.xy + vec2(x, y) * texelSize).r;
-            if(shadowCoords.z > objectNearLight + 0.002)
+            if(shadowCoords.z > objectNearLight)
             {
                 total += 1;
             }
@@ -68,7 +68,7 @@ void main(void)
     }
 
     total /= totalTexels;
-    float lightFactor = 1.0 - (total * shadowCoords.w);
+    float lightFactor = 1.0 - (total * shadowCoords.w * .75);
 
     vec3 unitNormal = normalTexture(); // normalize makes the size of the vector = 1. Only direction of the vector matters here. Size is irrelevant
     vec3 unitVectorToCamera = normalize(toCameraVector);
@@ -106,7 +106,7 @@ void main(void)
         totalSpecular = totalSpecular + (dampedFactor * reflectivity * lightColor[i]) / setFactor;
     }
     // for shadows later :))
-    totalDiffuse = max(totalDiffuse, 0.3) * lightFactor;
+    totalDiffuse = max(totalDiffuse, 0.5) * lightFactor;
 
 
     vec4 textureColor = texture(modelTexture, pass_textureCoords);

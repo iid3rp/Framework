@@ -136,6 +136,7 @@ public class EntityShader extends GLShader
         super.loadInt(locationModelTexture, 0);
         super.loadInt(locationNormalMap, 1);
         super.loadInt(locationSpecularMap, 2);
+        super.loadInt(locationShadowMap, 5);
     }
 
     public void loadHasSpecularMap(boolean hasSpecularMap)

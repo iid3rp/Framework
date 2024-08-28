@@ -5,7 +5,6 @@ import framework.font.Char;
 import framework.font.Font;
 import framework.font.FontFile;
 import framework.font.Text;
-import framework.font.TextEntityRenderer;
 import framework.hardware.Display;
 import framework.particles.ParticleMaster;
 import framework.post_processing.FrameBufferObject;
@@ -27,8 +26,7 @@ import java.util.List;
 public final class Environment
 {
     public static Scene scene;
-    private static TextEntityRenderer textEntityRenderer = new TextEntityRenderer();
-    private static StackScript stack = new StackScript();
+    private static final StackScript stack = new StackScript();
     public static FrameBufferObject multi = new FrameBufferObject(Display.getWidth(), Display.getHeight());
     public static FrameBufferObject out = new FrameBufferObject(Display.getWidth(), Display.getHeight(), FrameBufferObject.DEPTH_TEXTURE);
     public static FrameBufferObject bright = new FrameBufferObject(Display.getWidth(), Display.getHeight(), FrameBufferObject.DEPTH_TEXTURE);
