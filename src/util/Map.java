@@ -44,9 +44,8 @@ public class Map<K, V> implements Iterable<Key<K, V>>
         @Override
         public Key<K, V> next()
         {
-            if(!hasNext()) {
+            if(!hasNext())
                 throw new NoSuchElementException();
-            }
             Key<K, V> element = e;
             e = e.next;
             i++;
@@ -69,7 +68,7 @@ public class Map<K, V> implements Iterable<Key<K, V>>
 
     private boolean exists(K key)
     {
-        return keys[hash(key)] != null && keys[hash(key)].equals(key);
+        return keys[hash(key)] != null;
     }
 
     private void add(K key, V value)
