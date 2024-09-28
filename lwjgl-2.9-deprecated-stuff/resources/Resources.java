@@ -25,7 +25,7 @@ public final class Resources
         objectsFolder = new File(resourceFileName + "/" + "objects");
         var b = objectsFolder.mkdirs();
 
-        texturesFolder = new File(resourceFileName + "/" + "textures");
+        texturesFolder = new File(resourceFileName + "/" + "framework/textures");
         var c = texturesFolder.mkdirs();
 
         if(a || b || c)

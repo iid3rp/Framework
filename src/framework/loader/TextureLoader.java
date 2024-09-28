@@ -1,13 +1,13 @@
 package framework.loader;
 
+import framework.Main;
+import framework.textures.Texture;
+import framework.util.Buffer;
+
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.IntBuffer;
 import java.util.Objects;
-
-import framework.resources.Resources;
-import framework.textures.Texture;
-import framework.util.Buffer;
 
 import javax.imageio.ImageIO;
 
@@ -28,7 +28,7 @@ public class TextureLoader
 
         try {
             BufferedImage image = ImageIO.read(
-                    Objects.requireNonNull(Resources.getResource().getResourceAsStream("framework/textures/" + path))
+                    Objects.requireNonNull(Main.class.getResourceAsStream("framework/textures/" + path))
             );
             width = image.getWidth();
             height = image.getHeight();
@@ -175,7 +175,7 @@ public class TextureLoader
         {
             BufferedImage image = ImageIO.read(
                     Objects.requireNonNull(
-                            Resources.class.getResourceAsStream("framework/textures/" + path)));
+                            Main.class.getResourceAsStream("framework/textures/" + path)));
             return loadTexture(image);
         }
         catch (IOException e)

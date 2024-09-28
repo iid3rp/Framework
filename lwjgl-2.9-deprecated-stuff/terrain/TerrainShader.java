@@ -96,7 +96,7 @@ public class TerrainShader extends GLShader
     {
         super.bindAttribute(0, "position");
         super.bindAttribute(1, "textureCoords");
-        super.bindAttribute(2, "normal");
+        super.bindAttribute(2, "framework/normal");
     }
 
     public void loadToShadowSpaceMatrix(Matrix4f matrix)
