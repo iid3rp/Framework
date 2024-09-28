@@ -9,7 +9,7 @@ import framework.shader.EntityShader;
 import framework.shader.TerrainShader;
 import framework.shadow.ShadowMapMasterRenderer;
 import framework.skybox.SkyboxRenderer;
-import framework.terrains.Terrain;
+import framework.terrain.Terrain;
 import framework.water.WaterFrameBufferObject;
 import framework.water.WaterRenderer;
 import framework.water.WaterShader;

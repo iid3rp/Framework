@@ -11,7 +11,7 @@ import org.joml.Matrix4f;
 import java.util.List;
 import java.util.Map;
 
-import static org.lwjgl.opengl.GL40.*;
+import static org.lwjgl.opengl.GL46.*;
 
 public class EntityRenderer {
     private final EntityShader staticShader;

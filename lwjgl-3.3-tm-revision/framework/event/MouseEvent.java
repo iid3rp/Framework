@@ -6,7 +6,7 @@ import framework.entity.Entity;
 import framework.environment.Environment;
 import framework.hardware.Mouse;
 import framework.post_processing.FrameBufferObject;
-import framework.terrains.Terrain;
+import framework.terrain.Terrain;
 import framework.util.GeomMath;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;

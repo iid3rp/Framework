@@ -2,7 +2,7 @@ package framework.renderer;
 
 import framework.model.Model;
 import framework.shader.TerrainShader;
-import framework.terrains.Terrain;
+import framework.terrain.Terrain;
 import framework.textures.TerrainTexturePack;
 import framework.util.GeomMath;
 import org.joml.Matrix4f;

@@ -15,7 +15,7 @@ import framework.particles.ParticleTexture;
 import framework.scripting.FrameworkScript;
 import framework.swing.ContentPane;
 import framework.swing.PictureBox;
-import framework.terrains.Terrain;
+import framework.terrain.Terrain;
 import framework.textures.TerrainTexture;
 import framework.textures.TerrainTexturePack;
 import framework.textures.Texture;

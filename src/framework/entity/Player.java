@@ -1,9 +1,9 @@
 package framework.entity;
 
-import framework.hardware.Display;
-import framework.hardware.Keyboard;
 import framework.model.TexturedModel;
-import framework.terrains.Terrain;
+import framework.terrain.Terrain;
+import framework.toolkit.Display;
+import framework.toolkit.Keyboard;
 import org.joml.Vector3f;
 
 import static org.lwjgl.glfw.GLFW.*;

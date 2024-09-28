@@ -2,7 +2,7 @@ package framework.renderer;
 
 import framework.model.Model;
 import framework.shader.TerrainShader;
-import framework.terrains.Terrain;
+import framework.terrain.Terrain;
 import framework.textures.TerrainTexturePack;
 import framework.util.GeomMath;
 import org.joml.Matrix4f;
@@ -10,11 +10,7 @@ import org.joml.Vector3f;
 
 import java.util.List;
 
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL13.*;
-import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
-import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
-import static org.lwjgl.opengl.GL30.glBindVertexArray;
+import static org.lwjgl.opengl.GL46.*;
 
 public class TerrainRenderer {
     private TerrainShader terrainShader;

@@ -1,32 +1,17 @@
 package framework.renderer;
 
-import framework.hardware.Display;
 import framework.entity.Camera;
 import framework.entity.Entity;
 import framework.entity.Light;
-import framework.model.TexturedModel;
 import framework.shader.EntityShader;
 import framework.shader.TerrainShader;
-import framework.shadow.ShadowMapMasterRenderer;
-import framework.skybox.SkyboxRenderer;
-import framework.terrains.Terrain;
 import framework.toolkit.Display;
-import framework.water.WaterFrameBufferObject;
-import framework.water.WaterRenderer;
-import framework.water.WaterShader;
-import framework.water.WaterTile;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
+import static org.lwjgl.opengl.GL46.*;
 
 public class MasterRenderer {
     public static final float FOV = 60;
@@ -36,13 +21,13 @@ public class MasterRenderer {
     public static final float SKY_GREEN = 0.9f;
     public static final float SKY_BLUE = 0.67f;
 
-    //private static EntityShader entityShader;
+    private static EntityShader entityShader;
     private static EntityRenderer entityRenderer;
     //public static Map<TexturedModel, List<Entity>> entities;
     private static Matrix4f projectionMatrix;
     private static TerrainRenderer terrainRenderer;
     //private static SkyboxRenderer skyboxRenderer;
-    //private static TerrainShader terrainShader;
+    private static TerrainShader terrainShader;
     //private static List<Terrain> terrainList;
     //private static WaterShader waterShader;
     //private static WaterRenderer waterRenderer;
@@ -59,8 +44,8 @@ public class MasterRenderer {
 //        terrainShader = new TerrainShader();
 //        entities = new HashMap<>();
 
-        entityRenderer = new EntityRenderer(entityShader, projectionMatrix);
-        terrainRenderer = new TerrainRenderer(terrainShader, projectionMatrix);
+          entityRenderer = new EntityRenderer(entityShader, projectionMatrix);
+          terrainRenderer = new TerrainRenderer(terrainShader, projectionMatrix);
 //        terrainList = new ArrayList<>();
 //        skyboxRenderer = new SkyboxRenderer(projectionMatrix);
 //        waterShader = new WaterShader();
@@ -151,19 +136,19 @@ public class MasterRenderer {
 //    {
 //        return shadowRender.getShadowMap();
 //    }
-//
-//    public static void dispose() {
-//        shadowRender.dispose();
-//        entityShader.dispose();
-//        terrainShader.dispose();
-//    }
+
+    public static void dispose() {
+        //shadowRender.dispose();
+        entityShader.dispose();
+        terrainShader.dispose();
+    }
 
     private static void prepare() {
         glEnable(GL_DEPTH_TEST);    // test which triangles are in front and render them in the correct order
         glClearColor(SKY_RED, SKY_GREEN, SKY_BLUE, 1);      // Load selected color into the color buffer
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);     // Clear the screen and draw with color in color buffer
 
-        GL13.glActiveTexture(GL13.GL_TEXTURE5);
+        glActiveTexture(GL_TEXTURE5);
         //GL11.glBindTexture(GL11.GL_TEXTURE_2D, getShadowMapTexture());
     }
 
