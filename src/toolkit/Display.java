@@ -223,12 +223,6 @@ public final class Display implements Hardware
         glfwSetWindowSize(window, width, height);
     }
 
-    public static void setRefreshRate(int refreshRate)
-    {
-        Display.refreshRate = refreshRate;
-        glfwSetWindowRefreshRate(window, desiredRefreshRate);
-    }
-
     public static void setTitle(int title)
     {
         Display.title = title;

@@ -191,6 +191,11 @@ public class LinkList<E> implements Iterable<E>
         return Iterable.super.spliterator();
     }
 
+    public int size()
+    {
+        return size;
+    }
+
     private static class Node<E>
     {
         E e;
