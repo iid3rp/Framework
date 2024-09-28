@@ -1,6 +1,5 @@
 package framework.model;
 
-
 import framework.textures.Texture;
 
 public class TexturedModel

@@ -4,7 +4,6 @@ import framework.event.MouseAdapter;
 import framework.event.MouseEvent;
 import framework.hardware.Display;
 import framework.loader.ModelLoader;
-import framework.loader.ObjectLoader;
 import framework.entity.Light;
 import framework.entity.Player;
 import framework.environment.Environment;
