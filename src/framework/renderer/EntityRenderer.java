@@ -33,7 +33,7 @@ public class EntityRenderer {
     }
 
     public void render(Map<TexturedModel, List<Entity>> entities, Matrix4f shadow) {
-        staticShader.loadShadowMatrix(shadow);
+        //staticShader.loadShadowMatrix(shadow);
         for (TexturedModel texturedModel : entities.keySet()) {
             prepareTexturedModel(texturedModel);
             List<Entity> entityList = entities.get(texturedModel);

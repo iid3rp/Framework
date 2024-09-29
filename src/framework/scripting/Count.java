@@ -1,6 +1,5 @@
 package framework.scripting;
 
-import framework.hardware.Display;
 import framework.environment.Scene;
 import framework.toolkit.Display;
 

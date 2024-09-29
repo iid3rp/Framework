@@ -1,6 +1,8 @@
 package framework.util;
 
 import com.sun.tools.javac.Main;
+import framework.resources.Resources;
+import framework.shader.GLShader;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,7 +18,7 @@ public class FileUtils {
         StringBuilder result = new StringBuilder();
 
         try {
-            InputStream stream = Objects.requireNonNull(Main.class.getResourceAsStream("glsl/" + file));
+            InputStream stream = Objects.requireNonNull(GLShader.class.getResourceAsStream("glsl/" + file));
             BufferedReader reader = new BufferedReader(
                     new InputStreamReader(stream)
             );

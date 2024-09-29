@@ -5,15 +5,12 @@ import framework.entity.Entity;
 import framework.entity.Light;
 import framework.entity.Player;
 import framework.event.MouseEvent;
-import framework.hardware.Display;
-import framework.particles.ParticleSystem;
-import framework.swing.Container;
-import framework.swing.ContentPane;
-import framework.swing.GUITexture;
+import framework.renderer.MasterRenderer;
 import framework.terrain.Terrain;
-import framework.water.WaterTile;
+import framework.toolkit.Display;
 import org.joml.Vector2f;
 
+import java.awt.Container;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,23 +19,23 @@ public class Scene
     public static Vector2f offset;
     private List<Entity> entities;
     private List<Light> lights;
-    private List<WaterTile> waters;
+    //private List<WaterTile> waters;
     private Terrain terrain;
 
     private Camera camera;
     private Player player;
-    private ContentPane pane;
+    //private ContentPane pane;
     public MouseEvent event;
-    private ParticleSystem particleSystem;
+    //private ParticleSystem particleSystem;
 
     //private Vector4f clipPlane;
     public Scene()
     {
-        pane = new ContentPane();
+        //pane = new ContentPane();
         entities = new ArrayList<>();
         lights = new ArrayList<>();
         terrain = new Terrain();
-        waters = new ArrayList<>();
+        //waters = new ArrayList<>();
         offset = new Vector2f();
     }
 
@@ -69,10 +66,10 @@ public class Scene
         return terrain;
     }
 
-    public void add(WaterTile water)
-    {
-        waters.add(water);
-    }
+//    public void add(WaterTile water)
+//    {
+//        waters.add(water);
+//    }
     public void add(Entity entity)
     {
         entities.add(entity);
@@ -93,25 +90,25 @@ public class Scene
         lights.add(light);
     }
 
-    public void add(Container texture)
-    {
-        pane.add(texture);
-    }
+//    public void add(Container texture)
+//    {
+//        pane.add(texture);
+//    }
 
     public void setPlayer(Player player)
     {
         this.player = player;
     }
 
-    public ContentPane getContentPane()
-    {
-        return pane;
-    }
+//    public ContentPane getContentPane()
+//    {
+//        return pane;
+//    }
 
-    public void setContentPane(ContentPane pane)
-    {
-        this.pane = pane;
-    }
+//    public void setContentPane(ContentPane pane)
+//    {
+//        this.pane = pane;
+//    }
 
     public MouseEvent getEvent()
     {
@@ -148,28 +145,28 @@ public class Scene
     public String toString() {
         int numEntities = entities.size();
         int numLights = lights.size();
-        int numGUITextures = pane.getComponents().size();
+        //int numGUITextures = pane.getComponents().size();
         int numTerrainVertices = terrain.getModel().getVertexCount();
 
         return "Scene Information:\n" +
                 "Number of Entities: " + numEntities + "\n" +
                 "Number of Lights: " + numLights + "\n" +
-                "Number of GUI Textures: " + numGUITextures + "\n" +
+                "Number of GUI Textures: " + //numGUITextures + "\n" +
                 "Number of Terrain Vertices: " + numTerrainVertices;
     }
 
-    public List<WaterTile> getWaters()
-    {
-        return waters;
-    }
+//    public List<WaterTile> getWaters()
+//    {
+//        return waters;
+//    }
 
-    public ParticleSystem getParticleSystem()
-    {
-        return particleSystem;
-    }
+//    public ParticleSystem getParticleSystem()
+//    {
+//        return particleSystem;
+//    }
 
-    public void setParticleSystem(ParticleSystem particleSystem)
-    {
-        this.particleSystem = particleSystem;
-    }
+//    public void setParticleSystem(ParticleSystem particleSystem)
+//    {
+//        this.particleSystem = particleSystem;
+//    }
 }

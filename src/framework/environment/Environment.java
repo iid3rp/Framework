@@ -23,6 +23,7 @@ public final class Environment
     {
         // static method calling goes here:
         MasterRenderer.setRenderer(scene.getCamera());
+        MasterRenderer.processTerrain(scene.getTerrain());
         //PostProcessing.initialize();
         //ParticleMaster.initialize(MasterRenderer.getProjectionMatrix());
 

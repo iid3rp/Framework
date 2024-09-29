@@ -1,6 +1,7 @@
 package framework.loader;
 
-import framework.Main;
+import framework.Scratch;
+import framework.resources.Resources;
 import framework.textures.Texture;
 import framework.util.Buffer;
 
@@ -28,7 +29,7 @@ public class TextureLoader
 
         try {
             BufferedImage image = ImageIO.read(
-                    Objects.requireNonNull(Main.class.getResourceAsStream("framework/textures/" + path))
+                    Objects.requireNonNull(Resources.class.getResourceAsStream("textures/" + path))
             );
             width = image.getWidth();
             height = image.getHeight();
@@ -175,7 +176,7 @@ public class TextureLoader
         {
             BufferedImage image = ImageIO.read(
                     Objects.requireNonNull(
-                            Main.class.getResourceAsStream("framework/textures/" + path)));
+                            Resources.class.getResourceAsStream("textures/" + path)));
             return loadTexture(image);
         }
         catch (IOException e)

@@ -3,13 +3,18 @@ package framework.renderer;
 import framework.entity.Camera;
 import framework.entity.Entity;
 import framework.entity.Light;
+import framework.model.TexturedModel;
 import framework.shader.EntityShader;
 import framework.shader.TerrainShader;
+import framework.terrain.Terrain;
 import framework.toolkit.Display;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.lwjgl.opengl.GL46.*;
 
@@ -23,12 +28,12 @@ public class MasterRenderer {
 
     private static EntityShader entityShader;
     private static EntityRenderer entityRenderer;
-    //public static Map<TexturedModel, List<Entity>> entities;
+    public static Map<TexturedModel, List<Entity>> entities;
     private static Matrix4f projectionMatrix;
     private static TerrainRenderer terrainRenderer;
     //private static SkyboxRenderer skyboxRenderer;
     private static TerrainShader terrainShader;
-    //private static List<Terrain> terrainList;
+    private static List<Terrain> terrainList;
     //private static WaterShader waterShader;
     //private static WaterRenderer waterRenderer;
     //public static WaterFrameBufferObject buffer;
@@ -40,13 +45,12 @@ public class MasterRenderer {
         enableCulling();
         createProjectionMatrix();
 
-//        entityShader = new EntityShader();
-//        terrainShader = new TerrainShader();
-//        entities = new HashMap<>();
-
-          entityRenderer = new EntityRenderer(entityShader, projectionMatrix);
-          terrainRenderer = new TerrainRenderer(terrainShader, projectionMatrix);
-//        terrainList = new ArrayList<>();
+        entityShader = new EntityShader();
+        terrainShader = new TerrainShader();
+        entities = new HashMap<>();
+        entityRenderer = new EntityRenderer(entityShader, projectionMatrix);
+        terrainRenderer = new TerrainRenderer(terrainShader, projectionMatrix);
+        terrainList = new ArrayList<>();
 //        skyboxRenderer = new SkyboxRenderer(projectionMatrix);
 //        waterShader = new WaterShader();
 //        buffer = new WaterFrameBufferObject();
@@ -66,43 +70,43 @@ public class MasterRenderer {
     }
 
     public static void processEntity(Entity entity) {
-//        TexturedModel entityModel = entity.getTexturedModel();
-//        List<Entity> entityList = entities.get(entityModel);
-//
-//        if (entityList == null) {
-//            List<Entity> newEntityList = new ArrayList<>();
-//            newEntityList.add(entity);
-//            entities.put(entityModel, newEntityList);
-//            return;
-//        }
-//
-//        entityList.add(entity);
+        TexturedModel entityModel = entity.getTexturedModel();
+        List<Entity> entityList = entities.get(entityModel);
+
+        if (entityList == null) {
+            List<Entity> newEntityList = new ArrayList<>();
+            newEntityList.add(entity);
+            entities.put(entityModel, newEntityList);
+            return;
+        }
+
+        entityList.add(entity);
     }
 
     public static void render(List<Light> lights, Camera camera, Vector4f vec4) {
         prepare();
 
-//        entityShader.bind();
-//        entityShader.loadClipPlane(vec4);
-//        entityShader.loadSkyColor(SKY_RED, SKY_GREEN, SKY_BLUE);
-//        entityShader.loadLights(lights, camera);
-//        entityShader.loadViewMatrix(camera);
-//        entityRenderer.render(entities, shadowRender.getToShadowMapSpaceMatrix());
-//        entityShader.unbind();
-//
-//        terrainShader.bind();
-//        terrainShader.loadClipPlane(vec4);
-//        terrainShader.loadSkyColor(SKY_RED, SKY_GREEN, SKY_BLUE);
-//        terrainShader.loadLights(lights);
-//        terrainShader.loadViewMatrix(camera);
-//        terrainRenderer.render(terrainList, shadowRender.getToShadowMapSpaceMatrix());
-//        terrainShader.unbind();
-//
-//        // skybox rendering
-//        skyboxRenderer.render(camera);
-//
-//        entities.clear();
-//        terrainList.clear();
+        entityShader.bind();
+        entityShader.loadClipPlane(vec4);
+        entityShader.loadSkyColor(SKY_RED, SKY_GREEN, SKY_BLUE);
+        entityShader.loadLights(lights, camera);
+        entityShader.loadViewMatrix(camera);
+        entityRenderer.render(entities,null);
+        entityShader.unbind();
+
+        terrainShader.bind();
+        terrainShader.loadClipPlane(vec4);
+        terrainShader.loadSkyColor(SKY_RED, SKY_GREEN, SKY_BLUE);
+        terrainShader.loadLights(lights);
+        terrainShader.loadViewMatrix(camera);
+        terrainRenderer.render(terrainList, null);
+        terrainShader.unbind();
+
+        // skybox rendering
+        //skyboxRenderer.render(camera);
+
+        entities.clear();
+        terrainList.clear();
     }
 
     public static void processNormalMappedEntity(Entity entity)
@@ -121,9 +125,9 @@ public class MasterRenderer {
 //        }
     }
 
-//    public static void processTerrain(Terrain terrain) {
-//        terrainList.add(terrain);
-//    }
+    public static void processTerrain(Terrain terrain) {
+        terrainList.add(terrain);
+    }
 
 //    public static void renderShadowMap(List<Entity> ent, Light sun)
 //    {
@@ -177,11 +181,11 @@ public class MasterRenderer {
         return projectionMatrix;
     }
 
-//    public static void processAllEntities(List<Entity> entities)
-//    {
-//        for(Entity entity : entities)
-//        {
-//            processEntity(entity);
-//        }
-//    }
+    public static void processAllEntities(List<Entity> entities)
+    {
+        for(Entity entity : entities)
+        {
+            processEntity(entity);
+        }
+    }
 }

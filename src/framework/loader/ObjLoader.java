@@ -30,6 +30,7 @@ public class ObjLoader
         float[] texturesArray = null;
         float[] normalsArray = null;
         int[] indicesArray;
+        int vertexLength;
 
         try {
             while(true) {
@@ -70,11 +71,13 @@ public class ObjLoader
             Vector2f[] texArray = new Vector2f[textures.size()];
             Vector3f[] normalArray = new Vector3f[normals.size()];
 
-            for(int i = 0; i < vertices.size(); i++)
-                texArray[i] = textures.removeFirst();
+            int i = 0;
+            for(Vector2f v : textures.queue())
+                texArray[i++] = v;
 
-            for(int i = 0; i < vertices.size(); i++)
-                normalArray[i] = normals.removeFirst();
+            i = 0;
+            for(Vector3f v : normals.queue())
+                normalArray[i++] = v;
 
             while (line != null) {
                 if (!line.startsWith("f ")) {
@@ -110,13 +113,14 @@ public class ObjLoader
             verticesArray[vertexPointer++] = vertex.z;
         }
 
-        for (int i = 0; i < indices.size(); i++)
-            indicesArray[i] = indices.removeFirst();
+        int i = 0;
+        for(int n : indices.queue())
+            indicesArray[i++] = n;
 
         // Calculate Tangents
-        float[] tangentsArray = new float[vertices.size() * 3];
+        float[] tangentsArray = new float[verticesArray.length * 3];
         assert texturesArray != null;
-        for (int i = 0; i < indicesArray.length; i += 3) {
+        for (i = 0; i < indicesArray.length; i += 3) {
             int index0 = indicesArray[i];
             int index1 = indicesArray[i + 1];
             int index2 = indicesArray[i + 2];
@@ -183,7 +187,7 @@ public class ObjLoader
         }
 
         // Normalize the tangents
-        for(int i = 0; i < tangentsArray.length; i += 3) {
+        for(i = 0; i < tangentsArray.length; i += 3) {
             Vector3f tangent = new Vector3f(
                     tangentsArray[i],
                     tangentsArray[i + 1],
@@ -205,6 +209,7 @@ public class ObjLoader
         indices.add(currentVertexPointer);
 
         Vector2f currentTexture = textures[Integer.parseInt(vertexData[1]) - 1];
+        System.out.println(Integer.parseInt(vertexData[1]) - 1);
 
         textureArray[currentVertexPointer * 2] = currentTexture.x;
         textureArray[currentVertexPointer * 2 + 1] = 1 - currentTexture.y;

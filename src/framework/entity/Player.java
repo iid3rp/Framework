@@ -159,37 +159,35 @@ public class Player extends Entity {
     private float shortAngle(float target, float angle)
     {
         float angleDiff = target - angle;
-
         angleDiff = (angleDiff > 180) ? angleDiff - 360 :
                 (angleDiff < -180) ? angleDiff + 360 :
                         angleDiff;
         return angleDiff;
     }
 
-    private void jump() {
-        if(!isInAir)
-        {
-            this.upwardSpeed = JUMP_POWER;
-            isInAir = true;
-        }
+    private void jump()
+    {
+        if(isInAir)
+            return;
+        this.upwardSpeed = JUMP_POWER;
+        isInAir = true;
     }
 
     private void checkInputs() {
-        if (Keyboard.isKeyDown(GLFW_KEY_W) || Keyboard.isKeyDown(GLFW_KEY_UP)) {
+        if (Keyboard.isKeyDown(GLFW_KEY_W) || Keyboard.isKeyDown(GLFW_KEY_UP))
             currentSpeed = RUN_SPEED;
-        } else if (Keyboard.isKeyDown(GLFW_KEY_S) || Keyboard.isKeyDown(GLFW_KEY_DOWN)) {
+        else if (Keyboard.isKeyDown(GLFW_KEY_S) || Keyboard.isKeyDown(GLFW_KEY_DOWN))
             currentSpeed = -RUN_SPEED;
-        } else {
+        else
             currentSpeed = 0;
-        }
 
-        if (Keyboard.isKeyDown(GLFW_KEY_D) || Keyboard.isKeyDown(GLFW_KEY_RIGHT)) {
+        if (Keyboard.isKeyDown(GLFW_KEY_D) || Keyboard.isKeyDown(GLFW_KEY_RIGHT))
             currentTurnSpeed = -TURN_SPEED;
-        } else if (Keyboard.isKeyDown(GLFW_KEY_A) || Keyboard.isKeyDown(GLFW_KEY_LEFT)) {
+        else if (Keyboard.isKeyDown(GLFW_KEY_A) || Keyboard.isKeyDown(GLFW_KEY_LEFT))
             currentTurnSpeed = TURN_SPEED;
-        } else {
+        else
             currentTurnSpeed = 0;
-        }
+
 
         if (Keyboard.isKeyDown(GLFW_KEY_SPACE)) {
             jump();
