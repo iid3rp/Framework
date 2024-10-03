@@ -6,10 +6,12 @@ import framework.model.TexturedModel;
 import framework.shader.EntityShader;
 import framework.textures.Texture;
 import framework.util.GeomMath;
+import framework.util.Key;
+import framework.util.LinkList;
+import framework.util.Map;
 import org.joml.Matrix4f;
 
 import java.util.List;
-import java.util.Map;
 
 import static org.lwjgl.opengl.GL40.*;
 
@@ -32,15 +34,23 @@ public class EntityRenderer {
         staticShader.unbind();
     }
 
-    public void render(Map<TexturedModel, List<Entity>> entities, Matrix4f shadow) {
+    public void render(Map<TexturedModel, LinkList<Entity>> entities, Matrix4f shadow) {
         staticShader.loadShadowMatrix(shadow);
-        for (TexturedModel texturedModel : entities.keySet()) {
-            prepareTexturedModel(texturedModel);
-            List<Entity> entityList = entities.get(texturedModel);
+
+        for(Key<TexturedModel, LinkList<Entity>> key : entities)
+        {
+            System.out.println(key.getKey() + " " + key.getValue());
+            System.out.println();
+        }
+
+        for (Key<TexturedModel, LinkList<Entity>> key : entities) {
+            System.out.println(key.getKey());
+            prepareTexturedModel(key.getKey());
+            LinkList<Entity> entityList = entities.get(key.getKey());
 
             for (Entity entity : entityList) {
                 prepareEntity(entity);
-                glDrawElements(GL_TRIANGLES, texturedModel.getModel().getVertexCount(), GL_UNSIGNED_INT, 0);    // Draw using index buffer and triangles
+                glDrawElements(GL_TRIANGLES, key.getKey().getModel().getVertexCount(), GL_UNSIGNED_INT, 0);    // Draw using index buffer and triangles
             }
             unbindTexturedModel();
         }

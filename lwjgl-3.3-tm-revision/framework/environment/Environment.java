@@ -154,9 +154,9 @@ public final class Environment
             multi.resolveToFrameBufferObject(GL30.GL_COLOR_ATTACHMENT2, mouseEventBuffer);
             multi.resolveToScreen();
             //multi.resolvePixel(mouseEventBuffer);
-            if(i % 2 == 0)
-                scene.getEvent().resolveColorPickFromPixel(mouseEventBuffer, pixelBuffer);
-            i++;
+            //if(i % 2 == 0)
+            //     scene.getEvent().resolveColorPickFromPixel(mouseEventBuffer, pixelBuffer);
+            //i++;
 
             //if(!Keyboard.isKeyDown(Keyboard.E))
             PostProcessing.doPostProcessing(out.getColorTexture(), bright.getColorTexture());

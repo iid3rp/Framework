@@ -8,6 +8,7 @@ import framework.model.Model;
 import framework.renderer.MasterRenderer;
 import framework.textures.Texture;
 import framework.util.GeomMath;
+import framework.util.LinkList;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
@@ -41,9 +42,9 @@ public class WaterRenderer {
 		setUpVAO();
 	}
 
-	public void render(List<framework.water.WaterTile> water, Camera camera, Light light) {
+	public void render(LinkList<WaterTile> water, Camera camera, Light light) {
 		prepareRender(camera, light);
-		for (framework.water.WaterTile tile : water) {
+		for (WaterTile tile : water) {
 			MasterRenderer.disableCulling();
 			Matrix4f modelMatrix = GeomMath.createTransformationMatrix(
 					new Vector3f(tile.getX(), tile.getHeight(), tile.getZ()), 0, 0, 0,

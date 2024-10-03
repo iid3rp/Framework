@@ -6,6 +6,7 @@ import framework.model.Model;
 import framework.resources.Resources;
 import framework.textures.TextureData;
 import framework.util.Buffer;
+import framework.util.LinkList;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL13;
@@ -15,8 +16,6 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL30.*;
@@ -24,9 +23,9 @@ import static org.lwjgl.opengl.GL33.glVertexAttribDivisor;
 
 public final class ModelLoader
 {
-    private static List<Integer> vaoList = new ArrayList<>();
-    private static List<Integer> vboList = new ArrayList<>();
-    protected static List<Integer> textureList = new ArrayList<>();
+    private static LinkList<Integer> vaoList = new LinkList<>();
+    private static LinkList<Integer> vboList = new LinkList<>();
+    protected static LinkList<Integer> textureList = new LinkList<>();
     private static int createVao() {
         int vaoId = glGenVertexArrays();            // initialize an empty VAO
         vaoList.add(vaoId);

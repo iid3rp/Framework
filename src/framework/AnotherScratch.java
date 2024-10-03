@@ -15,7 +15,7 @@ public class AnotherScratch
         list.add('f');
         list.add('g');
 
-        for(int i = 0; i < list.size(); i++)
+        for(int i = 0; i < list.length(); i++)
         {
             System.out.println(list.size());
             System.out.println(list.removeFirst());

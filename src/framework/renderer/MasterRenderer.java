@@ -6,6 +6,8 @@ import framework.entity.Light;
 import framework.model.TexturedModel;
 import framework.shader.EntityShader;
 import framework.shader.TerrainShader;
+import framework.shadow.ShadowMapMasterRenderer;
+import framework.skybox.SkyboxRenderer;
 import framework.terrain.Terrain;
 import framework.toolkit.Display;
 import org.joml.Matrix4f;
@@ -31,14 +33,14 @@ public class MasterRenderer {
     public static Map<TexturedModel, List<Entity>> entities;
     private static Matrix4f projectionMatrix;
     private static TerrainRenderer terrainRenderer;
-    //private static SkyboxRenderer skyboxRenderer;
+    private static SkyboxRenderer skyboxRenderer;
     private static TerrainShader terrainShader;
     private static List<Terrain> terrainList;
     //private static WaterShader waterShader;
     //private static WaterRenderer waterRenderer;
     //public static WaterFrameBufferObject buffer;
 
-    //public static ShadowMapMasterRenderer shadowRender;
+    public static ShadowMapMasterRenderer shadowRender;
 
     public static void setRenderer(Camera camera)
     {
@@ -51,11 +53,11 @@ public class MasterRenderer {
         entityRenderer = new EntityRenderer(entityShader, projectionMatrix);
         terrainRenderer = new TerrainRenderer(terrainShader, projectionMatrix);
         terrainList = new ArrayList<>();
-//        skyboxRenderer = new SkyboxRenderer(projectionMatrix);
+        skyboxRenderer = new SkyboxRenderer(projectionMatrix);
 //        waterShader = new WaterShader();
 //        buffer = new WaterFrameBufferObject();
 //        waterRenderer = new WaterRenderer(waterShader, projectionMatrix, buffer);
-//        shadowRender = new ShadowMapMasterRenderer(camera);
+        shadowRender = new ShadowMapMasterRenderer(camera);
     }
 
     public static void enableCulling() {
@@ -103,7 +105,7 @@ public class MasterRenderer {
         terrainShader.unbind();
 
         // skybox rendering
-        //skyboxRenderer.render(camera);
+        skyboxRenderer.render(camera);
 
         entities.clear();
         terrainList.clear();
@@ -129,20 +131,20 @@ public class MasterRenderer {
         terrainList.add(terrain);
     }
 
-//    public static void renderShadowMap(List<Entity> ent, Light sun)
-//    {
-//        processAllEntities(ent);
-//        shadowRender.render(entities, sun);
-//        entities.clear();
-//    }
+    public static void renderShadowMap(List<Entity> ent, Light sun)
+    {
+        processAllEntities(ent);
+        shadowRender.render(entities, sun);
+        entities.clear();
+    }
 
-//    public static int getShadowMapTexture()
-//    {
-//        return shadowRender.getShadowMap();
-//    }
+    public static int getShadowMapTexture()
+    {
+        return shadowRender.getShadowMap();
+    }
 
     public static void dispose() {
-        //shadowRender.dispose();
+        shadowRender.dispose();
         entityShader.dispose();
         terrainShader.dispose();
     }
@@ -152,7 +154,7 @@ public class MasterRenderer {
         glClearColor(SKY_RED, SKY_GREEN, SKY_BLUE, 1);      // Load selected color into the color buffer
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);     // Clear the screen and draw with color in color buffer
 
-        glActiveTexture(GL_TEXTURE5);
+        //glActiveTexture(GL_TEXTURE5);
         //GL11.glBindTexture(GL11.GL_TEXTURE_2D, getShadowMapTexture());
     }
 

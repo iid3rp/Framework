@@ -10,6 +10,8 @@ import framework.shader.TerrainShader;
 import framework.shadow.ShadowMapMasterRenderer;
 import framework.skybox.SkyboxRenderer;
 import framework.terrain.Terrain;
+import framework.util.LinkList;
+import framework.util.Map;
 import framework.water.WaterFrameBufferObject;
 import framework.water.WaterRenderer;
 import framework.water.WaterShader;
@@ -19,10 +21,6 @@ import org.joml.Vector4f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
@@ -37,12 +35,12 @@ public class MasterRenderer {
 
     private static EntityShader entityShader;
     private static EntityRenderer entityRenderer;
-    public static Map<TexturedModel, List<Entity>> entities;
+    public static Map<TexturedModel, LinkList<Entity>> entities;
     private static Matrix4f projectionMatrix;
     private static TerrainRenderer terrainRenderer;
     private static SkyboxRenderer skyboxRenderer;
     private static TerrainShader terrainShader;
-    private static List<Terrain> terrainList;
+    private static LinkList<Terrain> terrainList;
     private static WaterShader waterShader;
     private static WaterRenderer waterRenderer;
     public static WaterFrameBufferObject buffer;
@@ -56,11 +54,11 @@ public class MasterRenderer {
 
         entityShader = new EntityShader();
         terrainShader = new TerrainShader();
-        entities = new HashMap<>();
+        entities = new Map<>();
 
         entityRenderer = new EntityRenderer(entityShader, projectionMatrix);
         terrainRenderer = new TerrainRenderer(terrainShader, projectionMatrix);
-        terrainList = new ArrayList<>();
+        terrainList = new LinkList<>();
         skyboxRenderer = new SkyboxRenderer(projectionMatrix);
         waterShader = new WaterShader();
         buffer = new WaterFrameBufferObject();
@@ -81,10 +79,10 @@ public class MasterRenderer {
 
     public static void processEntity(Entity entity) {
         TexturedModel entityModel = entity.getTexturedModel();
-        List<Entity> entityList = entities.get(entityModel);
+        LinkList<Entity> entityList = entities.get(entityModel);
 
         if (entityList == null) {
-            List<Entity> newEntityList = new ArrayList<>();
+            LinkList<Entity> newEntityList = new LinkList<>();
             newEntityList.add(entity);
             entities.put(entityModel, newEntityList);
             return;
@@ -93,7 +91,7 @@ public class MasterRenderer {
         entityList.add(entity);
     }
 
-    public static void render(List<Light> lights, Camera camera, Vector4f vec4) {
+    public static void render(LinkList<Light> lights, Camera camera, Vector4f vec4) {
         prepare();
 
         entityShader.bind();
@@ -119,17 +117,16 @@ public class MasterRenderer {
         terrainList.clear();
     }
 
+    @Deprecated
     public static void processNormalMappedEntity(Entity entity)
     {
         TexturedModel texturedModel = entity.getTexturedModel();
-        List<Entity> batch = entities.get(texturedModel);
+        LinkList<Entity> batch = entities.get(texturedModel);
         if(batch != null)
-        {
             batch.add(entity);
-        }
         else
         {
-            List<Entity> newBatch = new ArrayList<>();
+            LinkList<Entity> newBatch = new LinkList<>();
             newBatch.add(entity);
             entities.put(texturedModel, newBatch);
         }
@@ -139,7 +136,7 @@ public class MasterRenderer {
         terrainList.add(terrain);
     }
 
-    public static void renderShadowMap(List<Entity> ent, Light sun)
+    public static void renderShadowMap(LinkList<Entity> ent, Light sun)
     {
         processAllEntities(ent);
         shadowRender.render(entities, sun);
@@ -181,7 +178,7 @@ public class MasterRenderer {
         projectionMatrix.m33(0);
     }
 
-    public static void renderWaters(List<WaterTile> waters, Camera camera, Light light)
+    public static void renderWaters(LinkList<WaterTile> waters, Camera camera, Light light)
     {
         waterRenderer.render(waters, camera, light);
     }
@@ -191,7 +188,7 @@ public class MasterRenderer {
         return projectionMatrix;
     }
 
-    public static void processAllEntities(List<Entity> entities)
+    public static void processAllEntities(LinkList<Entity> entities)
     {
         for(Entity entity : entities)
         {

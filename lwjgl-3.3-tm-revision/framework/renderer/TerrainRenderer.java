@@ -5,10 +5,9 @@ import framework.shader.TerrainShader;
 import framework.terrain.Terrain;
 import framework.textures.TerrainTexturePack;
 import framework.util.GeomMath;
+import framework.util.LinkList;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-
-import java.util.List;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.*;
@@ -35,7 +34,7 @@ public class TerrainRenderer {
         terrainShader.unbind();
     }
 
-    public void render(List<Terrain> terrainList, Matrix4f shadowMatrix) {
+    public void render(LinkList<Terrain> terrainList, Matrix4f shadowMatrix) {
         terrainShader.loadShadowMatrix(shadowMatrix);
         for (Terrain terrain : terrainList) {
             prepareTerrain(terrain);

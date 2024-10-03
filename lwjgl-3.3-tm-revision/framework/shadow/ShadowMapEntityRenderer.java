@@ -4,13 +4,13 @@ import framework.entity.Entity;
 import framework.model.Model;
 import framework.model.TexturedModel;
 import framework.util.GeomMath;
+import framework.util.Key;
+import framework.util.LinkList;
+import framework.util.Map;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
-
-import java.util.List;
-import java.util.Map;
 
 public class ShadowMapEntityRenderer {
 
@@ -38,11 +38,12 @@ public class ShadowMapEntityRenderer {
 	 * @param entities
 	 *            - the entities to be rendered to the shadow map.
 	 */
-	protected void render(Map<TexturedModel, List<Entity>> entities) {
-		for (TexturedModel model : entities.keySet()) {
-			Model rawModel = model.getModel();
+	protected void render(Map<TexturedModel, LinkList<Entity>> entities) {
+		for (Key<TexturedModel, LinkList<Entity>> key : entities) {
+			System.out.println("hello world!");
+			Model rawModel = key.getKey().getModel();
 			bindModel(rawModel);
-			for (Entity entity : entities.get(model)) {
+			for (Entity entity : entities.get(key.getKey())) {
 				prepareInstance(entity);
 				GL11.glDrawElements(GL11.GL_TRIANGLES, rawModel.getVertexCount(),
 						GL11.GL_UNSIGNED_INT, 0);

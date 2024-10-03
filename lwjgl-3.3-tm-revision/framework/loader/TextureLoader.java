@@ -28,7 +28,7 @@ public class TextureLoader
 
         try {
             BufferedImage image = ImageIO.read(
-                    Objects.requireNonNull(Resources.getResource().getResourceAsStream("framework/textures/" + path))
+                    Objects.requireNonNull(Resources.getResource().getResourceAsStream("textures/" + path))
             );
             width = image.getWidth();
             height = image.getHeight();
@@ -175,7 +175,7 @@ public class TextureLoader
         {
             BufferedImage image = ImageIO.read(
                     Objects.requireNonNull(
-                            Resources.class.getResourceAsStream("framework/textures/" + path)));
+                            Resources.class.getResourceAsStream("textures/" + path)));
             return loadTexture(image);
         }
         catch (IOException e)

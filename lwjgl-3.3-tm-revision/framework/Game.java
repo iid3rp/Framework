@@ -9,9 +9,8 @@ import framework.entity.Player;
 import framework.environment.Environment;
 import framework.environment.Scene;
 import framework.loader.TextureLoader;
+import framework.loader.load.ObjectLoader;
 import framework.model.TexturedModel;
-import framework.particles.ParticleSystem;
-import framework.particles.ParticleTexture;
 import framework.scripting.FrameworkScript;
 import framework.swing.ContentPane;
 import framework.swing.PictureBox;
@@ -130,7 +129,6 @@ public class Game
 
         scene.setContentPane(panel);
 
-
         Entity entity = new Entity(new TexturedModel(
                 ObjectLoader.loadObject("crate.obj"),
                 new Texture(ModelLoader.loadTexture("brat.png"))),
@@ -138,11 +136,11 @@ public class Game
         //scene.add(entity);
         scene.add(new WaterTile(0,0, 0));
 
-        TexturedModel chrysalis = new TexturedModel(ObjectLoader.loadObjModel("tree.obj"), new Texture(ModelLoader.loadTexture("grass.png")));
+        TexturedModel chrysalis = new TexturedModel(ObjectLoader.loadObject("tree.obj"), new Texture(ModelLoader.loadTexture("grass.png")));
         chrysalis.getTexture().setShineDampening(1f);
         chrysalis.getTexture().setReflectivity(.1f);
 
-        for(int i = 0 ; i < 100; i++) {
+        for(int i = 0 ; i < 1000; i++) {
             float x = random.nextFloat(terrain.getSize()) - (terrain.getSize() / 2);
             float z = random.nextFloat(terrain.getSize()) - (terrain.getSize() / 2);
             float y = terrain.getHeightOfTerrain(x, z);

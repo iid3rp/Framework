@@ -3,6 +3,7 @@ package framework.shader;
 import framework.entity.Camera;
 import framework.entity.Light;
 import framework.util.GeomMath;
+import framework.util.LinkList;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -94,7 +95,8 @@ public class TerrainShader extends GLShader
         super.loadMatrix(location_viewMatrix, viewMatrix);
     }
 
-    public void loadLights(List<Light> lights) {
+    public void loadLights(LinkList<Light> lights) {
+
         for(int i = 0; i < 20; i++)
         {
             if(i < lights.size())

@@ -256,6 +256,12 @@ public class LinkList<E> implements Iterable<E>
         return size;
     }
 
+    public int length()
+    {
+        int len = size;
+        return len;
+    }
+
     public Iterable<E> queue()
     {
         return queue;

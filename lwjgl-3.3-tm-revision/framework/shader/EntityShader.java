@@ -3,6 +3,7 @@ package framework.shader;
 import framework.entity.Camera;
 import framework.entity.Light;
 import framework.util.GeomMath;
+import framework.util.LinkList;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -106,15 +107,17 @@ public class EntityShader extends GLShader
         super.loadVector(locationMouseColor, vector4f);
     }
 
-    public void loadLights(List<Light> lights, Camera camera) {
+    public void loadLights(LinkList<Light> lights, Camera camera) {
         Matrix4f viewMatrix = GeomMath.createViewMatrix(camera);
+        final int lightSize = lights.size();
         for(int i = 0; i < 20; i++)
         {
-            if(i < lights.size())
+            if(i < lightSize)
             {
-                super.loadVector(location_lightPosition[i], getEyeSpacePosition(lights.get(i), viewMatrix));
-                super.loadVector(location_lightColor[i], lights.get(i).getColor());
-                super.loadVector(locationAttenuation[i], lights.get(i).getAttenuation());
+                Light light = lights.get(i);
+                super.loadVector(location_lightPosition[i], getEyeSpacePosition(light, viewMatrix));
+                super.loadVector(location_lightColor[i], light.getColor());
+                super.loadVector(locationAttenuation[i], light.getAttenuation());
             }
             else
             {

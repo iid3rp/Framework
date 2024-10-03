@@ -85,26 +85,6 @@ public final class Main
         int progress = 0;
 
 
-        Environment.run(new FrameworkScript()
-        {
-            int i = 0;
-            @Override
-            public boolean whilst()
-            {
-                return true;
-            }
-
-            @Override
-            public void run(Scene scene)
-            {
-                if(i > 100 && i < 600) {
-                    System.out.println("h");
-                }
-                i++;
-            }
-        });
-
-
         Player player = new Player(barrelEntity);
         //player.setLight();
         //player.setLightColor(255, 255, 255);

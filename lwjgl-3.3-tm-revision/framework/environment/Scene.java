@@ -9,20 +9,17 @@ import framework.hardware.Display;
 import framework.particles.ParticleSystem;
 import framework.swing.Container;
 import framework.swing.ContentPane;
-import framework.swing.GUITexture;
 import framework.terrain.Terrain;
+import framework.util.LinkList;
 import framework.water.WaterTile;
 import org.joml.Vector2f;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class Scene
 {
     public static Vector2f offset;
-    private List<Entity> entities;
-    private List<Light> lights;
-    private List<WaterTile> waters;
+    private LinkList<Entity> entities;
+    private LinkList<Light> lights;
+    private LinkList<WaterTile> waters;
     private Terrain terrain;
 
     private Camera camera;
@@ -35,10 +32,10 @@ public class Scene
     public Scene()
     {
         pane = new ContentPane();
-        entities = new ArrayList<>();
-        lights = new ArrayList<>();
+        entities = new LinkList<>();
+        lights = new LinkList<>();
         terrain = new Terrain();
-        waters = new ArrayList<>();
+        waters = new LinkList<>();
         offset = new Vector2f();
     }
 
@@ -54,7 +51,7 @@ public class Scene
         offset = new Vector2f(_x, _y);
     }
 
-    public List<Entity> getEntities()
+    public LinkList<Entity> getEntities()
     {
         return entities;
     }
@@ -78,7 +75,7 @@ public class Scene
         entities.add(entity);
     }
 
-    public List<Light> getLights()
+    public LinkList<Light> getLights()
     {
         return lights;
     }
@@ -158,7 +155,7 @@ public class Scene
                 "Number of Terrain Vertices: " + numTerrainVertices;
     }
 
-    public List<WaterTile> getWaters()
+    public LinkList<WaterTile> getWaters()
     {
         return waters;
     }

@@ -68,7 +68,7 @@ void main(void)
     }
 
     total /= totalTexels;
-    float lightFactor = 1.0 - (total * shadowCoords.w * .75);
+    float lightFactor = 1; //1.0 - (total * shadowCoords.w * .75);
 
     vec3 unitNormal = normalTexture(); // normalize makes the size of the vector = 1. Only direction of the vector matters here. Size is irrelevant
     vec3 unitVectorToCamera = normalize(toCameraVector);
