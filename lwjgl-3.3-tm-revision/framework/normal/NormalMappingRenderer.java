@@ -7,7 +7,7 @@ import framework.model.Model;
 import framework.model.TexturedModel;
 import framework.renderer.MasterRenderer;
 import framework.textures.Texture;
-import framework.util.GeomMath;
+import framework.util.JOMLMath;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL11;
@@ -75,7 +75,7 @@ public class NormalMappingRenderer
 	}
 
 	private void prepareInstance(Entity entity) {
-		Matrix4f transformationMatrix = GeomMath.createTransformationMatrix(entity.getPosition(), entity.getRotationX(),
+		Matrix4f transformationMatrix = JOMLMath.createTransformationMatrix(entity.getPosition(), entity.getRotationX(),
 				entity.getRotationY(), entity.getRotationZ(), entity.getScale());
 		shader.loadTransformationMatrix(transformationMatrix);
 		shader.loadOffset(entity.getTextureXOffset(), entity.getTextureYOffset());
@@ -85,7 +85,7 @@ public class NormalMappingRenderer
 		shader.loadClipPlane(clipPlane);
 		//need to be public variables in MasterRenderer
 		shader.loadSkyColour(MasterRenderer.SKY_RED, MasterRenderer.SKY_GREEN, MasterRenderer.SKY_BLUE);
-		Matrix4f viewMatrix = GeomMath.createViewMatrix(camera);
+		Matrix4f viewMatrix = JOMLMath.createViewMatrix(camera);
 		
 		shader.loadLights(lights, viewMatrix);
 		shader.loadViewMatrix(viewMatrix);

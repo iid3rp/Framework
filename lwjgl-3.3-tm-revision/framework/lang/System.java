@@ -1,4 +1,4 @@
-package framework.util;
+package framework.lang;
 
 import framework.resources.Resources;
 

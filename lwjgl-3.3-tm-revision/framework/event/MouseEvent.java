@@ -7,7 +7,7 @@ import framework.environment.Environment;
 import framework.hardware.Mouse;
 import framework.post_processing.FrameBufferObject;
 import framework.terrain.Terrain;
-import framework.util.GeomMath;
+import framework.util.JOMLMath;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -48,7 +48,7 @@ public class MouseEvent
         this.camera = camera;
         this.projection = projection;
         this.terrain = Environment.getScene().getTerrain();
-        this.view = GeomMath.createViewMatrix(camera);
+        this.view = JOMLMath.createViewMatrix(camera);
     }
 
     public Vector3f getCurrentTerrainPoint() {
@@ -71,7 +71,7 @@ public class MouseEvent
 
     public void update()
     {
-        view = GeomMath.createViewMatrix(camera);
+        view = JOMLMath.createViewMatrix(camera);
         currentRay = calculateMouseRay();
         if(intersectionInRange(0, rayRange, currentRay))
         {
@@ -111,7 +111,7 @@ public class MouseEvent
     public void setCamera(Camera camera)
     {
         this.camera = camera;
-        this.view = GeomMath.createViewMatrix(camera);
+        this.view = JOMLMath.createViewMatrix(camera);
     }
 
     private Vector3f calculateMouseRay()

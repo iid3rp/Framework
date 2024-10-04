@@ -7,7 +7,7 @@ import framework.loader.ModelLoader;
 import framework.model.Model;
 import framework.renderer.MasterRenderer;
 import framework.textures.Texture;
-import framework.util.GeomMath;
+import framework.util.JOMLMath;
 import framework.util.LinkList;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -15,8 +15,6 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
-
-import java.util.List;
 
 public class WaterRenderer {
 
@@ -46,7 +44,7 @@ public class WaterRenderer {
 		prepareRender(camera, light);
 		for (WaterTile tile : water) {
 			MasterRenderer.disableCulling();
-			Matrix4f modelMatrix = GeomMath.createTransformationMatrix(
+			Matrix4f modelMatrix = JOMLMath.createTransformationMatrix(
 					new Vector3f(tile.getX(), tile.getHeight(), tile.getZ()), 0, 0, 0,
 					WaterTile.TILE_SIZE);
 			shader.loadModelMatrix(modelMatrix);

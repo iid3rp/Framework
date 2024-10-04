@@ -122,7 +122,7 @@ public class Game
             float x = random.nextFloat(terrain.getSize()) - (terrain.getSize() / 2);
             float z = random.nextFloat(terrain.getSize()) - (terrain.getSize() / 2);
             float y = terrain.getHeightOfTerrain(x, z);
-            Entity crystal = new Entity(chrysalis, new Vector3f(x, y, z), 0, 0, 0, 10f);
+            Entity crystal = new Entity(chrysalis, new Vector3f(x, y, z), (float) 0, 0, 0, 10f + ((float) Math.random() * 20));
             crystal.addMouseListener(new MouseAdapter()
             {
                 @Override
@@ -157,8 +157,8 @@ public class Game
 //        system.setScaleError(1f);
 //        system.setSpeedError(.7f);
 //        scene.setParticleSystem(system);
-//        WaterTile tile = new WaterTile(0, 0,0);
-//        scene.add(tile);
+        WaterTile tile = new WaterTile(0, 0,0);
+        scene.add(tile);
 
 
 

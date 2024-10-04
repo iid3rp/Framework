@@ -1,4 +1,4 @@
-package framework.util;
+package framework.lang;
 
 public class SmoothFloat
 {
@@ -10,6 +10,7 @@ public class SmoothFloat
     public SmoothFloat()
     {
         delta = 1;
+        target = 0;
         actual = 0;
     }
 
@@ -66,4 +67,8 @@ public class SmoothFloat
         return target;
     }
 
+    public void setActual(float actual)
+    {
+        this.actual = actual;
+    }
 }

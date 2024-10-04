@@ -4,7 +4,7 @@ import framework.loader.ModelLoader;
 import framework.model.Model;
 import framework.textures.TerrainTexture;
 import framework.textures.TerrainTexturePack;
-import framework.util.GeomMath;
+import framework.util.JOMLMath;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
@@ -14,7 +14,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class Terrain {
-    private static final float SIZE = 500;
+    private static final float SIZE = 1600;
     private static final float MAX_HEIGHT = 60;
     private static final float MIN_HEIGHT = -100;
     private static final float MAX_PIXEL_COLOR = 256 * 256 * (float)256;
@@ -113,14 +113,14 @@ public class Terrain {
         float triangleHeight;
 
         if (xCoordinate <= (1 - zCoordinate)) {
-            triangleHeight = GeomMath.barryCentric(
+            triangleHeight = JOMLMath.barryCentric(
                     new Vector3f(0, heights[gridX][gridZ], 0),
                     new Vector3f(1, heights[gridX + 1][gridZ], 0),
                     new Vector3f(0, heights[gridX][gridZ + 1], 1),
                     new Vector2f(xCoordinate, zCoordinate)
             );
         } else {
-            triangleHeight = GeomMath.barryCentric(
+            triangleHeight = JOMLMath.barryCentric(
                     new Vector3f(1, heights[gridX + 1][gridZ], 0),
                     new Vector3f(1, heights[gridX + 1][gridZ + 1], 1),
                     new Vector3f(0, heights[gridX][gridZ + 1], 1),

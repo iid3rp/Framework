@@ -1,21 +1,39 @@
 package framework.util;
 
 import framework.entity.Camera;
+import framework.lang.Mat4;
+import framework.lang.Vec3;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
-public class GeomMath
+public class JOMLMath
 {
-    public static Matrix4f createTransformationMatrix(Vector3f translation, float rx, float ry, float rz, float scale) {
-        Matrix4f matrix = new Matrix4f();
+    public static Matrix4f createTransformationMatrix(Vector2f position, Vector3f rotation, Vector2f scale)
+    {
+        Mat4 matrix = new Mat4();
         matrix.identity();
-        matrix.translate(translation.x, translation.y, translation.z);
-        matrix.scale(new Vector3f(scale, scale, scale));
-        matrix.rotate((float) Math.toRadians(rx), new Vector3f(1, 0, 0));
-        matrix.rotate((float) Math.toRadians(ry), new Vector3f(0, 1, 0));
-        matrix.rotate((float) Math.toRadians(rz), new Vector3f(0, 0, 1));
-        return matrix;
+        Mat4.translate(position, matrix, matrix);
+        Mat4.rotate((float) java.lang.Math.toRadians(rotation.x), new Vec3(1, 0, 0), matrix, matrix);
+        Mat4.rotate((float) java.lang.Math.toRadians(rotation.y), new Vec3(0, 1, 0), matrix, matrix);
+        Mat4.rotate((float) java.lang.Math.toRadians(rotation.z), new Vec3(0, 0, 1), matrix, matrix);
+        Mat4.scale(new Vector3f(scale.x, scale.y, 1f), matrix, matrix);
+        return matrix.matrix4f();
+    }
+
+    public static Matrix4f createTransformationMatrix(Vector3f vector3f,
+                                                      float rotationX,
+                                                      float rotationY,
+                                                      float rotationZ,
+                                                      float scale)
+    {
+        Mat4 matrix = new Mat4();
+        Mat4.translate(vector3f, matrix, matrix);
+        Mat4.rotate((float) java.lang.Math.toRadians(rotationX), new Vec3(1, 0, 0), matrix, matrix);
+        Mat4.rotate((float) java.lang.Math.toRadians(rotationY), new Vec3(0, 1, 0), matrix, matrix);
+        Mat4.rotate((float) java.lang.Math.toRadians(rotationZ), new Vec3(0, 0, 1), matrix, matrix);
+        Mat4.scale(new Vector3f(scale, scale, scale), matrix, matrix);
+        return matrix.matrix4f();
     }
 
     public static Matrix4f createViewMatrix(Camera camera) {
@@ -37,7 +55,7 @@ public class GeomMath
     /**
      * no one uses this constructor
      */
-    private GeomMath() {}
+    private JOMLMath() {}
 
     /**
      * Calculates the interpolation of a point within a triangle using barycentric coordinates.
@@ -89,7 +107,7 @@ public class GeomMath
      * @param scale The 2D vector representing the scaling factors in x and y axes.
      * @return The transformation matrix that combines the translation, rotation, and scaling operations.
      */
-    public static Matrix4f createTransformationMatrix(Vector2f position, Vector3f rotation, Vector2f scale)
+    public static Matrix4f createTransformationMatrixx(Vector2f position, Vector3f rotation, Vector2f scale)
     {
 
         Matrix4f matrix = new Matrix4f();

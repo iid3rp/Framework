@@ -2,7 +2,7 @@ package framework.shader;
 
 import framework.entity.Camera;
 import framework.entity.Light;
-import framework.util.GeomMath;
+import framework.util.JOMLMath;
 import framework.util.LinkList;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
@@ -10,7 +10,6 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 import java.awt.Color;
-import java.util.List;
 
 public class EntityShader extends GLShader
 {
@@ -93,7 +92,7 @@ public class EntityShader extends GLShader
     }
 
     public void loadViewMatrix(Camera camera) {
-        Matrix4f viewMatrix = GeomMath.createViewMatrix(camera);
+        Matrix4f viewMatrix = JOMLMath.createViewMatrix(camera);
         super.loadMatrix(location_viewMatrix, viewMatrix);
     }
 
@@ -108,7 +107,7 @@ public class EntityShader extends GLShader
     }
 
     public void loadLights(LinkList<Light> lights, Camera camera) {
-        Matrix4f viewMatrix = GeomMath.createViewMatrix(camera);
+        Matrix4f viewMatrix = JOMLMath.createViewMatrix(camera);
         final int lightSize = lights.size();
         for(int i = 0; i < 20; i++)
         {

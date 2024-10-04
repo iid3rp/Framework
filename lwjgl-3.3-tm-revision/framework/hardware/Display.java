@@ -35,10 +35,10 @@ public final class Display implements Hardware
         glfwWindowHint(GLFW_DEPTH_BITS, 24); // Set the depth bits to 24
         glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-        glfwWindowHint(GLFW_REFRESH_RATE, 60);
+        glfwWindowHint(GLFW_REFRESH_RATE, 120);
         glfwWindowHint(GLFW_DECORATED,
                 GL_TRUE);
 
@@ -68,7 +68,7 @@ public final class Display implements Hardware
         glfwShowWindow(window);
 
         // Setting the value to 1 should limit to 60 FPS
-        glfwSwapInterval(0);
+        glfwSwapInterval(1);
 
         lastFrameTime = getCurrentTime();
         GL11.glEnable(GL13.GL_MULTISAMPLE);

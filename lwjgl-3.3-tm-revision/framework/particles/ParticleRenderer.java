@@ -3,7 +3,7 @@ package framework.particles;
 import framework.entity.Camera;
 import framework.loader.ModelLoader;
 import framework.model.Model;
-import framework.util.GeomMath;
+import framework.util.JOMLMath;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
@@ -49,7 +49,7 @@ public class ParticleRenderer {
 	
 	protected void render(Map<ParticleTexture, List<Particle>> particles, Camera camera)
 	{
-		Matrix4f view = GeomMath.createViewMatrix(camera);
+		Matrix4f view = JOMLMath.createViewMatrix(camera);
 		prepare();
 		for(ParticleTexture t : particles.keySet())
 		{

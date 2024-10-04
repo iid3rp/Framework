@@ -3,7 +3,7 @@ package framework.skybox;
 import framework.hardware.Display;
 import framework.entity.Camera;
 import framework.shader.GLShader;
-import framework.util.GeomMath;
+import framework.util.JOMLMath;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -30,7 +30,7 @@ public class SkyboxShader extends GLShader
 	}
 
 	public void loadViewMatrix(Camera camera){
-		Matrix4f matrix = GeomMath.createViewMatrix(camera);
+		Matrix4f matrix = JOMLMath.createViewMatrix(camera);
 		matrix.m30(0);
 		matrix.m31(0);
 		matrix.m32(0);

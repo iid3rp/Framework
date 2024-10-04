@@ -3,7 +3,7 @@ package framework.entity;
 import framework.hardware.Display;
 import framework.hardware.Keyboard;
 import framework.hardware.Mouse;
-import framework.util.SmoothFloat;
+import framework.lang.SmoothFloat;
 import org.joml.Vector3f;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -203,7 +203,7 @@ public class Camera {
 
     public void invertPitch()
     {
-        this.pitch.setTarget(-pitch.get());
+        this.pitch.setActual(-pitch.get());
     }
 
     private float calculateHorizontalDistance() {
