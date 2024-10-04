@@ -11,9 +11,7 @@ import framework.util.LinkList;
 import framework.util.Map;
 import org.joml.Matrix4f;
 
-import java.util.List;
-
-import static org.lwjgl.opengl.GL40.*;
+import static org.lwjgl.opengl.GL46.*;
 
 public class EntityRenderer {
     private final EntityShader staticShader;
@@ -37,14 +35,7 @@ public class EntityRenderer {
     public void render(Map<TexturedModel, LinkList<Entity>> entities, Matrix4f shadow) {
         staticShader.loadShadowMatrix(shadow);
 
-        for(Key<TexturedModel, LinkList<Entity>> key : entities)
-        {
-            System.out.println(key.getKey() + " " + key.getValue());
-            System.out.println();
-        }
-
         for (Key<TexturedModel, LinkList<Entity>> key : entities) {
-            System.out.println(key.getKey());
             prepareTexturedModel(key.getKey());
             LinkList<Entity> entityList = entities.get(key.getKey());
 

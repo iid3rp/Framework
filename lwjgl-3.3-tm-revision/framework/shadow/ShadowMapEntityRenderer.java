@@ -40,7 +40,6 @@ public class ShadowMapEntityRenderer {
 	 */
 	protected void render(Map<TexturedModel, LinkList<Entity>> entities) {
 		for (Key<TexturedModel, LinkList<Entity>> key : entities) {
-			System.out.println("hello world!");
 			Model rawModel = key.getKey().getModel();
 			bindModel(rawModel);
 			for (Entity entity : entities.get(key.getKey())) {

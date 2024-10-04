@@ -103,6 +103,13 @@ public class LinkList<E> implements Iterable<E>
         }
     };
 
+    @SuppressWarnings("unchecked")
+    public LinkList(E... elements)
+    {
+        for(E e : elements)
+            add(e);
+    }
+
     public void clear()
     {
         for(Node<E> x = first; x != null; ) {

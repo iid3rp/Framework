@@ -49,9 +49,6 @@ public class Map<K, V> implements Iterable<Key<K, V>>
                 if(!hasNext()) {
                     throw new NoSuchElementException();
                 }
-                Key<K, V> element = key;
-                key = key.next;
-                i++;
                 return removeFirst();
             }
         };
@@ -83,18 +80,14 @@ public class Map<K, V> implements Iterable<Key<K, V>>
         @Override
         public boolean hasNext()
         {
-            java.lang.System.out.println("first is " + first);
             if(first == null)
                 return false;
             if(i == 0)
                 key = first;
-
-            java.lang.System.out.println(i + " " + keySize);
             if(i < keySize)
                 return true;
             else {
                 i = 0;
-                java.lang.System.out.println(i + " " + keySize);
                 key = null;
                 return false;
             }
@@ -106,7 +99,7 @@ public class Map<K, V> implements Iterable<Key<K, V>>
             if (!hasNext()) throw new NoSuchElementException();
             Key<K, V> element = key;
             key = key.next;
-            i++; // Increment i here
+            i++;
             return element;
         }
 
@@ -136,8 +129,6 @@ public class Map<K, V> implements Iterable<Key<K, V>>
             addFirst(key, value);
         else
             addLast(key, value);
-
-        java.lang.System.out.println(first);
         return true;
     }
 
@@ -238,7 +229,14 @@ public class Map<K, V> implements Iterable<Key<K, V>>
             key.next = null;
         }
 
+        keys[hash(key.getKey())] = null;
+
         keySize--;
         return element;
+    }
+
+    public int getKeySize()
+    {
+        return keySize;
     }
 }
