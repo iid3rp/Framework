@@ -12,25 +12,25 @@ public class Mat4
     public float[][] m;
 
     public Mat4() {
-        this.identity();
+        identity();
     }
 
     public Mat4(Mat4 src) {
-        this.m = src.m;
+        m = src.m;
     }
 
     public String toString() {
         String buf = String.valueOf(
-                this.m[0][0]) + ' ' + this.m[1][0] + ' ' + this.m[2][0] + ' ' + this.m[3][0] + '\n' +
-                this.m[0][1] + ' ' + this.m[1][1] + ' ' + this.m[2][1] + ' ' + this.m[3][1] + '\n' +
-                this.m[0][2] + ' ' + this.m[1][2] + ' ' + this.m[2][2] + ' ' + this.m[3][2] + '\n' +
-                this.m[0][3] + ' ' + this.m[1][3] + ' ' + this.m[2][3] + ' ' + this.m[3][3] + '\n';
+                m[0][0]) + ' ' + m[1][0] + ' ' + m[2][0] + ' ' + m[3][0] + '\n' +
+                m[0][1] + ' ' + m[1][1] + ' ' + m[2][1] + ' ' + m[3][1] + '\n' +
+                m[0][2] + ' ' + m[1][2] + ' ' + m[2][2] + ' ' + m[3][2] + '\n' +
+                m[0][3] + ' ' + m[1][3] + ' ' + m[2][3] + ' ' + m[3][3] + '\n';
         return buf;
     }
 
     public Mat4 identity() {
         if(m == null)
-            this.m = new float[4][4];
+            m = new float[4][4];
         m[0][0] = 1f;
         m[0][1] = 0f;
         m[0][2] = 0f;
@@ -188,15 +188,15 @@ public class Mat4
     }
 
     public Mat4 transpose() {
-        return this.transpose(this);
+        return transpose(this);
     }
 
     public Mat4 translate(Vector2f vec) {
-        return this.translate(vec, this);
+        return translate(vec, this);
     }
 
     public Mat4 translate(Vector3f vec) {
-        return this.translate(vec, this);
+        return translate(vec, this);
     }
 
     public Mat4 scale(Vector3f vec) {
@@ -208,23 +208,15 @@ public class Mat4
             dest = new Mat4();
         }
 
-        dest.m[0][0] = src.m[0][0] * vec.x;
-        dest.m[0][1] = src.m[0][1] * vec.x;
-        dest.m[0][2] = src.m[0][2] * vec.x;
-        dest.m[0][3] = src.m[0][3] * vec.x;
-        dest.m[1][0] = src.m[1][0] * vec.y;
-        dest.m[1][1] = src.m[1][1] * vec.y;
-        dest.m[1][2] = src.m[1][2] * vec.y;
-        dest.m[1][3] = src.m[1][3] * vec.y;
-        dest.m[2][0] = src.m[2][0] * vec.z;
-        dest.m[2][1] = src.m[2][1] * vec.z;
-        dest.m[2][2] = src.m[2][2] * vec.z;
-        dest.m[2][3] = src.m[2][3] * vec.z;
+        for(int i = 0; i < 3; i++)
+            for(int j = 0; j < 4; j++)
+                dest.m[i][j] = src.m[i][j] * vec.x;
+
         return dest;
     }
 
     public Mat4 rotate(float angle, Vec3 axis) {
-        return this.rotate(angle, axis, this);
+        return rotate(angle, axis, this);
     }
 
     public Mat4 rotate(float angle, Vec3 axis, Mat4 dest) {
@@ -236,8 +228,8 @@ public class Mat4
             dest = new Mat4();
         }
 
-        float c = (float)Math.cos(angle);
-        float s = (float)Math.sin(angle);
+        float c = (float) Math.cos(angle);
+        float s = (float) Math.sin(angle);
         float one_minus_c = 1.0F - c;
         float xy = axis.x * axis.y;
         float yz = axis.y * axis.z;
@@ -317,43 +309,34 @@ public class Mat4
         if (dest == null) {
             dest = new Mat4();
         }
-
-        dest.m[0][0] = src.m[0][0];
-        dest.m[0][1] = src.m[1][0];
-        dest.m[0][2] = src.m[2][0];
-        dest.m[0][3] = src.m[3][0];
-        dest.m[1][0] = src.m[0][1];
-        dest.m[1][1] = src.m[1][1];
-        dest.m[1][2] = src.m[2][1];
-        dest.m[1][3] = src.m[3][1];
-        dest.m[2][0] = src.m[0][2];
-        dest.m[2][1] = src.m[1][2];
-        dest.m[2][2] = src.m[2][2];
-        dest.m[2][3] = src.m[3][2];
-        dest.m[3][0] = src.m[0][3];
-        dest.m[3][1] = src.m[1][3];
-        dest.m[3][2] = src.m[2][3];
-        dest.m[3][3] = src.m[3][3];
+        
+        for(int i = 0; i < 4; i++)
+            for(int j = 0; j < 4; j++)
+                dest.m[i][j] = src.m[j][i];
+        
         return dest;
     }
 
     public float determinant() {
-        float f = this.m[0][0] * (this.m[1][1] * this.m[2][2] * this.m[3][3] + this.m[1][2] * this.m[2][3] * this.m[3][1] + this.m[1][3] * this.m[2][1] * this.m[3][2] - this.m[1][3] * this.m[2][2] * this.m[3][1] - this.m[1][1] * this.m[2][3] * this.m[3][2] - this.m[1][2] * this.m[2][1] * this.m[3][3]);
-        f -= this.m[0][1] * (this.m[1][0] * this.m[2][2] * this.m[3][3] + this.m[1][2] * this.m[2][3] * this.m[3][0] + this.m[1][3] * this.m[2][0] * this.m[3][2] - this.m[1][3] * this.m[2][2] * this.m[3][0] - this.m[1][0] * this.m[2][3] * this.m[3][2] - this.m[1][2] * this.m[2][0] * this.m[3][3]);
-        f += this.m[0][2] * (this.m[1][0] * this.m[2][1] * this.m[3][3] + this.m[1][1] * this.m[2][3] * this.m[3][0] + this.m[1][3] * this.m[2][0] * this.m[3][1] - this.m[1][3] * this.m[2][1] * this.m[3][0] - this.m[1][0] * this.m[2][3] * this.m[3][1] - this.m[1][1] * this.m[2][0] * this.m[3][3]);
-        f -= this.m[0][3] * (this.m[1][0] * this.m[2][1] * this.m[3][2] + this.m[1][1] * this.m[2][2] * this.m[3][0] + this.m[1][2] * this.m[2][0] * this.m[3][1] - this.m[1][2] * this.m[2][1] * this.m[3][0] - this.m[1][0] * this.m[2][2] * this.m[3][1] - this.m[1][1] * this.m[2][0] * this.m[3][2]);
+        float f = m[0][0] * (m[1][1] * m[2][2] * m[3][3] + m[1][2] * m[2][3] * m[3][1] + m[1][3] * m[2][1] * m[3][2] - m[1][3] * m[2][2] * m[3][1] - m[1][1] * m[2][3] * m[3][2] - m[1][2] * m[2][1] * m[3][3]);
+        f -= m[0][1] * (m[1][0] * m[2][2] * m[3][3] + m[1][2] * m[2][3] * m[3][0] + m[1][3] * m[2][0] * m[3][2] - m[1][3] * m[2][2] * m[3][0] - m[1][0] * m[2][3] * m[3][2] - m[1][2] * m[2][0] * m[3][3]);
+        f += m[0][2] * (m[1][0] * m[2][1] * m[3][3] + m[1][1] * m[2][3] * m[3][0] + m[1][3] * m[2][0] * m[3][1] - m[1][3] * m[2][1] * m[3][0] - m[1][0] * m[2][3] * m[3][1] - m[1][1] * m[2][0] * m[3][3]);
+        f -= m[0][3] * (m[1][0] * m[2][1] * m[3][2] + m[1][1] * m[2][2] * m[3][0] + m[1][2] * m[2][0] * m[3][1] - m[1][2] * m[2][1] * m[3][0] - m[1][0] * m[2][2] * m[3][1] - m[1][1] * m[2][0] * m[3][2]);
         return f;
     }
 
-    private static float determinant3x3(float t00, float t01, float t02, float t10, float t11, float t12, float t20, float t21, float t22) {
+    private static float determinant3x3(float t00, float t01, float t02, float t10, float t11, float t12, float t20, float t21, float t22)
+    {
         return t00 * (t11 * t22 - t12 * t21) + t01 * (t12 * t20 - t10 * t22) + t02 * (t10 * t21 - t11 * t20);
     }
 
-    public Mat4 invert() {
+    public Mat4 invert()
+    {
         return invert(this, this);
     }
 
-    public static Mat4 invert(Mat4 src, Mat4 dest) {
+    public static Mat4 invert(Mat4 src, Mat4 dest)
+    {
         float determinant = src.determinant();
         if (determinant != 0.0F) {
             if (dest == null) {
@@ -400,7 +383,7 @@ public class Mat4
     }
 
     public Mat4 negate() {
-        return this.negate(this);
+        return negate(this);
     }
 
     public Mat4 negate(Mat4 dest) {
@@ -412,22 +395,10 @@ public class Mat4
             dest = new Mat4();
         }
 
-        dest.m[0][0] = -src.m[0][0];
-        dest.m[0][1] = -src.m[0][1];
-        dest.m[0][2] = -src.m[0][2];
-        dest.m[0][3] = -src.m[0][3];
-        dest.m[1][0] = -src.m[1][0];
-        dest.m[1][1] = -src.m[1][1];
-        dest.m[1][2] = -src.m[1][2];
-        dest.m[1][3] = -src.m[1][3];
-        dest.m[2][0] = -src.m[2][0];
-        dest.m[2][1] = -src.m[2][1];
-        dest.m[2][2] = -src.m[2][2];
-        dest.m[2][3] = -src.m[2][3];
-        dest.m[3][0] = -src.m[3][0];
-        dest.m[3][1] = -src.m[3][1];
-        dest.m[3][2] = -src.m[3][2];
-        dest.m[3][3] = -src.m[3][3];
+        for(int i = 0; i < 4; i++)
+            for(int j = 0; j < 4; j++)
+                dest.m[i][j] = -src.m[i][j];
+
         return dest;
     }
 
