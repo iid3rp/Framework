@@ -4,7 +4,7 @@ import framework.hardware.Display;
 import framework.loader.ModelLoader;
 import framework.model.Model;
 import framework.swing.GUIRenderer;
-import framework.util.JOMLMath;
+import framework.util.Math;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -138,7 +138,7 @@ public class TextEntityRenderer
                 cursorY + ((c.getYOffset() + 5) * fontSize), size, width);
 
         // set the transformation matrix of the whole font texture
-        Matrix4f letterMatrix = JOMLMath.createTransformationMatrix(
+        Matrix4f letterMatrix = Math.createTransformationMatrix(
                 (pos),
                 new Vector3f(0),
                 (size)
@@ -232,7 +232,7 @@ public class TextEntityRenderer
                 cursorY + ((c.getYOffset() + 5) * fontSize));
 
         // set the transformation matrix of the whole font texture
-        Matrix4f letterMatrix = JOMLMath.createTransformationMatrix(
+        Matrix4f letterMatrix = Math.createTransformationMatrix(
                 (pos),
                 new Vector3f(0),
                 (size)

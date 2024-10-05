@@ -3,7 +3,7 @@ package framework.shadow;
 import framework.entity.Entity;
 import framework.model.Model;
 import framework.model.TexturedModel;
-import framework.util.JOMLMath;
+import framework.util.Math;
 import framework.util.Key;
 import framework.util.LinkList;
 import framework.util.Map;
@@ -76,10 +76,10 @@ public class ShadowMapEntityRenderer {
 	 *            - the entity to be prepared for rendering.
 	 */
 	private void prepareInstance(Entity entity) {
-		Matrix4f modelMatrix = JOMLMath.createTransformationMatrix(entity.getPosition(),
+		Matrix4f modelMatrix = Math.createTransformationMatrix(entity.getPosition(),
 				entity.getRotationX(), entity.getRotationY(), entity.getRotationZ(), entity.getScale());
 		Matrix4f mvpMatrix = projectionViewMatrix.mul(modelMatrix, new Matrix4f());
-		shader.loadMvpMatrix(mvpMatrix);
+		shader.loadModelMatrix(mvpMatrix);
 	}
 
 }

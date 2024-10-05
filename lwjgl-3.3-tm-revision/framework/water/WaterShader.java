@@ -4,7 +4,7 @@ import framework.entity.Camera;
 import framework.entity.Light;
 import framework.renderer.MasterRenderer;
 import framework.shader.GLShader;
-import framework.util.JOMLMath;
+import framework.util.Math;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -86,7 +86,7 @@ public class WaterShader extends GLShader
 	}
 	
 	public void loadViewMatrix(Camera camera){
-		Matrix4f viewMatrix = JOMLMath.createViewMatrix(camera);
+		Matrix4f viewMatrix = Math.createViewMatrix(camera);
 		loadMatrix(location_viewMatrix, viewMatrix);
 		loadCameraPosition(camera.getPosition());
 		//loadCameraPosition(new Vector3f(camera.getPosition().x, 10, camera.getPosition().z));

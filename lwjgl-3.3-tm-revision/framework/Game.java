@@ -2,6 +2,8 @@ package framework;
 
 import framework.event.MouseAdapter;
 import framework.event.MouseEvent;
+import framework.lang.Vector3f;
+import framework.lang.Vector4f;
 import framework.loader.ModelLoader;
 import framework.entity.Light;
 import framework.entity.Player;
@@ -18,8 +20,6 @@ import framework.textures.TerrainTexturePack;
 import framework.textures.Texture;
 import framework.entity.Entity;
 import framework.water.WaterTile;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
 
 import java.util.Random;
 
@@ -99,7 +99,7 @@ public class Game
         Player player = new Player(barrelEntity);
         //player.setLight();
         //player.setLightColor(255, 255, 255);
-        //player.setLightAttenuation(new Vector3f(.1f, .01f, .01f));
+        //player.setLightAttenuation(new Vec3(.1f, .01f, .01f));
         scene.setPlayer(player);
         scene.getEntities().add(player);
         //scene.getLights().add(player.getLight());
@@ -152,7 +152,7 @@ public class Game
 //                        ModelLoader.loadTexture("particleStar.png"),1, true
 //                )
 //        );
-//        //system.setDirection(new Vector3f(20, 100, 20), .5f);
+//        //system.setDirection(new Vec3(20, 100, 20), .5f);
 //        system.setLifeError(.1f);
 //        system.setScaleError(1f);
 //        system.setSpeedError(.7f);

@@ -2,7 +2,7 @@ package framework.shader;
 
 import framework.entity.Camera;
 import framework.entity.Light;
-import framework.util.JOMLMath;
+import framework.util.Math;
 import framework.util.LinkList;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -89,7 +89,7 @@ public class TerrainShader extends GLShader
     }
 
     public void loadViewMatrix(Camera camera) {
-        Matrix4f viewMatrix = JOMLMath.createViewMatrix(camera);
+        Matrix4f viewMatrix = Math.createViewMatrix(camera);
         super.loadMatrix(location_viewMatrix, viewMatrix);
     }
 

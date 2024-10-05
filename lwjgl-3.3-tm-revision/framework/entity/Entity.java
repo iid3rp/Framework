@@ -3,8 +3,8 @@ package framework.entity;
 import framework.event.FocusListener;
 import framework.event.MouseEvent;
 import framework.event.MouseListener;
+import framework.lang.Vector3f;
 import framework.model.TexturedModel;
-import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 import java.awt.Color;

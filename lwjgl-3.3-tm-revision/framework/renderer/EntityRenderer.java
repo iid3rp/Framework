@@ -5,7 +5,7 @@ import framework.model.Model;
 import framework.model.TexturedModel;
 import framework.shader.EntityShader;
 import framework.textures.Texture;
-import framework.util.JOMLMath;
+import framework.util.Math;
 import framework.util.Key;
 import framework.util.LinkList;
 import framework.util.Map;
@@ -87,7 +87,7 @@ public class EntityRenderer {
     }
 
     private void prepareEntity(Entity entity) {
-        Matrix4f transformationMatrix = JOMLMath.createTransformationMatrix(entity.getPosition(), entity.getRotationX(), entity.getRotationY(), entity.getRotationZ(), entity.getScale());
+        Matrix4f transformationMatrix = Math.createTransformationMatrix(entity.getPosition(), entity.getRotationX(), entity.getRotationY(), entity.getRotationZ(), entity.getScale());
         staticShader.loadTransformationMatrix(transformationMatrix);
         staticShader.loadHighlightColor(entity.getHighlightColor());
         staticShader.loadMouseEventColor(entity.getMouseColor());

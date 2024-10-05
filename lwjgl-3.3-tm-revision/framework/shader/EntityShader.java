@@ -2,12 +2,12 @@ package framework.shader;
 
 import framework.entity.Camera;
 import framework.entity.Light;
-import framework.util.JOMLMath;
+import framework.lang.Matrix4f;
+import framework.lang.Vector2f;
+import framework.lang.Vector3f;
+import framework.lang.Vector4f;
+import framework.util.Math;
 import framework.util.LinkList;
-import org.joml.Matrix4f;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
 
 import java.awt.Color;
 
@@ -92,7 +92,7 @@ public class EntityShader extends GLShader
     }
 
     public void loadViewMatrix(Camera camera) {
-        Matrix4f viewMatrix = JOMLMath.createViewMatrix(camera);
+        Matrix4f viewMatrix = Math.createViewMatrix(camera);
         super.loadMatrix(location_viewMatrix, viewMatrix);
     }
 
@@ -107,7 +107,7 @@ public class EntityShader extends GLShader
     }
 
     public void loadLights(LinkList<Light> lights, Camera camera) {
-        Matrix4f viewMatrix = JOMLMath.createViewMatrix(camera);
+        Matrix4f viewMatrix = Math.createViewMatrix(camera);
         final int lightSize = lights.size();
         for(int i = 0; i < 20; i++)
         {
@@ -130,7 +130,7 @@ public class EntityShader extends GLShader
     private Vector3f getEyeSpacePosition(Light light, Matrix4f viewMatrix){
         Vector3f position = light.getPosition();
         Vector4f eyeSpacePos = new Vector4f(position.x,position.y, position.z, 1f);
-        viewMatrix.transform(eyeSpacePos, eyeSpacePos);
+        Matrix4f.transform(viewMatrix, eyeSpacePos, eyeSpacePos);
         return new Vector3f(eyeSpacePos.x,eyeSpacePos.y,eyeSpacePos.z);
     }
 
@@ -155,7 +155,8 @@ public class EntityShader extends GLShader
         super.loadBoolean(location_useFakeLighting, useFakeLighting);
     }
 
-    public void loadSkyColor(float r, float g, float b) {
+    public void loadSkyColor(float r, float g, float b)
+    {
         super.loadVector(location_skyColor, new Vector3f(r, g, b));
     }
 
@@ -163,7 +164,8 @@ public class EntityShader extends GLShader
         super.loadFloat(location_numberOfRowsInTextureAtlas, numberOfRowsInTextureAtlas);
     }
 
-    public void loadOffset(float x, float y) {
+    public void loadOffset(float x, float y)
+    {
         super.loadVector(location_offset, new Vector2f(x, y));
     }
 

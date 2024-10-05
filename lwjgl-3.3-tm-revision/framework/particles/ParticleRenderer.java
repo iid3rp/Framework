@@ -3,7 +3,7 @@ package framework.particles;
 import framework.entity.Camera;
 import framework.loader.ModelLoader;
 import framework.model.Model;
-import framework.util.JOMLMath;
+import framework.util.Math;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
@@ -49,7 +49,7 @@ public class ParticleRenderer {
 	
 	protected void render(Map<ParticleTexture, List<Particle>> particles, Camera camera)
 	{
-		Matrix4f view = JOMLMath.createViewMatrix(camera);
+		Matrix4f view = Math.createViewMatrix(camera);
 		prepare();
 		for(ParticleTexture t : particles.keySet())
 		{
@@ -131,7 +131,7 @@ public class ParticleRenderer {
 
 		// Optional: For billboard-ing, you might not want to rotate the particles locally.
 		// But if you do want some controlled rotation, you can apply it here:
-		model.rotate((float) Math.toRadians(rotation), new Vector3f(1, 1, 1));
+		model.rotate((float) java.lang.Math.toRadians(rotation), new Vector3f(1, 1, 1));
 		model.scale(scale);
 		Matrix4f modelViewMatrix = new Matrix4f(view).mul(model);
 		storeMatrixData(modelViewMatrix, vboData);

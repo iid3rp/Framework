@@ -1,6 +1,6 @@
 package framework.entity;
 
-import org.joml.Vector3f;
+import framework.lang.Vector3f;
 
 public class Light {
     private Vector3f position;

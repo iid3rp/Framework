@@ -1,21 +1,16 @@
 package framework.lang;
 
-import org.joml.Matrix4f;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
-
 import java.nio.FloatBuffer;
 
-public class Mat4
+public class Matrix4f
 {
     public float[][] m;
 
-    public Mat4() {
+    public Matrix4f() {
         identity();
     }
 
-    public Mat4(Mat4 src) {
+    public Matrix4f(Matrix4f src) {
         m = src.m;
     }
 
@@ -28,7 +23,7 @@ public class Mat4
         return buf;
     }
 
-    public Mat4 identity() {
+    public Matrix4f identity() {
         if(m == null)
             m = new float[4][4];
         m[0][0] = 1f;
@@ -53,7 +48,7 @@ public class Mat4
         return this;
     }
 
-    public static Mat4 identity(Mat4 m) {
+    public static Matrix4f identity(Matrix4f m) {
 
         m.m[0][0] = 1.0F;
         m.m[0][1] = 0.0F;
@@ -77,66 +72,66 @@ public class Mat4
         return m;
     }
 
-    public Mat4 setZero()
+    public Matrix4f setZero()
     {
         return setZero(this);
     }
 
-    public static Mat4 setZero(Mat4 m)
+    public static Matrix4f setZero(Matrix4f m)
     {
         m.m = new float[4][4];
         return m;
     }
 
-    public Mat4 load(Mat4 src)
+    public Matrix4f load(Matrix4f src)
     {
         return load(src, this);
     }
 
-    public static Mat4 load(Mat4 src, Mat4 dest)
+    public static Matrix4f load(Matrix4f src, Matrix4f dest)
     {
         dest.m = src.m;
         return dest;
     }
 
-    public Mat4 load(FloatBuffer buf) {
+    public Matrix4f load(FloatBuffer buf) {
         for(int i = 0; i < 4; i++)
             for(int j = 0; j < 4; j++)
                 m[i][j] = buf.get();
         return this;
     }
 
-    public Mat4 loadTranspose(FloatBuffer buf) {
+    public Matrix4f loadTranspose(FloatBuffer buf) {
         for(int i = 0; i < 4; i++)
             for(int j = 0; j < 4; j++)
                 m[j][i] = buf.get();
         return this;
     }
 
-    public Mat4 store(FloatBuffer buf) {
+    public FloatBuffer store(FloatBuffer buf) {
         for(int i = 0; i < 4; i++)
             for(int j = 0; j < 4; j++)
                 buf.put(m[i][j]);
-        return this;
+        return buf;
     }
 
-    public Mat4 storeTranspose(FloatBuffer buf) {
+    public Matrix4f storeTranspose(FloatBuffer buf) {
         for(int i = 0; i < 4; i++)
             for(int j = 0; j < 4; j++)
                 buf.put(m[j][i]);
         return this;
     }
 
-    public Mat4 store3f(FloatBuffer buf) {
+    public Matrix4f store3f(FloatBuffer buf) {
         for(int i = 0; i < 3; i++)
             for(int j = 0; j < 3; j++)
                 buf.put(m[i][j]);
         return this;
     }
 
-    public static Mat4 add(Mat4 left, Mat4 right, Mat4 dest) {
+    public static Matrix4f add(Matrix4f left, Matrix4f right, Matrix4f dest) {
         if (dest == null)
-            dest = new Mat4();
+            dest = new Matrix4f();
 
         for(int i = 0; i < 4; i++)
             for(int j = 0; j < 4; j++)
@@ -145,9 +140,9 @@ public class Mat4
         return dest;
     }
 
-    public static Mat4 sub(Mat4 left, Mat4 right, Mat4 dest) {
+    public static Matrix4f sub(Matrix4f left, Matrix4f right, Matrix4f dest) {
         if (dest == null)
-            dest = new Mat4();
+            dest = new Matrix4f();
 
         for(int i = 0; i < 4; i++)
             for(int j = 0; j < 4; j++)
@@ -156,10 +151,10 @@ public class Mat4
         return dest;
     }
 
-    public static Mat4 mul(Mat4 left, Mat4 right, Mat4 dest)
+    public static Matrix4f mul(Matrix4f left, Matrix4f right, Matrix4f dest)
     {
         if (dest == null)
-            dest = new Mat4();
+            dest = new Matrix4f();
 
         for(int i = 0; i < 4; i++)
             for(int j = 0; j < 4; j++)
@@ -171,7 +166,7 @@ public class Mat4
         return dest;
     }
 
-    public static Vector4f transform(Mat4 left, Vector4f right, Vector4f dest) {
+    public static Vector4f transform(Matrix4f left, Vector4f right, Vector4f dest) {
         if (dest == null) {
             dest = new Vector4f();
         }
@@ -187,25 +182,25 @@ public class Mat4
         return dest;
     }
 
-    public Mat4 transpose() {
+    public Matrix4f transpose() {
         return transpose(this);
     }
 
-    public Mat4 translate(Vector2f vec) {
+    public Matrix4f translate(Vector2f vec) {
         return translate(vec, this);
     }
 
-    public Mat4 translate(Vector3f vec) {
+    public Matrix4f translate(Vector3f vec) {
         return translate(vec, this);
     }
 
-    public Mat4 scale(Vector3f vec) {
+    public Matrix4f scale(Vector3f vec) {
         return scale(vec, this, this);
     }
 
-    public static Mat4 scale(Vector3f vec, Mat4 src, Mat4 dest) {
+    public static Matrix4f scale(Vector3f vec, Matrix4f src, Matrix4f dest) {
         if (dest == null) {
-            dest = new Mat4();
+            dest = new Matrix4f();
         }
 
         for(int i = 0; i < 3; i++)
@@ -215,17 +210,17 @@ public class Mat4
         return dest;
     }
 
-    public Mat4 rotate(float angle, Vec3 axis) {
+    public Matrix4f rotate(float angle, Vector3f axis) {
         return rotate(angle, axis, this);
     }
 
-    public Mat4 rotate(float angle, Vec3 axis, Mat4 dest) {
+    public Matrix4f rotate(float angle, Vector3f axis, Matrix4f dest) {
         return rotate(angle, axis, this, dest);
     }
 
-    public static Mat4 rotate(float angle, Vec3 axis, Mat4 src, Mat4 dest) {
+    public static Matrix4f rotate(float angle, Vector3f axis, Matrix4f src, Matrix4f dest) {
         if (dest == null) {
-            dest = new Mat4();
+            dest = new Matrix4f();
         }
 
         float c = (float) Math.cos(angle);
@@ -269,13 +264,13 @@ public class Mat4
         return dest;
     }
 
-    public Mat4 translate(Vector3f vec, Mat4 dest) {
+    public Matrix4f translate(Vector3f vec, Matrix4f dest) {
         return translate(vec, this, dest);
     }
 
-    public static Mat4 translate(Vector3f vec, Mat4 src, Mat4 dest) {
+    public static Matrix4f translate(Vector3f vec, Matrix4f src, Matrix4f dest) {
         if (dest == null) {
-            dest = new Mat4();
+            dest = new Matrix4f();
         }
 
         dest.m[3][0] += src.m[0][0] * vec.x + src.m[1][0] * vec.y + src.m[2][0] * vec.z;
@@ -285,13 +280,13 @@ public class Mat4
         return dest;
     }
 
-    public Mat4 translate(Vector2f vec, Mat4 dest) {
+    public Matrix4f translate(Vector2f vec, Matrix4f dest) {
         return translate(vec, this, dest);
     }
 
-    public static Mat4 translate(Vector2f vec, Mat4 src, Mat4 dest) {
+    public static Matrix4f translate(Vector2f vec, Matrix4f src, Matrix4f dest) {
         if (dest == null) {
-            dest = new Mat4();
+            dest = new Matrix4f();
         }
 
         dest.m[3][0] += src.m[0][0] * vec.x + src.m[1][0] * vec.y;
@@ -301,13 +296,13 @@ public class Mat4
         return dest;
     }
 
-    public Mat4 transpose(Mat4 dest) {
+    public Matrix4f transpose(Matrix4f dest) {
         return transpose(this, dest);
     }
 
-    public static Mat4 transpose(Mat4 src, Mat4 dest) {
+    public static Matrix4f transpose(Matrix4f src, Matrix4f dest) {
         if (dest == null) {
-            dest = new Mat4();
+            dest = new Matrix4f();
         }
         
         for(int i = 0; i < 4; i++)
@@ -330,17 +325,17 @@ public class Mat4
         return t00 * (t11 * t22 - t12 * t21) + t01 * (t12 * t20 - t10 * t22) + t02 * (t10 * t21 - t11 * t20);
     }
 
-    public Mat4 invert()
+    public Matrix4f invert()
     {
         return invert(this, this);
     }
 
-    public static Mat4 invert(Mat4 src, Mat4 dest)
+    public static Matrix4f invert(Matrix4f src, Matrix4f dest)
     {
         float determinant = src.determinant();
         if (determinant != 0.0F) {
             if (dest == null) {
-                dest = new Mat4();
+                dest = new Matrix4f();
             }
 
             float determinant_inv = 1.0F / determinant;
@@ -382,17 +377,17 @@ public class Mat4
         }
     }
 
-    public Mat4 negate() {
+    public Matrix4f negate() {
         return negate(this);
     }
 
-    public Mat4 negate(Mat4 dest) {
+    public Matrix4f negate(Matrix4f dest) {
         return negate(this, dest);
     }
 
-    public static Mat4 negate(Mat4 src, Mat4 dest) {
+    public static Matrix4f negate(Matrix4f src, Matrix4f dest) {
         if (dest == null) {
-            dest = new Mat4();
+            dest = new Matrix4f();
         }
 
         for(int i = 0; i < 4; i++)
@@ -400,30 +395,5 @@ public class Mat4
                 dest.m[i][j] = -src.m[i][j];
 
         return dest;
-    }
-
-    public Matrix4f matrix4f()
-    {
-        return new Matrix4f(
-            m[0][0],
-            m[0][1],
-            m[0][2],
-            m[0][3],
-
-            m[1][0],
-            m[1][1],
-            m[1][2],
-            m[1][3],
-
-            m[2][0],
-            m[2][1],
-            m[2][2],
-            m[2][3],
-
-            m[3][0],
-            m[3][1],
-            m[3][2],
-            m[3][3]
-        );
     }
 }

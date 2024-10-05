@@ -4,7 +4,7 @@ import framework.loader.ModelLoader;
 import framework.model.Model;
 import framework.textures.TerrainTexture;
 import framework.textures.TerrainTexturePack;
-import framework.util.JOMLMath;
+import framework.util.Math;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
@@ -83,8 +83,8 @@ public class Terrain {
         // Sample the height at several points around the entity
         for (int i = 0; i < numSamplePoints; i++) {
             // Calculate the sample point coordinates
-            float sampleX = worldX + (float) Math.cos(2 * Math.PI * i / numSamplePoints) * sampleRadius;
-            float sampleZ = worldZ + (float) Math.sin(2 * Math.PI * i / numSamplePoints) * sampleRadius;
+            float sampleX = worldX + (float) java.lang.Math.cos(2 * java.lang.Math.PI * i / numSamplePoints) * sampleRadius;
+            float sampleZ = worldZ + (float) java.lang.Math.sin(2 * java.lang.Math.PI * i / numSamplePoints) * sampleRadius;
 
             // Calculate the height at the sample point
             float sampleHeight = getHeightOfTerrain(sampleX, sampleZ);
@@ -101,8 +101,8 @@ public class Terrain {
         float terrainX = x + (getSize() / 2);
         float terrainZ = z + (getSize() / 2);
         float gridSquareSize = (size / (heights.length - 1));
-        int gridX = (int) Math.floor(terrainX / gridSquareSize);
-        int gridZ = (int) Math.floor(terrainZ / gridSquareSize);
+        int gridX = (int) java.lang.Math.floor(terrainX / gridSquareSize);
+        int gridZ = (int) java.lang.Math.floor(terrainZ / gridSquareSize);
 
         if (gridX >= heights.length - 1 || gridZ >= heights.length - 1 || gridX < 0 || gridZ < 0) {
             return 0;
@@ -113,14 +113,14 @@ public class Terrain {
         float triangleHeight;
 
         if (xCoordinate <= (1 - zCoordinate)) {
-            triangleHeight = JOMLMath.barryCentric(
+            triangleHeight = Math.barryCentric(
                     new Vector3f(0, heights[gridX][gridZ], 0),
                     new Vector3f(1, heights[gridX + 1][gridZ], 0),
                     new Vector3f(0, heights[gridX][gridZ + 1], 1),
                     new Vector2f(xCoordinate, zCoordinate)
             );
         } else {
-            triangleHeight = JOMLMath.barryCentric(
+            triangleHeight = Math.barryCentric(
                     new Vector3f(1, heights[gridX + 1][gridZ], 0),
                     new Vector3f(1, heights[gridX + 1][gridZ + 1], 1),
                     new Vector3f(0, heights[gridX][gridZ + 1], 1),

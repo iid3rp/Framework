@@ -4,7 +4,7 @@ import framework.model.Model;
 import framework.shader.TerrainShader;
 import framework.terrain.Terrain;
 import framework.textures.TerrainTexturePack;
-import framework.util.JOMLMath;
+import framework.util.Math;
 import framework.util.LinkList;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -89,7 +89,7 @@ public class TerrainRenderer {
     }
 
     private void loadModelMatrix(Terrain terrain) {
-        Matrix4f transformationMatrix = JOMLMath.createTransformationMatrix(
+        Matrix4f transformationMatrix = Math.createTransformationMatrix(
                 new Vector3f(terrain.getX() - (terrain.getSize() / 2), 0, terrain.getZ() - (terrain.getSize() / 2)), 0, 0, 0, 1);
         terrainShader.loadTransformationMatrix(transformationMatrix);
     }

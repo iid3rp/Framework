@@ -4,7 +4,7 @@ import framework.environment.Scene;
 import framework.hardware.Display;
 import framework.loader.ModelLoader;
 import framework.model.Model;
-import framework.util.JOMLMath;
+import framework.util.Math;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -72,8 +72,8 @@ public class GUIRenderer
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture.getTexture());
             GL13.glActiveTexture(GL13.GL_TEXTURE1);
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture.getClipTexture());
-            Matrix4f matrix = JOMLMath.createTransformationMatrix(texture.getPosition(), texture.getRotation(), texture.getSize());
-            Matrix4f displayMatrix = JOMLMath.createTransformationMatrix(Scene.offset, new Vector3f(),  new Vector2f(1));
+            Matrix4f matrix = Math.createTransformationMatrix(texture.getPosition(), texture.getRotation(), texture.getSize());
+            Matrix4f displayMatrix = Math.createTransformationMatrix(Scene.offset, new Vector3f(),  new Vector2f(1));
 
             shader.loadSize(texture.getSize());
             shader.loadScale(texture.getScale());

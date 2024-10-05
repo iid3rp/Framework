@@ -1,10 +1,10 @@
 package framework.shader;
 
+import framework.lang.Matrix4f;
+import framework.lang.Vector2f;
+import framework.lang.Vector3f;
+import framework.lang.Vector4f;
 import framework.util.FileUtils;
-import org.joml.Matrix4f;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
@@ -46,20 +46,24 @@ public abstract class GLShader
         glUniform1i(location, value);
     }
 
-    protected void loadVector(int location, Vector3f vector) {
+    protected void loadVector(int location, Vector3f vector)
+    {
         glUniform3f(location, vector.x, vector.y, vector.z);
     }
 
-    protected void loadVector(int location, Vector2f vector) {
-        glUniform2f(location, vector.x, vector.y );
+    protected void loadVector(int location, Vector2f vector)
+    {
+        glUniform2f(location, vector.x, vector.y);
     }
 
-    protected void loadBoolean(int location, boolean value) {
+    protected void loadBoolean(int location, boolean value)
+    {
         glUniform1f(location, value ? 1 : 0);
     }
 
-    protected void loadMatrix(int location, Matrix4f matrix) {
-        glUniformMatrix4fv(location, false, matrix.get(matrixBuffer));
+    protected void loadMatrix(int location, Matrix4f matrix)
+    {
+        glUniformMatrix4fv(location, false, matrix.store(matrixBuffer));
     }
 
     public void create() {
