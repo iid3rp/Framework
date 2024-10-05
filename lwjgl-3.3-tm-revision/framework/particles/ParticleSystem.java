@@ -1,8 +1,8 @@
 package framework.particles;
 import framework.hardware.Display;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
+import framework.lang.Matrix4f;
+import framework.lang.Vector3f;
+import framework.lang.Vector4f;
 
 import java.util.Random;
 

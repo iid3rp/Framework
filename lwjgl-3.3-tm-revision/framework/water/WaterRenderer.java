@@ -9,8 +9,6 @@ import framework.renderer.MasterRenderer;
 import framework.textures.Texture;
 import framework.util.Math;
 import framework.util.LinkList;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;

@@ -1,7 +1,5 @@
 package framework.textures;
 
-import org.joml.Vector4f;
-
 import java.nio.IntBuffer;
 
 public class Texture

@@ -1,8 +1,7 @@
 package framework.particles;
 
+import framework.lang.Matrix4f;
 import framework.shader.GLShader;
-import org.joml.Matrix4f;
-import org.joml.Vector2f;
 
 public class ParticleShader extends GLShader
 {

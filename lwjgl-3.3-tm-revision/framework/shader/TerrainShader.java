@@ -4,9 +4,6 @@ import framework.entity.Camera;
 import framework.entity.Light;
 import framework.util.Math;
 import framework.util.LinkList;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
 
 public class TerrainShader extends GLShader
 {

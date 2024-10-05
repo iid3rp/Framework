@@ -1,7 +1,7 @@
 package framework.font;
 
+import framework.lang.Vector2f;
 import framework.model.Model;
-import org.joml.Vector2f;
 
 import java.awt.Color;
 import java.awt.Point;

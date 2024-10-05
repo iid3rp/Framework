@@ -5,13 +5,13 @@ import framework.entity.Camera;
 import framework.entity.Entity;
 import framework.environment.Environment;
 import framework.hardware.Mouse;
+import framework.lang.Matrix4f;
+import framework.lang.Vector2f;
+import framework.lang.Vector3f;
+import framework.lang.Vector4f;
 import framework.post_processing.FrameBufferObject;
 import framework.terrain.Terrain;
 import framework.util.Math;
-import org.joml.Matrix4f;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
@@ -129,9 +129,9 @@ public class MouseEvent
     private Vector3f toWorldCoordinates(Vector4f eyeCoordinates)
     {
         Matrix4f invertedView = new Matrix4f();
-        view.invert(invertedView);
+        Matrix4f.invert(view, invertedView);
         Vector4f rayWorld = new Vector4f();
-        invertedView.transform(eyeCoordinates, rayWorld);
+        Matrix4f.transform(invertedView, eyeCoordinates, rayWorld);
         Vector3f mouseRay = new Vector3f(rayWorld.x, rayWorld.y, rayWorld.z);
         mouseRay.normalize();
         return mouseRay;
@@ -140,9 +140,9 @@ public class MouseEvent
     private Vector4f toEyeCoordinates(Vector4f clipCoordinates)
     {
         Matrix4f invertedProjection = new Matrix4f();
-        projection.invert(invertedProjection);
+        Matrix4f.invert(projection, invertedProjection);
         Vector4f eyeCoordinates = new Vector4f();
-        invertedProjection.transform(clipCoordinates, eyeCoordinates);
+        Matrix4f.transform(invertedProjection, clipCoordinates, eyeCoordinates);
         return new Vector4f(eyeCoordinates.x, eyeCoordinates.y, -1f, 0f);
     }
 
@@ -157,7 +157,7 @@ public class MouseEvent
         Vector3f camPos = camera.getPosition();
         Vector3f start = new Vector3f(camPos.x, camPos.y, camPos.z);
         Vector3f scaledRay = new Vector3f(ray.x * distance, ray.y * distance, ray.z * distance);
-        return scaledRay.add(start);
+        return Vector3f.add(scaledRay, start);
     }
 
     private Vector3f binarySearch(int count, float start, float finish, Vector3f ray) {

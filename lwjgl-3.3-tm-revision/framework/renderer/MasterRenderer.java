@@ -16,8 +16,6 @@ import framework.water.WaterFrameBufferObject;
 import framework.water.WaterRenderer;
 import framework.water.WaterShader;
 import framework.water.WaterTile;
-import org.joml.Matrix4f;
-import org.joml.Vector4f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 

@@ -38,7 +38,7 @@ public class Math
     public static Matrix4f createViewMatrix(Camera camera, float staticPositionY)
     {
         Matrix4f viewMatrix = new Matrix4f();
-        viewMatrix.setIdentity();
+        viewMatrix.identity();
         Matrix4f.rotate((float) java.lang.Math.toRadians(camera.getPitch()), Vector3f.xAxis, viewMatrix, viewMatrix);
         Matrix4f.rotate((float) java.lang.Math.toRadians(camera.getYaw()), Vector3f.yAxis, viewMatrix, viewMatrix);
         Matrix4f.rotate((float) java.lang.Math.toRadians(camera.getRoll()), new Vector3f(0, 0, 1), viewMatrix, viewMatrix);

@@ -4,8 +4,8 @@ package framework.particles;
 import framework.hardware.Display;
 import framework.entity.Camera;
 import framework.entity.Player;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
+import framework.lang.Vector2f;
+import framework.lang.Vector3f;
 
 public class Particle {
 

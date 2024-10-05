@@ -17,6 +17,11 @@ public class Vector3f
         x = y = z = 0;
     }
 
+    public Vector3f(float xyz)
+    {
+        x = y = z = xyz;
+    }
+
     public Vector3f(Vector3f src)
     {
         this.set(src);
@@ -115,7 +120,12 @@ public class Vector3f
         return dest;
     }
 
-    public Vector3f normalise(Vector3f dest) {
+    public Vector3f normalize()
+    {
+        return normalize(null);
+    }
+
+    public Vector3f normalize(Vector3f dest) {
         float l = this.length();
         if (dest == null) {
             dest = new Vector3f(this.x / l, this.y / l, this.z / l);

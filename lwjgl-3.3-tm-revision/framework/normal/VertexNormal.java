@@ -1,6 +1,6 @@
 package framework.normal;
 
-import org.joml.Vector3f;
+import framework.lang.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -3,19 +3,17 @@ package framework.shadow;
 import framework.entity.Camera;
 import framework.entity.Entity;
 import framework.entity.Light;
+import framework.lang.Matrix4f;
+import framework.lang.Vector2f;
+import framework.lang.Vector3f;
 import framework.model.TexturedModel;
 import framework.util.LinkList;
 import framework.util.Map;
-import org.joml.Matrix4f;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
-
-import java.util.List;
 
 
 /**
- * This class is in charge of using all of the classes in the shadows package to
+ * This class is in charge of using all the classes in the shadows package to
  * carry out the shadow render pass, i.e. rendering the scene to the shadow map
  * texture. This is the only class in the shadows package which needs to be
  * referenced from outside the shadows package.
@@ -195,10 +193,10 @@ public class ShadowMapMasterRenderer {
 	 */
 	private void updateOrthographicProjectionMatrix(float width, float height, float length) {
 		projectionMatrix.identity();
-		projectionMatrix.m00(2f / width);
-		projectionMatrix.m11(2f / height);
-		projectionMatrix.m22(-2f / length);
-		projectionMatrix.m33(1);
+		projectionMatrix.m[0][0] = (2f / width);
+		projectionMatrix.m[1][1] = (2 / height);
+		projectionMatrix.m[2][2] = (-2f / length);
+		projectionMatrix.m[3][3] = (1);
 	}
 
 	/**

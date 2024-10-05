@@ -2,11 +2,11 @@ package framework.water;
 
 import framework.entity.Camera;
 import framework.entity.Light;
+import framework.lang.Matrix4f;
+import framework.lang.Vector3f;
 import framework.renderer.MasterRenderer;
 import framework.shader.GLShader;
 import framework.util.Math;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
 
 public class WaterShader extends GLShader
 {

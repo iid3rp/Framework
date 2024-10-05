@@ -3,7 +3,6 @@ package framework.skybox;
 import framework.loader.ModelLoader;
 import framework.entity.Camera;
 import framework.model.Model;
-import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;

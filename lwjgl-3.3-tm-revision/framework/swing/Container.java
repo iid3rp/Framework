@@ -1,7 +1,5 @@
 package framework.swing;
 
-import org.joml.Vector2f;
-
 import java.awt.Color;
 import java.util.List;
 

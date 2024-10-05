@@ -3,8 +3,6 @@ package framework.normal;
 import framework.loader.ModelLoader;
 import framework.model.Model;
 import framework.resources.Resources;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
 
 import java.io.BufferedReader;
 import java.io.IOException;

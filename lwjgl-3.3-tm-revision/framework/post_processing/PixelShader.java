@@ -1,7 +1,7 @@
 package framework.post_processing;
 
+import framework.lang.Vector2f;
 import framework.shader.GLShader;
-import org.joml.Vector2f;
 
 public class PixelShader extends GLShader
 {

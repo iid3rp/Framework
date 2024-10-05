@@ -6,6 +6,8 @@ import framework.font.Font;
 import framework.font.FontFile;
 import framework.font.Text;
 import framework.hardware.Display;
+import framework.lang.Vector3f;
+import framework.lang.Vector4f;
 import framework.particles.ParticleMaster;
 import framework.post_processing.FrameBufferObject;
 import framework.post_processing.PostProcessing;
@@ -15,8 +17,6 @@ import framework.event.MouseEvent;
 import framework.scripting.FrameworkScript;
 import framework.scripting.StackScript;
 import framework.swing.PictureBox;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
 
 import java.awt.Color;
 import java.util.List;

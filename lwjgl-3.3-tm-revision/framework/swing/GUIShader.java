@@ -1,8 +1,6 @@
 package framework.swing;
 
 import framework.shader.GLShader;
-import org.joml.Matrix4f;
-import org.joml.Vector2f;
 
 public class GUIShader extends GLShader
 {

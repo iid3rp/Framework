@@ -1,6 +1,6 @@
 package framework.group;
 
-import org.joml.Vector3f;
+import framework.lang.Vector3f;
 
 /**
  * The {@code Point3f} class represents a point in 3D space, extending the {@code Vector3f} class.
@@ -22,7 +22,7 @@ import org.joml.Vector3f;
  * }
  * </pre>
  *
- * @see org.joml.Vector3f
+ * @see Vector3f
  * @since 1.0
  */
 public class Point3f extends Vector3f

@@ -1,8 +1,6 @@
 package framework.swing;
 
 import framework.hardware.Display;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;

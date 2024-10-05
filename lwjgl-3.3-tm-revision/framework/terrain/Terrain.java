@@ -5,8 +5,6 @@ import framework.model.Model;
 import framework.textures.TerrainTexture;
 import framework.textures.TerrainTexturePack;
 import framework.util.Math;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

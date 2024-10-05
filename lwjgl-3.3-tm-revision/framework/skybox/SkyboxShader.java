@@ -4,8 +4,6 @@ import framework.hardware.Display;
 import framework.entity.Camera;
 import framework.shader.GLShader;
 import framework.util.Math;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
 
 public class SkyboxShader extends GLShader
 {

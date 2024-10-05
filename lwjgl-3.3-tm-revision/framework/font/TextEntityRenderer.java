@@ -1,13 +1,13 @@
 package framework.font;
 
 import framework.hardware.Display;
+import framework.lang.Matrix4f;
+import framework.lang.Vector2f;
+import framework.lang.Vector3f;
 import framework.loader.ModelLoader;
 import framework.model.Model;
 import framework.swing.GUIRenderer;
 import framework.util.Math;
-import org.joml.Matrix4f;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;

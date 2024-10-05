@@ -12,7 +12,6 @@ import framework.swing.ContentPane;
 import framework.terrain.Terrain;
 import framework.util.LinkList;
 import framework.water.WaterTile;
-import org.joml.Vector2f;
 
 public class Scene
 {

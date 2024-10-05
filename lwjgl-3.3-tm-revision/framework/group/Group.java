@@ -1,9 +1,7 @@
 package framework.group;
 
 import framework.entity.Entity;
-import org.joml.Vector3f;
 
-import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 

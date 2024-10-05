@@ -4,8 +4,8 @@ import framework.event.FocusListener;
 import framework.event.MouseEvent;
 import framework.event.MouseListener;
 import framework.lang.Vector3f;
+import framework.lang.Vector4f;
 import framework.model.TexturedModel;
-import org.joml.Vector4f;
 
 import java.awt.Color;
 import java.util.ArrayList;

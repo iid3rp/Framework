@@ -11,6 +11,11 @@ public class Vector4f
 
     public Vector4f() {}
 
+    public Vector4f(float x_y_z_w)
+    {
+        x = y = z = w = x_y_z_w;
+    }
+
     public Vector4f(Vector4f src) {
         this.set(src);
     }
@@ -202,5 +207,10 @@ public class Vector4f
             Vector4f other = (Vector4f)obj;
             return this.x == other.x && this.y == other.y && this.z == other.z && this.w == other.w;
         }
+    }
+
+    public Vector3f xyz()
+    {
+        return new Vector3f(x, y, z);
     }
 }

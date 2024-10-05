@@ -1,13 +1,13 @@
 package framework.shadow;
 
 import framework.entity.Entity;
+import framework.lang.Matrix4f;
 import framework.model.Model;
 import framework.model.TexturedModel;
 import framework.util.Math;
 import framework.util.Key;
 import framework.util.LinkList;
 import framework.util.Map;
-import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
@@ -78,7 +78,7 @@ public class ShadowMapEntityRenderer {
 	private void prepareInstance(Entity entity) {
 		Matrix4f modelMatrix = Math.createTransformationMatrix(entity.getPosition(),
 				entity.getRotationX(), entity.getRotationY(), entity.getRotationZ(), entity.getScale());
-		Matrix4f mvpMatrix = projectionViewMatrix.mul(modelMatrix, new Matrix4f());
+		Matrix4f mvpMatrix = Matrix4f.mul(projectionViewMatrix, modelMatrix, null);
 		shader.loadModelMatrix(mvpMatrix);
 	}
 

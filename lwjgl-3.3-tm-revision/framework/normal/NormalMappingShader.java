@@ -2,10 +2,6 @@ package framework.normal;
 
 import framework.entity.Light;
 import framework.shader.GLShader;
-import org.joml.Matrix4f;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
 
 import java.util.List;
 

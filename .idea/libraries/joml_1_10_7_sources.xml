@@ -1,8 +1,6 @@
 <component name="libraryTable">
   <library name="joml-1.10.7-sources">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/lib/lwjgl/joml-1.10.7.jar!/" />
-      <root url="jar://$PROJECT_DIR$/lib/lwjgl/joml-primitives-1.10.0.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/lwjgl/lwjgl-assimp-natives-windows.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/lwjgl/lwjgl-assimp.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/lwjgl/lwjgl-bgfx-natives-windows.jar!/" />

@@ -1,13 +1,13 @@
 package framework.renderer;
 
+import framework.lang.Matrix4f;
+import framework.lang.Vector3f;
 import framework.model.Model;
 import framework.shader.TerrainShader;
 import framework.terrain.Terrain;
 import framework.textures.TerrainTexturePack;
 import framework.util.Math;
 import framework.util.LinkList;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.*;
