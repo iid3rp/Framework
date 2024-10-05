@@ -186,9 +186,9 @@ public class Vector4f
         return this.w;
     }
 
-    public org.joml.Vector4f vector4f()
+    public Vector4f vector4f()
     {
-        return new org.joml.Vector4f(x, y, z, w);
+        return new Vector4f(x, y, z, w);
     }
 
     public boolean equals(Object obj) {
