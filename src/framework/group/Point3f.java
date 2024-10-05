@@ -1,6 +1,6 @@
 package framework.group;
 
-import framework.lang.Vector3f;
+import framework.lang.Vec3;
 
 /**
  * The {@code Point3f} class represents a point in 3D space, extending the {@code Vector3f} class.
@@ -22,49 +22,49 @@ import framework.lang.Vector3f;
  * }
  * </pre>
  *
- * @see Vector3f
+ * @see Vec3
  * @since 1.0
  */
-public class Point3f extends Vector3f
+public class Point3f extends Vec3
 {
-    public Vector3f face;
+    public Vec3 face;
 
     public Point3f()
     {
         super();
     }
 
-    public Vector3f getFace()
+    public Vec3 getFace()
     {
         return face;
     }
 
-    public void setFace(Vector3f face)
+    public void setFace(Vec3 face)
     {
         this.face = face;
     }
 
     public void transformFace(float x, float y, float z)
     {
-        transformFace(new Vector3f(x, y, z));
+        transformFace(new Vec3(x, y, z));
     }
 
-    private void transformFace(Vector3f vector3f)
+    private void transformFace(Vec3 vec3)
     {
-        super.x += vector3f.x;
-        super.y += vector3f.y;
-        super.z += vector3f.z;
+        super.x += vec3.x;
+        super.y += vec3.y;
+        super.z += vec3.z;
     }
 
     public void rotateFace(float x, float y, float z)
     {
-        rotateFace(new Vector3f(x, y, z));
+        rotateFace(new Vec3(x, y, z));
     }
 
-    private void rotateFace(Vector3f vector3f)
+    private void rotateFace(Vec3 vec3)
     {
-        face.x = (face.x + vector3f.x) % 360;
-        face.y = (face.y + vector3f.y) % 360;
-        face.z = (face.z + vector3f.z) % 360;
+        face.x = (face.x + vec3.x) % 360;
+        face.y = (face.y + vec3.y) % 360;
+        face.z = (face.z + vec3.z) % 360;
     }
 }

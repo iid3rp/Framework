@@ -2,32 +2,32 @@ package framework.lang;
 
 import java.nio.FloatBuffer;
 
-public class Vector3f
+public class Vec3
 {
     public float x;
     public float y;
     public float z;
 
-    public static Vector3f xAxis = new Vector3f(1, 0, 0);
-    public static Vector3f yAxis = new Vector3f(0, 1, 0);
-    public static Vector3f zAxis = new Vector3f(0, 0, 1);
+    public static final Vec3 xAxis = new Vec3(1, 0, 0);
+    public static final Vec3 yAxis = new Vec3(0, 1, 0);
+    public static final Vec3 zAxis = new Vec3(0, 0, 1);
 
-    public Vector3f()
+    public Vec3()
     {
         x = y = z = 0;
     }
 
-    public Vector3f(float xyz)
+    public Vec3(float xyz)
     {
         x = y = z = xyz;
     }
 
-    public Vector3f(Vector3f src)
+    public Vec3(Vec3 src)
     {
         this.set(src);
     }
 
-    public Vector3f(float x, float y, float z)
+    public Vec3(float x, float y, float z)
     {
         this.set(x, y, z);
     }
@@ -45,7 +45,71 @@ public class Vector3f
         this.z = z;
     }
 
-    public Vector3f set(Vector3f src)
+    /**
+     * Rotate this vector the specified radians around the X axis.
+     *
+     * @param angle
+     *          the angle in radians
+     * @return this
+     */
+    public Vec3 rotateX(float angle) {
+        return rotateX(angle, this);
+    }
+
+    public Vec3 rotateX(float angle, Vec3 dest) {
+        float sin = Math.sin(angle), cos = Math.cosFromSin(sin, angle);
+        float y = this.y * cos - this.z * sin;
+        float z = this.y * sin + this.z * cos;
+        dest.x = this.x;
+        dest.y = y;
+        dest.z = z;
+        return dest;
+    }
+
+    /**
+     * Rotate this vector the specified radians around the Y axis.
+     *
+     * @param angle
+     *          the angle in radians
+     * @return this
+     */
+    public Vec3 rotateY(float angle) {
+        return rotateY(angle, this);
+    }
+
+    public Vec3 rotateY(float angle, Vec3 dest) {
+        float sin = Math.sin(angle);
+        float cos = Math.cosFromSin(sin, angle);
+        float x =  this.x * cos + this.z * sin;
+        float z = -this.x * sin + this.z * cos;
+        dest.x = x;
+        dest.y = this.y;
+        dest.z = z;
+        return dest;
+    }
+
+    /**
+     * Rotate this vector the specified radians around the Z axis.
+     *
+     * @param angle
+     *          the angle in radians
+     * @return this
+     */
+    public Vec3 rotateZ(float angle) {
+        return rotateZ(angle, this);
+    }
+
+    public Vec3 rotateZ(float angle, Vec3 dest) {
+        float sin = Math.sin(angle), cos = Math.cosFromSin(sin, angle);
+        float x = this.x * cos - this.y * sin;
+        float y = this.x * sin + this.y * cos;
+        dest.x = x;
+        dest.y = y;
+        dest.z = this.z;
+        return dest;
+    }
+
+    public Vec3 set(Vec3 src)
     {
         this.x = src.x;
         this.y = src.y;
@@ -55,7 +119,7 @@ public class Vector3f
     
     public float length()
     {
-        return (float) Math.sqrt(x * x + y * y + z * z);
+        return (float) java.lang.Math.sqrt(x * x + y * y + z * z);
     }
 
     public float lengthSquared() 
@@ -63,7 +127,7 @@ public class Vector3f
         return this.x * this.x + this.y * this.y + this.z * this.z;
     }
 
-    public Vector3f translate(float x, float y, float z)
+    public Vec3 translate(float x, float y, float z)
     {
         this.x += x;
         this.y += y;
@@ -71,37 +135,43 @@ public class Vector3f
         return this;
     }
 
-    public static Vector3f add(Vector3f left, Vector3f right)
+    public Vec3 add(Vec3 right)
+    {
+        return add(this, right, this);
+    }
+
+
+    public static Vec3 add(Vec3 left, Vec3 right)
     {
         return add(left, right, null);
     }
 
-    public static Vector3f add(Vector3f left, Vector3f right, Vector3f dest)
+    public static Vec3 add(Vec3 left, Vec3 right, Vec3 dest)
     {
         if (dest == null)
-            return new Vector3f(left.x + right.x, left.y + right.y, left.z + right.z);
+            return new Vec3(left.x + right.x, left.y + right.y, left.z + right.z);
         dest.set(left.x + right.x, left.y + right.y, left.z + right.z);
         return dest;
     }
 
-    public static Vector3f sub(Vector3f left, Vector3f right, Vector3f dest)
+    public static Vec3 sub(Vec3 left, Vec3 right, Vec3 dest)
     {
         if (dest == null) 
-            return new Vector3f(left.x - right.x, left.y - right.y, left.z - right.z);
+            return new Vec3(left.x - right.x, left.y - right.y, left.z - right.z);
         dest.set(left.x - right.x, left.y - right.y, left.z - right.z);
         return dest;
     }
 
-    public static Vector3f cross(Vector3f left, Vector3f right, Vector3f dest) {
+    public static Vec3 cross(Vec3 left, Vec3 right, Vec3 dest) {
         if (dest == null) {
-            dest = new Vector3f();
+            dest = new Vec3();
         }
 
         dest.set(left.y * right.z - left.z * right.y, right.x * left.z - right.z * left.x, left.x * right.y - left.y * right.x);
         return dest;
     }
 
-    public Vector3f negate()
+    public Vec3 negate()
     {
         this.x = -this.x;
         this.y = -this.y;
@@ -109,9 +179,9 @@ public class Vector3f
         return this;
     }
 
-    public Vector3f negate(Vector3f dest) {
+    public Vec3 negate(Vec3 dest) {
         if (dest == null) {
-            dest = new Vector3f();
+            dest = new Vec3();
         }
 
         dest.x = -this.x;
@@ -120,15 +190,15 @@ public class Vector3f
         return dest;
     }
 
-    public Vector3f normalize()
+    public Vec3 normalize()
     {
         return normalize(null);
     }
 
-    public Vector3f normalize(Vector3f dest) {
+    public Vec3 normalize(Vec3 dest) {
         float l = this.length();
         if (dest == null) {
-            dest = new Vector3f(this.x / l, this.y / l, this.z / l);
+            dest = new Vec3(this.x / l, this.y / l, this.z / l);
         } else {
             dest.set(this.x / l, this.y / l, this.z / l);
         }
@@ -136,11 +206,11 @@ public class Vector3f
         return dest;
     }
 
-    public static float dot(Vector3f left, Vector3f right) {
+    public static float dot(Vec3 left, Vec3 right) {
         return left.x * right.x + left.y * right.y + left.z * right.z;
     }
 
-    public static float angle(Vector3f a, Vector3f b) {
+    public static float angle(Vec3 a, Vec3 b) {
         float dls = dot(a, b) / (a.length() * b.length());
         if (dls < -1.0F) {
             dls = -1.0F;
@@ -148,10 +218,10 @@ public class Vector3f
             dls = 1.0F;
         }
 
-        return (float)Math.acos(dls);
+        return (float) java.lang.Math.acos(dls);
     }
 
-    public Vector3f load(FloatBuffer buf)
+    public Vec3 load(FloatBuffer buf)
     {
         this.x = buf.get();
         this.y = buf.get();
@@ -159,12 +229,12 @@ public class Vector3f
         return this;
     }
 
-    public Vector3f mul(float scale)
+    public Vec3 mul(float scale)
     {
         return scale(scale);
     }
 
-    public Vector3f scale(float scale)
+    public Vec3 scale(float scale)
     {
         this.x *= scale;
         this.y *= scale;
@@ -172,7 +242,7 @@ public class Vector3f
         return this;
     }
 
-    public Vector3f store(FloatBuffer buf) {
+    public Vec3 store(FloatBuffer buf) {
         buf.put(this.x);
         buf.put(this.y);
         buf.put(this.z);
@@ -223,7 +293,7 @@ public class Vector3f
         } else if (this.getClass() != obj.getClass()) {
             return false;
         } else {
-            Vector3f other = (Vector3f)obj;
+            Vec3 other = (Vec3)obj;
             return this.x == other.x && this.y == other.y && this.z == other.z;
         }
     }

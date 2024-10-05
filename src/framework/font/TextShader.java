@@ -1,8 +1,8 @@
 package framework.font;
 
-import framework.lang.Matrix4f;
-import framework.lang.Vector2f;
-import framework.lang.Vector3f;
+import framework.lang.Mat4;
+import framework.lang.Vec2;
+import framework.lang.Vec3;
 import framework.shader.GLShader;
 
 import java.awt.Color;
@@ -55,32 +55,32 @@ public class TextShader extends GLShader
     }
 
 
-    public void loadSize(Vector2f size)
+    public void loadSize(Vec2 size)
     {
         super.loadVector(locationSize, size);
     }
 
-    public void loadPosition(Vector2f position)
+    public void loadPosition(Vec2 position)
     {
         super.loadVector(locationPosition, position);
     }
 
-    public void loadScale(Vector2f scale)
+    public void loadScale(Vec2 scale)
     {
         super.loadVector(locationScale, scale);
     }
 
-    public void loadTransformation(Matrix4f matrix)
+    public void loadTransformation(Mat4 matrix)
     {
         super.loadMatrix(locationTransformationMatrix, matrix);
     }
 
-    public void loadFontLocation(Vector2f normal)
+    public void loadFontLocation(Vec2 normal)
     {
         super.loadVector(locationFontLocation, normal);
     }
 
-    public void loadOffset(Vector2f normal)
+    public void loadOffset(Vec2 normal)
     {
         super.loadVector(locationOffset, normal);
     }
@@ -102,7 +102,7 @@ public class TextShader extends GLShader
 
     public void loadOutlineColor(Color color)
     {
-        Vector3f c = new Vector3f(
+        Vec3 c = new Vec3(
                 color.getRed() / 255f,
                 color.getGreen() / 255f,
                 color.getBlue() / 255f
@@ -112,12 +112,12 @@ public class TextShader extends GLShader
 
     public void loadForegroundColor(Color color)
     {
-        Vector3f vector3f = new Vector3f(
+        Vec3 vec3 = new Vec3(
                 color.getRed() / 255f,
                 color.getGreen() / 255f,
                 color.getBlue() / 255f
         );
-        super.loadVector(locationForegroundColor, vector3f);
+        super.loadVector(locationForegroundColor, vec3);
     }
 
     public void loadWidth(float width)

@@ -2,25 +2,25 @@ package framework.lang;
 
 import java.nio.FloatBuffer;
 
-public class Vector4f
+public class Vec4
 {
     public float x;
     public float y;
     public float z;
     public float w;
 
-    public Vector4f() {}
+    public Vec4() {}
 
-    public Vector4f(float x_y_z_w)
+    public Vec4(float x_y_z_w)
     {
         x = y = z = w = x_y_z_w;
     }
 
-    public Vector4f(Vector4f src) {
+    public Vec4(Vec4 src) {
         this.set(src);
     }
 
-    public Vector4f(float x, float y, float z, float w) {
+    public Vec4(float x, float y, float z, float w) {
         this.set(x, y, z, w);
     }
 
@@ -42,7 +42,7 @@ public class Vector4f
         this.w = w;
     }
 
-    public Vector4f set(Vector4f src) {
+    public Vec4 set(Vec4 src) {
         this.x = src.getX();
         this.y = src.getY();
         this.z = src.getZ();
@@ -55,7 +55,7 @@ public class Vector4f
         return this.x * this.x + this.y * this.y + this.z * this.z + this.w * this.w;
     }
 
-    public Vector4f translate(float x, float y, float z, float w) {
+    public Vec4 translate(float x, float y, float z, float w) {
         this.x += x;
         this.y += y;
         this.z += z;
@@ -63,25 +63,25 @@ public class Vector4f
         return this;
     }
 
-    public static Vector4f add(Vector4f left, Vector4f right, Vector4f dest) {
+    public static Vec4 add(Vec4 left, Vec4 right, Vec4 dest) {
         if (dest == null) {
-            return new Vector4f(left.x + right.x, left.y + right.y, left.z + right.z, left.w + right.w);
+            return new Vec4(left.x + right.x, left.y + right.y, left.z + right.z, left.w + right.w);
         } else {
             dest.set(left.x + right.x, left.y + right.y, left.z + right.z, left.w + right.w);
             return dest;
         }
     }
 
-    public static Vector4f sub(Vector4f left, Vector4f right, Vector4f dest) {
+    public static Vec4 sub(Vec4 left, Vec4 right, Vec4 dest) {
         if (dest == null) {
-            return new Vector4f(left.x - right.x, left.y - right.y, left.z - right.z, left.w - right.w);
+            return new Vec4(left.x - right.x, left.y - right.y, left.z - right.z, left.w - right.w);
         } else {
             dest.set(left.x - right.x, left.y - right.y, left.z - right.z, left.w - right.w);
             return dest;
         }
     }
 
-    public Vector4f negate() {
+    public Vec4 negate() {
         this.x = -this.x;
         this.y = -this.y;
         this.z = -this.z;
@@ -89,9 +89,9 @@ public class Vector4f
         return this;
     }
 
-    public Vector4f negate(Vector4f dest) {
+    public Vec4 negate(Vec4 dest) {
         if (dest == null) {
-            dest = new Vector4f();
+            dest = new Vec4();
         }
 
         dest.x = -this.x;
@@ -101,10 +101,10 @@ public class Vector4f
         return dest;
     }
 
-    public Vector4f normalise(Vector4f dest) {
+    public Vec4 normalise(Vec4 dest) {
         float l = this.length();
         if (dest == null) {
-            dest = new Vector4f(this.x / l, this.y / l, this.z / l, this.w / l);
+            dest = new Vec4(this.x / l, this.y / l, this.z / l, this.w / l);
         } else {
             dest.set(this.x / l, this.y / l, this.z / l, this.w / l);
         }
@@ -114,24 +114,24 @@ public class Vector4f
 
     private float length()
     {
-        return (float) Math.sqrt(lengthSquared());
+        return (float) java.lang.Math.sqrt(lengthSquared());
     }
 
-    public static float dot(Vector4f left, Vector4f right) {
+    public static float dot(Vec4 left, Vec4 right) {
         return left.x * right.x + left.y * right.y + left.z * right.z + left.w * right.w;
     }
 
-    public static float angle(Vector4f a, Vector4f b) {
+    public static float angle(Vec4 a, Vec4 b) {
         float dls = dot(a, b) / (a.length() * b.length());
         if (dls < -1.0F)
-            return (float) Math.PI;
+            return (float) java.lang.Math.PI;
         else if (dls > 1.0F)
             return 0;
 
-        return (float) Math.acos(dls);
+        return (float) java.lang.Math.acos(dls);
     }
 
-    public Vector4f load(FloatBuffer buf) {
+    public Vec4 load(FloatBuffer buf) {
         this.x = buf.get();
         this.y = buf.get();
         this.z = buf.get();
@@ -139,7 +139,7 @@ public class Vector4f
         return this;
     }
 
-    public Vector4f scale(float scale) {
+    public Vec4 scale(float scale) {
         this.x *= scale;
         this.y *= scale;
         this.z *= scale;
@@ -147,7 +147,7 @@ public class Vector4f
         return this;
     }
 
-    public Vector4f store(FloatBuffer buf) {
+    public Vec4 store(FloatBuffer buf) {
         buf.put(this.x);
         buf.put(this.y);
         buf.put(this.z);
@@ -191,9 +191,9 @@ public class Vector4f
         return this.w;
     }
 
-    public Vector4f vector4f()
+    public Vec4 vector4f()
     {
-        return new Vector4f(x, y, z, w);
+        return new Vec4(x, y, z, w);
     }
 
     public boolean equals(Object obj) {
@@ -204,13 +204,13 @@ public class Vector4f
         } else if (this.getClass() != obj.getClass()) {
             return false;
         } else {
-            Vector4f other = (Vector4f)obj;
+            Vec4 other = (Vec4)obj;
             return this.x == other.x && this.y == other.y && this.z == other.z && this.w == other.w;
         }
     }
 
-    public Vector3f xyz()
+    public Vec3 xyz()
     {
-        return new Vector3f(x, y, z);
+        return new Vec3(x, y, z);
     }
 }

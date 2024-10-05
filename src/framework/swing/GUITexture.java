@@ -1,19 +1,21 @@
 package framework.swing;
 
 import framework.hardware.Display;
+import framework.lang.Vec2;
+import framework.lang.Vec3;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class GUITexture implements SwingInterface
 {
-    private Vector2f size;
+    private Vec2 size;
     private int diffuse;
     private int clipTexture;
-    private Vector2f position;
-    private Vector2f rawPosition;
-    private Vector2f scale;
-    private Vector3f rotation;
+    private Vec2 position;
+    private Vec2 rawPosition;
+    private Vec2 scale;
+    private Vec3 rotation;
     private int width;
     private int height;
     private int x;
@@ -23,20 +25,20 @@ public class GUITexture implements SwingInterface
     private int zLayer;
     private int desiredZLayer;
     private List<Container> children;
-    private Vector2f imageLocation;
+    private Vec2 imageLocation;
 
     public GUITexture()
     {
         diffuse = 0;
-        position = new Vector2f(0, 0);
-        scale = new Vector2f(0, 0);
-        rotation = new Vector3f(0, 0, 0);
-        size = new Vector2f(0, 0);
-        rawPosition = new Vector2f(0, 0);
+        position = new Vec2(0, 0);
+        scale = new Vec2(0, 0);
+        rotation = new Vec3(0, 0, 0);
+        size = new Vec2(0, 0);
+        rawPosition = new Vec2(0, 0);
         children = new ArrayList<>();
     }
 
-    public GUITexture(int texture, Vector2f position, Vector2f scale, Vector2f size)
+    public GUITexture(int texture, Vec2 position, Vec2 scale, Vec2 size)
     {
         this.diffuse = texture;
         this.position = position;
@@ -44,17 +46,17 @@ public class GUITexture implements SwingInterface
         this.scale = scale;
     }
 
-    public Vector3f getRotation()
+    public Vec3 getRotation()
     {
         return rotation;
     }
 
-    public void setRotation(Vector3f rotation)
+    public void setRotation(Vec3 rotation)
     {
         this.rotation = rotation;
     }
 
-    public void transformRotation(Vector3f rotation)
+    public void transformRotation(Vec3 rotation)
     {
         this.rotation.x += rotation.x;
         this.rotation.y += rotation.y;
@@ -76,7 +78,7 @@ public class GUITexture implements SwingInterface
     {
         float w = (float) width / Display.getWidth();
         float h = (float) height / Display.getHeight();
-        this.scale = new Vector2f(w, h);
+        this.scale = new Vec2(w, h);
         setLocation(this.x, this.y);
         //setImageLocation(this.imgX, this.imgY);
     }
@@ -88,10 +90,10 @@ public class GUITexture implements SwingInterface
         float w = (float) x / Display.getWidth();
         float h = (float) y / Display.getHeight();
 
-        this.imageLocation = new Vector2f(w, h);
+        this.imageLocation = new Vec2(w, h);
     }
 
-    public Vector2f getImageLocation()
+    public Vec2 getImageLocation()
     {
         return imageLocation;
     }
@@ -100,7 +102,7 @@ public class GUITexture implements SwingInterface
     {
         float w = (float) width / Display.getWidth();
         float h = (float) height / Display.getHeight();
-        this.size = new Vector2f(w, h);
+        this.size = new Vec2(w, h);
         setLocation(this.x, this.y);
     }
 
@@ -114,7 +116,7 @@ public class GUITexture implements SwingInterface
         posX += size.x;
         posY -= size.y;
 
-        this.position = new Vector2f(posX, posY);
+        this.position = new Vec2(posX, posY);
     }
 
     public int getWidth()
@@ -152,12 +154,12 @@ public class GUITexture implements SwingInterface
         return diffuse;
     }
 
-    public Vector2f getPosition()
+    public Vec2 getPosition()
     {
         return position;
     }
 
-    public Vector2f getScale()
+    public Vec2 getScale()
     {
         return scale;
     }
@@ -171,7 +173,7 @@ public class GUITexture implements SwingInterface
         rotation.y += 180;
     }
 
-    public Vector2f getRawPosition()
+    public Vec2 getRawPosition()
     {
         return rawPosition;
     }
@@ -181,7 +183,7 @@ public class GUITexture implements SwingInterface
         rotation.z += 180;
     }
 
-    public Vector2f getSize()
+    public Vec2 getSize()
     {
         return size;
     }

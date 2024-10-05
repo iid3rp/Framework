@@ -1,9 +1,9 @@
 package framework.shader;
 
-import framework.lang.Matrix4f;
-import framework.lang.Vector2f;
-import framework.lang.Vector3f;
-import framework.lang.Vector4f;
+import framework.lang.Mat4;
+import framework.lang.Vec2;
+import framework.lang.Vec3;
+import framework.lang.Vec4;
 import framework.util.FileUtils;
 import org.lwjgl.BufferUtils;
 
@@ -46,12 +46,12 @@ public abstract class GLShader
         glUniform1i(location, value);
     }
 
-    protected void loadVector(int location, Vector3f vector)
+    protected void loadVector(int location, Vec3 vector)
     {
         glUniform3f(location, vector.x, vector.y, vector.z);
     }
 
-    protected void loadVector(int location, Vector2f vector)
+    protected void loadVector(int location, Vec2 vector)
     {
         glUniform2f(location, vector.x, vector.y);
     }
@@ -61,9 +61,11 @@ public abstract class GLShader
         glUniform1f(location, value ? 1 : 0);
     }
 
-    protected void loadMatrix(int location, Matrix4f matrix)
+    protected void loadMatrix(int location, Mat4 matrix)
     {
-        glUniformMatrix4fv(location, false, matrix.store(matrixBuffer));
+        matrix.store(matrixBuffer);
+        matrixBuffer.flip();
+        glUniformMatrix4fv(location, false, matrixBuffer);
     }
 
     public void create() {
@@ -130,7 +132,7 @@ public abstract class GLShader
         glDeleteProgram(programId);
     }
 
-    protected void loadVector(int location, Vector4f vector)
+    protected void loadVector(int location, Vec4 vector)
     {
         glUniform4f(location, vector.x, vector.y, vector.z,  vector.w);
     }

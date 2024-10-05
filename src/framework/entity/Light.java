@@ -1,47 +1,47 @@
 package framework.entity;
 
-import framework.lang.Vector3f;
+import framework.lang.Vec3;
 
 public class Light {
-    private Vector3f position;
-    private Vector3f color;
-    private Vector3f attenuation;
+    private Vec3 position;
+    private Vec3 color;
+    private Vec3 attenuation;
 
-    public Light(Vector3f position, Vector3f color) {
+    public Light(Vec3 position, Vec3 color) {
         this.position = position;
         this.color = color;
-        this.attenuation = new Vector3f(1, 0, 0);
+        this.attenuation = new Vec3(1, 0, 0);
     }
 
-    public Light(Vector3f position, Vector3f color, Vector3f attenuation)
+    public Light(Vec3 position, Vec3 color, Vec3 attenuation)
     {
         this.position = position;
         this.color = color;
         this.attenuation = attenuation;
     }
 
-    public Vector3f getPosition() {
+    public Vec3 getPosition() {
         return position;
     }
 
-    public void setPosition(Vector3f position) {
+    public void setPosition(Vec3 position) {
         this.position = position;
     }
 
-    public Vector3f getColor() {
+    public Vec3 getColor() {
         return color;
     }
 
-    public void setColor(Vector3f color) {
+    public void setColor(Vec3 color) {
         this.color = color;
     }
 
-    public Vector3f getAttenuation()
+    public Vec3 getAttenuation()
     {
         return attenuation;
     }
 
-    public void setAttenuation(Vector3f attenuation)
+    public void setAttenuation(Vec3 attenuation)
     {
         this.attenuation = attenuation;
     }

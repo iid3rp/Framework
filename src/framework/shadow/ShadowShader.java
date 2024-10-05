@@ -1,6 +1,6 @@
 package framework.shadow;
 
-import framework.lang.Matrix4f;
+import framework.lang.Mat4;
 import framework.shader.GLShader;
 
 public class ShadowShader extends GLShader
@@ -21,7 +21,7 @@ public class ShadowShader extends GLShader
 		
 	}
 	
-	protected void loadModelMatrix(Matrix4f matrix){
+	protected void loadModelMatrix(Mat4 matrix){
 		super.loadMatrix(location_mvpMatrix, matrix);
 	}
 

@@ -4,7 +4,7 @@ import framework.hardware.Display;
 import framework.hardware.Keyboard;
 import framework.hardware.Mouse;
 import framework.lang.SmoothFloat;
-import framework.lang.Vector3f;
+import framework.lang.Vec3;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -14,7 +14,7 @@ public class Camera {
     private static float REFRESH_RATE = 120;
     private static final float WALK_SPEED = .5f;
     private static final float ROTATIONAL_SPEED = 180 / REFRESH_RATE;
-    private Vector3f position = new Vector3f();
+    private Vec3 position = new Vec3();
     private float yaw;
     private float roll;
     private float walkSpeed;
@@ -86,7 +86,7 @@ public class Camera {
         yaw = (180 - angleAroundPlayer.get()) % 360;
     }
 
-    public Vector3f getPosition() {
+    public Vec3 getPosition() {
         return position;
     }
 
@@ -181,7 +181,7 @@ public class Camera {
     }
 
     private void setCameraDefaultPosition() {
-        position = new Vector3f();
+        position = new Vec3();
         distanceFromPlayer.setTarget(50);
         pitch.setTarget(20);
         yaw = 0;
@@ -196,9 +196,9 @@ public class Camera {
         }
     }
 
-    public Vector3f getNegativePosition()
+    public Vec3 getNegativePosition()
     {
-        return new Vector3f(position.x, -position.y, -position.z);
+        return new Vec3(position.x, -position.y, -position.z);
     }
 
     public void invertPitch()
@@ -223,7 +223,7 @@ public class Camera {
         position.y = player.getPosition().y + verticalDistanceFromPlayer;
     }
 
-    public Vector3f getPositivePosition()
+    public Vec3 getPositivePosition()
     {
         return position;
     }

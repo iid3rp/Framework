@@ -2,11 +2,11 @@ package framework.shader;
 
 import framework.entity.Camera;
 import framework.entity.Light;
-import framework.lang.Matrix4f;
-import framework.lang.Vector2f;
-import framework.lang.Vector3f;
-import framework.lang.Vector4f;
-import framework.util.Math;
+import framework.lang.Mat4;
+import framework.lang.Vec2;
+import framework.lang.Vec3;
+import framework.lang.Vec4;
+import framework.lang.Math;
 import framework.util.LinkList;
 
 import java.awt.Color;
@@ -83,16 +83,16 @@ public class EntityShader extends GLShader
         }
     }
 
-    public void loadTransformationMatrix(Matrix4f matrix) {
+    public void loadTransformationMatrix(Mat4 matrix) {
         super.loadMatrix(location_transformationMatrix, matrix);
     }
 
-    public void loadProjectionMatrix(Matrix4f projectionMatrix) {
+    public void loadProjectionMatrix(Mat4 projectionMatrix) {
         super.loadMatrix(location_projectionMatrix, projectionMatrix);
     }
 
     public void loadViewMatrix(Camera camera) {
-        Matrix4f viewMatrix = Math.createViewMatrix(camera);
+        Mat4 viewMatrix = Math.createViewMatrix(camera);
         super.loadMatrix(location_viewMatrix, viewMatrix);
     }
 
@@ -102,12 +102,12 @@ public class EntityShader extends GLShader
         float g = color.getGreen() / 255.0f;
         float b = color.getBlue() / 255.0f;
         float a = color.getAlpha() / 255.0f;
-        Vector4f vector4f = new Vector4f(r, g, b, a);
-        super.loadVector(locationMouseColor, vector4f);
+        Vec4 vec4 = new Vec4(r, g, b, a);
+        super.loadVector(locationMouseColor, vec4);
     }
 
     public void loadLights(LinkList<Light> lights, Camera camera) {
-        Matrix4f viewMatrix = Math.createViewMatrix(camera);
+        Mat4 viewMatrix = Math.createViewMatrix(camera);
         final int lightSize = lights.size();
         for(int i = 0; i < 20; i++)
         {
@@ -120,18 +120,18 @@ public class EntityShader extends GLShader
             }
             else
             {
-                super.loadVector(location_lightPosition[i], new Vector3f(0, 0, 0));
-                super.loadVector(location_lightColor[i], new Vector3f(0, 0, 0));
-                super.loadVector(locationAttenuation[i], new Vector3f(1, 0, 0));
+                super.loadVector(location_lightPosition[i], new Vec3(0, 0, 0));
+                super.loadVector(location_lightColor[i], new Vec3(0, 0, 0));
+                super.loadVector(locationAttenuation[i], new Vec3(1, 0, 0));
             }
         }
     }
 
-    private Vector3f getEyeSpacePosition(Light light, Matrix4f viewMatrix){
-        Vector3f position = light.getPosition();
-        Vector4f eyeSpacePos = new Vector4f(position.x,position.y, position.z, 1f);
-        Matrix4f.transform(viewMatrix, eyeSpacePos, eyeSpacePos);
-        return new Vector3f(eyeSpacePos.x,eyeSpacePos.y,eyeSpacePos.z);
+    private Vec3 getEyeSpacePosition(Light light, Mat4 viewMatrix){
+        Vec3 position = light.getPosition();
+        Vec4 eyeSpacePos = new Vec4(position.x,position.y, position.z, 1f);
+        Mat4.transform(viewMatrix, eyeSpacePos, eyeSpacePos);
+        return new Vec3(eyeSpacePos.x,eyeSpacePos.y,eyeSpacePos.z);
     }
 
     public void connectTextureUnits(){
@@ -157,7 +157,7 @@ public class EntityShader extends GLShader
 
     public void loadSkyColor(float r, float g, float b)
     {
-        super.loadVector(location_skyColor, new Vector3f(r, g, b));
+        super.loadVector(location_skyColor, new Vec3(r, g, b));
     }
 
     public void loadNumberOfRowsInTextureAtlas(int numberOfRowsInTextureAtlas) {
@@ -166,20 +166,20 @@ public class EntityShader extends GLShader
 
     public void loadOffset(float x, float y)
     {
-        super.loadVector(location_offset, new Vector2f(x, y));
+        super.loadVector(location_offset, new Vec2(x, y));
     }
 
-    public void loadClipPlane(Vector4f vec4)
+    public void loadClipPlane(Vec4 vec4)
     {
         super.loadVector(locationPlane, vec4);
     }
 
-    public void loadHighlightColor(Vector4f highlightColor)
+    public void loadHighlightColor(Vec4 highlightColor)
     {
         super.loadVector(locationHighlightColor, highlightColor);
     }
 
-    public void loadShadowMatrix(Matrix4f shadow)
+    public void loadShadowMatrix(Mat4 shadow)
     {
         super.loadMatrix(locationShadowMapSpace, shadow);
     }

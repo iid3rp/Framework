@@ -5,13 +5,13 @@ import framework.entity.Camera;
 import framework.entity.Entity;
 import framework.environment.Environment;
 import framework.hardware.Mouse;
-import framework.lang.Matrix4f;
-import framework.lang.Vector2f;
-import framework.lang.Vector3f;
-import framework.lang.Vector4f;
+import framework.lang.Mat4;
+import framework.lang.Vec2;
+import framework.lang.Vec3;
+import framework.lang.Vec4;
 import framework.post_processing.FrameBufferObject;
 import framework.terrain.Terrain;
-import framework.util.Math;
+import framework.lang.Math;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
@@ -24,14 +24,14 @@ import java.util.Random;
 
 public class MouseEvent
 {
-    public Vector3f currentRay;
+    public Vec3 currentRay;
     private static int recursionCount = 200;
     private static float rayRange = 6000f;
-    private Matrix4f projection;
-    private Matrix4f view;
+    private Mat4 projection;
+    private Mat4 view;
     private Camera camera;
     private Terrain terrain;
-    private Vector3f currentTerrainPoint;
+    private Vec3 currentTerrainPoint;
     private static HashMap<Color, Entity> entityMouseEvents = new HashMap<>();
     private Entity currentEntity;
     private Color currentColor;
@@ -43,7 +43,7 @@ public class MouseEvent
 
     public MouseEvent() {}
 
-    public MouseEvent(Camera camera, Matrix4f projection)
+    public MouseEvent(Camera camera, Mat4 projection)
     {
         this.camera = camera;
         this.projection = projection;
@@ -51,7 +51,7 @@ public class MouseEvent
         this.view = Math.createViewMatrix(camera);
     }
 
-    public Vector3f getCurrentTerrainPoint() {
+    public Vec3 getCurrentTerrainPoint() {
         return currentTerrainPoint;
     }
 
@@ -64,7 +64,7 @@ public class MouseEvent
                 currentTerrainPoint.z + "]";
     }
 
-    public Vector3f getCurrentRay()
+    public Vec3 getCurrentRay()
     {
         return currentRay;
     }
@@ -83,22 +83,22 @@ public class MouseEvent
         }
     }
 
-    public Matrix4f getProjection()
+    public Mat4 getProjection()
     {
         return projection;
     }
 
-    public void setProjection(Matrix4f projection)
+    public void setProjection(Mat4 projection)
     {
         this.projection = projection;
     }
 
-    public Matrix4f getView()
+    public Mat4 getView()
     {
         return view;
     }
 
-    public void setView(Matrix4f view)
+    public void setView(Mat4 view)
     {
         this.view = view;
     }
@@ -114,56 +114,56 @@ public class MouseEvent
         this.view = Math.createViewMatrix(camera);
     }
 
-    private Vector3f calculateMouseRay()
+    private Vec3 calculateMouseRay()
     {
         float mouseX = (float) Mouse.getMouseX();
         float mouseY = Display.getHeight() - (float) Mouse.getMouseY();
-        Vector2f normalizedCoordinates = getNormalizedDeviceCoordinates(mouseX,  mouseY);
-        Vector4f clipCoords = new Vector4f(normalizedCoordinates.x, normalizedCoordinates.y, -1f, 1f);
-        Vector4f eyeCoordinates = toEyeCoordinates(clipCoords);
-        Vector3f worldRay = toWorldCoordinates(eyeCoordinates);
+        Vec2 normalizedCoordinates = getNormalizedDeviceCoordinates(mouseX,  mouseY);
+        Vec4 clipCoords = new Vec4(normalizedCoordinates.x, normalizedCoordinates.y, -1f, 1f);
+        Vec4 eyeCoordinates = toEyeCoordinates(clipCoords);
+        Vec3 worldRay = toWorldCoordinates(eyeCoordinates);
         //System.out.println(worldRay.x + " " + worldRay.y + " " + worldRay.z);
         return  worldRay;
     }
 
-    private Vector3f toWorldCoordinates(Vector4f eyeCoordinates)
+    private Vec3 toWorldCoordinates(Vec4 eyeCoordinates)
     {
-        Matrix4f invertedView = new Matrix4f();
-        Matrix4f.invert(view, invertedView);
-        Vector4f rayWorld = new Vector4f();
-        Matrix4f.transform(invertedView, eyeCoordinates, rayWorld);
-        Vector3f mouseRay = new Vector3f(rayWorld.x, rayWorld.y, rayWorld.z);
+        Mat4 invertedView = new Mat4();
+        Mat4.invert(view, invertedView);
+        Vec4 rayWorld = new Vec4();
+        Mat4.transform(invertedView, eyeCoordinates, rayWorld);
+        Vec3 mouseRay = new Vec3(rayWorld.x, rayWorld.y, rayWorld.z);
         mouseRay.normalize();
         return mouseRay;
     }
 
-    private Vector4f toEyeCoordinates(Vector4f clipCoordinates)
+    private Vec4 toEyeCoordinates(Vec4 clipCoordinates)
     {
-        Matrix4f invertedProjection = new Matrix4f();
-        Matrix4f.invert(projection, invertedProjection);
-        Vector4f eyeCoordinates = new Vector4f();
-        Matrix4f.transform(invertedProjection, clipCoordinates, eyeCoordinates);
-        return new Vector4f(eyeCoordinates.x, eyeCoordinates.y, -1f, 0f);
+        Mat4 invertedProjection = new Mat4();
+        Mat4.invert(projection, invertedProjection);
+        Vec4 eyeCoordinates = new Vec4();
+        Mat4.transform(invertedProjection, clipCoordinates, eyeCoordinates);
+        return new Vec4(eyeCoordinates.x, eyeCoordinates.y, -1f, 0f);
     }
 
-    private Vector2f getNormalizedDeviceCoordinates(float mouseX, float mouseY)
+    private Vec2 getNormalizedDeviceCoordinates(float mouseX, float mouseY)
     {
         float x = (2f * mouseX) / Display.getWidth() - 1;
         float y = (2f * mouseY) / Display.getHeight() - 1;
-        return new Vector2f(x, y);
+        return new Vec2(x, y);
     }
 
-    private Vector3f getPointOnRay(Vector3f ray, float distance) {
-        Vector3f camPos = camera.getPosition();
-        Vector3f start = new Vector3f(camPos.x, camPos.y, camPos.z);
-        Vector3f scaledRay = new Vector3f(ray.x * distance, ray.y * distance, ray.z * distance);
-        return Vector3f.add(scaledRay, start);
+    private Vec3 getPointOnRay(Vec3 ray, float distance) {
+        Vec3 camPos = camera.getPosition();
+        Vec3 start = new Vec3(camPos.x, camPos.y, camPos.z);
+        Vec3 scaledRay = new Vec3(ray.x * distance, ray.y * distance, ray.z * distance);
+        return Vec3.add(scaledRay, start);
     }
 
-    private Vector3f binarySearch(int count, float start, float finish, Vector3f ray) {
+    private Vec3 binarySearch(int count, float start, float finish, Vec3 ray) {
         float half = start + ((finish - start) / 2f);
         if (count >= recursionCount) {
-            Vector3f endPoint = getPointOnRay(ray, half);
+            Vec3 endPoint = getPointOnRay(ray, half);
             Terrain terrain = getTerrain(endPoint.x, endPoint.z);
             if (terrain != null) {
                 return endPoint;
@@ -178,13 +178,13 @@ public class MouseEvent
         }
     }
 
-    private boolean intersectionInRange(float start, float finish, Vector3f ray) {
-        Vector3f startPoint = getPointOnRay(ray, start);
-        Vector3f endPoint = getPointOnRay(ray, finish);
+    private boolean intersectionInRange(float start, float finish, Vec3 ray) {
+        Vec3 startPoint = getPointOnRay(ray, start);
+        Vec3 endPoint = getPointOnRay(ray, finish);
         return !isUnderGround(startPoint) && isUnderGround(endPoint);
     }
 
-    private boolean isUnderGround(Vector3f testPoint) {
+    private boolean isUnderGround(Vec3 testPoint) {
         Terrain terrain = getTerrain(testPoint.x, testPoint.z);
         float height = 0;
         if (terrain != null) {

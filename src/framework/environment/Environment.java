@@ -6,8 +6,8 @@ import framework.font.Font;
 import framework.font.FontFile;
 import framework.font.Text;
 import framework.hardware.Display;
-import framework.lang.Vector3f;
-import framework.lang.Vector4f;
+import framework.lang.Vec3;
+import framework.lang.Vec4;
 import framework.particles.ParticleMaster;
 import framework.post_processing.FrameBufferObject;
 import framework.post_processing.PostProcessing;
@@ -57,7 +57,7 @@ public final class Environment
             pb.setImageLocation(0,  0);
             pb.setScale(200, 200);
             pb.setSize(200, 200);
-            scene.getContentPane().add(pb);
+            //scene.getContentPane().add(pb);
 
 
             loop();
@@ -92,12 +92,12 @@ public final class Environment
             scene.getEvent().update();
 
             //the shadow thingies
-            MasterRenderer.renderShadowMap(scene.getEntities(), scene.getMainLight());
+            //MasterRenderer.renderShadowMap(scene.getEntities(), scene.getMainLight());
 
             //particle
 
             if(scene.getParticleSystem() != null) {
-                Vector3f pos = new Vector3f(scene.getPlayer().getPosition());
+                Vec3 pos = new Vec3(scene.getPlayer().getPosition());
                 pos.y += 300;
                 scene.getParticleSystem().generateParticles(pos);
                 ParticleMaster.update(scene.getCamera());
@@ -145,7 +145,7 @@ public final class Environment
 
             // frame buffer stuff
             multi.bindFrameBuffer();
-            renderScene(new Vector4f(0, -1, 0, 1000000));
+            renderScene(new Vec4(0, -1, 0, 1000000));
             //MasterRenderer.renderWaters(scene.getWaters(), scene.getCamera(), scene.getMainLight());
             if(scene.getParticleSystem() != null)
             {
@@ -194,7 +194,7 @@ public final class Environment
         }
     }
 
-    private static void renderScene(Vector4f vec4)
+    private static void renderScene(Vec4 vec4)
     {
         // the 3D space stuff...
         // the shadow thingies

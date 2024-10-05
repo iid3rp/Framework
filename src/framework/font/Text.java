@@ -1,6 +1,6 @@
 package framework.font;
 
-import framework.lang.Vector2f;
+import framework.lang.Vec2;
 import framework.model.Model;
 
 import java.awt.Color;
@@ -17,7 +17,7 @@ public class Text
     private Color outlineColor;
     private float borderWidth;
     private float borderEdge;
-    private Vector2f offset;
+    private Vec2 offset;
     private float edge;
     private float fontSize;
     private int height;
@@ -46,7 +46,7 @@ public class Text
         outlineColor = Color.WHITE;
         borderWidth = 0;
         borderEdge = 0;
-        offset = new Vector2f();
+        offset = new Vec2();
         edge = 0.02f;
         fontSize = 15;
         smoothWidth = 0.5f;
@@ -171,12 +171,12 @@ public class Text
         this.borderEdge = borderEdge;
     }
 
-    public Vector2f getOffset()
+    public Vec2 getOffset()
     {
         return offset;
     }
 
-    public void setOffset(Vector2f offset)
+    public void setOffset(Vec2 offset)
     {
         this.offset = offset;
     }

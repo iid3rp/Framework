@@ -2,7 +2,7 @@ package framework.entity;
 
 import framework.hardware.Display;
 import framework.hardware.Keyboard;
-import framework.lang.Vector3f;
+import framework.lang.Vec3;
 import framework.model.TexturedModel;
 import framework.terrain.Terrain;
 
@@ -14,7 +14,7 @@ public class Player extends Entity {
     public static final float GRAVITY = -50;
     private static final float JUMP_POWER = 30;
     private float walkSpeed;
-    private Vector3f position;
+    private Vec3 position;
     private float currentSpeed;
     private float currentTurnSpeed;
     private float upwardSpeed;
@@ -22,7 +22,7 @@ public class Player extends Entity {
     private boolean isInAir;
     private Light light; // referential purposes only
 
-    public Player(TexturedModel texturedModel, Vector3f position, float rotationX, float rotationY, float rotationZ, float scale) {
+    public Player(TexturedModel texturedModel, Vec3 position, float rotationX, float rotationY, float rotationZ, float scale) {
         super(texturedModel, position, rotationX, rotationY, rotationZ, scale);
         walkSpeed = RUN_SPEED;
     }
@@ -152,7 +152,7 @@ public class Player extends Entity {
         float getPositionZ = getPosition().z;
         if(light != null)
         {
-            light.setPosition(new Vector3f(getPositionX, getPositionY, getPositionZ));
+            light.setPosition(new Vec3(getPositionX, getPositionY, getPositionZ));
         }
     }
 

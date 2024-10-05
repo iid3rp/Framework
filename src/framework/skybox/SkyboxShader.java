@@ -2,8 +2,10 @@ package framework.skybox;
 
 import framework.hardware.Display;
 import framework.entity.Camera;
+import framework.lang.Mat4;
+import framework.lang.Vec3;
 import framework.shader.GLShader;
-import framework.util.Math;
+import framework.lang.Math;
 
 public class SkyboxShader extends GLShader
 {
@@ -23,23 +25,23 @@ public class SkyboxShader extends GLShader
 		super(VERTEX_FILE, FRAGMENT_FILE);
 	}
 	
-	public void loadProjectionMatrix(Matrix4f matrix){
+	public void loadProjectionMatrix(Mat4 matrix){
 		super.loadMatrix(location_projectionMatrix, matrix);
 	}
 
 	public void loadViewMatrix(Camera camera){
-		Matrix4f matrix = Math.createViewMatrix(camera);
-		matrix.m30(0);
-		matrix.m31(0);
-		matrix.m32(0);
+		Mat4 matrix = Math.createViewMatrix(camera);
+		matrix.m[3][0] = 0;
+		matrix.m[3][1] = 0;
+		matrix.m[3][2] = 0;
 		rotation += rotationSpeed * Display.getDeltaInSeconds();
-		matrix.rotate((float) java.lang.Math.toRadians(rotation), new Vector3f(0, 1, 0));
+		matrix.rotate((float) java.lang.Math.toRadians(rotation), new Vec3(0, 1, 0));
 		super.loadMatrix(location_viewMatrix, matrix);
 	}
 
 	public void loadFogColor(float r, float g, float b)
 	{
-		super.loadVector(locationFogColor, new Vector3f(r, g, b));
+		super.loadVector(locationFogColor, new Vec3(r, g, b));
 	}
 
 	public void connectTextureUnits()

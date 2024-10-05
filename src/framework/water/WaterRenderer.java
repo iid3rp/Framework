@@ -3,11 +3,13 @@ package framework.water;
 import framework.hardware.Display;
 import framework.entity.Camera;
 import framework.entity.Light;
+import framework.lang.Mat4;
+import framework.lang.Vec3;
 import framework.loader.ModelLoader;
 import framework.model.Model;
 import framework.renderer.MasterRenderer;
 import framework.textures.Texture;
-import framework.util.Math;
+import framework.lang.Math;
 import framework.util.LinkList;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
@@ -26,7 +28,7 @@ public class WaterRenderer {
 	private Texture normalTexture;
 	private float moveFactor;
 
-	public WaterRenderer(WaterShader shader, Matrix4f projectionMatrix, WaterFrameBufferObject buffer) {
+	public WaterRenderer(WaterShader shader, Mat4 projectionMatrix, WaterFrameBufferObject buffer) {
 		this.shader = shader;
 		this.buffer = buffer;
 		duDvTexture = new Texture(ModelLoader.loadTexture(DuDv_MAP));
@@ -42,8 +44,8 @@ public class WaterRenderer {
 		prepareRender(camera, light);
 		for (WaterTile tile : water) {
 			MasterRenderer.disableCulling();
-			Matrix4f modelMatrix = Math.createTransformationMatrix(
-					new Vector3f(tile.getX(), tile.getHeight(), tile.getZ()), 0, 0, 0,
+			Mat4 modelMatrix = Math.createTransformationMatrix(
+					new Vec3(tile.getX(), tile.getHeight(), tile.getZ()), 0, 0, 0,
 					WaterTile.TILE_SIZE);
 			shader.loadModelMatrix(modelMatrix);
 			GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, quad.getVertexCount());

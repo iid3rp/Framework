@@ -1,13 +1,13 @@
 package framework.font;
 
 import framework.hardware.Display;
-import framework.lang.Matrix4f;
-import framework.lang.Vector2f;
-import framework.lang.Vector3f;
+import framework.lang.Mat4;
+import framework.lang.Vec2;
+import framework.lang.Vec3;
 import framework.loader.ModelLoader;
 import framework.model.Model;
 import framework.swing.GUIRenderer;
-import framework.util.Math;
+import framework.lang.Math;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
@@ -20,7 +20,7 @@ public class TextEntityRenderer
 {
     private Model quad;
     private static TextShader shader;
-    private Vector2f size;
+    private Vec2 size;
     private float cursorX;
     private float cursorY;
     private float fontSize;
@@ -29,7 +29,7 @@ public class TextEntityRenderer
     public TextEntityRenderer()
     {
         quad = ModelLoader.loadToVao(GUIRenderer.positions, GUIRenderer.coords);
-        size = new Vector2f(1, 1);
+        size = new Vec2(1, 1);
         shader = new TextShader();
     }
 
@@ -132,15 +132,15 @@ public class TextEntityRenderer
 
     private void renderChar(Char c, Font font, Text text, float width)
     {
-        Vector2f size = getNormal(c.getWidth() * fontSize, c.getHeight() * fontSize);
-        Vector2f pos = sl(text,
+        Vec2 size = getNormal(c.getWidth() * fontSize, c.getHeight() * fontSize);
+        Vec2 pos = sl(text,
                 cursorX + ((c.getXOffset() + 5) * fontSize),
                 cursorY + ((c.getYOffset() + 5) * fontSize), size, width);
 
         // set the transformation matrix of the whole font texture
-        Matrix4f letterMatrix = Math.createTransformationMatrix(
+        Mat4 letterMatrix = Math.createTransformationMatrix(
                 (pos),
-                new Vector3f(0),
+                new Vec3(0),
                 (size)
         );
 
@@ -160,7 +160,7 @@ public class TextEntityRenderer
         GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, quad.getVertexCount());
     }
 
-    private Vector2f sl(Text text, float x, float y, Vector2f size, float width)
+    private Vec2 sl(Text text, float x, float y, Vec2 size, float width)
     {
         if(text.getAlignment() == Text.RIGHT)
         {
@@ -177,7 +177,7 @@ public class TextEntityRenderer
         posX += size.x;
         posY -= size.y;
 
-        return new Vector2f(posX, posY);
+        return new Vec2(posX, posY);
     }
 
     @Deprecated
@@ -226,15 +226,15 @@ public class TextEntityRenderer
     @Deprecated
     private void renderCharacter(Char c, Font font, Text text)
     {
-        Vector2f size = getNormal(c.getWidth() * fontSize, c.getHeight() * fontSize);
-        Vector2f pos = getNormal(
+        Vec2 size = getNormal(c.getWidth() * fontSize, c.getHeight() * fontSize);
+        Vec2 pos = getNormal(
                 cursorX + ((c.getXOffset() + 5) * fontSize),
                 cursorY + ((c.getYOffset() + 5) * fontSize));
 
         // set the transformation matrix of the whole font texture
-        Matrix4f letterMatrix = Math.createTransformationMatrix(
+        Mat4 letterMatrix = Math.createTransformationMatrix(
                 (pos),
-                new Vector3f(0),
+                new Vec3(0),
                 (size)
         );
 
@@ -246,10 +246,10 @@ public class TextEntityRenderer
         GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, quad.getVertexCount());
     }
 
-    public Vector2f getNormal(float x, float y)
+    public Vec2 getNormal(float x, float y)
     {
         float _x = x / Display.getWidth();
         float _y = y / Display.getHeight();
-        return new Vector2f(_x, _y);
+        return new Vec2(_x, _y);
     }
 }

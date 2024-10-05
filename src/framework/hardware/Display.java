@@ -68,7 +68,7 @@ public final class Display implements Hardware
         glfwShowWindow(window);
 
         // Setting the value to 1 should limit to 60 FPS
-        glfwSwapInterval(1);
+        glfwSwapInterval(0);
 
         lastFrameTime = getCurrentTime();
         GL11.glEnable(GL13.GL_MULTISAMPLE);

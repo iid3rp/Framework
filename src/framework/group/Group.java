@@ -1,6 +1,7 @@
 package framework.group;
 
 import framework.entity.Entity;
+import framework.lang.Vec3;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,14 +27,14 @@ public class Group
 
     public void transformPosition(float x, float y, float z)
     {
-        transformPosition(new Vector3f(x, y, z));
+        transformPosition(new Vec3(x, y, z));
     }
 
-    public void transformPosition(Vector3f vector3f)
+    public void transformPosition(Vec3 vec3)
     {
         for(Entity entity : entities)
         {
-            entity.transformPosition(vector3f);
+            entity.transformPosition(vec3);
         }
     }
 
@@ -42,7 +43,7 @@ public class Group
         for(Entity entity : entities)
         {
             // Calculate the offset from the reference point to the entity's position
-            Vector3f offset = new Vector3f(entity.getPosition()).sub(reference);
+            Vec3 offset = Vec3.sub(entity.getPosition(), reference, null);
 
             // Apply the rotation transformation
             offset.rotateX(x);
@@ -50,7 +51,7 @@ public class Group
             offset.rotateZ(z);
 
             // Update the entity's position based on the rotated position relative to the reference point
-            entity.setPosition(reference.add(offset));
+            entity.setPosition(Vec3.add(reference, offset));
 
             // Update the entity's rotation
             entity.transformRotation(x, y, z);

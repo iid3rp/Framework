@@ -2,15 +2,15 @@ package framework;
 
 import framework.event.MouseAdapter;
 import framework.event.MouseEvent;
-import framework.lang.Vector3f;
-import framework.lang.Vector4f;
+import framework.lang.Vec3;
+import framework.lang.Vec4;
 import framework.loader.ModelLoader;
 import framework.entity.Light;
 import framework.entity.Player;
 import framework.environment.Environment;
 import framework.environment.Scene;
 import framework.loader.TextureLoader;
-import framework.loader.load.ObjectLoader;
+import framework.loader.ObjectLoader;
 import framework.model.TexturedModel;
 import framework.swing.ContentPane;
 import framework.swing.PictureBox;
@@ -55,14 +55,14 @@ public class Game
         Environment.setScene(scene);
 
 
-        Light lighting = new Light(new Vector3f(100_000, 100_000, -100_000), new Vector3f(1f, 1f, .5f));
+        Light lighting = new Light(new Vec3(100_000, 100_000, -100_000), new Vec3(1f, 1f, .5f));
 
         scene.getLights().add(lighting);
-        scene.getLights().add(new Light(new Vector3f(0, 10, 0), new Vector3f(1, 0, 1), new Vector3f(1, 0f, 200f)));
-        scene.getLights().add(new Light(new Vector3f(20, 0, 20), new Vector3f(1, 0, 1), new Vector3f(1, 0.01f, 0.02f)));
-        scene.getLights().add(new Light(new Vector3f(40, 0, 40), new Vector3f(1, 0, 1), new Vector3f(1, 0.1f, 0.002f)));
-        scene.getLights().add(new Light(new Vector3f(-20, 0, 60), new Vector3f(1, 0, 0), new Vector3f(1, 0.01f, 0.02f)));
-        scene.getLights().add(new Light(new Vector3f(0, 0, -80), new Vector3f(1, 0, 1), new Vector3f(1, 0.1f, 0.002f)));
+        scene.getLights().add(new Light(new Vec3(0, 10, 0), new Vec3(1, 0, 1), new Vec3(1, 0f, 200f)));
+        scene.getLights().add(new Light(new Vec3(20, 0, 20), new Vec3(1, 0, 1), new Vec3(1, 0.01f, 0.02f)));
+        scene.getLights().add(new Light(new Vec3(40, 0, 40), new Vec3(1, 0, 1), new Vec3(1, 0.1f, 0.002f)));
+        scene.getLights().add(new Light(new Vec3(-20, 0, 60), new Vec3(1, 0, 0), new Vec3(1, 0.01f, 0.02f)));
+        scene.getLights().add(new Light(new Vec3(0, 0, -80), new Vec3(1, 0, 1), new Vec3(1, 0.1f, 0.002f)));
 
         int grass = ModelLoader.loadTexture("grass.png");
         TerrainTexturePack bg = new TerrainTexturePack(
@@ -81,8 +81,8 @@ public class Game
         barrel.getTexture().setNormalMap(ModelLoader.loadTexture("barrelNormal.png"));
         barrel.getTexture().setReflectivity(.002f);
         barrel.getTexture().setShineDampening(1);
-        Entity barrelEntity = new Entity(barrel, new Vector3f(0, 200, 0), 0, 0, 0, 1);
-        Entity reference = new Entity(barrel, new Vector3f(212, 0, 607), 0, 0, 0, 1);
+        Entity barrelEntity = new Entity(barrel, new Vec3(0, 200, 0), 0, 0, 0, 1);
+        Entity reference = new Entity(barrel, new Vec3(212, 0, 607), 0, 0, 0, 1);
         scene.getEntities().add(barrelEntity);
         Random random = new Random();
         int progress = 0;
@@ -110,7 +110,7 @@ public class Game
         Entity entity = new Entity(new TexturedModel(
                 ObjectLoader.loadObject("crate.obj"),
                 new Texture(ModelLoader.loadTexture("brat.png"))),
-                new Vector3f(0, 0, 0), 0f, 0f, 0f, 1f);
+                new Vec3(0, 0, 0), 0f, 0f, 0f, 1f);
         //scene.add(entity);
         scene.add(new WaterTile(0,0, 0));
 
@@ -122,17 +122,17 @@ public class Game
             float x = random.nextFloat(terrain.getSize()) - (terrain.getSize() / 2);
             float z = random.nextFloat(terrain.getSize()) - (terrain.getSize() / 2);
             float y = terrain.getHeightOfTerrain(x, z);
-            Entity crystal = new Entity(chrysalis, new Vector3f(x, y, z), (float) 0, 0, 0, 10f + ((float) Math.random() * 20));
+            Entity crystal = new Entity(chrysalis, new Vec3(x, y, z), (float) 0, 0, 0, 10f + ((float) Math.random() * 20));
             crystal.addMouseListener(new MouseAdapter()
             {
                 @Override
                 public void mouseEntered(MouseEvent e) {
-                    crystal.setHighlightColor(new Vector4f(1, 0, 0, 1));
+                    crystal.setHighlightColor(new Vec4(1, 0, 0, 1));
                 }
 
                 @Override
                 public void mouseExited(MouseEvent e) {
-                    crystal.setHighlightColor(new Vector4f(0, 0, 0, 0));
+                    crystal.setHighlightColor(new Vec4(0, 0, 0, 0));
                 }
 
             });

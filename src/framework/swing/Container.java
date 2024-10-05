@@ -1,5 +1,7 @@
 package framework.swing;
 
+import framework.lang.Vec2;
+
 import java.awt.Color;
 import java.util.List;
 
@@ -9,8 +11,8 @@ public class Container extends GUITexture
     private int parentY;
     private int parentWidth;
     private int parentHeight;
-    private Vector2f parentPosition;
-    private Vector2f parentSize;
+    private Vec2 parentPosition;
+    private Vec2 parentSize;
     private Color highlightColor;
 
     public Container()
@@ -43,12 +45,12 @@ public class Container extends GUITexture
         return parentHeight;
     }
 
-    public Vector2f getParentPosition()
+    public Vec2 getParentPosition()
     {
         return parentPosition;
     }
 
-    public Vector2f getParentSize()
+    public Vec2 getParentSize()
     {
         return parentSize;
     }

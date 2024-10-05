@@ -1,10 +1,12 @@
 package framework.terrain;
 
+import framework.lang.Vec2;
+import framework.lang.Vec3;
 import framework.loader.ModelLoader;
 import framework.model.Model;
 import framework.textures.TerrainTexture;
 import framework.textures.TerrainTexturePack;
-import framework.util.Math;
+import framework.lang.Math;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -112,17 +114,17 @@ public class Terrain {
 
         if (xCoordinate <= (1 - zCoordinate)) {
             triangleHeight = Math.barryCentric(
-                    new Vector3f(0, heights[gridX][gridZ], 0),
-                    new Vector3f(1, heights[gridX + 1][gridZ], 0),
-                    new Vector3f(0, heights[gridX][gridZ + 1], 1),
-                    new Vector2f(xCoordinate, zCoordinate)
+                    new Vec3(0, heights[gridX][gridZ], 0),
+                    new Vec3(1, heights[gridX + 1][gridZ], 0),
+                    new Vec3(0, heights[gridX][gridZ + 1], 1),
+                    new Vec2(xCoordinate, zCoordinate)
             );
         } else {
             triangleHeight = Math.barryCentric(
-                    new Vector3f(1, heights[gridX + 1][gridZ], 0),
-                    new Vector3f(1, heights[gridX + 1][gridZ + 1], 1),
-                    new Vector3f(0, heights[gridX][gridZ + 1], 1),
-                    new Vector2f(xCoordinate, zCoordinate)
+                    new Vec3(1, heights[gridX + 1][gridZ], 0),
+                    new Vec3(1, heights[gridX + 1][gridZ + 1], 1),
+                    new Vec3(0, heights[gridX][gridZ + 1], 1),
+                    new Vec2(xCoordinate, zCoordinate)
             );
         }
 
@@ -159,7 +161,7 @@ public class Terrain {
                 vertices[vertexPointer * 3 + 1] = height;
                 vertices[vertexPointer * 3 + 2] = i / ((float) VERTEX_COUNT - 1) * SIZE;
 
-                Vector3f normal = calculateNormal(j, i, bufferedImage);
+                Vec3 normal = calculateNormal(j, i, bufferedImage);
 
                 normals[vertexPointer * 3] = normal.x;
                 normals[vertexPointer * 3 + 1] = normal.y;
@@ -212,7 +214,7 @@ public class Terrain {
                 heights[j][i] = height;
                 vertices[vertexPointer * 3 + 1] = height;
                 vertices[vertexPointer * 3 + 2] = (float)i/((float)vertexCount - 1) * size;
-                Vector3f normal = calculateNormal(j, i, gen);
+                Vec3 normal = calculateNormal(j, i, gen);
                 normals[vertexPointer * 3] = normal.x;
                 normals[vertexPointer * 3 + 1] = normal.y;
                 normals[vertexPointer * 3 + 2] = normal.z;
@@ -253,13 +255,13 @@ public class Terrain {
         return height;
     }
 
-    private Vector3f calculateNormal(int x, int z, HeightGenerator generator)
+    private Vec3 calculateNormal(int x, int z, HeightGenerator generator)
     {
         float heightL = getHeight(x - 1,  z, generator);
         float heightR = getHeight(x + 1, z, generator);
         float heightD = getHeight(x, z - 1, generator);
         float heightU = getHeight(x, z + 1, generator);
-        Vector3f normal = new Vector3f(heightL - heightR, 2f, heightD - heightU);
+        Vec3 normal = new Vec3(heightL - heightR, 2f, heightD - heightU);
         normal.normalize();
         return normal;
 
@@ -290,12 +292,12 @@ public class Terrain {
         return grayscale;
     }
 
-    private Vector3f calculateNormal(int x, int z, BufferedImage bufferedImage) {
+    private Vec3 calculateNormal(int x, int z, BufferedImage bufferedImage) {
         float heightL = getHeight(x - 1, z, bufferedImage);
         float heightR = getHeight(x + 1, z, bufferedImage);
         float heightD = getHeight(x, z - 1, bufferedImage);
         float heightU = getHeight(x, z + 1, bufferedImage);
-        Vector3f normal= new Vector3f(heightL - heightR, 2.0f, heightD - heightU);
+        Vec3 normal = new Vec3(heightL - heightR, 2.0f, heightD - heightU);
         normal.normalize();
         return normal;
     }

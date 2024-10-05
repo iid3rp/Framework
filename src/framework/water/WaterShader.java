@@ -2,11 +2,11 @@ package framework.water;
 
 import framework.entity.Camera;
 import framework.entity.Light;
-import framework.lang.Matrix4f;
-import framework.lang.Vector3f;
+import framework.lang.Mat4;
+import framework.lang.Vec3;
 import framework.renderer.MasterRenderer;
 import framework.shader.GLShader;
-import framework.util.Math;
+import framework.lang.Math;
 
 public class WaterShader extends GLShader
 {
@@ -61,7 +61,7 @@ public class WaterShader extends GLShader
 		super.loadVector(locationLightPosition, light.getPosition());
 	}
 
-	public void loadCameraPosition(Vector3f position)
+	public void loadCameraPosition(Vec3 position)
 	{
 		super.loadVector(locationCameraPosition, position);
 	}
@@ -80,13 +80,13 @@ public class WaterShader extends GLShader
 		super.loadInt(locationDepthMap, 4);
 	}
 
-	public void loadProjectionMatrix(Matrix4f projection)
+	public void loadProjectionMatrix(Mat4 projection)
 	{
 		super.loadMatrix(location_projectionMatrix, projection);
 	}
 	
 	public void loadViewMatrix(Camera camera){
-		Matrix4f viewMatrix = Math.createViewMatrix(camera);
+		Mat4 viewMatrix = Math.createViewMatrix(camera);
 		loadMatrix(location_viewMatrix, viewMatrix);
 		loadCameraPosition(camera.getPosition());
 		//loadCameraPosition(new Vector3f(camera.getPosition().x, 10, camera.getPosition().z));
@@ -94,7 +94,7 @@ public class WaterShader extends GLShader
 		super.loadFloat(locationFar, MasterRenderer.FAR_PLANE);
 	}
 
-	public void loadModelMatrix(Matrix4f modelMatrix){
+	public void loadModelMatrix(Mat4 modelMatrix){
 		loadMatrix(location_modelMatrix, modelMatrix);
 	}
 

@@ -1,6 +1,6 @@
 package framework.post_processing;
 
-import framework.lang.Vector2f;
+import framework.lang.Vec2;
 import framework.shader.GLShader;
 
 public class PixelShader extends GLShader
@@ -21,7 +21,7 @@ public class PixelShader extends GLShader
         super.loadInt(locationTexture, id);
     }
 
-    public void loadPosition(Vector2f position)
+    public void loadPosition(Vec2 position)
     {
         super.loadVector(locationPosition, position);
     }

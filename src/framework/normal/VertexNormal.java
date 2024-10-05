@@ -1,6 +1,6 @@
 package framework.normal;
 
-import framework.lang.Vector3f;
+import framework.lang.Vec3;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,22 +10,22 @@ public class VertexNormal
 	
 	private static final int NO_INDEX = -1;
 	
-	private Vector3f position;
+	private Vec3 position;
 	private int textureIndex = NO_INDEX;
 	private int normalIndex = NO_INDEX;
 	private VertexNormal duplicateVertex = null;
 	private int index;
 	private float length;
-	private List<Vector3f> tangents = new ArrayList<>();
-	private Vector3f averagedTangent = new Vector3f(0, 0, 0);
+	private List<Vec3> tangents = new ArrayList<>();
+	private Vec3 averagedTangent = new Vec3(0, 0, 0);
 	
-	public VertexNormal(int index, Vector3f position){
+	public VertexNormal(int index, Vec3 position){
 		this.index = index;
 		this.position = position;
 		this.length = position.length();
 	}
 	
-	public void addTangent(Vector3f tangent){
+	public void addTangent(Vec3 tangent){
 		tangents.add(tangent);
 	}
 	
@@ -41,13 +41,13 @@ public class VertexNormal
 			return;
 		}
 		averagedTangent.set(0, 0, 0);
-		for(Vector3f tangent : tangents){
+		for(Vec3 tangent : tangents){
 			averagedTangent.add(tangent);
 		}
 		averagedTangent.normalize();
 	}
 	
-	public Vector3f getAverageTangent(){
+	public Vec3 getAverageTangent(){
 		return averagedTangent;
 	}
 	
@@ -75,7 +75,7 @@ public class VertexNormal
 		this.normalIndex = normalIndex;
 	}
 
-	public Vector3f getPosition() {
+	public Vec3 getPosition() {
 		return position;
 	}
 

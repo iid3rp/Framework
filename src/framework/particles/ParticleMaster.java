@@ -1,7 +1,7 @@
 package framework.particles;
 
 import framework.entity.Camera;
-import framework.lang.Matrix4f;
+import framework.lang.Mat4;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,7 +14,7 @@ public class ParticleMaster
 {
     public static Map<ParticleTexture, List<Particle>> particles = new HashMap<>();
     private static ParticleRenderer renderer;
-    public static void initialize(Matrix4f projection)
+    public static void initialize(Mat4 projection)
     {
         renderer = new ParticleRenderer(projection);
     }

@@ -1,12 +1,12 @@
 package framework.renderer;
 
-import framework.lang.Matrix4f;
-import framework.lang.Vector3f;
+import framework.lang.Mat4;
+import framework.lang.Vec3;
 import framework.model.Model;
 import framework.shader.TerrainShader;
 import framework.terrain.Terrain;
 import framework.textures.TerrainTexturePack;
-import framework.util.Math;
+import framework.lang.Math;
 import framework.util.LinkList;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -18,7 +18,7 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 public class TerrainRenderer {
     private TerrainShader terrainShader;
 
-    public TerrainRenderer(TerrainShader terrainShader, Matrix4f projectionMatrix) {
+    public TerrainRenderer(TerrainShader terrainShader, Mat4 projectionMatrix) {
         if (terrainShader == null) {
             throw new IllegalArgumentException("terrainShader argument has not been initialized!");
         }
@@ -34,7 +34,7 @@ public class TerrainRenderer {
         terrainShader.unbind();
     }
 
-    public void render(LinkList<Terrain> terrainList, Matrix4f shadowMatrix) {
+    public void render(LinkList<Terrain> terrainList, Mat4 shadowMatrix) {
         terrainShader.loadShadowMatrix(shadowMatrix);
         for (Terrain terrain : terrainList) {
             prepareTerrain(terrain);
@@ -89,8 +89,8 @@ public class TerrainRenderer {
     }
 
     private void loadModelMatrix(Terrain terrain) {
-        Matrix4f transformationMatrix = Math.createTransformationMatrix(
-                new Vector3f(terrain.getX() - (terrain.getSize() / 2), 0, terrain.getZ() - (terrain.getSize() / 2)), 0, 0, 0, 1);
+        Mat4 transformationMatrix = Math.createTransformationMatrix(
+                new Vec3(terrain.getX() - (terrain.getSize() / 2), 0, terrain.getZ() - (terrain.getSize() / 2)), 0, 0, 0, 1);
         terrainShader.loadTransformationMatrix(transformationMatrix);
     }
 }

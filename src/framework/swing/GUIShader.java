@@ -1,5 +1,7 @@
 package framework.swing;
 
+import framework.lang.Mat4;
+import framework.lang.Vec2;
 import framework.shader.GLShader;
 
 public class GUIShader extends GLShader
@@ -20,7 +22,7 @@ public class GUIShader extends GLShader
 		super(VERTEX_FILE, FRAGMENT_FILE);
 	}
 	
-	public void loadTransformation(Matrix4f matrix)
+	public void loadTransformation(Mat4 matrix)
 	{
 		super.loadMatrix(locationTransformationMatrix, matrix);
 	}
@@ -45,32 +47,32 @@ public class GUIShader extends GLShader
 	}
 
 
-	public void loadSize(Vector2f size)
+	public void loadSize(Vec2 size)
 	{
 		super.loadVector(locationSize, size);
 	}
 
-	public void loadPosition(Vector2f position)
+	public void loadPosition(Vec2 position)
 	{
 		super.loadVector(locationPosition, position);
 	}
 
-	public void loadScale(Vector2f scale)
+	public void loadScale(Vec2 scale)
 	{
 		super.loadVector(locationScale, scale);
 	}
 
-	public void loadInvertTransformationMatrix(Matrix4f invMatrix)
+	public void loadInvertTransformationMatrix(Mat4 invMatrix)
 	{
 		super.loadMatrix(locationInvertTransformationMatrix, invMatrix);
 	}
 
-	public void loadImageLocation(Vector2f imageLocation)
+	public void loadImageLocation(Vec2 imageLocation)
 	{
 		super.loadVector(locationImageLocation, imageLocation);
 	}
 
-	public void loadDisplayMatrix(Matrix4f displayMatrix)
+	public void loadDisplayMatrix(Mat4 displayMatrix)
 	{
 		super.loadMatrix(locationDisplayMatrix, displayMatrix);
 	}

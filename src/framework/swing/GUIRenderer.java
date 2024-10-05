@@ -2,9 +2,12 @@ package framework.swing;
 
 import framework.environment.Scene;
 import framework.hardware.Display;
+import framework.lang.Mat4;
+import framework.lang.Vec2;
+import framework.lang.Vec3;
 import framework.loader.ModelLoader;
 import framework.model.Model;
-import framework.util.Math;
+import framework.lang.Math;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
@@ -16,7 +19,7 @@ public class GUIRenderer
 {
     private final Model quad;
     private GUIShader shader;
-    private Vector2f size;
+    private Vec2 size;
 
     public static float[] positions =
     {
@@ -42,7 +45,7 @@ public class GUIRenderer
     {
         quad = ModelLoader.loadToVao(positions, coords);
         shader = new GUIShader();
-        size = new Vector2f(1, 1);
+        size = new Vec2(1, 1);
     }
 
     public void setSize(int x, int y)
@@ -69,8 +72,8 @@ public class GUIRenderer
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture.getTexture());
             GL13.glActiveTexture(GL13.GL_TEXTURE1);
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture.getClipTexture());
-            Matrix4f matrix = Math.createTransformationMatrix(texture.getPosition(), texture.getRotation(), texture.getSize());
-            Matrix4f displayMatrix = Math.createTransformationMatrix(Scene.offset, new Vector3f(),  new Vector2f(1));
+            Mat4 matrix = Math.createTransformationMatrix(texture.getPosition(), texture.getRotation(), texture.getSize());
+            Mat4 displayMatrix = Math.createTransformationMatrix(Scene.offset, new Vec3(),  new Vec2(1));
 
             shader.loadSize(texture.getSize());
             shader.loadScale(texture.getScale());

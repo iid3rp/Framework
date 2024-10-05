@@ -1,5 +1,6 @@
 package framework.skybox;
 
+import framework.lang.Mat4;
 import framework.loader.ModelLoader;
 import framework.entity.Camera;
 import framework.model.Model;
@@ -83,7 +84,7 @@ public class SkyboxRenderer
     public SkyboxShader shader;
     private float time = 0;
 
-    public SkyboxRenderer(Matrix4f projection)
+    public SkyboxRenderer(Mat4 projection)
     {
         cube = ModelLoader.loadToVaoInt(VERTICES, 3);
         texture = new Texture(ModelLoader.loadCubeMap(nightTextureFiles));

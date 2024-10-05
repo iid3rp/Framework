@@ -1,6 +1,6 @@
 package framework.particles;
 
-import framework.lang.Matrix4f;
+import framework.lang.Mat4;
 import framework.shader.GLShader;
 
 public class ParticleShader extends GLShader
@@ -36,7 +36,7 @@ public class ParticleShader extends GLShader
 	}
 
 
-	protected void loadProjectionMatrix(Matrix4f projectionMatrix) {
+	protected void loadProjectionMatrix(Mat4 projectionMatrix) {
 		super.loadMatrix(location_projectionMatrix, projectionMatrix);
 	}
 

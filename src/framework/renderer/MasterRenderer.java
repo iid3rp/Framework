@@ -4,6 +4,8 @@ import framework.hardware.Display;
 import framework.entity.Camera;
 import framework.entity.Entity;
 import framework.entity.Light;
+import framework.lang.Mat4;
+import framework.lang.Vec4;
 import framework.model.TexturedModel;
 import framework.shader.EntityShader;
 import framework.shader.TerrainShader;
@@ -34,7 +36,7 @@ public class MasterRenderer {
     private static EntityShader entityShader;
     private static EntityRenderer entityRenderer;
     public static Map<TexturedModel, LinkList<Entity>> entities;
-    private static Matrix4f projectionMatrix;
+    private static Mat4 projectionMatrix;
     private static TerrainRenderer terrainRenderer;
     private static SkyboxRenderer skyboxRenderer;
     private static TerrainShader terrainShader;
@@ -89,7 +91,7 @@ public class MasterRenderer {
         entityList.add(entity);
     }
 
-    public static void render(LinkList<Light> lights, Camera camera, Vector4f vec4) {
+    public static void render(LinkList<Light> lights, Camera camera, Vec4 vec4) {
         prepare();
 
         entityShader.bind();
@@ -162,18 +164,18 @@ public class MasterRenderer {
     }
 
     private static void createProjectionMatrix() {
-        projectionMatrix = new Matrix4f();
+        projectionMatrix = new Mat4();
         float aspectRatio = (float) Display.getWidth() / (float) Display.getHeight();
         float yScale = (float) ((1f / Math.tan(Math.toRadians(FOV / 2f))));
         float xScale = yScale / aspectRatio;
         float frustumLength = FAR_PLANE - NEAR_PLANE;
 
-        projectionMatrix.m00(xScale);
-        projectionMatrix.m11(yScale);
-        projectionMatrix.m22(-((FAR_PLANE + NEAR_PLANE) / frustumLength));
-        projectionMatrix.m23(-1);
-        projectionMatrix.m32(-((2 * NEAR_PLANE * FAR_PLANE) / frustumLength));
-        projectionMatrix.m33(0);
+        projectionMatrix.m[0][0] = xScale;
+        projectionMatrix.m[1][1] = yScale;
+        projectionMatrix.m[2][2] = -((FAR_PLANE + NEAR_PLANE) / frustumLength);
+        projectionMatrix.m[2][3] = -1;
+        projectionMatrix.m[3][2] = -((2 * NEAR_PLANE * FAR_PLANE) / frustumLength);
+        projectionMatrix.m[3][3] = 0;
     }
 
     public static void renderWaters(LinkList<WaterTile> waters, Camera camera, Light light)
@@ -181,7 +183,7 @@ public class MasterRenderer {
         waterRenderer.render(waters, camera, light);
     }
 
-    public static Matrix4f getProjectionMatrix()
+    public static Mat4 getProjectionMatrix()
     {
         return projectionMatrix;
     }

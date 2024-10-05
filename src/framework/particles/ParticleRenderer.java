@@ -1,9 +1,11 @@
 package framework.particles;
 
 import framework.entity.Camera;
+import framework.lang.Mat4;
+import framework.lang.Vec3;
 import framework.loader.ModelLoader;
 import framework.model.Model;
-import framework.util.Math;
+import framework.lang.Math;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
@@ -26,7 +28,7 @@ public class ParticleRenderer {
 	private int vbo;
 	private int pointer = 0;
 	
-	protected ParticleRenderer(Matrix4f projectionMatrix)
+	protected ParticleRenderer(Mat4 projectionMatrix)
 	{
 		vbo = ModelLoader.createEmptyVbo(INSTANCE_DATA_LENGTH * MAX_INSTANCE);
 		quad = ModelLoader.loadToVaoInt(VERTICES, 2);
@@ -47,7 +49,7 @@ public class ParticleRenderer {
 	
 	protected void render(Map<ParticleTexture, List<Particle>> particles, Camera camera)
 	{
-		Matrix4f view = Math.createViewMatrix(camera);
+		Mat4 view = Math.createViewMatrix(camera);
 		prepare();
 		for(ParticleTexture t : particles.keySet())
 		{
@@ -86,52 +88,39 @@ public class ParticleRenderer {
 		data[pointer++] = particle.getBlend();
 	}
 
-	private void storeMatrixData(Matrix4f matrix, float[] data)
+	private void storeMatrixData(Mat4 matrix, float[] data)
 	{
-		data[pointer++] = matrix.m00();
-		data[pointer++] = matrix.m01();
-		data[pointer++] = matrix.m02();
-		data[pointer++] = matrix.m03();
-		data[pointer++] = matrix.m10();
-		data[pointer++] = matrix.m11();
-		data[pointer++] = matrix.m12();
-		data[pointer++] = matrix.m13();
-		data[pointer++] = matrix.m20();
-		data[pointer++] = matrix.m21();
-		data[pointer++] = matrix.m22();
-		data[pointer++] = matrix.m23();
-		data[pointer++] = matrix.m30();
-		data[pointer++] = matrix.m31();
-		data[pointer++] = matrix.m32();
-		data[pointer++] = matrix.m33();
+		for(int i = 0; i < 4; i++)
+			for(int j = 0; j < 4; j++)
+				data[pointer++] = matrix.m[i][j];
 	}
 
 	protected void dispose(){
 		shader.dispose();
 	}
 
-	private void updateModelViewMatrix(Vector3f position, float rotation, float scale, Matrix4f view, float[] vboData)
+	private void updateModelViewMatrix(Vec3 position, float rotation, float scale, Mat4 view, float[] vboData)
 	{
-		Matrix4f model = new Matrix4f();
+		Mat4 model = new Mat4();
 
 		// Translate to the particle's position
 		model.translate(position);
 
-		model.m00(view.m00());
-		model.m01(view.m10());
-		model.m02(view.m20());
-		model.m10(view.m01());
-		model.m11(view.m11());
-		model.m12(view.m21());
-		model.m20(view.m02());
-		model.m21(view.m12());
-		model.m22(view.m22());
+		model.m[0][0] = view.m[0][0];
+		model.m[0][1] = view.m[1][0];
+		model.m[0][2] = view.m[2][0];
+		model.m[1][0] = view.m[0][1];
+		model.m[1][1] = view.m[1][1];
+		model.m[1][2] = view.m[2][1];
+		model.m[2][0] = view.m[0][2];
+		model.m[2][1] = view.m[1][2];
+		model.m[2][2] = view.m[2][2];
 
 		// Optional: For billboard-ing, you might not want to rotate the particles locally.
 		// But if you do want some controlled rotation, you can apply it here:
-		model.rotate((float) java.lang.Math.toRadians(rotation), new Vector3f(1, 1, 1));
+		model.rotate((float) java.lang.Math.toRadians(rotation), new Vec3(1, 1, 1));
 		model.scale(scale);
-		Matrix4f modelViewMatrix = new Matrix4f(view).mul(model);
+		Mat4 modelViewMatrix = Mat4.mul(view, model, null);
 		storeMatrixData(modelViewMatrix, vboData);
 	}
 	

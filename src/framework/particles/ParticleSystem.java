@@ -1,8 +1,8 @@
 package framework.particles;
 import framework.hardware.Display;
-import framework.lang.Matrix4f;
-import framework.lang.Vector3f;
-import framework.lang.Vector4f;
+import framework.lang.Mat4;
+import framework.lang.Vec3;
+import framework.lang.Vec4;
 
 import java.util.Random;
 
@@ -13,7 +13,7 @@ public class ParticleSystem {
 
     private float speedError, lifeError, scaleError = 0;
     private boolean randomRotation = false;
-    private Vector3f direction;
+    private Vec3 direction;
     private float directionDeviation = 0;
 
     private Random random = new Random();
@@ -38,8 +38,8 @@ public class ParticleSystem {
      * @param direction - The average direction in which particles are emitted.
      * @param deviation - A value between 0 and 1 indicating how far from the chosen direction particles can deviate.
      */
-    public void setDirection(Vector3f direction, float deviation) {
-        this.direction = new Vector3f(direction);
+    public void setDirection(Vec3 direction, float deviation) {
+        this.direction = new Vec3(direction);
         this.directionDeviation = (float) (deviation * Math.PI);
     }
 
@@ -71,8 +71,8 @@ public class ParticleSystem {
         this.scaleError = error * averageScale;
     }
 
-    public void generateParticles(Vector3f systemCenter) {
-        Vector3f position = new Vector3f(systemCenter);
+    public void generateParticles(Vec3 systemCenter) {
+        Vec3 position = new Vec3(systemCenter);
         float delta = Display.getDeltaInSeconds();
         float particlesToCreate = pps * delta;
         int count = (int) Math.floor(particlesToCreate);
@@ -85,8 +85,8 @@ public class ParticleSystem {
         }
     }
 
-    private void emitParticle(Vector3f center) {
-        Vector3f velocity;
+    private void emitParticle(Vec3 center) {
+        Vec3 velocity;
         if(direction!=null){
             velocity = generateRandomUnitVectorWithinCone(direction, directionDeviation);
         }else{
@@ -96,7 +96,7 @@ public class ParticleSystem {
         velocity.mul(generateValue(averageSpeed, speedError));
         float scale = generateValue(averageScale, scaleError);
         float lifeLength = generateValue(averageLifeLength, lifeError);
-        new Particle(new Vector3f(center), velocity, gravityCompliant, lifeLength, generateRotation(), scale, texture);
+        new Particle(new Vec3(center), velocity, gravityCompliant, lifeLength, generateRotation(), scale, texture);
     }
 
     private float generateValue(float average, float errorMargin) {
@@ -112,7 +112,7 @@ public class ParticleSystem {
         }
     }
 
-    private static Vector3f generateRandomUnitVectorWithinCone(Vector3f coneDirection, float angle) {
+    private static Vec3 generateRandomUnitVectorWithinCone(Vec3 coneDirection, float angle) {
         float cosAngle = (float) Math.cos(angle);
         Random random = new Random();
         float theta = (float) (random.nextFloat() * 2f * Math.PI);
@@ -121,27 +121,27 @@ public class ParticleSystem {
         float x = (float) (rootOneMinusZSquared * Math.cos(theta));
         float y = (float) (rootOneMinusZSquared * Math.sin(theta));
 
-        Vector4f direction = new Vector4f(x, y, z, 1);
+        Vec4 direction = new Vec4(x, y, z, 1);
         if (coneDirection.x != 0 || coneDirection.y != 0 || (coneDirection.z != 1 && coneDirection.z != -1)) {
-            Vector3f rotateAxis = new Vector3f(0, 0, 1).cross(coneDirection);
+            Vec3 rotateAxis = Vec3.cross(Vec3.zAxis, coneDirection, null);
             rotateAxis.normalize();
-            float rotateAngle = (float) Math.acos(new Vector3f(0, 0, 1).dot(coneDirection));
-            Matrix4f rotationMatrix = new Matrix4f();
+            float rotateAngle = (float) Math.acos(Vec3.dot(Vec3.zAxis, coneDirection));
+            Mat4 rotationMatrix = new Mat4();
             rotationMatrix.rotate(-rotateAngle, rotateAxis);
-            direction = rotationMatrix.transform(direction);
+            Mat4.transform(rotationMatrix, direction, direction);
         } else if (coneDirection.z == -1) {
             direction.z *= -1;
         }
-        return new Vector3f(direction.x, direction .w, direction.z);
+        return new Vec3(direction.x, direction .w, direction.z);
     }
 
-    private Vector3f generateRandomUnitVector() {
+    private Vec3 generateRandomUnitVector() {
         float theta = (float) (random.nextFloat() * 2f * Math.PI);
         float z = (random.nextFloat() * 2) - 1;
         float rootOneMinusZSquared = (float) Math.sqrt(1 - z * z);
         float x = (float) (rootOneMinusZSquared * Math.cos(theta));
         float y = (float) (rootOneMinusZSquared * Math.sin(theta));
-        return new Vector3f(x, y, z);
+        return new Vec3(x, y, z);
     }
 
 }

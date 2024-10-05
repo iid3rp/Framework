@@ -1,11 +1,12 @@
 package framework.renderer;
 
 import framework.entity.Entity;
+import framework.lang.Mat4;
 import framework.model.Model;
 import framework.model.TexturedModel;
 import framework.shader.EntityShader;
 import framework.textures.Texture;
-import framework.util.Math;
+import framework.lang.Math;
 import framework.util.Key;
 import framework.util.LinkList;
 import framework.util.Map;
@@ -15,7 +16,7 @@ import static org.lwjgl.opengl.GL46.*;
 public class EntityRenderer {
     private final EntityShader staticShader;
 
-    public EntityRenderer(EntityShader staticShader, Matrix4f projectionMatrix) {
+    public EntityRenderer(EntityShader staticShader, Mat4 projectionMatrix) {
         if (staticShader == null) {
             throw new IllegalArgumentException("staticShader argument has not been initialized!");
         }
@@ -31,7 +32,7 @@ public class EntityRenderer {
         staticShader.unbind();
     }
 
-    public void render(Map<TexturedModel, LinkList<Entity>> entities, Matrix4f shadow) {
+    public void render(Map<TexturedModel, LinkList<Entity>> entities, Mat4 shadow) {
         staticShader.loadShadowMatrix(shadow);
 
         for (Key<TexturedModel, LinkList<Entity>> key : entities) {
@@ -86,7 +87,7 @@ public class EntityRenderer {
     }
 
     private void prepareEntity(Entity entity) {
-        Matrix4f transformationMatrix = Math.createTransformationMatrix(entity.getPosition(), entity.getRotationX(), entity.getRotationY(), entity.getRotationZ(), entity.getScale());
+        Mat4 transformationMatrix = Math.createTransformationMatrix(entity.getPosition(), entity.getRotationX(), entity.getRotationY(), entity.getRotationZ(), entity.getScale());
         staticShader.loadTransformationMatrix(transformationMatrix);
         staticShader.loadHighlightColor(entity.getHighlightColor());
         staticShader.loadMouseEventColor(entity.getMouseColor());

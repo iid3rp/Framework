@@ -4,34 +4,34 @@ package framework.particles;
 import framework.hardware.Display;
 import framework.entity.Camera;
 import framework.entity.Player;
-import framework.lang.Vector2f;
-import framework.lang.Vector3f;
+import framework.lang.Vec2;
+import framework.lang.Vec3;
 
 public class Particle {
 
-    private Vector3f position;
-    private Vector3f velocity;
+    private Vec3 position;
+    private Vec3 velocity;
     private float gravity;
     private float lifeLength;
     private float rotation;
     private float scale;
 
     private float elapsedTime = 0;
-    private Vector3f change = new Vector3f();
+    private Vec3 change = new Vec3();
     private ParticleTexture texture;
     private float distance;
 
-    private Vector2f[] offset = new Vector2f[]
+    private Vec2[] offset = new Vec2[]
     {
-            new Vector2f(),
-            new Vector2f()
+            new Vec2(),
+            new Vec2()
     };
     private float blend;
 
-    public Particle(Vector3f position, Vector3f velocity, float gravity, float lifeLength, float rotation, float scale)
+    public Particle(Vec3 position, Vec3 velocity, float gravity, float lifeLength, float rotation, float scale)
     {
-        this.position = new Vector3f(position);
-        this.velocity = new Vector3f(velocity);
+        this.position = new Vec3(position);
+        this.velocity = new Vec3(velocity);
         this.gravity = gravity;
         this.lifeLength = lifeLength;
         this.rotation = rotation;
@@ -39,7 +39,7 @@ public class Particle {
         ParticleMaster.addParticle(this);
     }
 
-    public Particle(Vector3f position, Vector3f velocity, float gravity, float lifeLength, float rotation, float scale, ParticleTexture texture)
+    public Particle(Vec3 position, Vec3 velocity, float gravity, float lifeLength, float rotation, float scale, ParticleTexture texture)
     {
         this.position = position;
         this.velocity = velocity;
@@ -62,7 +62,7 @@ public class Particle {
         change.set(velocity);
         change.mul(Display.getDeltaInSeconds());
         position.add(change);
-        distance = new Vector3f(camera.getPosition()).sub(position).lengthSquared();
+        distance = Vec3.sub(camera.getPosition(), position, null).lengthSquared();
         updateTextureCoordsInfo();
         elapsedTime += Display.getDeltaInSeconds();
         return elapsedTime < lifeLength;
@@ -80,7 +80,7 @@ public class Particle {
         setTextureOffset(offset[1], index2);
     }
 
-    private void setTextureOffset(Vector2f vec2, int index)
+    private void setTextureOffset(Vec2 vec2, int index)
     {
         int column = index % offset.length;
         int row = index / offset.length;
@@ -88,12 +88,12 @@ public class Particle {
         vec2.y = (float) row / texture.getNumOfRows();
     }
 
-    public Vector3f getPosition()
+    public Vec3 getPosition()
     {
         return position;
     }
 
-    public Vector3f getVelocity()
+    public Vec3 getVelocity()
     {
         return velocity;
     }
@@ -123,7 +123,7 @@ public class Particle {
         return blend;
     }
 
-    public Vector2f[] getOffset()
+    public Vec2[] getOffset()
     {
         return offset;
     }

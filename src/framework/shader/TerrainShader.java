@@ -2,7 +2,10 @@ package framework.shader;
 
 import framework.entity.Camera;
 import framework.entity.Light;
-import framework.util.Math;
+import framework.lang.Math;
+import framework.lang.Mat4;
+import framework.lang.Vec3;
+import framework.lang.Vec4;
 import framework.util.LinkList;
 
 public class TerrainShader extends GLShader
@@ -68,25 +71,25 @@ public class TerrainShader extends GLShader
         }
     }
 
-    public void loadShadowMatrix(Matrix4f matrix)
+    public void loadShadowMatrix(Mat4 matrix)
     {
         super.loadMatrix(locationShadowMapMatrix, matrix);
     }
-    public void loadClipPlane(Vector4f plane)
+    public void loadClipPlane(Vec4 plane)
     {
         super.loadVector(locationPlane, plane);
     }
 
-    public void loadTransformationMatrix(Matrix4f matrix) {
+    public void loadTransformationMatrix(Mat4 matrix) {
         super.loadMatrix(location_transformationMatrix, matrix);
     }
 
-    public void loadProjectionMatrix(Matrix4f projectionMatrix) {
+    public void loadProjectionMatrix(Mat4 projectionMatrix) {
         super.loadMatrix(location_projectionMatrix, projectionMatrix);
     }
 
     public void loadViewMatrix(Camera camera) {
-        Matrix4f viewMatrix = Math.createViewMatrix(camera);
+        Mat4 viewMatrix = Math.createViewMatrix(camera);
         super.loadMatrix(location_viewMatrix, viewMatrix);
     }
 
@@ -102,9 +105,9 @@ public class TerrainShader extends GLShader
             }
             else
             {
-                super.loadVector(location_lightPosition[i], new Vector3f(0, 0, 0));
-                super.loadVector(location_lightColor[i], new Vector3f(0, 0, 0));
-                super.loadVector(locationAttenuation[i], new Vector3f(1, 0, 0));
+                super.loadVector(location_lightPosition[i], new Vec3(0, 0, 0));
+                super.loadVector(location_lightColor[i], new Vec3(0, 0, 0));
+                super.loadVector(locationAttenuation[i], new Vec3(1, 0, 0));
             }
         }
     }
@@ -115,7 +118,7 @@ public class TerrainShader extends GLShader
     }
 
     public void loadSkyColor(float r, float g, float b) {
-        super.loadVector(location_skyColor, new Vector3f(r, g, b));
+        super.loadVector(location_skyColor, new Vec3(r, g, b));
     }
 
     public void connectTextureUnits() {

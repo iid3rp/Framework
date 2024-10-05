@@ -6,6 +6,7 @@ import framework.entity.Light;
 import framework.entity.Player;
 import framework.event.MouseEvent;
 import framework.hardware.Display;
+import framework.lang.Vec2;
 import framework.particles.ParticleSystem;
 import framework.swing.Container;
 import framework.swing.ContentPane;
@@ -15,7 +16,7 @@ import framework.water.WaterTile;
 
 public class Scene
 {
-    public static Vector2f offset;
+    public static Vec2 offset;
     private LinkList<Entity> entities;
     private LinkList<Light> lights;
     private LinkList<WaterTile> waters;
@@ -35,10 +36,10 @@ public class Scene
         lights = new LinkList<>();
         terrain = new Terrain();
         waters = new LinkList<>();
-        offset = new Vector2f();
+        offset = new Vec2();
     }
 
-    public static Vector2f getOffset()
+    public static Vec2 getOffset()
     {
         return offset;
     }
@@ -47,7 +48,7 @@ public class Scene
     {
         float _x = (float) x / Display.getWidth();
         float _y = (float) y / Display.getHeight();
-        offset = new Vector2f(_x, _y);
+        offset = new Vec2(_x, _y);
     }
 
     public LinkList<Entity> getEntities()
