@@ -27,7 +27,7 @@ public class Math
         Mat4.rotate((float) java.lang.Math.toRadians(rotationX), Vec3.xAxis, m, m);
         Mat4.rotate((float) java.lang.Math.toRadians(rotationY), Vec3.yAxis, m, m);
         Mat4.rotate((float) java.lang.Math.toRadians(rotationZ), Vec3.zAxis, m, m);
-        Mat4.scale(new Vec3(scale, scale, scale), m, m);
+        Mat4.scale(new Vec3(scale), m, m);
         return m;
     }
 

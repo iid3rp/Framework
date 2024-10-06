@@ -108,11 +108,11 @@ public class Mat4
         return this;
     }
 
-    public FloatBuffer store(FloatBuffer buf) {
+    public Mat4 store(FloatBuffer buf) {
         for(int i = 0; i < 4; i++)
             for(int j = 0; j < 4; j++)
                 buf.put(m[i][j]);
-        return buf;
+        return this;
     }
 
     public Mat4 storeTranspose(FloatBuffer buf) {

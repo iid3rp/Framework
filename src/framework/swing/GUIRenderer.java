@@ -8,12 +8,10 @@ import framework.lang.Vec3;
 import framework.loader.ModelLoader;
 import framework.model.Model;
 import framework.lang.Math;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GL30;
 
 import java.util.List;
+
+import static org.lwjgl.opengl.GL46.*;
 
 public class GUIRenderer
 {
@@ -58,20 +56,20 @@ public class GUIRenderer
     public void render(List<Container> guis)
     {
         shader.bind();
-        GL30.glBindVertexArray(quad.getVaoId());
-        GL20.glEnableVertexAttribArray(0);
-        GL20.glEnableVertexAttribArray(1);
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GL11.glDisable(GL11.GL_CULL_FACE);
-        GL11.glDisable(GL11.GL_DEPTH_TEST);
+        glBindVertexArray(quad.getVaoId());
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glDisable(GL_CULL_FACE);
+        glDisable(GL_DEPTH_TEST);
         // rendering
         for(Container texture : guis)
         {
-            GL13.glActiveTexture(GL13.GL_TEXTURE0);
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture.getTexture());
-            GL13.glActiveTexture(GL13.GL_TEXTURE1);
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture.getClipTexture());
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, texture.getTexture());
+            glActiveTexture(GL_TEXTURE1);
+            glBindTexture(GL_TEXTURE_2D, texture.getClipTexture());
             Mat4 matrix = Math.createTransformationMatrix(texture.getPosition(), texture.getRotation(), texture.getSize());
             Mat4 displayMatrix = Math.createTransformationMatrix(Scene.offset, new Vec3(),  new Vec2(1));
 
@@ -81,14 +79,14 @@ public class GUIRenderer
             shader.loadImageLocation(texture.getImageLocation());
             shader.loadDisplayMatrix(displayMatrix);
 
-            GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, quad.getVertexCount());
+            glDrawArrays(GL_TRIANGLES, 0, quad.getVertexCount());
         }
-        GL11.glEnable((GL11.GL_DEPTH_TEST));
-        GL11.glEnable(GL11.GL_CULL_FACE);
-        GL11.glDisable(GL11.GL_BLEND);
-        GL20.glDisableVertexAttribArray(1);
-        GL20.glDisableVertexAttribArray(0);
-        GL30.glBindVertexArray(0);
+        glEnable((GL_DEPTH_TEST));
+        glEnable(GL_CULL_FACE);
+        glDisable(GL_BLEND);
+        glDisableVertexAttribArray(1);
+        glDisableVertexAttribArray(0);
+        glBindVertexArray(0);
         shader.unbind();
     }
 

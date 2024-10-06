@@ -36,7 +36,7 @@ public class Vec2
 
     public float length()
     {
-        return (float) java.lang.Math.sqrt(lengthSquared());
+        return (float) java.lang.Math.sqrt(x * x + y * y);
     }
 
     public float lengthSquared() {

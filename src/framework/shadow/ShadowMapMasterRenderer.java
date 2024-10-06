@@ -9,7 +9,8 @@ import framework.lang.Vec3;
 import framework.model.TexturedModel;
 import framework.util.LinkList;
 import framework.util.Map;
-import org.lwjgl.opengl.GL11;
+
+import static org.lwjgl.opengl.GL46.*;
 
 
 /**
@@ -138,8 +139,8 @@ public class ShadowMapMasterRenderer {
 		updateLightViewMatrix(lightDirection, box.getCenter());
 		Mat4.mul(projectionMatrix, lightViewMatrix, projectionViewMatrix);
 		shadowFbo.bindFrameBuffer();
-		GL11.glEnable(GL11.GL_DEPTH_TEST);
-		GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
+		glEnable(GL_DEPTH_TEST);
+		glClear(GL_DEPTH_BUFFER_BIT);
 		shader.bind();
 	}
 
@@ -171,8 +172,10 @@ public class ShadowMapMasterRenderer {
 		direction.normalize();
 		center.negate();
 		lightViewMatrix.identity();
+
 		float pitch = (float) Math.acos(new Vec2(direction.x, direction.z).length());
 		Mat4.rotate(pitch, Vec3.xAxis, lightViewMatrix, lightViewMatrix);
+
 		float yaw = (float) Math.toDegrees(((float) Math.atan(direction.x / direction.z)));
 		yaw = direction.z > 0 ? yaw - 180 : yaw;
 		Mat4.rotate((float) -Math.toRadians(yaw), Vec3.yAxis, lightViewMatrix, lightViewMatrix);
@@ -209,7 +212,7 @@ public class ShadowMapMasterRenderer {
 	private static Mat4 createOffset() {
 		Mat4 offset = new Mat4();
 		offset.translate(new Vec3(0.5f, 0.5f, 0.5f));
-		offset.scale(0.5f);
+		offset.scale(new Vec3(.5f, .5f, .5f));
 		return offset;
 	}
 }

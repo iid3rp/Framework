@@ -114,7 +114,7 @@ public class Vec4
 
     private float length()
     {
-        return (float) java.lang.Math.sqrt(lengthSquared());
+        return (float) java.lang.Math.sqrt(x * x + y * y + z * z + w + w);
     }
 
     public static float dot(Vec4 left, Vec4 right) {
