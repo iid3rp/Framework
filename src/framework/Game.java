@@ -118,7 +118,7 @@ public class Game
         chrysalis.getTexture().setShineDampening(1f);
         chrysalis.getTexture().setReflectivity(.1f);
 
-        for(int i = 0 ; i < 1000; i++) {
+        for(int i = 0 ; i < 300; i++) {
             float x = random.nextFloat(terrain.getSize()) - (terrain.getSize() / 2);
             float z = random.nextFloat(terrain.getSize()) - (terrain.getSize() / 2);
             float y = terrain.getHeightOfTerrain(x, z);

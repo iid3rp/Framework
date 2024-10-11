@@ -1,19 +1,31 @@
 package framework.util;
 
+
+/**
+ * A utility class for fast trigonometric calculations using lookup tables.
+ * The class provides methods to calculate sine, cosine, tangent,
+ * and arc cosine values.
+ */
 public class LookupTable
 {
     private static final int SIN_SIZE = 1000 * // 0.001 precision decimal
                                         360;   // by charli xcx
     private static final int ACOS_SIZE = 20_000; // .0001 precision decimal
-    private static float[] sin;
     private static float[] acos;
+    private static Value[] val;
 
     static
     {
-        sin = new float[SIN_SIZE];
+        val = new Value[SIN_SIZE];
         acos = new float[SIN_SIZE];
         for (int i = 0; i < SIN_SIZE; i++)
-            sin[i] = (float) Math.sin((2.0 * Math.PI) * (float) i * .001);
+        {
+            Value v = new Value();
+            v.sin = (float) Math.sin(i * .001);
+            v.cos = (float) Math.cos(i * .001);
+            v.tan = (float) Math.tan(i * .001);
+            val[i] = v;
+        }
         for(int i = 0; i < ACOS_SIZE; i++)
             acos[i] = (float) Math.acos(-1 + i * .0001);
     }
@@ -23,7 +35,7 @@ public class LookupTable
     public static float sin(float degrees)
     {
         degrees = normalizeAngle(degrees);
-        return interpolate(degrees, sin);
+        return interpolate(degrees, val);
     }
 
     /**
@@ -34,7 +46,7 @@ public class LookupTable
      */
     public static float cos(float degrees)
     {
-        return sin(degrees + 90.0f); // Get cos directly from sin with phase shift
+        return sin(degrees + 90.0f);
     }
 
     /**
@@ -47,7 +59,7 @@ public class LookupTable
     {
         float sinValue = sin(degrees);
         float cosValue = cos(degrees);
-        return cosValue != 0 ? sinValue / cosValue : Float.POSITIVE_INFINITY; // Avoid division by zero
+        return cosValue != 0 ? sinValue / cosValue : Float.POSITIVE_INFINITY;
     }
 
     /**
@@ -57,14 +69,17 @@ public class LookupTable
      * @param table The lookup table (sin table)
      * @return The interpolated value
      */
-    private static float interpolate(float degrees, float[] table)
+    private static float interpolate(float degrees, Value[] table)
     {
         float index = degrees * 1000;
         int lowerIndex = (int) index;
-        int upperIndex = (lowerIndex + 1) % SIN_SIZE;
-        float fraction = index - lowerIndex;
-        return table[lowerIndex] + fraction * (table[upperIndex] - table[lowerIndex]);
+
+        if(index - (float) lowerIndex == 0.0)
+            return table[lowerIndex].sin;
+
+        return (float) Math.sin(degrees);
     }
+
 
     /**
      * Normalize the angle to be within the range [0, 360).
@@ -91,4 +106,10 @@ public class LookupTable
         return acos[index];
     }
 
+    private static class Value
+    {
+        float sin;
+        float cos;
+        float tan;
+    }
 }

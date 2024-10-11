@@ -13,6 +13,8 @@ public final class Display implements Hardware
     private static final int WINDOW_WIDTH = 1280;
     private static final int WINDOW_HEIGHT = 720;
     private static final int REFRESH_RATE = 120;
+    private static int width = WINDOW_WIDTH;
+    private static int height = WINDOW_HEIGHT;
     private static long window;
     private static final String TITLE = "";
     private static int frames;
@@ -137,11 +139,11 @@ public final class Display implements Hardware
     }
 
     public static int getWidth() {
-        return WINDOW_WIDTH;
+        return width;
     }
 
     public static int getHeight() {
-        return WINDOW_HEIGHT;
+        return height;
     }
 
     public static float getDeltaInSeconds() {

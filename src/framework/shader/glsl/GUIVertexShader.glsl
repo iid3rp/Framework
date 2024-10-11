@@ -7,7 +7,6 @@ out vec2 texturePosition;
 out vec2 passTextureCoords;
 
 uniform mat4 transformationMatrix;
-uniform mat4 displayMatrix;
 
 uniform vec2 imageLocation;
 uniform vec2 size;

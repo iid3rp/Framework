@@ -30,11 +30,12 @@ public class GUITexture implements SwingInterface
     public GUITexture()
     {
         diffuse = 0;
-        position = new Vec2(0, 0);
-        scale = new Vec2(0, 0);
-        rotation = new Vec3(0, 0, 0);
-        size = new Vec2(0, 0);
-        rawPosition = new Vec2(0, 0);
+        imageLocation = new Vec2();
+        position = new Vec2();
+        scale = new Vec2();
+        rotation = new Vec3();
+        size = new Vec2();
+        rawPosition = new Vec2();
         children = new ArrayList<>();
     }
 
@@ -78,9 +79,8 @@ public class GUITexture implements SwingInterface
     {
         float w = (float) width / Display.getWidth();
         float h = (float) height / Display.getHeight();
-        this.scale = new Vec2(w, h);
+        this.scale.set(w, h);
         setLocation(this.x, this.y);
-        //setImageLocation(this.imgX, this.imgY);
     }
 
     public void setImageLocation(int x, int y)
@@ -90,7 +90,7 @@ public class GUITexture implements SwingInterface
         float w = (float) x / Display.getWidth();
         float h = (float) y / Display.getHeight();
 
-        this.imageLocation = new Vec2(w, h);
+        this.imageLocation.set(w, h);
     }
 
     public Vec2 getImageLocation()
@@ -102,7 +102,7 @@ public class GUITexture implements SwingInterface
     {
         float w = (float) width / Display.getWidth();
         float h = (float) height / Display.getHeight();
-        this.size = new Vec2(w, h);
+        this.size.set(w, h);
         setLocation(this.x, this.y);
     }
 
@@ -116,7 +116,7 @@ public class GUITexture implements SwingInterface
         posX += size.x;
         posY -= size.y;
 
-        this.position = new Vec2(posX, posY);
+        position.set(posX, posY);
     }
 
     public int getWidth()

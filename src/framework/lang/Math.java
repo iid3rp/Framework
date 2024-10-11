@@ -107,16 +107,21 @@ public class Math
         return (~n ^ 1) + 1;
     }
 
-    public static float sin(float angle)
-    {
-        return (float) java.lang.Math.sin(angle);
-    }
-
     public static float cosFromSin(float sin, float angle)
     {
         int quadrant = sin >= 0 ? (angle >= 0 ? 1 : 4) : (angle >= 0 ? 2 : 3);
         float cosSquared = 1 - sin * sin;
         float cos = (float) (java.lang.Math.sqrt(cosSquared) * (quadrant == 1 || quadrant == 4 ? 1 : -1));
         return cos;
+    }
+
+    public static float sin(float angle)
+    {
+        return (float) java.lang.Math.sin(angle);
+    }
+
+    public static float cos(float angle)
+    {
+        return (float) java.lang.Math.cos(angle);
     }
 }

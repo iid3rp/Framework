@@ -204,13 +204,15 @@ public class Mat4
     }
 
     public static Mat4 scale(Vec3 vec, Mat4 src, Mat4 dest) {
-        if (dest == null) {
+        if (dest == null)
             dest = new Mat4();
-        }
 
-        for(int i = 0; i < 3; i++)
-            for(int j = 0; j < 4; j++)
-                dest.m[i][j] = src.m[i][j] * vec.x;
+        for(int i = 0; i < 4; i++)
+        {
+            dest.m[0][i] = src.m[0][i] * vec.x;
+            dest.m[1][i] = src.m[1][i] * vec.y;
+            dest.m[2][i] = src.m[2][i] * vec.z;
+        }
 
         return dest;
     }
@@ -228,7 +230,7 @@ public class Mat4
             dest = new Mat4();
         }
 
-        float c = (float) java.lang.Math.cos(angle);
+        float c = Math.cos(angle);
         float s = Math.sin(angle);
         float one_minus_c = 1.0F - c;
         float xy = axis.x * axis.y;

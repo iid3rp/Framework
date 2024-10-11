@@ -43,7 +43,7 @@ public class GUIRenderer
     {
         quad = ModelLoader.loadToVao(positions, coords);
         shader = new GUIShader();
-        size = new Vec2(1, 1);
+        size = new Vec2(1);
     }
 
     public void setSize(int x, int y)
@@ -71,13 +71,11 @@ public class GUIRenderer
             glActiveTexture(GL_TEXTURE1);
             glBindTexture(GL_TEXTURE_2D, texture.getClipTexture());
             Mat4 matrix = Math.createTransformationMatrix(texture.getPosition(), texture.getRotation(), texture.getSize());
-            Mat4 displayMatrix = Math.createTransformationMatrix(Scene.offset, new Vec3(),  new Vec2(1));
 
             shader.loadSize(texture.getSize());
             shader.loadScale(texture.getScale());
             shader.loadTransformation(matrix);
             shader.loadImageLocation(texture.getImageLocation());
-            shader.loadDisplayMatrix(displayMatrix);
 
             glDrawArrays(GL_TRIANGLES, 0, quad.getVertexCount());
         }

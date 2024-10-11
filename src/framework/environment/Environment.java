@@ -53,11 +53,10 @@ public final class Environment
             //
             PictureBox pb = new PictureBox();
             pb.setTexture(MasterRenderer.getShadowMapTexture());
-            pb.setLocation(20, 20);
-            pb.setImageLocation(0,  0);
+            pb.setLocation(100, 0);
             pb.setScale(200, 200);
             pb.setSize(200, 200);
-            //scene.getContentPane().add(pb);
+            scene.getContentPane().add(pb);
 
 
             loop();
@@ -92,7 +91,7 @@ public final class Environment
             scene.getEvent().update();
 
             //the shadow thingies
-            //MasterRenderer.renderShadowMap(scene.getEntities(), scene.getMainLight());
+            MasterRenderer.renderShadowMap(scene.getEntities(), scene.getMainLight());
 
             //particle
 
