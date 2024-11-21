@@ -32,7 +32,8 @@ public abstract class GLShader
         glBindAttribLocation(programId, attribute, variableName);
     }
 
-    protected int getUniformLocation(String uniformName) {
+    protected int getUniformLocation(String uniformName)
+    {
         return glGetUniformLocation(programId, uniformName);
     }
 

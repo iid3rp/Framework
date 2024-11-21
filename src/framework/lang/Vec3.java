@@ -2,7 +2,7 @@ package framework.lang;
 
 import java.nio.FloatBuffer;
 
-public class Vec3
+public final class Vec3 extends Vector
 {
     public float x;
     public float y;
@@ -12,10 +12,14 @@ public class Vec3
     public static final Vec3 yAxis = new Vec3(0, 1, 0);
     public static final Vec3 zAxis = new Vec3(0, 0, 1);
 
-    public Vec3()
+    public Vec3(Vector vec)
     {
-        x = y = z = 0;
+        x = vec.x();
+        y = vec.y();
+        z = vec.z();
     }
+
+    public Vec3() {}
 
     public Vec3(float xyz)
     {
@@ -79,7 +83,7 @@ public class Vec3
 
     public Vec3 rotateY(float angle, Vec3 dest) {
         float sin = Math.sin(angle);
-        float cos = Math.cosFromSin(sin, angle);
+        float cos = Math.cos(angle);
         float x =  this.x * cos + this.z * sin;
         float z = -this.x * sin + this.z * cos;
         dest.x = x;
@@ -100,7 +104,8 @@ public class Vec3
     }
 
     public Vec3 rotateZ(float angle, Vec3 dest) {
-        float sin = Math.sin(angle), cos = Math.cosFromSin(sin, angle);
+        float sin = Math.sin(angle);
+        float cos = Math.cos(angle);
         float x = this.x * cos - this.y * sin;
         float y = this.x * sin + this.y * cos;
         dest.x = x;
@@ -116,15 +121,19 @@ public class Vec3
         this.z = src.z;
         return this;
     }
-    
-    public float length()
-    {
-        return (float) java.lang.Math.sqrt(x * x + y * y + z * z);
-    }
 
-    public float lengthSquared() 
+    @Override
+    public float lengthSquared()
     {
         return this.x * this.x + this.y * this.y + this.z * this.z;
+    }
+
+    public float lengthFrom(Vec3 location)
+    {
+        float x = this.x - location.x;
+        float y = this.y - location.y;
+        float z = this.z - location.z;
+        return (float) java.lang.Math.sqrt(x * x + y * y + z * z);
     }
 
     public Vec3 translate(float x, float y, float z)
@@ -192,17 +201,15 @@ public class Vec3
 
     public Vec3 normalize()
     {
-        return normalize(null);
+        return normalize(this);
     }
 
     public Vec3 normalize(Vec3 dest) {
         float l = this.length();
-        if (dest == null) {
+        if (dest == null)
             dest = new Vec3(this.x / l, this.y / l, this.z / l);
-        } else {
+        else
             dest.set(this.x / l, this.y / l, this.z / l);
-        }
-
         return dest;
     }
 
@@ -285,16 +292,40 @@ public class Vec3
         return this.z;
     }
 
-    public boolean equals(Object obj) {
-        if (this == obj) {
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
             return true;
-        } else if (obj == null) {
+        if (obj == null)
             return false;
-        } else if (this.getClass() != obj.getClass()) {
+        if (this.getClass() != obj.getClass())
             return false;
-        } else {
-            Vec3 other = (Vec3)obj;
-            return this.x == other.x && this.y == other.y && this.z == other.z;
-        }
+        Vec3 other = (Vec3) obj;
+        return this.x == other.x && this.y == other.y && this.z == other.z;
+    }
+
+    @Override
+    public float x()
+    {
+        return x;
+    }
+
+    @Override
+    public float y()
+    {
+        return y;
+    }
+
+    @Override
+    public float z()
+    {
+        return z;
+    }
+
+    public boolean isWithin(Vec3 min, Vec3 max)
+    {
+        return x >= min.x && x <= max.x &&
+                y >= min.y && y <= max.y &&
+                z >= min.z && z <= max.z;
     }
 }

@@ -170,12 +170,12 @@ public class MasterRenderer {
         float xScale = yScale / aspectRatio;
         float frustumLength = FAR_PLANE - NEAR_PLANE;
 
-        projectionMatrix.m[0][0] = xScale;
-        projectionMatrix.m[1][1] = yScale;
-        projectionMatrix.m[2][2] = -((FAR_PLANE + NEAR_PLANE) / frustumLength);
-        projectionMatrix.m[2][3] = -1;
-        projectionMatrix.m[3][2] = -((2 * NEAR_PLANE * FAR_PLANE) / frustumLength);
-        projectionMatrix.m[3][3] = 0;
+        projectionMatrix.m00 = xScale;
+        projectionMatrix.m11 = yScale;
+        projectionMatrix.m22 = -((FAR_PLANE + NEAR_PLANE) / frustumLength);
+        projectionMatrix.m23 = -1;
+        projectionMatrix.m32 = -((2 * NEAR_PLANE * FAR_PLANE) / frustumLength);
+        projectionMatrix.m33 = 0;
     }
 
     public static void renderWaters(LinkList<WaterTile> waters, Camera camera, Light light)

@@ -1,222 +1,191 @@
 package framework.loader;
 
-import framework.lang.Vec2;
-import framework.lang.Vec3;
-import framework.model.Model;
-import framework.resources.Resources;
-import framework.util.LinkList;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
-public class ObjectLoader
-{
-    public static Model loadObject(String fileName) {
-        InputStream fileReader;
+import framework.lang.Normal;
+import framework.lang.Vec2;
+import framework.lang.Vec3;
+import framework.model.Model;
+import framework.resources.Resources;
 
-        fileReader = Resources.class.getResourceAsStream("objects/" + fileName);
+public class ObjectLoader {
 
-        assert fileReader != null;
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileReader));
+    private static final String RES_LOC = "objects/";
+
+    public static Model loadObject(String objFileName) {
+        BufferedReader isr;
+        InputStream objFile = Resources.class.getResourceAsStream("objects/" + objFileName);
+        assert objFile != null;
+        isr = new BufferedReader(new InputStreamReader(objFile));
+        BufferedReader reader = new BufferedReader(isr);
         String line;
-        LinkList<Vec3> vertices = new LinkList<>();
-        LinkList<Vec2> textures = new LinkList<>();
-        LinkList<Vec3> normals = new LinkList<>();
-        LinkList<Integer> indices = new LinkList<>();
-        float[] verticesArray;
-        float[] texturesArray = null;
-        float[] normalsArray = null;
-        int[] indicesArray;
-        int vertexLength;
-
+        List<Normal> vertices = new ArrayList<>();
+        List<Vec2> textures = new ArrayList<>();
+        List<Vec3> normals = new ArrayList<>();
+        List<Integer> indices = new ArrayList<>();
         try {
-            while(true) {
-                line = bufferedReader.readLine();
-                if (line == null) break; // Prevent NullPointerException
-                String[] currentLine = line.split(" ");
-
+            while (true) {
+                line = reader.readLine();
                 if (line.startsWith("v ")) {
-                    Vec3 vertex = new Vec3(
-                            Float.parseFloat(currentLine[1]),
+                    String[] currentLine = line.split(" ");
+                    Vec3 vertex = new Vec3(Float.parseFloat(currentLine[1]),
                             Float.parseFloat(currentLine[2]),
-                            Float.parseFloat(currentLine[3])
-                    );
-                    vertices.add(vertex);
-                }
-                else if (line.startsWith("vt ")) {
-                    Vec2 texture = new Vec2(
-                            Float.parseFloat(currentLine[1]),
-                            Float.parseFloat(currentLine[2])
-                    );
+                            Float.parseFloat(currentLine[3]));
+                    Normal newVertex = new Normal(vertices.size(), vertex);
+                    vertices.add(newVertex);
+
+                } else if (line.startsWith("vt ")) {
+                    String[] currentLine = line.split(" ");
+                    Vec2 texture = new Vec2(Float.parseFloat(currentLine[1]),
+                            Float.parseFloat(currentLine[2]));
                     textures.add(texture);
-                }
-                else if (line.startsWith("vn ")) {
-                    Vec3 normal = new Vec3(
-                            Float.parseFloat(currentLine[1]),
+                } else if (line.startsWith("vn ")) {
+                    String[] currentLine = line.split(" ");
+                    Vec3 normal = new Vec3(Float.parseFloat(currentLine[1]),
                             Float.parseFloat(currentLine[2]),
-                            Float.parseFloat(currentLine[3])
-                    );
+                            Float.parseFloat(currentLine[3]));
                     normals.add(normal);
-                }
-                else if (line.startsWith("f ")) {
-                    texturesArray = new float[vertices.size() * 2];
-                    normalsArray = new float[vertices.size() * 3];
+                } else if (line.startsWith("f ")) {
                     break;
                 }
             }
-
-            Vec2[] texArray = new Vec2[textures.size()];
-            Vec3[] normalArray = new Vec3[normals.size()];
-
-            int i = 0;
-            for(Vec2 v : textures.queue())
-                texArray[i++] = v;
-
-            i = 0;
-            for(Vec3 v : normals.queue())
-                normalArray[i++] = v;
-
-            while (line != null) {
-                if (!line.startsWith("f ")) {
-                    line = bufferedReader.readLine();
-                    continue;
-                }
-
+            while (line != null && line.startsWith("f ")) {
                 String[] currentLine = line.split(" ");
                 String[] vertex1 = currentLine[1].split("/");
                 String[] vertex2 = currentLine[2].split("/");
                 String[] vertex3 = currentLine[3].split("/");
-
-                processVertex(vertex1, indices, texArray, normalArray, texturesArray, normalsArray);
-                processVertex(vertex2, indices, texArray, normalArray, texturesArray, normalsArray);
-                processVertex(vertex3, indices, texArray, normalArray, texturesArray, normalsArray);
-
-                line = bufferedReader.readLine();
+                Normal v0 = processVertex(vertex1, vertices, indices);
+                Normal v1 = processVertex(vertex2, vertices, indices);
+                Normal v2 = processVertex(vertex3, vertices, indices);
+                calculateTangents(v0, v1, v2, textures);//NEW
+                line = reader.readLine();
             }
-
-            bufferedReader.close();
+            reader.close();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.err.println("Error reading the file");
         }
+        removeUnusedVertices(vertices);
+        float[] verticesArray = new float[vertices.size() * 3];
+        float[] texturesArray = new float[vertices.size() * 2];
+        float[] normalsArray = new float[vertices.size() * 3];
+        float[] tangentsArray = new float[vertices.size() * 3];
+        float furthest = convertDataToArrays(vertices, textures, normals, verticesArray,
+                texturesArray, normalsArray, tangentsArray);
+        int[] indicesArray = convertIndicesListToArray(indices);
 
-        verticesArray = new float[vertices.size() * 3];
-        indicesArray = new int[indices.size()];
-
-        int vertexPointer = 0;
-
-        for (Vec3 vertex : vertices.queue()) {
-            verticesArray[vertexPointer++] = vertex.x;
-            verticesArray[vertexPointer++] = vertex.y;
-            verticesArray[vertexPointer++] = vertex.z;
-        }
-
-        int i = 0;
-        for(int n : indices.queue())
-            indicesArray[i++] = n;
-
-        // Calculate Tangents
-        float[] tangentsArray = new float[verticesArray.length * 3];
-        assert texturesArray != null;
-        for (i = 0; i < indicesArray.length; i += 3) {
-            int index0 = indicesArray[i];
-            int index1 = indicesArray[i + 1];
-            int index2 = indicesArray[i + 2];
-
-            // Positions
-            Vec3 pos0 = new Vec3(
-                    verticesArray[index0 * 3],
-                    verticesArray[index0 * 3 + 1],
-                    verticesArray[index0 * 3 + 2]
-            );
-            Vec3 pos1 = new Vec3(
-                    verticesArray[index1 * 3],
-                    verticesArray[index1 * 3 + 1],
-                    verticesArray[index1 * 3 + 2]
-            );
-            Vec3 pos2 = new Vec3(
-                    verticesArray[index2 * 3],
-                    verticesArray[index2 * 3 + 1],
-                    verticesArray[index2 * 3 + 2]
-            );
-
-            // Texture coordinates
-            Vec2 uv0 = new Vec2(
-                    texturesArray[index0 * 2],
-                    texturesArray[index0 * 2 + 1]
-            );
-            Vec2 uv1 = new Vec2(
-                    texturesArray[index1 * 2],
-                    texturesArray[index1 * 2 + 1]
-            );
-            Vec2 uv2 = new Vec2(
-                    texturesArray[index2 * 2],
-                    texturesArray[index2 * 2 + 1]
-            );
-
-            // Edges of the triangle: position delta
-            Vec3 deltaPos1 = Vec3.sub(pos1, pos0, null);
-            Vec3 deltaPos2 = Vec3.sub(pos2, pos0, null);
-
-            // UV delta
-            float deltaU1 = uv1.x - uv0.x;
-            float deltaV1 = uv1.y - uv0.y;
-            float deltaU2 = uv2.x - uv0.x;
-            float deltaV2 = uv2.y - uv0.y;
-
-            float r = 1.0f / (deltaU1 * deltaV2 - deltaU2 * deltaV1);
-            Vec3 tangent = new Vec3();
-            tangent.x = r * (deltaV2 * deltaPos1.x - deltaV1 * deltaPos2.x);
-            tangent.y = r * (deltaV2 * deltaPos1.y - deltaV1 * deltaPos2.y);
-            tangent.z = r * (deltaV2 * deltaPos1.z - deltaV1 * deltaPos2.z);
-
-            // Accumulate the tangents for each vertex of the triangle
-            tangentsArray[index0 * 3]     += tangent.x;
-            tangentsArray[index0 * 3 + 1] += tangent.y;
-            tangentsArray[index0 * 3 + 2] += tangent.z;
-
-            tangentsArray[index1 * 3]     += tangent.x;
-            tangentsArray[index1 * 3 + 1] += tangent.y;
-            tangentsArray[index1 * 3 + 2] += tangent.z;
-
-            tangentsArray[index2 * 3]     += tangent.x;
-            tangentsArray[index2 * 3 + 1] += tangent.y;
-            tangentsArray[index2 * 3 + 2] += tangent.z;
-        }
-
-        // Normalize the tangents
-        for(i = 0; i < tangentsArray.length; i += 3) {
-            Vec3 tangent = new Vec3(
-                    tangentsArray[i],
-                    tangentsArray[i + 1],
-                    tangentsArray[i + 2]
-            );
-            tangent.normalize();
-            tangentsArray[i]     = tangent.x;
-            tangentsArray[i + 1] = tangent.y;
-            tangentsArray[i + 2] = tangent.z;
-        }
-
-        return ModelLoader.loadToVaoInt(verticesArray, texturesArray, normalsArray,  indicesArray, tangentsArray);
+        return ModelLoader.loadToVaoInt(verticesArray, texturesArray, normalsArray, indicesArray, tangentsArray);
     }
 
-    private static void processVertex(String[] vertexData, LinkList<Integer> indices, Vec2[] textures, Vec3[] normals, float[] textureArray, float[] normalsArray)
-    {
-        int currentVertexPointer = Integer.parseInt(vertexData[0]) - 1;
+    //NEW 
+    private static void calculateTangents(Normal v0, Normal v1, Normal v2,
+                                          List<Vec2> textures) {
+        Vec3 deltaPos1 = Vec3.sub(v1.getPosition(), v0.getPosition(), null);
+        Vec3 deltaPos2 = Vec3.sub(v2.getPosition(), v0.getPosition(), null);
+        Vec2 uv0 = textures.get(v0.getTextureIndex());
+        Vec2 uv1 = textures.get(v1.getTextureIndex());
+        Vec2 uv2 = textures.get(v2.getTextureIndex());
+        Vec2 deltaUv1 = Vec2.sub(uv1, uv0, null);
+        Vec2 deltaUv2 = Vec2.sub(uv2, uv0, null);
 
-        indices.add(currentVertexPointer);
-
-        Vec2 currentTexture = textures[Integer.parseInt(vertexData[1]) - 1];
-        System.out.println(Integer.parseInt(vertexData[1]) - 1);
-
-        textureArray[currentVertexPointer * 2] = currentTexture.x;
-        textureArray[currentVertexPointer * 2 + 1] = 1 - currentTexture.y;
-
-        Vec3 currentNormal = normals[Integer.parseInt(vertexData[2]) - 1];
-
-        normalsArray[currentVertexPointer * 3] = currentNormal.x;
-        normalsArray[currentVertexPointer * 3 + 1] = currentNormal.y;
-        normalsArray[currentVertexPointer * 3 + 2] = currentNormal.z;
+        float r = 1.0f / (deltaUv1.x * deltaUv2.y - deltaUv1.y * deltaUv2.x);
+        deltaPos1.scale(deltaUv2.y);
+        deltaPos2.scale(deltaUv1.y);
+        Vec3 tangent = Vec3.sub(deltaPos1, deltaPos2, null);
+        tangent.scale(r);
+        v0.addTangent(tangent);
+        v1.addTangent(tangent);
+        v2.addTangent(tangent);
     }
+
+    private static Normal processVertex(String[] vertex, List<Normal> vertices,
+                                              List<Integer> indices) {
+        int index = Integer.parseInt(vertex[0]) - 1;
+        Normal currentVertex = vertices.get(index);
+        int textureIndex = Integer.parseInt(vertex[1]) - 1;
+        int normalIndex = Integer.parseInt(vertex[2]) - 1;
+        if (!currentVertex.isSet()) {
+            currentVertex.setTextureIndex(textureIndex);
+            currentVertex.setNormalIndex(normalIndex);
+            indices.add(index);
+            return currentVertex;
+        } else {
+            return dealWithAlreadyProcessedVertex(currentVertex, textureIndex, normalIndex, indices,
+                    vertices);
+        }
+    }
+
+    private static int[] convertIndicesListToArray(List<Integer> indices) {
+        int[] indicesArray = new int[indices.size()];
+        for (int i = 0; i < indicesArray.length; i++) {
+            indicesArray[i] = indices.get(i);
+        }
+        return indicesArray;
+    }
+
+    private static float convertDataToArrays(List<Normal> vertices, List<Vec2> textures,
+                                             List<Vec3> normals, float[] verticesArray, float[] texturesArray,
+                                             float[] normalsArray, float[] tangentsArray) {
+        float furthestPoint = 0;
+        for (int i = 0; i < vertices.size(); i++) {
+            Normal currentVertex = vertices.get(i);
+            if (currentVertex.getLength() > furthestPoint) {
+                furthestPoint = currentVertex.getLength();
+            }
+            Vec3 position = currentVertex.getPosition();
+            Vec2 textureCoordinates = textures.get(currentVertex.getTextureIndex());
+            Vec3 normalVector = normals.get(currentVertex.getNormalIndex());
+            Vec3 tangent = currentVertex.getAverageTangent();
+            verticesArray[i * 3] = position.x;
+            verticesArray[i * 3 + 1] = position.y;
+            verticesArray[i * 3 + 2] = position.z;
+            texturesArray[i * 2] = textureCoordinates.x;
+            texturesArray[i * 2 + 1] = 1 - textureCoordinates.y;
+            normalsArray[i * 3] = normalVector.x;
+            normalsArray[i * 3 + 1] = normalVector.y;
+            normalsArray[i * 3 + 2] = normalVector.z;
+            tangentsArray[i * 3] = tangent.x;
+            tangentsArray[i * 3 + 1] = tangent.y;
+            tangentsArray[i * 3 + 2] = tangent.z;
+
+        }
+        return furthestPoint;
+    }
+
+    private static Normal dealWithAlreadyProcessedVertex(Normal previousVertex, int newTextureIndex,
+                                                               int newNormalIndex, List<Integer> indices, List<Normal> vertices) {
+        if (previousVertex.hasSameTextureAndNormal(newTextureIndex, newNormalIndex)) {
+            indices.add(previousVertex.getIndex());
+            return previousVertex;
+        } else {
+            Normal anotherVertex = previousVertex.getDuplicateVertex();
+            if (anotherVertex != null) {
+                return dealWithAlreadyProcessedVertex(anotherVertex, newTextureIndex,
+                        newNormalIndex, indices, vertices);
+            } else {
+                Normal duplicateVertex = previousVertex.duplicate(vertices.size());//NEW
+                duplicateVertex.setTextureIndex(newTextureIndex);
+                duplicateVertex.setNormalIndex(newNormalIndex);
+                previousVertex.setDuplicateVertex(duplicateVertex);
+                vertices.add(duplicateVertex);
+                indices.add(duplicateVertex.getIndex());
+                return duplicateVertex;
+            }
+        }
+    }
+
+    private static void removeUnusedVertices(List<Normal> vertices) {
+        for (Normal vertex : vertices) {
+            vertex.averageTangents();
+            if (!vertex.isSet()) {
+                vertex.setTextureIndex(0);
+                vertex.setNormalIndex(0);
+            }
+        }
+    }
+
 }

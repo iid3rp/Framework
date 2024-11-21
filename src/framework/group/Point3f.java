@@ -25,13 +25,14 @@ import framework.lang.Vec3;
  * @see Vec3
  * @since 1.0
  */
-public class Point3f extends Vec3
+public class Point3f
 {
+    public Vec3 point;
     public Vec3 face;
 
     public Point3f()
     {
-        super();
+        point = new Vec3();
     }
 
     public Vec3 getFace()
@@ -51,9 +52,9 @@ public class Point3f extends Vec3
 
     private void transformFace(Vec3 vec3)
     {
-        super.x += vec3.x;
-        super.y += vec3.y;
-        super.z += vec3.z;
+        point.x += vec3.x;
+        point.y += vec3.y;
+        point.z += vec3.z;
     }
 
     public void rotateFace(float x, float y, float z)
@@ -66,5 +67,10 @@ public class Point3f extends Vec3
         face.x = (face.x + vec3.x) % 360;
         face.y = (face.y + vec3.y) % 360;
         face.z = (face.z + vec3.z) % 360;
+    }
+
+    public Vec3 get()
+    {
+        return point;
     }
 }

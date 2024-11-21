@@ -112,7 +112,7 @@ public class FontFile
         if(inf.length != 12)
             indexSkip = inf.length - 12;
 
-        System.out.println(inf.length);
+        //System.out.println(inf.length);
 
         String face = inf[1].split("=")[1]; // font face
         int size = Integer.parseInt(inf[indexSkip + 2].split("=")[1]); // font size

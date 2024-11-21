@@ -3,14 +3,14 @@ package framework.post_processing;
 import framework.lang.Vec2;
 import framework.shader.GLShader;
 
-public class PixelShader extends GLShader
+public class GodRayShader extends GLShader
 {
-    public static final String VERTEX_FILE = "pixelVertexShader.glsl";
-    public static final String FRAGMENT_FILE = "pixelFragmentShader.glsl";
+    private static final String VERTEX_FILE = "horizontalBlurVertexShader.glsl";
+    private static final String FRAGMENT_FILE = "blurFragmentShader.glsl";
     private int locationTexture;
     private int locationPosition;
 
-    public PixelShader()
+    public GodRayShader()
     {
         super(VERTEX_FILE, FRAGMENT_FILE);
     }

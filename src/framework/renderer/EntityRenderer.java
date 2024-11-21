@@ -11,10 +11,13 @@ import framework.util.Key;
 import framework.util.LinkList;
 import framework.util.Map;
 
+import java.util.HashMap;
+
 import static org.lwjgl.opengl.GL46.*;
 
 public class EntityRenderer {
     private final EntityShader staticShader;
+    private final java.util.Map<Entity, Integer> occlusionQueries = new HashMap<>();
 
     public EntityRenderer(EntityShader staticShader, Mat4 projectionMatrix) {
         if (staticShader == null) {
@@ -40,6 +43,7 @@ public class EntityRenderer {
             LinkList<Entity> entityList = entities.get(key.getKey());
 
             for (Entity entity : entityList) {
+
                 prepareEntity(entity);
                 glDrawElements(GL_TRIANGLES, key.getKey().getModel().getVertexCount(), GL_UNSIGNED_INT, 0);    // Draw using index buffer and triangles
             }

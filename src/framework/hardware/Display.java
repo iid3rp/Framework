@@ -10,8 +10,8 @@ import static org.lwjgl.opengl.GL11.*;
 
 public final class Display implements Hardware
 {
-    private static final int WINDOW_WIDTH = 1280;
-    private static final int WINDOW_HEIGHT = 720;
+    private static int WINDOW_WIDTH = 1280;
+    private static int WINDOW_HEIGHT = 720;
     private static final int REFRESH_RATE = 120;
     private static int width = WINDOW_WIDTH;
     private static int height = WINDOW_HEIGHT;
@@ -29,10 +29,13 @@ public final class Display implements Hardware
     // Hide the constructor
     private Display() {}
 
-    public static void createDisplay() {
+    public static void createDisplay(int width, int height) {
         if (!glfwInit()) {
             throw new RuntimeException("ERROR: GLFW wasn't initialized");
         }
+
+        Display.width = width == 0? WINDOW_WIDTH : width;
+        Display.height = height == 0? WINDOW_HEIGHT : height;
 
         glfwWindowHint(GLFW_DEPTH_BITS, 24); // Set the depth bits to 24
         glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
@@ -40,11 +43,11 @@ public final class Display implements Hardware
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+        glfwWindowHint(GLFW_DECORATED, GL_FALSE);
         glfwWindowHint(GLFW_REFRESH_RATE, 120);
-        glfwWindowHint(GLFW_DECORATED,
-                GL_TRUE);
+        glfwWindowHint(GLFW_DECORATED, GL_TRUE);
 
-        window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, TITLE, 0, 0);
+        window = glfwCreateWindow(width, height, TITLE, 0, 0);
 
         if (window == 0) {
             throw new RuntimeException("Failed to create window");
@@ -52,7 +55,7 @@ public final class Display implements Hardware
 
         GLFWVidMode vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
         assert vidMode != null;
-        glfwSetWindowPos(window, (vidMode.width() - WINDOW_WIDTH) / 2, (vidMode.height() - WINDOW_HEIGHT) / 2);
+        glfwSetWindowPos(window, (vidMode.width() - width) / 2, (vidMode.height() - height) / 2);
 
         keyboard = new Keyboard();
         mouse = new Mouse();

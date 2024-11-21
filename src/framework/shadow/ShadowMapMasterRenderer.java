@@ -10,8 +10,8 @@ import framework.model.TexturedModel;
 import framework.util.LinkList;
 import framework.util.Map;
 
-import static org.lwjgl.opengl.GL46.*;
 
+import static org.lwjgl.opengl.GL46.*;
 
 /**
  * This class is in charge of using all the classes in the shadows package to
@@ -24,7 +24,7 @@ import static org.lwjgl.opengl.GL46.*;
  */
 public class ShadowMapMasterRenderer {
 
-	private static final int SHADOW_MAP_SIZE = 2048;
+	private static final int SHADOW_MAP_SIZE = 4096;
 
 	private ShadowFrameBuffer shadowFbo;
 	private ShadowShader shader;
@@ -64,7 +64,7 @@ public class ShadowMapMasterRenderer {
 	 * 
 	 * @param entities
 	 *            - the lists of entities to be rendered. Each list is
-	 *            associated with the {@link TexturedModel} that all of the
+	 *            associated with the {@link TexturedModel} that all the
 	 *            entities in that list use.
 	 * @param sun
 	 *            - the light acting as the sun in the scene.
@@ -87,7 +87,7 @@ public class ShadowMapMasterRenderer {
 	 * @return The to-shadow-map-space matrix.
 	 */
 	public Mat4 getToShadowMapSpaceMatrix() {
-		return Mat4.mul(offset,projectionViewMatrix, null);
+		return Mat4.mul(offset, projectionViewMatrix, null);
 	}
 
 	/**
@@ -95,7 +95,7 @@ public class ShadowMapMasterRenderer {
 	 */
 	public void dispose() {
 		shader.dispose();
-		shadowFbo.dispose();
+		shadowFbo.cleanUp();
 	}
 
 	/**
@@ -124,7 +124,7 @@ public class ShadowMapMasterRenderer {
 	 * projection-view matrix. This matrix determines the size, position, and
 	 * orientation of the "view cuboid" in the world. This method also binds the
 	 * shadows FBO so that everything rendered after this gets rendered to the
-	 * FBO. It also enables depth testing, and clears any data in the
+	 * FBO. It also enables depth testing, and clears any data that is in the
 	 * FBOs depth attachment from last frame. The simple shader program is also
 	 * started.
 	 * 
@@ -141,6 +141,8 @@ public class ShadowMapMasterRenderer {
 		shadowFbo.bindFrameBuffer();
 		glEnable(GL_DEPTH_TEST);
 		glClear(GL_DEPTH_BUFFER_BIT);
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
 		shader.bind();
 	}
 
@@ -172,13 +174,12 @@ public class ShadowMapMasterRenderer {
 		direction.normalize();
 		center.negate();
 		lightViewMatrix.identity();
-
 		float pitch = (float) Math.acos(new Vec2(direction.x, direction.z).length());
 		Mat4.rotate(pitch, Vec3.xAxis, lightViewMatrix, lightViewMatrix);
-
 		float yaw = (float) Math.toDegrees(((float) Math.atan(direction.x / direction.z)));
 		yaw = direction.z > 0 ? yaw - 180 : yaw;
-		Mat4.rotate((float) -Math.toRadians(yaw), Vec3.yAxis, lightViewMatrix, lightViewMatrix);
+		Mat4.rotate((float) -Math.toRadians(yaw), Vec3.yAxis, lightViewMatrix,
+				lightViewMatrix);
 		Mat4.translate(center, lightViewMatrix, lightViewMatrix);
 	}
 
@@ -196,10 +197,10 @@ public class ShadowMapMasterRenderer {
 	 */
 	private void updateOrthographicProjectionMatrix(float width, float height, float length) {
 		projectionMatrix.identity();
-		projectionMatrix.m[0][0] = (2f / width);
-		projectionMatrix.m[1][1] = (2 / height);
-		projectionMatrix.m[2][2] = (-2f / length);
-		projectionMatrix.m[3][3] = (1);
+		projectionMatrix.m00 = 2f / width;
+		projectionMatrix.m11 = 2f / height;
+		projectionMatrix.m22 = -2f / length;
+		projectionMatrix.m33 = 1;
 	}
 
 	/**

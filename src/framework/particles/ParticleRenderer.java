@@ -90,9 +90,25 @@ public class ParticleRenderer {
 
 	private void storeMatrixData(Mat4 matrix, float[] data)
 	{
-		for(int i = 0; i < 4; i++)
-			for(int j = 0; j < 4; j++)
-				data[pointer++] = matrix.m[i][j];
+		data[pointer++] = matrix.m00;
+		data[pointer++] = matrix.m01;
+		data[pointer++] = matrix.m02;
+		data[pointer++] = matrix.m03;
+		
+		data[pointer++] = matrix.m10;
+		data[pointer++] = matrix.m11;
+		data[pointer++] = matrix.m12;
+		data[pointer++] = matrix.m13;
+		
+		data[pointer++] = matrix.m20;
+		data[pointer++] = matrix.m21;
+		data[pointer++] = matrix.m22;
+		data[pointer++] = matrix.m23;
+		
+		data[pointer++] = matrix.m30;
+		data[pointer++] = matrix.m31;
+		data[pointer++] = matrix.m32;
+		data[pointer++] = matrix.m33;
 	}
 
 	protected void dispose(){
@@ -106,20 +122,20 @@ public class ParticleRenderer {
 		// Translate to the particle's position
 		model.translate(position);
 
-		model.m[0][0] = view.m[0][0];
-		model.m[0][1] = view.m[1][0];
-		model.m[0][2] = view.m[2][0];
-		model.m[1][0] = view.m[0][1];
-		model.m[1][1] = view.m[1][1];
-		model.m[1][2] = view.m[2][1];
-		model.m[2][0] = view.m[0][2];
-		model.m[2][1] = view.m[1][2];
-		model.m[2][2] = view.m[2][2];
+		model.m00 = view.m00;
+		model.m01 = view.m10;
+		model.m02 = view.m20;
+		model.m10 = view.m01;
+		model.m11 = view.m11;
+		model.m12 = view.m21;
+		model.m20 = view.m02;
+		model.m21 = view.m12;
+		model.m22 = view.m22;
 
 		// Optional: For billboard-ing, you might not want to rotate the particles locally.
 		// But if you do want some controlled rotation, you can apply it here:
 		model.rotate((float) java.lang.Math.toRadians(rotation), new Vec3(1, 1, 1));
-		model.scale(scale);
+		model.scale(new Vec3(scale)); // todo
 		Mat4 modelViewMatrix = Mat4.mul(view, model, null);
 		storeMatrixData(modelViewMatrix, vboData);
 	}

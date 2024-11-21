@@ -21,8 +21,8 @@ public class ShadowShader extends GLShader
 		
 	}
 	
-	protected void loadModelMatrix(Mat4 matrix){
-		super.loadMatrix(location_mvpMatrix, matrix);
+	protected void loadMvpMatrix(Mat4 mvpMatrix){
+		super.loadMatrix(location_mvpMatrix, mvpMatrix);
 	}
 
 	@Override

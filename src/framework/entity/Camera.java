@@ -9,7 +9,7 @@ import framework.lang.Vec3;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class Camera {
-    private static final float MAX_DISTANCE = 5000;
+    private static final float MAX_DISTANCE = 500;
     private static final float MIN_DISTANCE = 0;
     private static float REFRESH_RATE = 120;
     private static final float WALK_SPEED = .5f;
@@ -184,7 +184,7 @@ public class Camera {
         position = new Vec3();
         distanceFromPlayer.setTarget(50);
         pitch.setTarget(20);
-        yaw = 0;
+        yaw = 180;
         roll = 0;
         angleAroundPlayer.setTarget(0);
     }

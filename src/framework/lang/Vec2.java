@@ -2,12 +2,18 @@ package framework.lang;
 
 import java.nio.FloatBuffer;
 
-public class Vec2
+public final class Vec2 extends Vector
 {
     public float x;
     public float y;
 
     public Vec2() {
+    }
+
+    public Vec2(Vector vec)
+    {
+        x = vec.x();
+        y = vec.y();
     }
 
     public Vec2(float xy)
@@ -32,11 +38,6 @@ public class Vec2
         this.x = src.getX();
         this.y = src.getY();
         return this;
-    }
-
-    public float length()
-    {
-        return (float) java.lang.Math.sqrt(x * x + y * y);
     }
 
     public float lengthSquared() {
@@ -65,7 +66,12 @@ public class Vec2
         return dest;
     }
 
-    public Vec2 normalise(Vec2 dest) {
+    public Vec2 normalize()
+    {
+        return normalize(this);
+    }
+
+    public Vec2 normalize(Vec2 dest) {
         float l = this.length();
         if (dest == null) {
             dest = new Vec2(this.x / l, this.y / l);
@@ -136,19 +142,19 @@ public class Vec2
         return sb;
     }
 
-    public final float getX() {
+    public float getX() {
         return this.x;
     }
 
-    public final float getY() {
+    public float getY() {
         return this.y;
     }
 
-    public final void setX(float x) {
+    public void setX(float x) {
         this.x = x;
     }
 
-    public final void setY(float y) {
+    public void setY(float y) {
         this.y = y;
     }
 
@@ -163,5 +169,23 @@ public class Vec2
             Vec2 other = (Vec2)obj;
             return this.x == other.x && this.y == other.y;
         }
+    }
+
+    @Override
+    public float x()
+    {
+        return x;
+    }
+
+    @Override
+    public float y()
+    {
+        return y;
+    }
+
+    public boolean isWithin(Vec2 min, Vec2 max)
+    {
+        return x >= min.x && x <= max.x &&
+                y >= min.y && y <= max.y;
     }
 }

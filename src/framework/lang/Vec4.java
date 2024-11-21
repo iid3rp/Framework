@@ -2,7 +2,7 @@ package framework.lang;
 
 import java.nio.FloatBuffer;
 
-public class Vec4
+public final class Vec4 extends Vector
 {
     public float x;
     public float y;
@@ -10,6 +10,14 @@ public class Vec4
     public float w;
 
     public Vec4() {}
+
+    public Vec4(Vector vec)
+    {
+        x = vec.x();
+        y = vec.y();
+        z = vec.z();
+        w = vec.w();
+    }
 
     public Vec4(float x_y_z_w)
     {
@@ -22,6 +30,14 @@ public class Vec4
 
     public Vec4(float x, float y, float z, float w) {
         this.set(x, y, z, w);
+    }
+
+    public Vec4(Vec3 position, float w)
+    {
+        x = position.x();
+        y = position.y();
+        z = position.z();
+        this.w = w;
     }
 
     public void set(float x, float y) {
@@ -101,7 +117,12 @@ public class Vec4
         return dest;
     }
 
-    public Vec4 normalise(Vec4 dest) {
+    public Vec4 normalize()
+    {
+        return normalize(this);
+    }
+
+    public Vec4 normalize(Vec4 dest) {
         float l = this.length();
         if (dest == null) {
             dest = new Vec4(this.x / l, this.y / l, this.z / l, this.w / l);
@@ -110,11 +131,6 @@ public class Vec4
         }
 
         return dest;
-    }
-
-    private float length()
-    {
-        return (float) java.lang.Math.sqrt(x * x + y * y + z * z + w + w);
     }
 
     public static float dot(Vec4 left, Vec4 right) {
@@ -212,5 +228,37 @@ public class Vec4
     public Vec3 xyz()
     {
         return new Vec3(x, y, z);
+    }
+
+    @Override
+    public float x()
+    {
+        return x;
+    }
+
+    @Override
+    public float y()
+    {
+        return y;
+    }
+
+    @Override
+    public float z()
+    {
+        return z;
+    }
+
+    @Override
+    public float w()
+    {
+        return w;
+    }
+
+    public boolean isWithin(Vec4 min, Vec4 max)
+    {
+        return x >= min.x && x <= max.x &&
+                y >= min.y && y <= max.y &&
+                z >= min.z && z <= max.z &&
+                w >= min.w && w <= max.w;
     }
 }

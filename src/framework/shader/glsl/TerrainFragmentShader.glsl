@@ -27,9 +27,9 @@ uniform vec3 skyColor;
 
 // make this uniform sooner
 const float levels = 255;
-const int pcfCount = 4;
+const int pcfCount = 2;
 const float totalTexels = pow((pcfCount * 2 + 1), 2);
-const float mapSize = 2048;
+const float mapSize = 8192;
 
 void main(void) {
 
@@ -48,7 +48,7 @@ void main(void) {
         for (int y = -pcfCount; y <= pcfCount ; y++)
         {
             float objectNearLight = texture(shadowMap, shadowCoords.xy + vec2(x, y) * texelSize).r;
-            if(shadowCoords.z > objectNearLight)
+            if(shadowCoords.z > objectNearLight + 0.0001)
             {
                 total += 1;
             }
@@ -56,7 +56,7 @@ void main(void) {
     }
 
     total /= totalTexels;
-    float lightFactor = 1.0 - (total * shadowCoords.w * .75);
+    float lightFactor = 1.0 - (total * shadowCoords.w * .7);
 
 
     // multitexturing

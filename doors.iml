@@ -12,5 +12,6 @@
     <orderEntry type="library" name="iid3rp_Utils" level="project" />
     <orderEntry type="library" name="joml-1.10.7-sources" level="project" />
     <orderEntry type="library" name="PNGDecoder (2)" level="project" />
+    <orderEntry type="library" name="jafama" level="project" />
   </component>
 </module>

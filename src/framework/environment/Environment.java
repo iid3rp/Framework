@@ -6,6 +6,7 @@ import framework.font.Font;
 import framework.font.FontFile;
 import framework.font.Text;
 import framework.hardware.Display;
+import framework.hardware.Keyboard;
 import framework.lang.Vec3;
 import framework.lang.Vec4;
 import framework.particles.ParticleMaster;
@@ -34,6 +35,9 @@ public final class Environment
     public static FrameBufferObject mouseEventBuffer = new FrameBufferObject(Display.getWidth(), Display.getHeight(), FrameBufferObject.DEPTH_TEXTURE);
     public static FrameBufferObject pixelBuffer = new FrameBufferObject(2, 2, FrameBufferObject.DEPTH_TEXTURE);
 
+    public static boolean bloom = false;
+    private static boolean shadows = true;
+
     public static void start()
     {
         // static method calling goes here:
@@ -53,10 +57,10 @@ public final class Environment
             //
             PictureBox pb = new PictureBox();
             pb.setTexture(MasterRenderer.getShadowMapTexture());
-            pb.setLocation(100, 0);
+            pb.setLocation(10, 10);
             pb.setScale(200, 200);
             pb.setSize(200, 200);
-            scene.getContentPane().add(pb);
+            //scene.getContentPane().add(pb);
 
 
             loop();
@@ -71,7 +75,6 @@ public final class Environment
 
         // example implementation...
         Font x = FontFile.readFont("comic");
-        System.out.println(x);
         List<Char> chars = x.getCharacters();
         Text text = new Text();
         text.setText(Scratch.guess.toUpperCase());
@@ -80,10 +83,6 @@ public final class Environment
         text.setSize(200, 500);
         text.setForegroundColor(new Color(0x2B35CD));
 
-        for(Char c : chars) {
-            System.out.println(c);
-        }
-
         while(Display.shouldDisplayClose())
         {
             //FPSCounter.update();
@@ -91,7 +90,8 @@ public final class Environment
             scene.getEvent().update();
 
             //the shadow thingies
-            MasterRenderer.renderShadowMap(scene.getEntities(), scene.getMainLight());
+            if(shadows)
+                MasterRenderer.renderShadowMap(scene.getEntities(), scene.getMainLight());
 
             //particle
 
@@ -141,6 +141,10 @@ public final class Environment
 //            GL11.glDisable(GL30.GL_CLIP_DISTANCE1);
 //            MasterRenderer.buffer.unbindCurrentFrameBuffer();
 
+            Environment.run(scene ->
+            {
+                System.out.println("Pitch: " + scene.getCamera().getPitch() + " Yaw: " + scene.getCamera().getYaw());
+            });
 
             // frame buffer stuff
             multi.bindFrameBuffer();
@@ -154,17 +158,20 @@ public final class Environment
             multi.unbindFrameBuffer();
 
             //multi.resolveToScreen();
-            multi.resolveToFrameBufferObject(GL_COLOR_ATTACHMENT0, out);
-            multi.resolveToFrameBufferObject(GL_COLOR_ATTACHMENT1, bright);
-            multi.resolveToFrameBufferObject(GL_COLOR_ATTACHMENT2, mouseEventBuffer);
+            //multi.resolveToFrameBufferObject(GL_COLOR_ATTACHMENT2, mouseEventBuffer);
             multi.resolveToScreen();
             //multi.resolvePixel(mouseEventBuffer);
             //if(i % 2 == 0)
             //     scene.getEvent().resolveColorPickFromPixel(mouseEventBuffer, pixelBuffer);
             //i++;
 
-            //if(!Keyboard.isKeyDown(Keyboard.E))
-            PostProcessing.doPostProcessing(out.getColorTexture(), bright.getColorTexture());
+
+            if(bloom || Keyboard.isKeyDown(Keyboard.G))
+            {
+                multi.resolveToFrameBufferObject(GL_COLOR_ATTACHMENT1, bright);
+                multi.resolveToFrameBufferObject(GL_COLOR_ATTACHMENT0, out);
+                PostProcessing.doPostProcessing(out.getColorTexture(), bright.getColorTexture());
+            }
 
             // text renderer
             // wont be rendered for now...

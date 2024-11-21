@@ -31,7 +31,7 @@ public class Player extends Entity {
     {
         super(entity);
         this.camera = camera;
-        setRotationY(180);
+        setRotationY(0);
         walkSpeed = RUN_SPEED;
     }
 

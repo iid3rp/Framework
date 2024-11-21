@@ -25,7 +25,7 @@ public class PostProcessing {
 	public static void initialize()
 	{
 		quad = ModelLoader.loadToVaoInt(POSITIONS, 2);
-		contrastChanger = new ContrastChanger();
+		contrastChanger = new ContrastChanger(Display.getWidth(), Display.getHeight());
 		verticalBlur = new VerticalBlur(Display.getWidth() / 2, Display.getHeight() / 2);
 		horizontalBlur = new HorizontalBlur(Display.getWidth() / 2, Display.getHeight() / 2);
 		brightFilter = new BrightFilter(Display.getWidth() / 2, Display.getHeight() / 2);
@@ -35,12 +35,10 @@ public class PostProcessing {
 	public static void doPostProcessing(int colorTexture, int brightTexture){
 		start();
 
-//		horizontalBlur.render(colorTexture);
-//		verticalBlur.render(horizontalBlur.getOutputTexture());
-		//brightFilter.render(colorTexture);
 		horizontalBlur.render(brightTexture);
 		verticalBlur.render(horizontalBlur.getOutputTexture());
-		combineFilter.render(colorTexture, verticalBlur.getOutputTexture());
+		contrastChanger.render(colorTexture);
+		combineFilter.render(contrastChanger.getOutputTexture(), verticalBlur.getOutputTexture());
 		end();
 	}
 	

@@ -17,9 +17,9 @@ public class LinkList<E> implements Iterable<E>
 
     public LinkList() {}
 
-    private Iterable<E> queue = new Iterable<E>()
+    private Iterable<E> queue = new Iterable<>()
     {
-        private Iterator<E> it = new Iterator<E>()
+        private Iterator<E> it = new Iterator<>()
         {
             int i = 0;
             Node<E> e;
@@ -69,39 +69,29 @@ public class LinkList<E> implements Iterable<E>
         }
     };
 
-    private Iterator<E> it = new Iterator<E>()
-    {
-        int i = 0;
-        Node<E> e;
+    public E remove(int index) {
+        checkElementIndex(index);
+        return unlink(node(index));
+    }
 
-        @Override
-        public boolean hasNext()
-        {
-            if(first == null)
-                return false;
-            if(i == 0)
-                e = first;
-            if(i < size)
-                return true;
-            else {
-                i = 0;
-                e = null;
-                return false;
+    public boolean remove(E element) {
+        if (element == null) {
+            for (Node<E> x = first; x != null; x = x.next) {
+                if (x.e == null) {
+                    unlink(x);
+                    return true;
+                }
+            }
+        } else {
+            for (Node<E> x = first; x != null; x = x.next) {
+                if (element.equals(x.e)) {
+                    unlink(x);
+                    return true;
+                }
             }
         }
-
-        @Override
-        public E next()
-        {
-            if(!hasNext()) {
-                throw new NoSuchElementException();
-            }
-            E element = e.e;
-            e = e.next;
-            i++;
-            return element;
-        }
-    };
+        return false; // Element not found
+    }
 
     @SuppressWarnings("unchecked")
     public LinkList(E... elements)
@@ -241,7 +231,39 @@ public class LinkList<E> implements Iterable<E>
     @Override
     public Iterator<E> iterator()
     {
-        return it;
+        return new Iterator<>()
+        {
+            int i = 0;
+            Node<E> e;
+
+            @Override
+            public boolean hasNext()
+            {
+                if(first == null)
+                    return false;
+                if(i == 0)
+                    e = first;
+                if(i < size)
+                    return true;
+                else {
+                    i = 0;
+                    e = null;
+                    return false;
+                }
+            }
+
+            @Override
+            public E next()
+            {
+                if(!hasNext()) {
+                    throw new NoSuchElementException();
+                }
+                E element = e.e;
+                e = e.next;
+                i++;
+                return element;
+            }
+        };
     }
 
     @Override
@@ -293,6 +315,18 @@ public class LinkList<E> implements Iterable<E>
         if (!(i >= 0 && i < size))
             throw new IndexOutOfBoundsException("Index: " + i + ", Size: " + size);
     }
+
+    public boolean isEmpty()
+    {
+        return size == 0;
+    }
+
+    public void add(LinkList<E> xyz)
+    {
+        for(E e : xyz)
+            add(e);
+    }
+
 
     private static class Node<E>
     {

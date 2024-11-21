@@ -31,9 +31,9 @@ public class SkyboxShader extends GLShader
 
 	public void loadViewMatrix(Camera camera){
 		Mat4 matrix = Math.createViewMatrix(camera);
-		matrix.m[3][0] = 0;
-		matrix.m[3][1] = 0;
-		matrix.m[3][2] = 0;
+		matrix.m30 = 0;
+		matrix.m31 = 0;
+		matrix.m32 = 0;
 		rotation += rotationSpeed * Display.getDeltaInSeconds();
 		matrix.rotate((float) java.lang.Math.toRadians(rotation), new Vec3(0, 1, 0));
 		super.loadMatrix(location_viewMatrix, matrix);

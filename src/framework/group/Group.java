@@ -43,7 +43,7 @@ public class Group
         for(Entity entity : entities)
         {
             // Calculate the offset from the reference point to the entity's position
-            Vec3 offset = Vec3.sub(entity.getPosition(), reference, null);
+            Vec3 offset = Vec3.sub(entity.getPosition(), reference.get(), null);
 
             // Apply the rotation transformation
             offset.rotateX(x);
@@ -51,7 +51,7 @@ public class Group
             offset.rotateZ(z);
 
             // Update the entity's position based on the rotated position relative to the reference point
-            entity.setPosition(Vec3.add(reference, offset));
+            entity.setPosition(Vec3.add(reference.get(), offset));
 
             // Update the entity's rotation
             entity.transformRotation(x, y, z);

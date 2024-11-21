@@ -9,7 +9,6 @@ import framework.entity.Light;
 import framework.entity.Player;
 import framework.environment.Environment;
 import framework.environment.Scene;
-import framework.loader.TextureLoader;
 import framework.loader.ObjectLoader;
 import framework.model.TexturedModel;
 import framework.swing.ContentPane;
@@ -34,7 +33,8 @@ public class Game
     static Random random = new Random();
 
     private static void start() {
-        createDisplay();
+        
+        createDisplay(1280, 720);
 
         // Show FPS title only if debugging
         if (getRuntimeMXBean().getInputArguments().toString().contains("-agentlib:jdwp")) {
@@ -55,7 +55,7 @@ public class Game
         Environment.setScene(scene);
 
 
-        Light lighting = new Light(new Vec3(100_000, 100_000, -100_000), new Vec3(1f, 1f, .5f));
+        Light lighting = new Light(new Vec3(100_000, 100_000, -100_000), new Vec3(.5f, .5f, .25f));
 
         scene.getLights().add(lighting);
         scene.getLights().add(new Light(new Vec3(0, 10, 0), new Vec3(1, 0, 1), new Vec3(1, 0f, 200f)));
@@ -77,7 +77,7 @@ public class Game
         scene.setTerrain(terrain);
 
         TexturedModel barrel = new TexturedModel(ObjectLoader.loadObject("barrel.obj"),
-                TextureLoader.generateTexture("barrel.png"));
+                new Texture(ModelLoader.loadTexture("barrel.png")));
         barrel.getTexture().setNormalMap(ModelLoader.loadTexture("barrelNormal.png"));
         barrel.getTexture().setReflectivity(.002f);
         barrel.getTexture().setShineDampening(1);
@@ -118,7 +118,7 @@ public class Game
         chrysalis.getTexture().setShineDampening(1f);
         chrysalis.getTexture().setReflectivity(.1f);
 
-        for(int i = 0 ; i < 300; i++) {
+        for(int i = 0 ; i < 500; i++) {
             float x = random.nextFloat(terrain.getSize()) - (terrain.getSize() / 2);
             float z = random.nextFloat(terrain.getSize()) - (terrain.getSize() / 2);
             float y = terrain.getHeightOfTerrain(x, z);

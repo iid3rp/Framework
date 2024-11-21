@@ -53,7 +53,6 @@ public class Math
         Vec3 cameraPos = camera.getPosition();
         Vec3 negativeCameraPos = new Vec3(-cameraPos.x, -cameraPos.y, -cameraPos.z);
 
-        // move the world in field of view in the opposite direction to make the camera appear to move
         viewMatrix.translate(negativeCameraPos);
 
         return viewMatrix;
