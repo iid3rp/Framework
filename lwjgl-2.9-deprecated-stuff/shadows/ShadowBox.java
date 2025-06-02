@@ -234,7 +234,7 @@ public class ShadowBox {
 	}
 
 	/**
-	 * @return The aspect ratio of the display (width:height ratio).
+	 * @return The aspect ratio of the framework.display (width:height ratio).
 	 */
 	private float getAspectRatio() {
 		return (float) Display.getWidth() / (float) Display.getHeight();
