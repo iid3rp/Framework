@@ -1,7 +1,7 @@
 ### IntelliJ IDEA ###
 out/
-!src/source/main/**/out/
-!src/source/test/**/out/
+!lwjgl-3.3-old/source/main/**/out/
+!lwjgl-3.3-old/source/test/**/out/
 
 ### Eclipse ###
 .apt_generated
@@ -12,8 +12,8 @@ out/
 .springBeans
 .sts4-cache
 bin/
-!src/source/main/**/bin/
-!src/source/test/**/bin/
+!lwjgl-3.3-old/source/main/**/bin/
+!lwjgl-3.3-old/source/test/**/bin/
 
 ### NetBeans ###
 /nbproject/private/

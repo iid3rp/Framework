@@ -39,10 +39,10 @@ void main(void)
 
     gl_ClipDistance[3] = dot(worldPosition, plane);
 
-    vec3 model = normal;
+    vec3 Imodel = normal;
     if(useFakeLighting > 0.5)
     {
-        model = vec3(0.0, 1, 0.0);
+        Imodel = vec3(0.0, 1, 0.0);
     }
 
     passTextureCoordinates = (textureCoordinates / numberOfRows) + offset;
