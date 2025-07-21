@@ -7,25 +7,26 @@ import java.nio.IntBuffer;
 
 public class Buffer
 {
+
     private Buffer() {
     }
 
     public static ByteBuffer createByteBuffer(byte[] array) {
-        ByteBuffer result = ByteBuffer.allocateDirect(array.length).order(ByteOrder.nativeOrder());
-        result.put(array).flip();
-        return result;
+        return ByteBuffer.allocateDirect(array.length).order(ByteOrder.nativeOrder())
+            .put(array)
+            .flip();
     }
 
     public static FloatBuffer createFloatBuffer(float[] array) {
-        FloatBuffer result = ByteBuffer.allocateDirect(array.length << 2).order(ByteOrder.nativeOrder()).asFloatBuffer();
-        result.put(array).flip();
-        return result;
+        return ByteBuffer.allocateDirect(array.length << 2).order(ByteOrder.nativeOrder()).asFloatBuffer()
+            .put(array)
+            .flip();
     }
 
     public static IntBuffer createIntBuffer(int[] array) {
-        IntBuffer result = ByteBuffer.allocateDirect(array.length << 2).order(ByteOrder.nativeOrder()).asIntBuffer();
-        result.put(array).flip();
-        return result;
+        return ByteBuffer.allocateDirect(array.length << 2).order(ByteOrder.nativeOrder()).asIntBuffer()
+        .put(array)
+        .flip();
     }
 
 }

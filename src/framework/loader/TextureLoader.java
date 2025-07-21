@@ -121,7 +121,7 @@ public class TextureLoader
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
             glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, -0.4f);
-            ModelLoader.textureList.addAll(textures[i]);
+            ModelLoader.textureList.add(textures[i]);
         }
         texture = new Texture();
         texture.setTextureID(textures[0]);

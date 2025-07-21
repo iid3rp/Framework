@@ -1,7 +1,5 @@
 package framework.lang;
 
-import framework.entity.Camera;
-
 public class Math
 {
     private static Mat4 m = new Mat4();
@@ -31,32 +29,32 @@ public class Math
         return m;
     }
 
-    public static Mat4 createViewMatrix(Camera camera, float staticPositionY)
-    {
-        Mat4 viewMatrix = new Mat4();
-        Mat4.rotate((float) java.lang.Math.toRadians(camera.getPitch()), Vec3.xAxis, viewMatrix, viewMatrix);
-        Mat4.rotate((float) java.lang.Math.toRadians(camera.getYaw()), Vec3.yAxis, viewMatrix, viewMatrix);
-        Mat4.rotate((float) java.lang.Math.toRadians(camera.getRoll()), Vec3.zAxis, viewMatrix, viewMatrix);
-        Vec3 positiveCameraPosition = new Vec3(camera.getPosition().x, staticPositionY, camera.getPosition().z);
-        Vec3 negativeCameraPosition = new Vec3(-camera.getPosition().x, -staticPositionY, -camera.getPosition().z);
-        Mat4.translate(negativeCameraPosition, viewMatrix, viewMatrix);
-        return viewMatrix;
-    }
-
-    public static Mat4 createViewMatrix(Camera camera) {
-        Mat4 viewMatrix = new Mat4();
-        viewMatrix.identity();
-        viewMatrix.rotate((float) java.lang.Math.toRadians(camera.getPitch()), Vec3.xAxis);
-        viewMatrix.rotate((float) java.lang.Math.toRadians(camera.getYaw()), Vec3.yAxis);
-        viewMatrix.rotate((float) java.lang.Math.toRadians(camera.getRoll()), Vec3.zAxis);
-
-        Vec3 cameraPos = camera.getPosition();
-        Vec3 negativeCameraPos = new Vec3(-cameraPos.x, -cameraPos.y, -cameraPos.z);
-
-        viewMatrix.translate(negativeCameraPos);
-
-        return viewMatrix;
-    }
+//    public static Mat4 createViewMatrix(Camera camera, float staticPositionY)
+//    {
+//        Mat4 viewMatrix = new Mat4();
+//        Mat4.rotate((float) java.lang.Math.toRadians(camera.getPitch()), Vec3.xAxis, viewMatrix, viewMatrix);
+//        Mat4.rotate((float) java.lang.Math.toRadians(camera.getYaw()), Vec3.yAxis, viewMatrix, viewMatrix);
+//        Mat4.rotate((float) java.lang.Math.toRadians(camera.getRoll()), Vec3.zAxis, viewMatrix, viewMatrix);
+//        Vec3 positiveCameraPosition = new Vec3(camera.getPosition().x, staticPositionY, camera.getPosition().z);
+//        Vec3 negativeCameraPosition = new Vec3(-camera.getPosition().x, -staticPositionY, -camera.getPosition().z);
+//        Mat4.translate(negativeCameraPosition, viewMatrix, viewMatrix);
+//        return viewMatrix;
+//    }
+//
+//    public static Mat4 createViewMatrix(Camera camera) {
+//        Mat4 viewMatrix = new Mat4();
+//        viewMatrix.identity();
+//        viewMatrix.rotate((float) java.lang.Math.toRadians(camera.getPitch()), Vec3.xAxis);
+//        viewMatrix.rotate((float) java.lang.Math.toRadians(camera.getYaw()), Vec3.yAxis);
+//        viewMatrix.rotate((float) java.lang.Math.toRadians(camera.getRoll()), Vec3.zAxis);
+//
+//        Vec3 cameraPos = camera.getPosition();
+//        Vec3 negativeCameraPos = new Vec3(-cameraPos.x, -cameraPos.y, -cameraPos.z);
+//
+//        viewMatrix.translate(negativeCameraPos);
+//
+//        return viewMatrix;
+//    }
 
     /**
      * no one uses this constructor

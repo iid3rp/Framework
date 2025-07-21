@@ -1,15 +1,13 @@
 package framework.loader;
 
-import de.matthiasmann.twl.utils.PNGDecoder;
-import de.matthiasmann.twl.utils.PNGDecoder.Format;
+
 import framework.model.Model;
 import framework.resources.Resources;
 import framework.textures.TextureData;
 import framework.util.Buffer;
 import framework.util.LinkList;
+import framework.util.PNGDecoder;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL15;
 
 import java.io.InputStream;
@@ -17,30 +15,29 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
-import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.opengl.GL30.*;
-import static org.lwjgl.opengl.GL33.glVertexAttribDivisor;
+import static org.lwjgl.opengl.GL46.*;
 
 public final class ModelLoader
 {
     private static LinkList<Integer> vaoList = new LinkList<>();
     private static LinkList<Integer> vboList = new LinkList<>();
     protected static LinkList<Integer> textureList = new LinkList<>();
+
     private static int createVao() {
-        int vaoId = glGenVertexArrays();            // initialize an empty VAO
-        vaoList.addAll(vaoId);
-        glBindVertexArray(vaoId);                   // select this vao
+        int vaoId = glGenVertexArrays();
+        vaoList.add(vaoId);
+        glBindVertexArray(vaoId);
         return vaoId;
     }
 
     private static void storeDataInAttributeList(int attributeNumber, int vertexLength, float[] data) {
-        int vboId = glGenBuffers();                                 // initialize an empty VBO
-        vboList.addAll(vboId);
-        glBindBuffer(GL_ARRAY_BUFFER, vboId);                       // select this VBO into the VAO id specified
-        FloatBuffer buffer = Buffer.createFloatBuffer(data);   // make VBO from data
-        glBufferData(GL_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);      // store data into VBO & Not going to edit this data
-        glVertexAttribPointer(attributeNumber, vertexLength, GL_FLOAT, false, 0, 0);    // place VBO into VAO
-        glBindBuffer(GL_ARRAY_BUFFER, 0);                   // unbind the VBO
+        int vboId = glGenBuffers();
+        vboList.add(vboId);
+        glBindBuffer(GL_ARRAY_BUFFER, vboId);
+        FloatBuffer buffer = Buffer.createFloatBuffer(data);
+        glBufferData(GL_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
+        glVertexAttribPointer(attributeNumber, vertexLength, GL_FLOAT, false, 0, 0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
     private static void unbindVao() {
@@ -49,7 +46,7 @@ public final class ModelLoader
 
     private static void bindIndicesBuffer(int[] indices) {
         int vboId = glGenBuffers();
-        vboList.addAll(vboId);
+        vboList.add(vboId);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboId);
         IntBuffer buffer = Buffer.createIntBuffer(indices);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
@@ -58,14 +55,14 @@ public final class ModelLoader
     public static Model loadToVaoInt(float[] positions, float[] textureCoords, float[] normals, int[] indices) {
         int vaoId = createVao();
         bindIndicesBuffer(indices);
-        storeDataInAttributeList(0, 3, positions);     // using VAO attribute 0. Could be any 0 through 15
+        storeDataInAttributeList(0, 3, positions);
         storeDataInAttributeList(1, 2, textureCoords);
         storeDataInAttributeList(2, 3, normals);
         unbindVao();
         return new Model(vaoId, indices.length);
     }
 
-    // for the GUI rendering system
+    // for the GUI rendering system (2D Objects)
     public static Model loadToVaoInt(float[] positions, int dimensions)
     {
         int VaoId = createVao();
@@ -81,37 +78,37 @@ public final class ModelLoader
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, 20f);
-        textureList.addAll(textureId);
+        textureList.add(textureId);
         return textureId;
     }
 
     public static int loadCubeMap(String[] textureFiles)
     {
-        int textureID = GL11.glGenTextures();
-        GL13.glActiveTexture(GL13.GL_TEXTURE0);
-        GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, textureID);
+        int textureID = glGenTextures();
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 
         for(int i = 0; i < textureFiles.length; i++)
         {
             TextureData data = decodeTextureFile("skybox/" + textureFiles[i] + ".png");
-            GL11.glTexImage2D
+            glTexImage2D
             (
-                GL13.GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+                GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
                 0,
-                GL11.GL_RGBA,
+                GL_RGBA,
                 data.getWidth(),
                 data.getHeight(),
                 0,
-                GL11.GL_RGBA,
-                GL11.GL_UNSIGNED_BYTE,
+                GL_RGBA,
+                GL_UNSIGNED_BYTE,
                 data.getBuffer()
             );
         }
-        GL11.glTexParameteri(GL13.GL_TEXTURE_CUBE_MAP, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
-        GL11.glTexParameteri(GL13.GL_TEXTURE_CUBE_MAP, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-        GL11.glTexParameteri(GL13.GL_TEXTURE_CUBE_MAP, GL11.GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE);
-        GL11.glTexParameteri(GL13.GL_TEXTURE_CUBE_MAP, GL11.GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE);
-        textureList.addAll(textureID);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        textureList.add(textureID);
         return textureID;
 
     }
@@ -126,7 +123,7 @@ public final class ModelLoader
             width = decoder.getWidth();
             height = decoder.getHeight();
             buffer = ByteBuffer.allocateDirect(4 * width * height);
-            decoder.decode(buffer, width * 4, Format.RGBA);
+            decoder.decode(buffer, width * 4, PNGDecoder.Format.RGBA);
             buffer.flip();
             assert in != null;
             in.close();
@@ -153,8 +150,8 @@ public final class ModelLoader
 
     public static int createEmptyVbo(int floatCount)
     {
-        int vbo = GL15.glGenBuffers();
-        ModelLoader.vboList.addAll(vbo);
+        int vbo = glGenBuffers();
+        ModelLoader.vboList.add(vbo);
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
         glBufferData(GL_ARRAY_BUFFER, floatCount * 4L, GL_STREAM_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -208,4 +205,24 @@ public final class ModelLoader
         int vaoId = loadToVaoInt(vertexPositions, textureCoords);
         return new Model(vaoId, vertexPositions.length);
     }
+
+    public static Model loadToVao(float[] positions, int[] indices)
+    {
+        int vaoId = createVao();
+        bindIndicesBuffer(indices);
+        storeDataInAttributeList(0, positions);
+        unbindVao();
+        return new Model(vaoId, indices.length);
+    }
+
+    private static void storeDataInAttributeList(int attributeNumber, float[] data) {
+        int vboID = glGenBuffers();
+        vboList.add(vboID);
+        glBindBuffer(GL_ARRAY_BUFFER, vboID);
+        FloatBuffer buffer = Buffer.createFloatBuffer(data);
+        glBufferData(GL_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
+        glVertexAttribPointer(attributeNumber, 3, GL_FLOAT, false,0,0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
+
 }

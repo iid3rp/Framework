@@ -2,7 +2,7 @@ package framework.model;
 
 import framework.loader.ModelLoader;
 
-public record Model(int vaoId, int vertexCount)
+public class Model
 {
     public static Model cube;
     public static Model square;
@@ -59,8 +59,36 @@ public record Model(int vaoId, int vertexCount)
                 -1f, 1f, 0.0f   // Top-left
         };
 
-        cube = ModelLoader.loadToVaoInt(cubeVertices, 3);
-        square = ModelLoader.loadToVaoInt(squareVertices, 2);
     }
 
+
+    private int vaoId;
+    private int vertexCount;
+
+
+    public Model(int vaoId, int length)
+    {
+        this.vaoId = vaoId;
+        this.vertexCount = length;
+    }
+
+    public int getVaoId()
+    {
+        return vaoId;
+    }
+
+    public void setVaoId(int vaoId)
+    {
+        this.vaoId = vaoId;
+    }
+
+    public int getVertexCount()
+    {
+        return vertexCount;
+    }
+
+    public void setVertexCount(int vertexCount)
+    {
+        this.vertexCount = vertexCount;
+    }
 }

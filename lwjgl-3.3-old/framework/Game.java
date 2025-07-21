@@ -9,7 +9,6 @@ import framework.entity.Light;
 import framework.entity.Player;
 import framework.environment.Environment;
 import framework.environment.Scene;
-import framework.loader.ObjectLoader;
 import framework.model.TexturedModel;
 import framework.particles.ParticleSystem;
 import framework.particles.ParticleTexture;

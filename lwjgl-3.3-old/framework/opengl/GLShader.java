@@ -7,7 +7,6 @@ import framework.lang.Math;
 import framework.lang.Vec2;
 import framework.lang.Vec3;
 import framework.lang.Vec4;
-import framework.util.FileUtils;
 import framework.util.LinkList;
 import org.lwjgl.BufferUtils;
 

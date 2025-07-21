@@ -1,7 +1,5 @@
 package framework.lang;
 
-import framework.util.LinkList;
-
 
 public class Normal
 {
@@ -14,7 +12,6 @@ public class Normal
     private Normal duplicateVertex = null;
     private int index;
     private float length;
-    private LinkList<Vec3> tangents = new LinkList<>();
     private Vec3 averagedTangent = new Vec3();
 
     public Normal(int index, Vec3 position){
@@ -23,26 +20,8 @@ public class Normal
         this.length = position.length();
     }
 
-    public void addTangent(Vec3 tangent){
-        tangents.addAll(tangent);
-    }
 
-    //NEW
-    public Normal duplicate(int newIndex){
-        Normal n = new Normal(newIndex, position);
-        n.tangents = this.tangents;
-        return n;
-    }
 
-    public void averageTangents(){
-        if(tangents.isEmpty()){
-            return;
-        }
-        for(Vec3 tangent : tangents){
-            Vec3.add(averagedTangent, tangent, averagedTangent);
-        }
-        averagedTangent.normalize();
-    }
 
     public Vec3 getAverageTangent(){
         return averagedTangent;

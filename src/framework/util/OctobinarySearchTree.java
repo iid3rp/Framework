@@ -183,7 +183,7 @@ public class OctobinarySearchTree<T>
             if(root != null)
             {
                 list = inorder(root.getLeft(), list);
-                list.addAll(root.get());
+                list.add(root.get());
                 list = inorder(root.getRight(), list);
             }
             return list;
@@ -192,7 +192,7 @@ public class OctobinarySearchTree<T>
         {
             if(root != null)
             {
-                list.addAll(root.get());
+                list.add(root.get());
                 list = preorder(root.getLeft(), list);
                 list = preorder(root.getRight(), list);
             }
@@ -204,7 +204,7 @@ public class OctobinarySearchTree<T>
             {
                 list = inorder(root.getLeft(), list);
                 list = inorder(root.getRight(), list);
-                list.addAll(root.get());
+                list.add(root.get());
             }
             return list;
         }
@@ -268,7 +268,7 @@ public class OctobinarySearchTree<T>
             if (node == null)
                 return;
             if (node.location.isWithin(min, max))
-                results.addAll(node.value);
+                results.add(node.value);
             if (node.left != null && node.location.x > min.x)
                 rangeQueryRecursive(node.left, min, max, results);
             if (node.right != null && node.location.x < max.x)

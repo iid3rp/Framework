@@ -5,7 +5,8 @@ import org.lwjgl.glfw.GLFWKeyCallback;
 
 import static org.lwjgl.glfw.GLFW.*;
 
-public final class Keyboard extends GLFWKeyCallback implements Hardware {
+public final class Keyboard extends GLFWKeyCallback implements Hardware
+{
 
     /**
      * The keys for the keyboard. There are 348 in total.

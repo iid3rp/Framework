@@ -97,7 +97,7 @@ public class LinkList<E> implements Iterable<E>
     public LinkList(E... elements)
     {
         for(E e : elements)
-            addAll(e);
+            add(e);
     }
 
     public void clear()
@@ -113,7 +113,7 @@ public class LinkList<E> implements Iterable<E>
         size = 0;
     }
 
-    public boolean addAll(E e)
+    public boolean add(E e)
     {
         if(size == 0)
             addFirst(e);
@@ -122,7 +122,7 @@ public class LinkList<E> implements Iterable<E>
         return true;
     }
 
-    public boolean addAll(E e, int index)
+    public boolean add(E e, int index)
     {
         if(index == size)
             return addLast(e);
@@ -321,10 +321,10 @@ public class LinkList<E> implements Iterable<E>
         return size == 0;
     }
 
-    public void addAll(LinkList<E> list)
+    public void add(LinkList<E> list)
     {
         for(E e : list)
-            addAll(e);
+            add(e);
     }
 
 

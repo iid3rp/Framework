@@ -1,5 +1,6 @@
 package framework.lang;
 
+import java.lang.Math;
 import java.nio.FloatBuffer;
 
 public final class Vec3 extends Vector
@@ -61,7 +62,7 @@ public final class Vec3 extends Vector
     }
 
     public Vec3 rotateX(float angle, Vec3 dest) {
-        float sin = Math.sin(angle), cos = Math.cosFromSin(sin, angle);
+        float sin = (float) Math.sin(angle), cos = (float) Math.cos(angle);
         float y = this.y * cos - this.z * sin;
         float z = this.y * sin + this.z * cos;
         dest.x = this.x;
@@ -82,8 +83,8 @@ public final class Vec3 extends Vector
     }
 
     public Vec3 rotateY(float angle, Vec3 dest) {
-        float sin = Math.sin(angle);
-        float cos = Math.cos(angle);
+        float sin = (float) Math.sin(angle);
+        float cos = (float) Math.cos(angle);
         float x =  this.x * cos + this.z * sin;
         float z = -this.x * sin + this.z * cos;
         dest.x = x;
@@ -104,8 +105,8 @@ public final class Vec3 extends Vector
     }
 
     public Vec3 rotateZ(float angle, Vec3 dest) {
-        float sin = Math.sin(angle);
-        float cos = Math.cos(angle);
+        float sin = (float) Math.sin(angle);
+        float cos = (float) Math.cos(angle);
         float x = this.x * cos - this.y * sin;
         float y = this.x * sin + this.y * cos;
         dest.x = x;
@@ -133,7 +134,7 @@ public final class Vec3 extends Vector
         float x = this.x - location.x;
         float y = this.y - location.y;
         float z = this.z - location.z;
-        return (float) java.lang.Math.sqrt(x * x + y * y + z * z);
+        return (float) Math.sqrt(x * x + y * y + z * z);
     }
 
     public Vec3 translate(float x, float y, float z)
@@ -230,7 +231,7 @@ public final class Vec3 extends Vector
             dls = 1.0F;
         }
 
-        return (float) java.lang.Math.acos(dls);
+        return (float) Math.acos(dls);
     }
 
     public Vec3 load(FloatBuffer buf)

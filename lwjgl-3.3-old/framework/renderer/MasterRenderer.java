@@ -74,7 +74,7 @@ public class MasterRenderer {
 
     public static void enableCulling() {
         // don't texture surface with normal vectors facing away from the "camera"
-        // don't render back the faces of a model.
+        // don't render back the faces of a framework.model.
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
     }

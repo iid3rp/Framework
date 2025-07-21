@@ -82,7 +82,7 @@ public class EntityRenderer {
     }
 
     private void unbindTexturedModel() {
-        MasterRenderer.enableCulling(); // make sure culling is enabled for the next model that renders
+        MasterRenderer.enableCulling(); // make sure culling is enabled for the next framework.model that renders
         glDisableVertexAttribArray(0);  // VAO 0 = vertex spacial coordinates
         glDisableVertexAttribArray(1);  // VAO 1 = texture coordinates
         glDisableVertexAttribArray(2);  // VAO 2 = normals

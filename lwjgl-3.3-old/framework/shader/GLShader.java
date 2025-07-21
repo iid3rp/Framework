@@ -4,7 +4,6 @@ import framework.lang.Mat4;
 import framework.lang.Vec2;
 import framework.lang.Vec3;
 import framework.lang.Vec4;
-import framework.util.FileUtils;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;

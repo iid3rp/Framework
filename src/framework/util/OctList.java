@@ -40,7 +40,7 @@ public class OctList<T>
         if(this.position == null)
             throw new IllegalArgumentException("Must set the position first before adding!");
         LinkList<T> list = determineList(position);
-        list.addAll(element);
+        list.add(element);
     }
 
     private LinkList<T> determineList(Vec3 position)
@@ -95,21 +95,21 @@ public class OctList<T>
 
         // Check each octant and add the entire list if the rotation is within bounds
         if (isWithinOctant(minYaw, maxYaw, minPitch, maxPitch, 225, 315))
-            resultList.addAll(xyz);
+            resultList.add(xyz);
         if (isWithinOctant(minYaw, maxYaw, minPitch, maxPitch, 135, 315))
-            resultList.addAll(_xyz);
+            resultList.add(_xyz);
         if (isWithinOctant(minYaw, maxYaw, minPitch, maxPitch, 315, 315))
-            resultList.addAll(xy_z);
+            resultList.add(xy_z);
         if (isWithinOctant(minYaw, maxYaw, minPitch, maxPitch, 45, 315))
-            resultList.addAll(_xy_z);
+            resultList.add(_xy_z);
         if (isWithinOctant(minYaw, maxYaw, minPitch, maxPitch, 225, 45))
-            resultList.addAll(x_yz);
+            resultList.add(x_yz);
         if (isWithinOctant(minYaw, maxYaw, minPitch, maxPitch, 135, 45))
-            resultList.addAll(_x_yz);
+            resultList.add(_x_yz);
         if (isWithinOctant(minYaw, maxYaw, minPitch, maxPitch, 315, 45))
-            resultList.addAll(x_y_z);
+            resultList.add(x_y_z);
         if (isWithinOctant(minYaw, maxYaw, minPitch, maxPitch, 45, 45))
-            resultList.addAll(_x_y_z);
+            resultList.add(_x_y_z);
 
         return resultList;
     }

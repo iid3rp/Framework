@@ -5,19 +5,23 @@ import framework.textures.Texture;
 
 public class TexturedModel
 {
-    private final Model rawModel;
-    private final Texture modelTexture;
+    private final Model model;
+    private final Texture texture;
 
-    public TexturedModel(Model rawModel, Texture modelTexture) {
-        this.rawModel = rawModel;
-        this.modelTexture = modelTexture;
+
+    public TexturedModel(Model model, Texture texture)
+    {
+        this.model = model;
+        this.texture = texture;
     }
 
-    public Model getModel() {
-        return rawModel;
+    public Model getModel()
+    {
+        return model;
     }
 
-    public Texture getTexture() {
-        return modelTexture;
+    public Texture getTexture()
+    {
+        return texture;
     }
 }
