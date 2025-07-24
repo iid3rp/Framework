@@ -8,7 +8,6 @@ import framework.lang.Vec2;
 import framework.lang.Vec3;
 import framework.model.TexturedModel;
 import framework.util.LinkList;
-import framework.util.Map;
 
 
 import static org.lwjgl.opengl.GL46.*;

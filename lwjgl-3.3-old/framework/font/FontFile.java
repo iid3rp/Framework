@@ -1,7 +1,7 @@
 package framework.font;
 
 import framework.loader.ModelLoader;
-import framework.resources.Resources;
+import framework.io.Resources;
 
 import java.io.BufferedReader;
 import java.io.IOException;

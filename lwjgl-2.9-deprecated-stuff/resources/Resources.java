@@ -1,4 +1,4 @@
-package framework.resources;
+package framework.io;
 
 import framework.model.Model;
 import framework.display.ObjectLoader;

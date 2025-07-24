@@ -3,7 +3,7 @@ package framework.display;
 import de.matthiasmann.twl.utils.PNGDecoder;
 import de.matthiasmann.twl.utils.PNGDecoder.Format;
 import framework.model.Model;
-import framework.resources.Resources;
+import framework.io.Resources;
 import framework.texture.TextureData;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.EXTTextureFilterAnisotropic;

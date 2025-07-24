@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.nio.IntBuffer;
 import java.util.Objects;
 
-import framework.resources.Resources;
+import framework.io.Resources;
 import framework.textures.Texture;
 import framework.util.Buffer;
 

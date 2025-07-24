@@ -1,8 +1,9 @@
 package framework.hardware;
 
+import framework.renderer.MasterRenderer;
+import framework.shader.EntityShader;
 import org.lwjgl.glfw.GLFWVidMode;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
+import org.lwjgl.glfw.GLFWWindowSizeCallback;
 
 import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MAJOR;
 import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MINOR;
@@ -13,6 +14,7 @@ import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_FORWARD_COMPAT;
 import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_PROFILE;
 import static org.lwjgl.glfw.GLFW.GLFW_REFRESH_RATE;
 import static org.lwjgl.glfw.GLFW.GLFW_RESIZABLE;
+import static org.lwjgl.glfw.GLFW.GLFW_VISIBLE;
 import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
 import static org.lwjgl.glfw.GLFW.glfwDestroyWindow;
 import static org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor;
@@ -26,6 +28,7 @@ import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetMouseButtonCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetScrollCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowPos;
+import static org.lwjgl.glfw.GLFW.glfwSetWindowSizeCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowTitle;
 import static org.lwjgl.glfw.GLFW.glfwShowWindow;
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
@@ -34,10 +37,13 @@ import static org.lwjgl.glfw.GLFW.glfwTerminate;
 import static org.lwjgl.glfw.GLFW.glfwWindowHint;
 import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
 import static org.lwjgl.opengl.GL.createCapabilities;
-import static org.lwjgl.opengl.GL11.GL_FALSE;
 import static org.lwjgl.opengl.GL11.GL_TRUE;
 import static org.lwjgl.opengl.GL11.GL_VERSION;
 import static org.lwjgl.opengl.GL11.glGetString;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11C.GL_FALSE;
+import static org.lwjgl.opengl.GL11C.glViewport;
+import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
 
 public final class Display implements Hardware
 {
@@ -56,6 +62,8 @@ public final class Display implements Hardware
     private static Keyboard keyboard;
     private static Mouse mouse;
     private static int currentFPSCount;
+    private static boolean windowResized;
+    private static GLFWWindowSizeCallback windowSizeCallback;
 
     // Hide the constructor
     private Display() {}
@@ -82,6 +90,7 @@ public final class Display implements Hardware
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
         glfwWindowHint(GLFW_REFRESH_RATE, 120);
         glfwWindowHint(GLFW_DECORATED, GL_TRUE);
+        glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
 
         window = glfwCreateWindow(width, height, TITLE, 0, 0);
 
@@ -99,10 +108,27 @@ public final class Display implements Hardware
         // register keyboard input callback
         glfwSetKeyCallback(window, keyboard);
 
-
+        // register mouse
         glfwSetCursorPosCallback(window, mouse.getMouseMoveCallback());
         glfwSetMouseButtonCallback(window, mouse.getMouseButtonsCallback());
         glfwSetScrollCallback(window, mouse.getMouseScrollCallback());
+
+        //register window
+        // Register window resize callback
+        windowSizeCallback = new GLFWWindowSizeCallback() {
+            @Override
+            public void invoke(long window, int newWidth, int newHeight) {
+                Display.width = newWidth;
+                Display.height = newHeight;
+
+                // Update OpenGL viewport to match new window size
+                glViewport(0, 0, newWidth, newHeight);
+                EntityShader.bind();
+                EntityShader.loadUniform("projectionMatrix", MasterRenderer.getProjectionMatrix());
+                EntityShader.unbind();
+            }
+        };
+        glfwSetWindowSizeCallback(window, windowSizeCallback);
 
         glfwMakeContextCurrent(window);
         createCapabilities();
@@ -112,7 +138,7 @@ public final class Display implements Hardware
         glfwSwapInterval(0);
 
         lastFrameTime = getCurrentTime();
-        GL11.glEnable(GL13.GL_MULTISAMPLE);
+        glEnable(GL_MULTISAMPLE);
     }
 
     public static void updateDisplay()
@@ -125,7 +151,6 @@ public final class Display implements Hardware
 
         if (showFPSTitle) {
             frames++;
-
             if (System.currentTimeMillis() > time + 1000) {
                 glfwSetWindowTitle(window, TITLE + " | FPS: " + frames);
                 time = System.currentTimeMillis();

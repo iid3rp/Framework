@@ -11,7 +11,7 @@ import framework.lang.Normal;
 import framework.lang.Vec2;
 import framework.lang.Vec3;
 import framework.model.Model;
-import framework.resources.Resources;
+import framework.io.Resources;
 
 public class ObjectLoader {
 

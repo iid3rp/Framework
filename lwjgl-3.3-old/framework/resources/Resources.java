@@ -1,4 +1,4 @@
-package framework.resources;
+package framework.io;
 
 public final class Resources
 {

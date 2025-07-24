@@ -9,7 +9,7 @@ import java.util.List;
 
 import framework.model.Model;
 import framework.display.ModelLoader;
-import framework.resources.Resources;
+import framework.io.Resources;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 

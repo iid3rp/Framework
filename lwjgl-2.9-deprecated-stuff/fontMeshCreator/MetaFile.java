@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
-import framework.resources.Resources;
+import framework.io.Resources;
 import org.lwjgl.opengl.Display;
 
 /**

@@ -1,22 +1,72 @@
 package framework.loader;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.nio.IntBuffer;
 import java.util.Objects;
 
-import framework.resources.Resources;
+import framework.io.BufferTexture;
+import framework.io.Mesh;
+import framework.io.Resources;
 import framework.textures.Texture;
 import framework.util.Buffer;
 
 import javax.imageio.ImageIO;
 
+import static org.lwjgl.opengl.EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT;
+import static org.lwjgl.opengl.EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT;
+import static org.lwjgl.opengl.GL.getCapabilities;
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE;
+import static org.lwjgl.opengl.GL12.GL_TEXTURE_BASE_LEVEL;
+import static org.lwjgl.opengl.GL12.GL_TEXTURE_MAX_LEVEL;
 import static org.lwjgl.opengl.GL14.GL_TEXTURE_LOD_BIAS;
 import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 
 public class TextureLoader
 {
+    public static void loadAllTextures() {
+        File meshDir = new File(System.getProperty("user.home") + File.separator + "framework" + File.separator + "images");
+        System.out.println(meshDir.getAbsolutePath());
+        if (!meshDir.exists()) {
+            System.out.println("Mesh directory does not exist.");
+            return;
+        }
+
+        File[] files = meshDir.listFiles((dir, name) -> name.toLowerCase().endsWith(".png"));
+        if (files == null || files.length == 0) {
+            System.out.println("No OBJ files found in: " + Mesh.MESH_DIRECTORY);
+            return;
+        }
+
+        for (File file : files) {
+            String fileName = file.getName();
+            String meshName = fileName.substring(0, fileName.lastIndexOf('.'));
+
+            BufferTexture texture = loadTexture(file.getAbsolutePath(), meshName);
+            texture.exportObject();
+            System.out.println("Processed and exported: " + meshName);
+        }
+    }
+
+    public static BufferTexture loadTexture(String path, String name)
+    {
+        byte[] textureData;
+        BufferedImage image;
+        int[] pixels;
+        try {
+            image = ImageIO.read(new File(path));
+            int width = image.getWidth();
+            int height = image.getHeight();
+            pixels = image.getRGB(0, 0, width, height, null, 0, width);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        BufferTexture texture = new BufferTexture(name, image.getWidth(), image.getHeight());
+        texture.setArray(pixels);
+        return texture;
+    }
 
     public static Texture generateTexture(String path)
     {
@@ -28,7 +78,7 @@ public class TextureLoader
 
         try {
             BufferedImage image = ImageIO.read(
-                    Objects.requireNonNull(Resources.getResource().getResourceAsStream("textures/" + path))
+                    Objects.requireNonNull(Resources.class.getResourceAsStream("textures/" + path))
             );
             width = image.getWidth();
             height = image.getHeight();
@@ -155,13 +205,36 @@ public class TextureLoader
         int result = glGenTextures();
 
         glBindTexture(GL_TEXTURE_2D, result);
-        // linear makes everything non-pixelated...
-        // will be making a todo list for this...
-        // to make this customizable...
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+        // Wrapping parameters
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+        // Use tri-linear filtering for better quality with mipmaps
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        // LOD bias for sharpness control (0.0f maintains original quality)
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, 0.0f);
+
+        // Set LOD range for better performance
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 4); // Limit mipmap levels
+
+        // Upload texture data
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE,
                 Buffer.createIntBuffer(data));
+
+        // Generate mipmaps for better performance at distance
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+        // Enable anisotropic filtering if supported (check for extension availability)
+        if (getCapabilities().GL_EXT_texture_filter_anisotropic) {
+            float maxAnisotropy = glGetFloat(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT);
+            // Use moderate anisotropic filtering (4x) for good quality/performance balance
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, Math.min(4.0f, maxAnisotropy));
+        }
+
         glBindTexture(GL_TEXTURE_2D, 0);
         return result;
     }
@@ -182,5 +255,46 @@ public class TextureLoader
         {
             throw new RuntimeException(e);
         }
+    }
+
+    public static Texture loadBuffer(BufferTexture texture)
+    {
+        int result = glGenTextures();
+
+        glBindTexture(GL_TEXTURE_2D, result);
+
+        // Wrapping parameters
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+        // Use tri-linear filtering for better quality with mipmaps
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        // LOD bias for sharpness control (0.0f maintains original quality)
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, 0.0f);
+
+        // Set LOD range for better performance
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 4); // Limit mipmap levels
+
+        // Upload texture data
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture.getWidth(), texture.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE,
+                Buffer.createIntBuffer(texture.getArray()));
+
+        // Generate mipmaps for better performance at distance
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+        // Enable anisotropic filtering if supported (check for extension availability)
+        if (getCapabilities().GL_EXT_texture_filter_anisotropic) {
+            float maxAnisotropy = glGetFloat(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT);
+            // Use moderate anisotropic filtering (4x) for good quality/performance balance
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, Math.min(4.0f, maxAnisotropy));
+        }
+
+        glBindTexture(GL_TEXTURE_2D, 0);
+        Texture tex = new Texture();
+        tex.setTextureID(result);
+        return tex;
     }
 }

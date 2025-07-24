@@ -17,6 +17,11 @@ public class Buffer
             .flip();
     }
 
+    public static FloatBuffer createFloatBuffer(int size)
+    {
+        return ByteBuffer.allocateDirect(size << 2).order(ByteOrder.nativeOrder()).asFloatBuffer();
+    }
+
     public static FloatBuffer createFloatBuffer(float[] array) {
         return ByteBuffer.allocateDirect(array.length << 2).order(ByteOrder.nativeOrder()).asFloatBuffer()
             .put(array)

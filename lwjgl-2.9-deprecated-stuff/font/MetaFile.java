@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import framework.hardware.Display;
-import framework.resources.Resources;
+import framework.io.Resources;
 
 /**
  * Provides functionality for getting the values from a font file.

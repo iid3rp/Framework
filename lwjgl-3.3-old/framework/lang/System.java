@@ -1,6 +1,6 @@
 package framework.lang;
 
-import framework.resources.Resources;
+import framework.io.Resources;
 
 import java.awt.GraphicsEnvironment;
 import java.io.InputStream;

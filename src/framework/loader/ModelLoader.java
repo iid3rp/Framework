@@ -2,13 +2,11 @@ package framework.loader;
 
 
 import framework.model.Model;
-import framework.resources.Resources;
+import framework.io.Resources;
 import framework.textures.TextureData;
 import framework.util.Buffer;
 import framework.util.LinkList;
 import framework.util.PNGDecoder;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL15;
 
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -200,10 +198,14 @@ public final class ModelLoader
         return vaoId;
     }
 
-    public static Model loadToVao(float[] vertexPositions, float[] textureCoords)
+    public static Model loadToVao(float[] vertexPositions, float[] textureCoords, int[] indices)
     {
-        int vaoId = loadToVaoInt(vertexPositions, textureCoords);
-        return new Model(vaoId, vertexPositions.length);
+        int vaoId = createVao();
+        bindIndicesBuffer(indices);
+        storeDataInAttributeList(0, 3, vertexPositions);
+        storeDataInAttributeList(1, 2, textureCoords);
+        unbindVao();
+        return new Model(vaoId, indices.length);
     }
 
     public static Model loadToVao(float[] positions, int[] indices)

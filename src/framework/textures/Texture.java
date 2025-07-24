@@ -120,9 +120,9 @@ public class Texture
         return diffuseMap;
     }
 
-    public void setTextureID(int textureID)
+    public void setTextureID(int textureId)
     {
-        this.diffuseMap = textureID;
+        this.diffuseMap = textureId;
     }
 
     public void setDiffuseBuffer(IntBuffer diffuseBuffer)

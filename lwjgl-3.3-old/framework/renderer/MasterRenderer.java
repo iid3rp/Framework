@@ -15,7 +15,6 @@ import framework.shadow.ShadowMapMasterRenderer;
 import framework.skybox.SkyboxRenderer;
 import framework.terrain.Terrain;
 import framework.util.LinkList;
-import framework.util.Map;
 import framework.util.OctList;
 import framework.water.WaterFrameBufferObject;
 import framework.water.WaterRenderer;

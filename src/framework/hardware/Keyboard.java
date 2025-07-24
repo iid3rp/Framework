@@ -146,6 +146,22 @@ public final class Keyboard extends GLFWKeyCallback implements Hardware
             MENU            = GLFW_KEY_MENU,
             LAST            = GLFW_KEY_MENU;
 
+    public static boolean areKeysDown(int... keys)
+    {
+        for(int k : keys)
+            if(Keyboard.keys[k])
+                return true;
+        return false;
+    }
+
+    public static boolean areAllKeysDown(int... keys)
+    {
+        for(int k : keys)
+            if(!Keyboard.keys[k])
+                return false;
+        return true;
+    }
+
     @Override
     public void invoke(long window, int key, int scancode, int action, int mods) {
         keys[key] = action != GLFW.GLFW_RELEASE;

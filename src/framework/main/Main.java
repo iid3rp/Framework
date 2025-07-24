@@ -1,9 +1,12 @@
 package framework.main;
 
-import framework.environment.Environment;
+import framework.entity.Camera;
+import framework.entity.Entity;
+import framework.environment.Engine;
 import framework.hardware.Display;
-import framework.loader.ModelLoader;
 import framework.model.Model;
+import framework.model.TexturedModel;
+import framework.io.Resources;
 
 import java.util.Arrays;
 
@@ -14,6 +17,8 @@ public class Main
 {
 
     public static Model model;
+    public static TexturedModel tm;
+    public static Entity ent;
 
     private static void start() {
 
@@ -22,26 +27,24 @@ public class Main
 
         Arrays.asList("OpenGL: " + getOpenGlVersionMessage(), "LWJGL: " + getLwjglVersionMessage()).forEach(
                 System.out::println);
-
-
+        Engine.createThreads();
     }
 
     public static void main(String... args)
     {
-
         start();
-        float[] vertices = {
-                -.5f, .5f, 0,
-                -.5f, -.5f, 0,
-                .5f, -.5f, 0,
-                .5f, .5f, 0,
-        };
-        int[] indices = {
-                0, 1, 3, 3, 1, 2
-        };
-        model = ModelLoader.loadToVao(vertices, indices);
-
-        Environment.start();
+        Resources.createResourcePool();
+        tm = new TexturedModel(
+                Resources.getModel("barrel"),
+                Resources.getTexture("brat")
+        );
+        ent = new Entity(tm);
+        ent.setPosition(0, 0, 0);
+        ent.setRotation(0, 0,0);
+        ent.setScale(.5f, .5f, .5f);
+        Camera camera = new Camera();
+        Engine.setCamera(camera);
+        Engine.start();
 
     }
 }

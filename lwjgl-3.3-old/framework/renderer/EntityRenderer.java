@@ -7,9 +7,7 @@ import framework.model.TexturedModel;
 import framework.shader.EntityShader;
 import framework.textures.Texture;
 import framework.lang.Math;
-import framework.util.Key;
 import framework.util.LinkList;
-import framework.util.Map;
 
 import java.util.HashMap;
 

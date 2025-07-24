@@ -20,6 +20,8 @@ public class Mat4
     public float m31;
     public float m32;
     public float m33;
+    
+    // overhead 
 
     public Mat4() {
         identity();
@@ -46,6 +48,99 @@ public class Mat4
         m31 = src.m31;
         m32 = src.m32;
         m33 = src.m33;
+    }
+
+    public static Mat4 translate(float x, float y, float z, Mat4 src, Mat4 dest)
+    {
+        if (dest == null) {
+            dest = new Mat4();
+        }
+
+        dest.m30 += src.m00 * x + src.m10 * y + src.m20 * z;
+        dest.m31 += src.m01 * x + src.m11 * y + src.m21 * z;
+        dest.m32 += src.m02 * x + src.m12 * y + src.m22 * z;
+        dest.m33 += src.m03 * x + src.m13 * y + src.m23 * z;
+        return dest;
+    }
+
+    public static Mat4 rotate(double angle, float x, float y, float z, Mat4 src, Mat4 dest)
+    {
+        if (dest == null)
+            dest = new Mat4();
+
+        float c = (float) Math.cos(angle);
+        float s = (float) Math.sin(angle);
+        float omc = 1f - c; // one minus c
+
+        float xy = x * y;
+        float yz = y * z;
+        float xz = x * z;
+        float xs = x * s;
+        float ys = y * s;
+        float zs = z * s;
+
+        float f00 = x * x * omc + c;
+        float f01 = xy * omc + zs;
+        float f02 = xz * omc - ys;
+        float f10 = xy * omc - zs;
+        float f11 = y * y * omc + c;
+        float f12 = yz * omc + xs;
+        float f20 = xz * omc + ys;
+        float f21 = yz * omc - xs;
+        float f22 = z * z * omc + c;
+
+
+        float t00 = src.m00 * f00 + src.m10 * f01 + src.m20 * f02;
+        float t01 = src.m01 * f00 + src.m11 * f01 + src.m21 * f02;
+        float t02 = src.m02 * f00 + src.m12 * f01 + src.m22 * f02;
+        float t03 = src.m03 * f00 + src.m13 * f01 + src.m23 * f02;
+
+        float t10 = src.m00 * f10 + src.m10 * f11 + src.m20 * f12;
+        float t11 = src.m01 * f10 + src.m11 * f11 + src.m21 * f12;
+        float t12 = src.m02 * f10 + src.m12 * f11 + src.m22 * f12;
+        float t13 = src.m03 * f10 + src.m13 * f11 + src.m23 * f12;
+
+        float t20 = src.m00 * f20 + src.m10 * f21 + src.m20 * f22;
+        float t21 = src.m01 * f20 + src.m11 * f21 + src.m21 * f22;
+        float t22 = src.m02 * f20 + src.m12 * f21 + src.m22 * f22;
+        float t23 = src.m03 * f20 + src.m13 * f21 + src.m23 * f22;
+
+        dest.m00 = t00;
+        dest.m01 = t01;
+        dest.m02 = t02;
+        dest.m03 = t03;
+
+        dest.m10 = t10;
+        dest.m11 = t11;
+        dest.m12 = t12;
+        dest.m13 = t13;
+
+        dest.m20 = t20;
+        dest.m21 = t21;
+        dest.m22 = t22;
+        dest.m23 = t23;
+
+        return dest;
+    }
+
+    public static Mat4 scale(float x, float y, float z, Mat4 src, Mat4 dest)
+    {
+        if (dest == null)
+            dest = new Mat4();
+
+        dest.m00 = src.m00 * x;
+        dest.m01 = src.m01 * x;
+        dest.m02 = src.m02 * x;
+        dest.m03 = src.m03 * x;
+        dest.m10 = src.m10 * y;
+        dest.m11 = src.m11 * y;
+        dest.m12 = src.m12 * y;
+        dest.m13 = src.m13 * y;
+        dest.m20 = src.m20 * z;
+        dest.m21 = src.m21 * z;
+        dest.m22 = src.m22 * z;
+        dest.m23 = src.m23 * z;
+        return dest;
     }
 
     public String toString() {
@@ -357,8 +452,8 @@ public class Mat4
         if (dest == null) 
             dest = new Mat4();
 
-        float c = Math.cos(angle);
-        float s = Math.sin(angle);
+        float c = GeomMath.cos(angle);
+        float s = GeomMath.sin(angle);
         float omc = 1f - c; // omc means one minus c
 
         float xy = axis.x * axis.y;
@@ -441,6 +536,18 @@ public class Mat4
         dest.m31 += src.m01 * vec.x + src.m11 * vec.y;
         dest.m32 += src.m02 * vec.x + src.m12 * vec.y;
         dest.m33 += src.m03 * vec.x + src.m13 * vec.y;
+        return dest;
+    }
+
+    public static Mat4 translate(float x, float y, Mat4 src, Mat4 dest) {
+        if (dest == null) {
+            dest = new Mat4();
+        }
+
+        dest.m30 += src.m00 * x + src.m10 * y;
+        dest.m31 += src.m01 * x + src.m11 * y;
+        dest.m32 += src.m02 * x + src.m12 * y;
+        dest.m33 += src.m03 * x + src.m13 * y;
         return dest;
     }
 
