@@ -7,7 +7,7 @@ public class Scratch
 {
     public static void main(String... args)
     {
-        ObjectLoader.loadAllObjects();
-        //TextureLoader.loadAllTextures();
+        //ObjectLoader.loadAllObjects();
+        TextureLoader.loadAllTextures();
     }
 }

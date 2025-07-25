@@ -7,14 +7,15 @@ import framework.environment.Engine;
 import framework.hardware.Display;
 import framework.lang.Mat4;
 import framework.model.Model;
-import framework.shader.EntityShader;
+import framework.shader.GLShader;
 
+import static framework.shader.GLShader.EntityShader;
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 
 public class MasterRenderer {
-    public static float fov = 60;
+    public static float fov = 70;
     public static float nearPlane = 0.1f;
     public static float farPlane = 100_000;
     public static float SKY_RED = 0.95f;
@@ -27,10 +28,10 @@ public class MasterRenderer {
     {
         projectionMatrix = new Mat4();
         updateProjectionMatrix();
-        EntityShader.setShader();
-        EntityShader.bind();
-        EntityShader.loadUniform("projectionMatrix", projectionMatrix);
-        EntityShader.unbind();
+        GLShader.initializeShaders();
+        GLShader.bind(EntityShader.program);
+        GLShader.loadUniform("projectionMatrix", projectionMatrix);
+        GLShader.unbind();
         enableCulling();
         enableDepthTest();
 
@@ -61,8 +62,10 @@ public class MasterRenderer {
         glEnableVertexAttribArray(1);
 
         // enable uniforms
-        EntityShader.loadUniform("transformationMatrix", entity.getTransformationMatrix());
-        EntityShader.loadUniform("viewMatrix", Engine.test.getViewMatrix());
+        GLShader.loadUniform("transformationMatrix", entity.getTransformationMatrix());
+        GLShader.loadUniform("viewMatrix", Engine.test.getViewMatrix());
+        GLShader.loadUniform("hasTexture", entity.getModel().getTexture().getTextureId() != 0);
+        GLShader.loadUniform("backgroundColor", entity.getRed(), entity.getGreen(), entity.getBlue(), entity.getAlpha());
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, entity.getModel().getTexture().getTextureId());
@@ -85,12 +88,12 @@ public class MasterRenderer {
 
     public static void updateProjectionMatrix()
     {
-        aspectRatio = (float) (Display.getWidth() / Display.getHeight());
-        yScale = (float) ((1f / Math.tan(Math.toRadians(fov / 2f))) * aspectRatio);
+        projectionMatrix.identity();
+        aspectRatio = (float) Display.getWidth() / (float) Display.getHeight();
+        yScale = (float) (1f / Math.tan(Math.toRadians(fov / 2f)));
         xScale = yScale / aspectRatio;
         frustumLength = farPlane - nearPlane;
 
-        projectionMatrix.identity();
         projectionMatrix.m00 = xScale;
         projectionMatrix.m11 = yScale;
         projectionMatrix.m22 = -((farPlane + nearPlane) / frustumLength);

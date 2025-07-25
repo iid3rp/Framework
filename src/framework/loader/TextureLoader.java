@@ -57,9 +57,21 @@ public class TextureLoader
         int[] pixels;
         try {
             image = ImageIO.read(new File(path));
+            pixels = new int[image.getWidth() * image.getHeight()];
             int width = image.getWidth();
             int height = image.getHeight();
-            pixels = image.getRGB(0, 0, width, height, null, 0, width);
+            pixels = image.getRGB(0, 0, width, height, pixels, 0, width);
+
+            //make it RGBA instead
+            for(int i = 0; i < width * height; i++)
+            {
+                int a = (pixels[i] & 0xff000000) >> 24;
+                int r = (pixels[i] & 0xff0000) >> 16;
+                int g = (pixels[i] & 0xff00) >> 8;
+                int b = (pixels[i] & 0xff);
+
+                pixels[i] = a << 24 | b << 16 | g << 8 | r;
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

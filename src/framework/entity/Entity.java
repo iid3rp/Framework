@@ -11,6 +11,7 @@ public class Entity
     private float rotX, rotY, rotZ;
     private float scaleX, scaleY, scaleZ;
     private Mat4 transformationMatrix;
+    private float red, green, blue, alpha;
     public Entity(TexturedModel model)
     {
         this.model = model;
@@ -124,8 +125,37 @@ public class Entity
         return transformationMatrix;
     }
 
+    public void setColor(int red, int green, int blue, int alpha)
+    {
+        this.red = red;
+        this.green = green;
+        this.blue = blue;
+        this.alpha = alpha;
+    }
+
+    public float getRed()
+    {
+        return red;
+    }
+
+    public float getGreen()
+    {
+        return green;
+    }
+
+    public float getBlue()
+    {
+        return blue;
+    }
+
     public void updateTransformationMatrix()
     {
         Engine.mainExecute(() -> transformationMatrix = GeomMath.createTransformationMatrix(posX, posY, posZ, rotX, rotY, rotZ, scaleX, scaleY, scaleZ));
     }
+
+    public float getAlpha()
+    {
+        return alpha;
+    }
+
 }

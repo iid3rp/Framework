@@ -4,7 +4,6 @@ import framework.entity.Entity;
 import framework.lang.Mat4;
 import framework.model.Model;
 import framework.model.TexturedModel;
-import framework.shader.EntityShader;
 import framework.textures.Texture;
 import framework.lang.Math;
 import framework.util.LinkList;

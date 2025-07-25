@@ -1,7 +1,7 @@
 package framework.hardware;
 
 import framework.renderer.MasterRenderer;
-import framework.shader.EntityShader;
+import framework.shader.GLShader;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
 
@@ -123,9 +123,10 @@ public final class Display implements Hardware
 
                 // Update OpenGL viewport to match new window size
                 glViewport(0, 0, newWidth, newHeight);
-                EntityShader.bind();
-                EntityShader.loadUniform("projectionMatrix", MasterRenderer.getProjectionMatrix());
-                EntityShader.unbind();
+                MasterRenderer.updateProjectionMatrix();
+                GLShader.bind(GLShader.EntityShader.program);
+                GLShader.loadUniform("projectionMatrix", MasterRenderer.getProjectionMatrix());
+                GLShader.unbind();
             }
         };
         glfwSetWindowSizeCallback(window, windowSizeCallback);

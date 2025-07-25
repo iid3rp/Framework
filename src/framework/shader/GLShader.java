@@ -39,140 +39,189 @@ import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
 import static org.lwjgl.opengl.GL20.glUseProgram;
 import static org.lwjgl.opengl.GL20.glValidateProgram;
 
-public abstract class GLShader
+public final class GLShader
 {
     public static final String vertexPrefix = "glsl" + File.separator + "vertex" + File.separator;
     public static final String fragmentPrefix =  "glsl" + File.separator + "fragment" + File.separator;
     private static FloatBuffer matrix = Buffer.createFloatBuffer(16);
-    protected Map<String, Integer> uniforms;
-    private int programId;
-    private  int vertexShader;
-    private int fragmentShader;
+    private static ShaderProgram currentProgram;
 
-    public GLShader(String vertex, String fragment)
+    public static abstract class ShaderProgram
     {
-        uniforms = new HashMap<>();
-        vertexShader = loadShader(vertex,GL_VERTEX_SHADER);
-        fragmentShader = loadShader(fragment, GL_FRAGMENT_SHADER);
-        programId = glCreateProgram();
-        glAttachShader(programId, vertexShader);
-        glAttachShader(programId, fragmentShader);
-        bindAttributes();
-        glLinkProgram(programId);
-        glValidateProgram(programId);
-        getAllUniformLocations();
+        public static class Struct
+        {
+            public String[] fields;
+            public String name;
+
+            public Struct(String name, String... fields)
+            {
+                this.name = name;
+                this.fields = fields;
+            }
+        }
+        
+        private int programId;
+        private int vertex;
+        private int fragment;
+        Map<String, Integer> uniforms;
+
+        public ShaderProgram(int id, int vertex, int fragment)
+        {
+            programId = id;
+            this.vertex = vertex;
+            this.fragment = fragment;
+            uniforms = new HashMap<>();
+        }
+
+        protected void addUniform(String name, int index)
+        {
+            for(int i = 0; i < index; i++)
+            {
+                String uniformName = name + "[" + i + "]";
+                uniforms.put(uniformName, getUniformLocation(uniformName));
+            }
+        }
+
+        protected void addUniform(Struct struct, int index)
+        {
+            for(int i = 0; i < index; i++)
+                addUniform(struct.name + "[" + i + "]");
+        }
+
+        protected void addUniform(Struct struct)
+        {
+            for(String s : struct.fields)
+            {
+                String name = struct.name + "." + s;
+                uniforms.put(name, getUniformLocation(name));
+            }
+        }
+
+        protected void addUniform(String name)
+        {
+            uniforms.put(name, getUniformLocation(name));
+        }
+
+        protected int getUniformLocation(String name)
+        {
+            return glGetUniformLocation(programId, name);
+        }
+
+        protected void bindAttribute(int attribute, String variable)
+        {
+            glBindAttribLocation(programId, attribute, variable);
+        }
+
+        protected abstract void bindAttributes();
+
+        protected abstract void getAllUniformLocations();
     }
 
-    protected abstract void getAllUniformLocations();
-
-    protected int getUniformLocation(String name)
+    public static void initializeShaders()
     {
-        return glGetUniformLocation(programId, name);
+        EntityShader.initializeShader();
     }
 
-    protected void addUniform(String name)
+    private static void getAllUniformLocations(ShaderProgram program)
     {
-        uniforms.put(name, getUniformLocation(name));
+        program.getAllUniformLocations();
     }
 
-    protected void loadUniform(String name, float value)
+    private static void linkAndValidateProgram(ShaderProgram program)
     {
-        loadFloat(uniforms.get(name), value);
+        glLinkProgram(program.programId);
+        glValidateProgram(program.programId);
     }
 
-    protected void loadUniform(String name, float x, float y)
+    public static void loadUniform(String name, float value)
     {
-        loadVector(uniforms.get(name), x, y);
+        loadFloat(currentProgram.uniforms.get(name), value);
     }
 
-    protected void loadUniform(String name, float x, float y, float z)
+    public static void loadUniform(String name, float x, float y)
     {
-        loadVector(uniforms.get(name), x, y, z);
+        loadVector(currentProgram.uniforms.get(name), x, y);
     }
 
-    protected void loadUniform(String name, float x, float y, float z, float w)
+    public static void loadUniform(String name, float x, float y, float z)
     {
-        loadVector(uniforms.get(name), x, y, z, w);
+        loadVector(currentProgram.uniforms.get(name), x, y, z);
     }
 
-    protected void loadUniform(String name, int value)
+    public static void loadUniform(String name, float x, float y, float z, float w)
     {
-        loadInteger(uniforms.get(name), value);
+        loadVector(currentProgram.uniforms.get(name), x, y, z, w);
     }
 
-    protected void loadUniform(String name, boolean flag)
+    public static void loadUniform(String name, int value)
     {
-        loadBool(uniforms.get(name), flag);
+        loadInteger(currentProgram.uniforms.get(name), value);
     }
 
-    protected void loadUniform(String name, Mat4 matrix)
+    public static void loadUniform(String name, boolean flag)
     {
-        loadMatrix(uniforms.get(name), matrix);
+        loadBool(currentProgram.uniforms.get(name), flag);
     }
 
-    private void loadInteger(int location, int value)
+    public static void loadUniform(String name, Mat4 matrix)
+    {
+        loadMatrix(currentProgram.uniforms.get(name), matrix);
+    }
+
+    public static void loadInteger(int location, int value)
     {
         glUniform1i(location, value);
     }
 
-    private void loadFloat(int location, float value)
+    public static void loadFloat(int location, float value)
     {
         glUniform1f(location, value);
     }
 
-    private void loadVector(int location, float x, float y)
+    public static void loadVector(int location, float x, float y)
     {
         glUniform2f(location, x, y);
     }
 
-    private void loadVector(int location, float x, float y, float z)
+    public static void loadVector(int location, float x, float y, float z)
     {
         glUniform3f(location, x, y, z);
     }
 
-    private void loadVector(int location, float x, float y, float z, float w)
+    public static void loadVector(int location, float x, float y, float z, float w)
     {
         glUniform4f(location, x, y, z, w);
     }
 
-    private void loadBool(int location,boolean flag)
+    public static void loadBool(int location,boolean flag)
     {
         glUniform1f(location, flag? 1 : 0);
     }
 
-    private void loadMatrix(int location, Mat4 matrix)
+    public static void loadMatrix(int location, Mat4 matrix)
     {
         GLShader.matrix.clear();
         matrix.store(GLShader.matrix);
         GLShader.matrix.flip();
         glUniformMatrix4fv(location, false, GLShader.matrix);
     }
-
-    public void destroy()
-    {
-        unbind();
-        glDetachShader(programId, vertexShader);
-        glDetachShader(programId, fragmentShader);
-        glDeleteShader(vertexShader);
-        glDeleteShader(fragmentShader);
-        glDeleteProgram(programId);
-    }
-
-    protected void bindAttribute(int attribute, String variable)
-    {
-        glBindAttribLocation(programId, attribute, variable);
-    }
-
-    public void unbind()
+    
+    public static void unbind()
     {
         glUseProgram(0);
+        currentProgram = null;
     }
 
-    public void bind()
+    public static void bind(ShaderProgram program)
     {
-        glUseProgram(programId);
+        currentProgram = program;
+        glUseProgram(currentProgram.programId);
     }
-    protected abstract void bindAttributes();
+
+    protected static void bindAttributes(ShaderProgram program)
+    {
+        program.bindAttributes();
+    }
 
     private static int loadShader(String file, int type)
     {
@@ -191,5 +240,71 @@ public abstract class GLShader
         if(glGetShaderi(shader, GL_COMPILE_STATUS) == GL_FALSE)
             throw new RuntimeException(glGetShaderInfoLog(shader) + "\nCould not compile shader: " + file);
         return shader;
+    }
+
+    private static void destroyShaderProgram(ShaderProgram program)
+    {
+        glDetachShader(program.programId, program.vertex);
+        glDetachShader(program.programId, program.fragment);
+        glDeleteShader(program.vertex);
+        glDeleteShader(program.fragment);
+        glDeleteProgram(program.programId);
+    }
+
+    public static void destroy()
+    {
+        EntityShader.destroy();
+    }
+
+    /*
+    ===========================================================================================================================
+    Shader Classes
+
+        - These are for shaders that are used for this engine
+    ===========================================================================================================================
+     */
+    public static class EntityShader
+    {
+        private static String vertex = GLShader.vertexPrefix + "EntityVertexShader.glsl";
+        private static String fragment = GLShader.fragmentPrefix + "EntityFragmentShader.glsl";
+        public static ShaderProgram program;
+
+        public static void initializeShader()
+        {
+            int vert = loadShader(vertex,GL_VERTEX_SHADER);
+            int frag = loadShader(fragment,GL_FRAGMENT_SHADER);
+            int id = glCreateProgram();
+            program = new ShaderProgram(id, vert, frag)
+            {
+                @Override
+                protected void bindAttributes()
+                {
+                    bindAttribute(0, "pos");
+                    bindAttribute(1, "texCoords");
+                }
+
+                @Override
+                protected void getAllUniformLocations()
+                {
+                    addUniform("transformationMatrix");
+                    addUniform("projectionMatrix");
+                    addUniform("viewMatrix");
+                    addUniform("hasTexture");
+                    addUniform("backgroundColor");
+                    addUniform(new Struct("lights", "pos", "color", "intensity", "constant", "linear", "quadratic", "distance"));
+                }
+            };
+            glAttachShader(id, vert);
+            glAttachShader(id, frag);
+            bindAttributes(program);
+            linkAndValidateProgram(program);
+            getAllUniformLocations(program);
+        }
+
+        public static void destroy()
+        {
+            unbind();
+            destroyShaderProgram(program);
+        }
     }
 }

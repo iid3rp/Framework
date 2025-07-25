@@ -12,8 +12,13 @@ uniform mat4 viewMatrix;
 // variables for fragment shader
 out vec2 passCoord;
 
+vec4 position(void)
+{
+    return projectionMatrix * viewMatrix * transformationMatrix * vec4(pos, 1);
+}
+
 void main(void)
 {
-    gl_Position = projectionMatrix * viewMatrix * transformationMatrix * vec4(pos, 1);
+    gl_Position = position();
     passCoord = textCoord;
 }

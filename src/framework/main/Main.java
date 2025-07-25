@@ -36,12 +36,13 @@ public class Main
         Resources.createResourcePool();
         tm = new TexturedModel(
                 Resources.getModel("barrel"),
-                Resources.getTexture("brat")
+                Resources.emptyTexture()
         );
         ent = new Entity(tm);
-        ent.setPosition(0, 0, 0);
+        ent.setColor(200, 255, 255, 255);
+        ent.setPosition(0, 0, -1);
         ent.setRotation(0, 0,0);
-        ent.setScale(.5f, .5f, .5f);
+        ent.setScale(1, 1, 1);
         Camera camera = new Camera();
         Engine.setCamera(camera);
         Engine.start();

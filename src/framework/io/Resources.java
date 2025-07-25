@@ -19,6 +19,7 @@ public final class Resources
     private static Map<String, Texture> textureTable;
 
     public static Model getModel(String name)
+
     {
         return meshTable.get(name);
     }
@@ -57,7 +58,6 @@ public final class Resources
 
             BufferTexture texture = BufferTexture.importObject(file.getAbsolutePath());
             textureTable.put(texture.getName(), TextureLoader.loadBuffer(texture));
-            System.out.println("Processed and imported: " + meshName);
         }
 
 
@@ -81,6 +81,11 @@ public final class Resources
             System.out.println("Processed and imported: " + meshName + "\nModel ID: " + model.getVaoId() + " Count: " + model.getVertexCount());
         }
 
+    }
+
+    public static Texture emptyTexture()
+    {
+        return new Texture(0);
     }
 
     public void setResource(Class<?> resource)

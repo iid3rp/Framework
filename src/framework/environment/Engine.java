@@ -5,8 +5,8 @@ import framework.hardware.Display;
 import framework.loader.ModelLoader;
 import framework.main.Main;
 import framework.renderer.MasterRenderer;
-import framework.shader.EntityShader;
-import org.lwjgl.opengl.GL20;
+import framework.shader.GLShader;
+import framework.shader.GLShader.EntityShader;
 
 import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
@@ -18,11 +18,6 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import static org.lwjgl.glfw.GLFW.GLFW_VISIBLE;
-import static org.lwjgl.glfw.GLFW.glfwInit;
-import static org.lwjgl.glfw.GLFW.glfwWindowHint;
-import static org.lwjgl.opengl.GL11.GL_TRUE;
 
 public final class Engine
 {
@@ -61,7 +56,6 @@ public final class Engine
 
     public static void start()
     {
-        //glfwWindowHint(GLFW_VISIBLE, GL_TRUE);
         loop();
     }
 
@@ -96,9 +90,9 @@ public final class Engine
             test.move();
 
             MasterRenderer.prepare();
-            EntityShader.bind();
+            GLShader.bind(EntityShader.program);
             MasterRenderer.render(Main.ent);
-            EntityShader.unbind();
+            GLShader.unbind();
 
             Display.updateDisplay();
         }
@@ -130,7 +124,7 @@ public final class Engine
     private static void exit()
     {
         shutdownThreads();
-        EntityShader.destroy();
+        GLShader.destroy();
         ModelLoader.destroy();
         Display.closeDisplay();
     }

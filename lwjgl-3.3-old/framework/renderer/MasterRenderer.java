@@ -8,7 +8,6 @@ import framework.entity.Light;
 import framework.lang.Mat4;
 import framework.lang.Vec4;
 import framework.model.TexturedModel;
-import framework.shader.EntityShader;
 import framework.shader.TerrainShader;
 import framework.shadow.ShadowBox;
 import framework.shadow.ShadowMapMasterRenderer;
