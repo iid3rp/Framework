@@ -32,18 +32,118 @@ public class ObjectLoader {
         }
 
         for (File file : files) {
-            try {
-                String fileName = file.getName();
-                String meshName = fileName.substring(0, fileName.lastIndexOf('.'));
+            String fileName = file.getName();
+            String meshName = fileName.substring(0, fileName.lastIndexOf('.'));
 
-                System.out.println(file.getAbsolutePath() + " " + fileName + " " + meshName);
-                Mesh mesh = parseObjFromFile(file.getAbsolutePath(), meshName);
-                mesh.exportObject();
-                System.out.println("Processed and exported: " + meshName);
-            } catch (IOException e) {
-                throw new RuntimeException("Failed to process file: " + file.getName());
+            System.out.println(file.getAbsolutePath() + " " + fileName + " " + meshName);
+            Mesh mesh = parseObjFromFile2(file.getAbsolutePath(), meshName);
+            mesh.exportObject();
+            System.out.println("Processed and exported: " + meshName);
+        }
+    }
+
+    public static Mesh parseObjFromFile2(String path, String meshName)
+    {
+        List<Float> vertices = new ArrayList<>();
+        List<Float> textures = new ArrayList<>();
+        List<Float> normals = new ArrayList<>();
+        List<Integer> indices = new ArrayList<>();
+
+        // Temporary lists to store the raw data from the OBJ file
+        float[] verticesArr, normalsArr, texturesArr;
+        int[] indicesArr;
+
+        int lineNumber = 0;
+        try (BufferedReader reader = new BufferedReader(new FileReader(path)))
+        {
+            String line;
+            contentLoop:
+            for(;;)
+            {
+                line = reader.readLine();
+                String[] content = line.split("\\s+");
+
+
+                switch(content[0]) {
+                    case "v":
+                        vertices.add(Float.parseFloat(content[1]));
+                        vertices.add(Float.parseFloat(content[2]));
+                        vertices.add(Float.parseFloat(content[3]));
+                        break;
+                    case "vt":
+                        textures.add(Float.parseFloat(content[1]));
+                        textures.add(Float.parseFloat(content[2]));
+                        break;
+                    case "vn":
+                        normals.add(Float.parseFloat(content[1]));
+                        normals.add(Float.parseFloat(content[2]));
+                        normals.add(Float.parseFloat(content[3]));
+                        break;
+                    case "f":
+                        texturesArr = new float[vertices.size() * 2];
+                        normalsArr = new float[vertices.size() * 3];
+                        break contentLoop;
+                }
+            }
+
+            while(line != null && !line.startsWith("f "))
+                line = reader.readLine();
+
+            while(line != null)
+            {
+                String[] content = line.split("\\s+");
+                String[] vert1 = content[1].split("/");
+                String[] vert2 = content[2].split("/");
+                String[] vert3 = content[3].split("/");
+
+                processVertex(vert1, indices, textures, normals, texturesArr, normalsArr);
+                processVertex(vert2, indices, textures, normals, texturesArr, normalsArr);
+                processVertex(vert3, indices, textures, normals, texturesArr, normalsArr);
+
+                line = reader.readLine();
             }
         }
+        catch(IOException e)
+        {
+            throw new RuntimeException(e.getMessage() + "\nCannot parse file!");
+        }
+
+        verticesArr = new float[vertices.size() * 3];
+        indicesArr = new int[indices.size()];
+
+        for(int i = 0; i < vertices.size(); i++)
+            verticesArr[i] = vertices.get(i);
+        for(int i = 0; i < indices.size(); i++)
+            indicesArr[i] = indices.get(i);
+
+        Mesh mesh = new Mesh(meshName);
+        mesh.indices = indicesArr;
+        mesh.positions = verticesArr;
+        mesh.normals = normalsArr;
+        mesh.textures = texturesArr;
+        return mesh;
+    }
+
+    public static void processVertex(String[] vertexData, List<Integer> indices, List<Float> textures, List<Float> normals, float[] texturesArr, float[] normalsArr)
+    {
+        int currentVertexPointer = Integer.parseInt(vertexData[0]) - 1;
+        indices.add(currentVertexPointer);
+
+        // textures
+        float texX = textures.get((Integer.parseInt(vertexData[1]) * 2) - 2);
+        float texY = textures.get((Integer.parseInt(vertexData[1]) * 2) - 1);
+        texturesArr[currentVertexPointer * 2] = texX;
+        texturesArr[currentVertexPointer * 2 + 1] = texY;
+
+        float normX = normals.get((Integer.parseInt(vertexData[2]) * 3) - 3);
+        float normY = normals.get((Integer.parseInt(vertexData[2]) * 3) - 2);
+        float normZ = normals.get((Integer.parseInt(vertexData[2]) * 3) - 1);
+        normalsArr[currentVertexPointer * 3] = normX;
+        normalsArr[currentVertexPointer * 3 + 1] = normY;
+        normalsArr[currentVertexPointer * 3 + 2] = normZ;
+
+
+
     }
 
     /**
@@ -230,7 +330,6 @@ public class ObjectLoader {
 
         return mesh;
     }
-
 
     /**
      * Parses a Wavefront OBJ file and returns a Mesh object containing the parsed data.

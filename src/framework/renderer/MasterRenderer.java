@@ -1,11 +1,11 @@
 package framework.renderer;
 
-
-
 import framework.entity.Entity;
 import framework.environment.Engine;
 import framework.hardware.Display;
+import framework.lang.GeomMath;
 import framework.lang.Mat4;
+import framework.main.Main;
 import framework.model.Model;
 import framework.shader.GLShader;
 
@@ -55,23 +55,25 @@ public class MasterRenderer {
 
     }
 
-    public static void render(Entity entity) {
+    public static void render(Entity entity)
+    {
         Model model = entity.getModel().getModel();
         glBindVertexArray(model.getVaoId());
-        glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
+        GLShader.enableVertexArrays();
 
         // enable uniforms
         GLShader.loadUniform("transformationMatrix", entity.getTransformationMatrix());
         GLShader.loadUniform("viewMatrix", Engine.test.getViewMatrix());
-        GLShader.loadUniform("hasTexture", entity.getModel().getTexture().getTextureId() != 0);
-        GLShader.loadUniform("backgroundColor", entity.getRed(), entity.getGreen(), entity.getBlue(), entity.getAlpha());
+        GLShader.loadUniform("hasTexture", true);
+        GLShader.loadUniform("backgroundColor", entity.getRed(), entity.getGreen(), entity.getBlue(),
+                entity.getAlpha());
+        GLShader.loadLight(Main.light);
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, entity.getModel().getTexture().getTextureId());
         glDrawElements(GL_TRIANGLES, model.getVertexCount(), GL_UNSIGNED_INT, 0);
-        glDisableVertexAttribArray(0);
-        glDisableVertexAttribArray(1);
+
+        GLShader.disableVertexArrays();
         glBindVertexArray(0);
     }
 

@@ -78,7 +78,7 @@ public final class Resources
             Mesh mesh = Mesh.importObject(file.getAbsolutePath());
             Model model;
             meshTable.put(mesh.getName(), model = ModelLoader.loadToVaoInt(mesh.positions, mesh.textures, mesh.normals, mesh.indices));
-            System.out.println("Processed and imported: " + meshName + "\nModel ID: " + model.getVaoId() + " Count: " + model.getVertexCount());
+            //System.out.println("Processed and imported: " + meshName + "\nModel ID: " + model.getVaoId() + " Count: " + model.getVertexCount());
         }
 
     }

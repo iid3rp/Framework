@@ -1,5 +1,6 @@
 package framework.shader;
 
+import framework.entity.Light;
 import framework.lang.Mat4;
 import framework.io.Resources;
 import framework.util.Buffer;
@@ -9,10 +10,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import static framework.shader.GLShader.ShaderProgram.*;
 import static org.lwjgl.opengl.GL11C.GL_FALSE;
 import static org.lwjgl.opengl.GL20.GL_COMPILE_STATUS;
 import static org.lwjgl.opengl.GL20.GL_FRAGMENT_SHADER;
@@ -25,6 +29,8 @@ import static org.lwjgl.opengl.GL20.glCreateShader;
 import static org.lwjgl.opengl.GL20.glDeleteProgram;
 import static org.lwjgl.opengl.GL20.glDeleteShader;
 import static org.lwjgl.opengl.GL20.glDetachShader;
+import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
+import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glGetShaderInfoLog;
 import static org.lwjgl.opengl.GL20.glGetShaderi;
 import static org.lwjgl.opengl.GL20.glGetUniformLocation;
@@ -48,6 +54,7 @@ public final class GLShader
 
     public static abstract class ShaderProgram
     {
+
         public static class Struct
         {
             public String[] fields;
@@ -58,12 +65,33 @@ public final class GLShader
                 this.name = name;
                 this.fields = fields;
             }
+
+            private String index(int index)
+            {
+                return this.name + "[" + index + "]";
+            }
+
+            private String field(String name)
+            {
+                return this.name + "." + name;
+            }
+
+            public void setName(String name)
+            {
+                this.name = name;
+            }
+
+            public String getName()
+            {
+                return name;
+            }
         }
         
         private int programId;
         private int vertex;
         private int fragment;
         Map<String, Integer> uniforms;
+        List<String> attributes;
 
         public ShaderProgram(int id, int vertex, int fragment)
         {
@@ -71,6 +99,13 @@ public final class GLShader
             this.vertex = vertex;
             this.fragment = fragment;
             uniforms = new HashMap<>();
+            attributes = new ArrayList<>();
+        }
+
+        protected void addAttribute(String name)
+        {
+            attributes.add(name);
+            bindAttribute(attributes.size() - 1, name);
         }
 
         protected void addUniform(String name, int index)
@@ -85,7 +120,11 @@ public final class GLShader
         protected void addUniform(Struct struct, int index)
         {
             for(int i = 0; i < index; i++)
-                addUniform(struct.name + "[" + i + "]");
+                for(String s : struct.fields)
+                {
+                    String name = struct.name + "[" + i + "]." + s;
+                    uniforms.put(name, getUniformLocation(name));
+                }
         }
 
         protected void addUniform(Struct struct)
@@ -100,6 +139,7 @@ public final class GLShader
         protected void addUniform(String name)
         {
             uniforms.put(name, getUniformLocation(name));
+            System.out.println(name + " " + getUniformLocation(name));
         }
 
         protected int getUniformLocation(String name)
@@ -131,6 +171,20 @@ public final class GLShader
     {
         glLinkProgram(program.programId);
         glValidateProgram(program.programId);
+    }
+
+    public static void enableVertexArrays()
+    {
+        int x = currentProgram.attributes.size();
+        for(int i = 0; i < x; i++)
+            glEnableVertexAttribArray(i);
+    }
+
+    public static void disableVertexArrays()
+    {
+        int x = currentProgram.attributes.size();
+        for(int i = 0; i < x; i++)
+            glDisableVertexAttribArray(i);
     }
 
     public static void loadUniform(String name, float value)
@@ -212,6 +266,16 @@ public final class GLShader
         currentProgram = null;
     }
 
+    public static void setCurrentProgram(ShaderProgram program)
+    {
+        currentProgram = program;
+    }
+
+    private static void resetCurrentProgram()
+    {
+        currentProgram = null;
+    }
+
     public static void bind(ShaderProgram program)
     {
         currentProgram = program;
@@ -258,6 +322,19 @@ public final class GLShader
 
     /*
     ===========================================================================================================================
+    Private static methods for utility classes
+
+        - These are for methods that are used for other shaders
+    ===========================================================================================================================
+     */
+    public static void loadLight(Light light)
+    {
+        EntityShader.loadLight(light);
+    }
+
+
+    /*
+    ===========================================================================================================================
     Shader Classes
 
         - These are for shaders that are used for this engine
@@ -279,8 +356,9 @@ public final class GLShader
                 @Override
                 protected void bindAttributes()
                 {
-                    bindAttribute(0, "pos");
-                    bindAttribute(1, "texCoords");
+                    addAttribute("pos");
+                    addAttribute("tex");
+                    addAttribute("normal");
                 }
 
                 @Override
@@ -291,20 +369,32 @@ public final class GLShader
                     addUniform("viewMatrix");
                     addUniform("hasTexture");
                     addUniform("backgroundColor");
-                    addUniform(new Struct("lights", "pos", "color", "intensity", "constant", "linear", "quadratic", "distance"));
+                    addUniform("lightCount");
+                    addUniform(Light.getStruct(), 1);
                 }
             };
+            setCurrentProgram(program);
             glAttachShader(id, vert);
             glAttachShader(id, frag);
             bindAttributes(program);
             linkAndValidateProgram(program);
+
             getAllUniformLocations(program);
+            resetCurrentProgram();
         }
 
         public static void destroy()
         {
             unbind();
             destroyShaderProgram(program);
+        }
+
+        public static void loadLight(Light light)
+        {
+            Struct str = Light.getStruct();
+            str.setName("lights[0]");
+            loadUniform(str.field("pos"), light.getPosX(), light.getPosY(), light.getPosZ());
+            loadUniform(str.field("color"), light.r, light.g, light.b);
         }
     }
 }

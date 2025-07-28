@@ -90,6 +90,7 @@ public final class Engine
             test.move();
 
             MasterRenderer.prepare();
+            Main.ent.transformRotation(0, 0.03f, 0);
             GLShader.bind(EntityShader.program);
             MasterRenderer.render(Main.ent);
             GLShader.unbind();

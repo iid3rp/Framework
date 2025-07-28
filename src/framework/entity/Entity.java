@@ -7,14 +7,15 @@ import framework.model.TexturedModel;
 public class Entity
 {
     private TexturedModel model;
-    private float posX, posY, posZ;
-    private float rotX, rotY, rotZ;
-    private float scaleX, scaleY, scaleZ;
-    private Mat4 transformationMatrix;
+    public float posX, posY, posZ;
+    public float rotX, rotY, rotZ;
+    public float scaleX, scaleY, scaleZ;
+    public Mat4 transformationMatrix;
     private float red, green, blue, alpha;
     public Entity(TexturedModel model)
     {
         this.model = model;
+        transformationMatrix = new Mat4();
     }
 
     public TexturedModel getModel()
@@ -150,7 +151,7 @@ public class Entity
 
     public void updateTransformationMatrix()
     {
-        Engine.mainExecute(() -> transformationMatrix = GeomMath.createTransformationMatrix(posX, posY, posZ, rotX, rotY, rotZ, scaleX, scaleY, scaleZ));
+        Engine.mainExecute(() -> GeomMath.createTransformationMatrix(posX, posY, posZ, rotX, rotY, rotZ, scaleX, scaleY, scaleZ, transformationMatrix, transformationMatrix));
     }
 
     public float getAlpha()

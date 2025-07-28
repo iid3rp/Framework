@@ -78,7 +78,7 @@ public class Camera
 
     public void updateViewMatrix()
     {
-        Engine.mainExecute(() -> viewMatrix = GeomMath.createViewMatrix(posX,posY, posZ, rotX, rotY, rotZ,viewMatrix,viewMatrix));
+        viewMatrix = GeomMath.createViewMatrix(posX,posY, posZ, rotX, rotY, rotZ,viewMatrix,viewMatrix);
 
     }
 

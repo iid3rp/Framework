@@ -28,15 +28,15 @@ public class GeomMath
         Mat4.scale(scaleX, scaleY, 1f, m, m);
         return m;
     }
-    public static Mat4 createTransformationMatrix(float posX, float posY, float posZ, float rotX, float rotY, float rotZ, float scaleX, float scaleY, float scaleZ)
+    public static Mat4 createTransformationMatrix(float posX, float posY, float posZ, float rotX, float rotY, float rotZ, float scaleX, float scaleY, float scaleZ, Mat4 src, Mat4 dest)
     {
-        m.identity();
-        Mat4.translate(posX, posY, posZ, m, m);
-        Mat4.rotate(Math.toRadians(rotX), 1f, 0f, 0f, m, m);
-        Mat4.rotate(Math.toRadians(rotY), 0f, 1f, 0f, m, m);
-        Mat4.rotate(Math.toRadians(rotZ), 0f, 0f, 1f, m, m);
+        src.identity();
+        Mat4.translate(posX, posY, posZ, src, dest);
+        Mat4.rotate(Math.toRadians(rotX), 1f, 0f, 0f, src, dest);
+        Mat4.rotate(Math.toRadians(rotY), 0f, 1f, 0f, src, dest);
+        Mat4.rotate(Math.toRadians(rotZ), 0f, 0f, 1f, src, dest);
         Mat4.scale(scaleX, scaleY, scaleZ, m, m);
-        return m;
+        return dest;
     }
 
     public static Mat4 createTransformationMatrix(Vec3 vec3, float rotationX, float rotationY, float rotationZ, float scale)

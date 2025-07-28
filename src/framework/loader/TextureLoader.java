@@ -11,6 +11,7 @@ import framework.io.Mesh;
 import framework.io.Resources;
 import framework.textures.Texture;
 import framework.util.Buffer;
+import org.lwjgl.opengl.GL11;
 
 import javax.imageio.ImageIO;
 
@@ -52,31 +53,33 @@ public class TextureLoader
 
     public static BufferTexture loadTexture(String path, String name)
     {
-        byte[] textureData;
+        int[] data;
         BufferedImage image;
-        int[] pixels;
+        int[] pixels = {};
         try {
             image = ImageIO.read(new File(path));
-            pixels = new int[image.getWidth() * image.getHeight()];
             int width = image.getWidth();
             int height = image.getHeight();
-            pixels = image.getRGB(0, 0, width, height, pixels, 0, width);
+            image.getRGB(0, 0, width, height, pixels, 0, width);
 
+            data = new int[pixels.length];
             //make it RGBA instead
-            for(int i = 0; i < width * height; i++)
+            int indices = width * height;
+            for(int i = 0; i < indices; i++)
             {
-                int a = (pixels[i] & 0xff000000) >> 24;
-                int r = (pixels[i] & 0xff0000) >> 16;
-                int g = (pixels[i] & 0xff00) >> 8;
-                int b = (pixels[i] & 0xff);
+                int pixel = pixels[i];
+                int a = (pixel & 0xff000000) >> 24;
+                int r = (pixel & 0xff0000) >> 16;
+                int g = (pixel & 0xff00) >> 8;
+                int b = (pixel & 0xff);
 
-                pixels[i] = a << 24 | b << 16 | g << 8 | r;
+                data[i] = a << 24 | b << 16 | g << 8 | r;
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         BufferTexture texture = new BufferTexture(name, image.getWidth(), image.getHeight());
-        texture.setArray(pixels);
+        texture.setArray(data);
         return texture;
     }
 
@@ -275,10 +278,6 @@ public class TextureLoader
 
         glBindTexture(GL_TEXTURE_2D, result);
 
-        // Wrapping parameters
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
         // Use tri-linear filtering for better quality with mipmaps
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -290,6 +289,8 @@ public class TextureLoader
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 4); // Limit mipmap levels
 
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         // Upload texture data
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture.getWidth(), texture.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE,
                 Buffer.createIntBuffer(texture.getArray()));
@@ -306,6 +307,7 @@ public class TextureLoader
 
         glBindTexture(GL_TEXTURE_2D, 0);
         Texture tex = new Texture();
+        ModelLoader.textureList.add(result);
         tex.setTextureID(result);
         return tex;
     }
