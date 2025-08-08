@@ -1,5 +1,10 @@
 package framework.lang;
 
+
+import framework.shader.GLShader;
+import framework.shader.GLShader.ShaderProgram.Struct;
+import org.jetbrains.annotations.NotNull;
+
 import java.nio.FloatBuffer;
 
 public class Mat4
@@ -20,8 +25,6 @@ public class Mat4
     public float m31;
     public float m32;
     public float m33;
-    
-    // overhead 
 
     public Mat4() {
         identity();
@@ -50,98 +53,338 @@ public class Mat4
         m33 = src.m33;
     }
 
+
+    // Calculations
+    // Translation
+    // =======================================================================================================================
+    // =======================================================================================================================
+    // =======================================================================================================================
+    // =======================================================================================================================
+    public Mat4 translate(float x, float y)
+    {
+        return translate(x, y, this);
+    }
+
+    public Mat4 translate(float x, float y, Mat4 dest)
+    {
+        return translate(x, y, this, dest);
+    }
+
+    public static Mat4 translate(float x, float y, Mat4 src, Mat4 dest)
+    {
+        return Translate.translate(x, y, src, dest);
+    }
+
+    public Mat4 translate(float x, float y, float z)
+    {
+        return translate(x, y, z,this);
+    }
+
+    public Mat4 translate(float x, float y, float z, Mat4 dest)
+    {
+        return translate(x, y, z, this, dest);
+    }
+
     public static Mat4 translate(float x, float y, float z, Mat4 src, Mat4 dest)
     {
-        if (dest == null) {
-            dest = new Mat4();
+        return Translate.translate(x, y, z, src, dest);
+    }
+
+    public Mat4 translate(Vec2 vec)
+    {
+        return translate(vec.x, vec.y);
+    }
+
+    public Mat4 translate(Vec2 vec, Mat4 dest)
+    {
+        return translate(vec.x, vec.y, this, dest);
+    }
+
+    public static Mat4 translate(Vec2 vec, Mat4 src, Mat4 dest)
+    {
+        return translate(vec.x, vec.y, src, dest);
+    }
+
+    public Mat4 translate(Vec3 vec, Mat4 dest)
+    {
+        return translate(vec.x, vec.y, vec.z, this, dest);
+    }
+
+    public static Mat4 translate(Vec3 vec, Mat4 src, Mat4 dest)
+    {
+        return translate(vec.x, vec.y, vec.z, src, dest);
+    }
+
+    private static class Translate
+    {
+        public static Mat4 translate(float x, float y, Mat4 src, @NotNull Mat4 dest) {
+
+            dest.m30 += src.m00 * x + src.m10 * y;
+            dest.m31 += src.m01 * x + src.m11 * y;
+            dest.m32 += src.m02 * x + src.m12 * y;
+            dest.m33 += src.m03 * x + src.m13 * y;
+            return dest;
         }
 
-        dest.m30 += src.m00 * x + src.m10 * y + src.m20 * z;
-        dest.m31 += src.m01 * x + src.m11 * y + src.m21 * z;
-        dest.m32 += src.m02 * x + src.m12 * y + src.m22 * z;
-        dest.m33 += src.m03 * x + src.m13 * y + src.m23 * z;
-        return dest;
+        private static Mat4 translate(float x, float y, float z, Mat4 src, @NotNull Mat4 dest)
+        {
+            dest.m30 += src.m00 * x + src.m10 * y + src.m20 * z;
+            dest.m31 += src.m01 * x + src.m11 * y + src.m21 * z;
+            dest.m32 += src.m02 * x + src.m12 * y + src.m22 * z;
+            dest.m33 += src.m03 * x + src.m13 * y + src.m23 * z;
+            return dest;
+        }
+    }
+
+    // =======================================================================================================================
+    // =======================================================================================================================
+    // =======================================================================================================================
+    // =======================================================================================================================
+
+    public Mat4 rotate(double angle, float x,  float y, float z)
+    {
+        return rotate(angle, x, y, z, this);
+    }
+
+    public Mat4 rotate(double angle, float x, float y, float z, Mat4 dest) {
+        return rotate(angle, x, y, z, this, dest);
     }
 
     public static Mat4 rotate(double angle, float x, float y, float z, Mat4 src, Mat4 dest)
     {
-        if (dest == null)
-            dest = new Mat4();
+        return Rotate.rotate(angle, x, y, z, src, dest);
+    }
 
-        float c = (float) Math.cos(angle);
-        float s = (float) Math.sin(angle);
-        float omc = 1f - c; // one minus c
+    public Mat4 rotate(double angle, Vec3 axis)
+    {
+        return rotate(angle, axis, this);
+    }
 
-        float xy = x * y;
-        float yz = y * z;
-        float xz = x * z;
-        float xs = x * s;
-        float ys = y * s;
-        float zs = z * s;
+    public Mat4 rotate(double angle, Vec3 axis, Mat4 dest) {
+        return rotate(angle, axis, this, dest);
+    }
 
-        float f00 = x * x * omc + c;
-        float f01 = xy * omc + zs;
-        float f02 = xz * omc - ys;
-        float f10 = xy * omc - zs;
-        float f11 = y * y * omc + c;
-        float f12 = yz * omc + xs;
-        float f20 = xz * omc + ys;
-        float f21 = yz * omc - xs;
-        float f22 = z * z * omc + c;
+    public static Mat4 rotate(double angle, Vec3 axis, Mat4 src, Mat4 dest)
+    {
+        return Rotate.rotate(angle, axis.x, axis.y, axis.z, src, dest);
+    }
+
+    private static class Rotate
+    {
+        public static Mat4 rotate(double angle, float x, float y, float z, Mat4 src, @NotNull Mat4 dest)
+        {
+            // angles
+            float c; // cos
+            float s; // sin
+            float omc; // one minus c
+
+            // multiplication of axes
+            float xy;
+            float yz;
+            float xz;
+
+            // sine axes
+            float xs;
+            float ys;
+            float zs;
+
+            // 3x3 matrix
+            // x
+            float f00;
+            float f01;
+            float f02;
+
+            // y
+            float f10;
+            float f11;
+            float f12;
+
+            // z
+            float f20;
+            float f21;
+            float f22;
+
+            // pointers
+            float p00;
+            float p01;
+            float p02;
+            float p03;
+            float p10;
+            float p11;
+            float p12;
+            float p13;
+            float p20;
+            float p21;
+            float p22;
+            float p23;
 
 
-        float t00 = src.m00 * f00 + src.m10 * f01 + src.m20 * f02;
-        float t01 = src.m01 * f00 + src.m11 * f01 + src.m21 * f02;
-        float t02 = src.m02 * f00 + src.m12 * f01 + src.m22 * f02;
-        float t03 = src.m03 * f00 + src.m13 * f01 + src.m23 * f02;
+            c = (float) Math.cos(angle);
+            s = (float) Math.sin(angle);
+            omc = 1f - c;
 
-        float t10 = src.m00 * f10 + src.m10 * f11 + src.m20 * f12;
-        float t11 = src.m01 * f10 + src.m11 * f11 + src.m21 * f12;
-        float t12 = src.m02 * f10 + src.m12 * f11 + src.m22 * f12;
-        float t13 = src.m03 * f10 + src.m13 * f11 + src.m23 * f12;
+            xy = x * y;
+            yz = y * z;
+            xz = x * z;
 
-        float t20 = src.m00 * f20 + src.m10 * f21 + src.m20 * f22;
-        float t21 = src.m01 * f20 + src.m11 * f21 + src.m21 * f22;
-        float t22 = src.m02 * f20 + src.m12 * f21 + src.m22 * f22;
-        float t23 = src.m03 * f20 + src.m13 * f21 + src.m23 * f22;
+            xs = x * s;
+            ys = y * s;
+            zs = z * s;
 
-        dest.m00 = t00;
-        dest.m01 = t01;
-        dest.m02 = t02;
-        dest.m03 = t03;
+            f00 = x * x * omc + c;
+            f01 = xy * omc + zs;
+            f02 = xz * omc - ys;
+            f10 = xy * omc - zs;
+            f11 = y * y * omc + c;
+            f12 = yz * omc + xs;
+            f20 = xz * omc + ys;
+            f21 = yz * omc - xs;
+            f22 = z * z * omc + c;
 
-        dest.m10 = t10;
-        dest.m11 = t11;
-        dest.m12 = t12;
-        dest.m13 = t13;
 
-        dest.m20 = t20;
-        dest.m21 = t21;
-        dest.m22 = t22;
-        dest.m23 = t23;
+            p00 = src.m00 * f00 + src.m10 * f01 + src.m20 * f02;
+            p01 = src.m01 * f00 + src.m11 * f01 + src.m21 * f02;
+            p02 = src.m02 * f00 + src.m12 * f01 + src.m22 * f02;
+            p03 = src.m03 * f00 + src.m13 * f01 + src.m23 * f02;
 
-        return dest;
+            p10 = src.m00 * f10 + src.m10 * f11 + src.m20 * f12;
+            p11 = src.m01 * f10 + src.m11 * f11 + src.m21 * f12;
+            p12 = src.m02 * f10 + src.m12 * f11 + src.m22 * f12;
+            p13 = src.m03 * f10 + src.m13 * f11 + src.m23 * f12;
+
+            p20 = src.m00 * f20 + src.m10 * f21 + src.m20 * f22;
+            p21 = src.m01 * f20 + src.m11 * f21 + src.m21 * f22;
+            p22 = src.m02 * f20 + src.m12 * f21 + src.m22 * f22;
+            p23 = src.m03 * f20 + src.m13 * f21 + src.m23 * f22;
+
+            dest.m00 = p00;
+            dest.m01 = p01;
+            dest.m02 = p02;
+            dest.m03 = p03;
+
+            dest.m10 = p10;
+            dest.m11 = p11;
+            dest.m12 = p12;
+            dest.m13 = p13;
+
+            dest.m20 = p20;
+            dest.m21 = p21;
+            dest.m22 = p22;
+            dest.m23 = p23;
+
+            return dest;
+        }
+    }
+
+    // =======================================================================================================================
+    // =======================================================================================================================
+    // =======================================================================================================================
+    // =======================================================================================================================
+
+    public Mat4 scale(float x, float y)
+    {
+        return scale(x, y, 1, this);
+    }
+
+    public Mat4 scale(float x, float y, Mat4 src)
+    {
+        return scale(x, y, 1, src);
+    }
+
+    public static Mat4 scale(float x, float y, Mat4 src, Mat4 dest)
+    {
+        return Scale.scale(x, y, 1, src, dest);
+    }
+
+    public Mat4 scale(float x, float y, float z)
+    {
+        return scale(x, y, z, this);
+    }
+
+    public static Mat4 scale(float x, float y, float z, Mat4 src)
+    {
+        return Scale.scale(x, y, z, src);
     }
 
     public static Mat4 scale(float x, float y, float z, Mat4 src, Mat4 dest)
     {
-        if (dest == null)
-            dest = new Mat4();
-
-        dest.m00 = src.m00 * x;
-        dest.m01 = src.m01 * x;
-        dest.m02 = src.m02 * x;
-        dest.m03 = src.m03 * x;
-        dest.m10 = src.m10 * y;
-        dest.m11 = src.m11 * y;
-        dest.m12 = src.m12 * y;
-        dest.m13 = src.m13 * y;
-        dest.m20 = src.m20 * z;
-        dest.m21 = src.m21 * z;
-        dest.m22 = src.m22 * z;
-        dest.m23 = src.m23 * z;
-        return dest;
+        return Scale.scale(x, y, z, src, dest);
     }
+
+    public Mat4 scale(Vec2 vec)
+    {
+        return scale(vec.x, vec.y);
+    }
+
+    public Mat4 scale(Vec2 vec2,  Mat4 src)
+    {
+        return scale(vec2.x, vec2.y, src);
+    }
+
+    public static Mat4 scale(Vec2 vec2,  Mat4 src, Mat4 dest)
+    {
+        return scale(vec2.x, vec2.y, src, dest);
+    }
+
+    public Mat4 scale(Vec3 vec)
+    {
+        return scale(vec.x, vec.y, vec.z);
+    }
+
+    public Mat4 scale(Vec3 vec, Mat4 src)
+    {
+        return scale(vec.x, vec.y, vec.z, src);
+    }
+
+    public static Mat4 scale(Vec3 vec, Mat4 src, Mat4 dest)
+    {
+        return scale(vec.x, vec.y, vec.z, src, dest);
+    }
+
+    public static class Scale
+    {
+
+        public static Mat4 scale(float x, float y, float z, @NotNull Mat4 src)
+        {
+            src.m00 *= x;
+            src.m01 *= x;
+            src.m02 *= x;
+            src.m03 *= x;
+
+            src.m10 *= y;
+            src.m11 *= y;
+            src.m12 *= y;
+            src.m13 *= y;
+
+            src.m20 *= z;
+            src.m21 *= z;
+            src.m22 *= z;
+            src.m23 *= z;
+            return src;
+        }
+
+        public static Mat4 scale(float x, float y, float z, @NotNull Mat4 src, @NotNull Mat4 dest)
+        {
+            dest.m00 = src.m00 * x;
+            dest.m01 = src.m01 * x;
+            dest.m02 = src.m02 * x;
+            dest.m03 = src.m03 * x;
+            dest.m10 = src.m10 * y;
+            dest.m11 = src.m11 * y;
+            dest.m12 = src.m12 * y;
+            dest.m13 = src.m13 * y;
+            dest.m20 = src.m20 * z;
+            dest.m21 = src.m21 * z;
+            dest.m22 = src.m22 * z;
+            dest.m23 = src.m23 * z;
+            return dest;
+        }
+    }
+
+    // =======================================================================================================================
+    // =======================================================================================================================
+    // =======================================================================================================================
+    // =======================================================================================================================
 
     public String toString() {
         return String.valueOf(m00) + ' ' + m10 + ' ' + m20 + ' ' + m30 + '\n' +
@@ -319,28 +562,61 @@ public class Mat4
         return this;
     }
 
-    public static Mat4 add(Mat4 left, Mat4 right, Mat4 dest) {
-        if (dest == null) {
-            dest = new Mat4();
-        }
 
-        dest.m00 = left.m00 + right.m00;
-        dest.m01 = left.m01 + right.m01;
-        dest.m02 = left.m02 + right.m02;
-        dest.m03 = left.m03 + right.m03;
-        dest.m10 = left.m10 + right.m10;
-        dest.m11 = left.m11 + right.m11;
-        dest.m12 = left.m12 + right.m12;
-        dest.m13 = left.m13 + right.m13;
-        dest.m20 = left.m20 + right.m20;
-        dest.m21 = left.m21 + right.m21;
-        dest.m22 = left.m22 + right.m22;
-        dest.m23 = left.m23 + right.m23;
-        dest.m30 = left.m30 + right.m30;
-        dest.m31 = left.m31 + right.m31;
-        dest.m32 = left.m32 + right.m32;
-        dest.m33 = left.m33 + right.m33;
-        return dest;
+    // =======================================================================================================================
+    // =======================================================================================================================
+    // =======================================================================================================================
+    // =======================================================================================================================
+
+    public static class Add
+    {
+        public static Mat4 add(Mat4 left, Mat4 right) {
+
+            left.m00 += right.m00;
+            left.m01 += right.m01;
+            left.m02 += right.m02;
+            left.m03 += right.m03;
+            left.m10 += right.m10;
+            left.m11 += right.m11;
+            left.m12 += right.m12;
+            left.m13 += right.m13;
+            left.m20 += right.m20;
+            left.m21 += right.m21;
+            left.m22 += right.m22;
+            left.m23 += right.m23;
+            left.m30 += right.m30;
+            left.m31 += right.m31;
+            left.m32 += right.m32;
+            left.m33 += right.m33;
+            return left;
+        }
+        public static Mat4 add(Mat4 left, Mat4 right, Mat4 dest) {
+            if (dest == null) {
+                dest = new Mat4();
+            }
+
+            dest.m00 = left.m00 + right.m00;
+            dest.m01 = left.m01 + right.m01;
+            dest.m02 = left.m02 + right.m02;
+            dest.m03 = left.m03 + right.m03;
+            dest.m10 = left.m10 + right.m10;
+            dest.m11 = left.m11 + right.m11;
+            dest.m12 = left.m12 + right.m12;
+            dest.m13 = left.m13 + right.m13;
+            dest.m20 = left.m20 + right.m20;
+            dest.m21 = left.m21 + right.m21;
+            dest.m22 = left.m22 + right.m22;
+            dest.m23 = left.m23 + right.m23;
+            dest.m30 = left.m30 + right.m30;
+            dest.m31 = left.m31 + right.m31;
+            dest.m32 = left.m32 + right.m32;
+            dest.m33 = left.m33 + right.m33;
+            return dest;
+        }
+    }
+
+    public static Mat4 add(Mat4 left, Mat4 right, Mat4 dest) {
+        return Add.add(left, right, dest);
     }
 
     public static Mat4 sub(Mat4 left, Mat4 right, Mat4 dest) {
@@ -408,148 +684,10 @@ public class Mat4
         return transpose(this);
     }
 
-    public Mat4 translate(Vec2 vec) {
-        return translate(vec, this);
-    }
-
     public Mat4 translate(Vec3 vec) {
         return translate(vec, this);
     }
 
-    public Mat4 scale(Vec3 vec) {
-        return scale(vec, this, this);
-    }
-
-    public static Mat4 scale(Vec3 vec, Mat4 src, Mat4 dest) {
-        if (dest == null)
-            dest = new Mat4();
-
-
-        dest.m00 = src.m00 * vec.x;
-        dest.m01 = src.m01 * vec.x;
-        dest.m02 = src.m02 * vec.x;
-        dest.m03 = src.m03 * vec.x;
-        dest.m10 = src.m10 * vec.y;
-        dest.m11 = src.m11 * vec.y;
-        dest.m12 = src.m12 * vec.y;
-        dest.m13 = src.m13 * vec.y;
-        dest.m20 = src.m20 * vec.z;
-        dest.m21 = src.m21 * vec.z;
-        dest.m22 = src.m22 * vec.z;
-        dest.m23 = src.m23 * vec.z;
-        return dest;
-    }
-
-    public Mat4 rotate(float angle, Vec3 axis) {
-        return rotate(angle, axis, this);
-    }
-
-    public Mat4 rotate(float angle, Vec3 axis, Mat4 dest) {
-        return rotate(angle, axis, this, dest);
-    }
-
-    public static Mat4 rotate(float angle, Vec3 axis, Mat4 src, Mat4 dest) {
-        if (dest == null) 
-            dest = new Mat4();
-
-        float c = GeomMath.cos(angle);
-        float s = GeomMath.sin(angle);
-        float omc = 1f - c; // omc means one minus c
-
-        float xy = axis.x * axis.y;
-        float yz = axis.y * axis.z;
-        float xz = axis.x * axis.z;
-        float xs = axis.x * s;
-        float ys = axis.y * s;
-        float zs = axis.z * s;
-
-        float f00 = axis.x * axis.x * omc + c;
-        float f01 = xy * omc + zs;
-        float f02 = xz * omc - ys;
-        float f10 = xy * omc - zs;
-        float f11 = axis.y * axis.y * omc + c;
-        float f12 = yz * omc + xs;
-        float f20 = xz * omc + ys;
-        float f21 = yz * omc - xs;
-        float f22 = axis.z * axis.z * omc + c;
-
-
-        float t00 = src.m00 * f00 + src.m10 * f01 + src.m20 * f02;
-        float t01 = src.m01 * f00 + src.m11 * f01 + src.m21 * f02;
-        float t02 = src.m02 * f00 + src.m12 * f01 + src.m22 * f02;
-        float t03 = src.m03 * f00 + src.m13 * f01 + src.m23 * f02;
-        
-        float t10 = src.m00 * f10 + src.m10 * f11 + src.m20 * f12;
-        float t11 = src.m01 * f10 + src.m11 * f11 + src.m21 * f12;
-        float t12 = src.m02 * f10 + src.m12 * f11 + src.m22 * f12;
-        float t13 = src.m03 * f10 + src.m13 * f11 + src.m23 * f12;
-
-        float t20 = src.m00 * f20 + src.m10 * f21 + src.m20 * f22;
-        float t21 = src.m01 * f20 + src.m11 * f21 + src.m21 * f22;
-        float t22 = src.m02 * f20 + src.m12 * f21 + src.m22 * f22;
-        float t23 = src.m03 * f20 + src.m13 * f21 + src.m23 * f22;
-
-        dest.m00 = t00;
-        dest.m01 = t01;
-        dest.m02 = t02;
-        dest.m03 = t03;
-
-        dest.m10 = t10;
-        dest.m11 = t11;
-        dest.m12 = t12;
-        dest.m13 = t13;
-
-        dest.m20 = t20;
-        dest.m21 = t21;
-        dest.m22 = t22;
-        dest.m23 = t23;
-
-        return dest;
-    }
-
-    public Mat4 translate(Vec3 vec, Mat4 dest) {
-        return translate(vec, this, dest);
-    }
-
-    public static Mat4 translate(Vec3 vec, Mat4 src, Mat4 dest) {
-        if (dest == null) {
-            dest = new Mat4();
-        }
-
-        dest.m30 += src.m00 * vec.x + src.m10 * vec.y + src.m20 * vec.z;
-        dest.m31 += src.m01 * vec.x + src.m11 * vec.y + src.m21 * vec.z;
-        dest.m32 += src.m02 * vec.x + src.m12 * vec.y + src.m22 * vec.z;
-        dest.m33 += src.m03 * vec.x + src.m13 * vec.y + src.m23 * vec.z;
-        return dest;
-    }
-
-    public Mat4 translate(Vec2 vec, Mat4 dest) {
-        return translate(vec, this, dest);
-    }
-
-    public static Mat4 translate(Vec2 vec, Mat4 src, Mat4 dest) {
-        if (dest == null) {
-            dest = new Mat4();
-        }
-
-        dest.m30 += src.m00 * vec.x + src.m10 * vec.y;
-        dest.m31 += src.m01 * vec.x + src.m11 * vec.y;
-        dest.m32 += src.m02 * vec.x + src.m12 * vec.y;
-        dest.m33 += src.m03 * vec.x + src.m13 * vec.y;
-        return dest;
-    }
-
-    public static Mat4 translate(float x, float y, Mat4 src, Mat4 dest) {
-        if (dest == null) {
-            dest = new Mat4();
-        }
-
-        dest.m30 += src.m00 * x + src.m10 * y;
-        dest.m31 += src.m01 * x + src.m11 * y;
-        dest.m32 += src.m02 * x + src.m12 * y;
-        dest.m33 += src.m03 * x + src.m13 * y;
-        return dest;
-    }
 
     public Mat4 transpose(Mat4 dest) {
         return transpose(this, dest);
@@ -576,13 +714,13 @@ public class Mat4
         dest.m31 = src.m13;
         dest.m32 = src.m23;
         dest.m33 = src.m33;
-        
+
         return dest;
     }
 
     public float det()
     {
-        return (m00 * (m11 * m22 * m33 + m12 * m23 * m31 + m13 * m21 * m32 - m13 * m22 * m31 - m11 * m23 * m32 - m12 * m21 * m33)) 
+        return (m00 * (m11 * m22 * m33 + m12 * m23 * m31 + m13 * m21 * m32 - m13 * m22 * m31 - m11 * m23 * m32 - m12 * m21 * m33))
                 - (m01 * (m10 * m22 * m33 + m12 * m23 * m30 + m13 * m20 * m32 - m13 * m22 * m30 - m10 * m23 * m32 - m12 * m20 * m33))
                 + (m02 * (m10 * m21 * m33 + m11 * m23 * m30 + m13 * m20 * m31 - m13 * m21 * m30 - m10 * m23 * m31 - m11 * m20 * m33))
                 - (m03 * (m10 * m21 * m32 + m11 * m22 * m30 + m12 * m20 * m31 - m12 * m21 * m30 - m10 * m22 * m31 - m11 * m20 * m32));
@@ -674,5 +812,322 @@ public class Mat4
         dest.m32 = -src.m32;
         dest.m33 = -src.m33;
         return dest;
+    }
+
+    public static class Matrix {
+        private static final float ONE = 1.0f;
+        private static final float ZERO = 0.0f;
+        private static final Struct str;
+
+        static
+        {
+            str = new Struct("matrix", "transform", "projection", "view");
+        }
+
+
+        public static Mat4 createTransformation(float posX, float posY, float scaleX, float scaleY, Mat4 dest)
+        {
+            dest.identity();
+
+            dest.m30 += dest.m00 * posX + dest.m10 * posY;
+            dest.m31 += dest.m01 * posX + dest.m11 * posY;
+            dest.m32 += dest.m02 * posX + dest.m12 * posY;
+            dest.m33 += dest.m03 * posX + dest.m13 * posY;
+
+            dest.m00 *= scaleX;
+            dest.m01 *= scaleX;
+            dest.m02 *= scaleX;
+            dest.m03 *= scaleX;
+
+            dest.m10 *= scaleY;
+            dest.m11 *= scaleY;
+            dest.m12 *= scaleY;
+            dest.m13 *= scaleY;
+            return dest;
+        }
+
+        /**
+         * Creates a transformation matrix from a set of translation, rotation, and scaling values.
+         * This method is thread-safe as it uses only local variables for all calculations.
+         *
+         * @param posX   The x-component of the translation.
+         * @param posY   The y-component of the translation.
+         * @param posZ   The z-component of the translation.
+         * @param rotX   The rotation angle around the x-axis in degrees.
+         * @param rotY   The rotation angle around the y-axis in degrees.
+         * @param rotZ   The rotation angle around the z-axis in degrees.
+         * @param scaleX The scaling factor along the x-axis.
+         * @param scaleY The scaling factor along the y-axis.
+         * @param scaleZ The scaling factor along the z-axis.
+         * @param dest   The destination matrix to store the result. Must not be null.
+         * @return The destination matrix with the applied transformation.
+         */
+        public static Mat4 createTransformation(float posX, float posY, float posZ,
+                                                float rotX, float rotY, float rotZ,
+                                                float scaleX, float scaleY, float scaleZ,
+                                                Mat4 dest) {
+            dest.identity();
+
+            dest.m30 += dest.m00 * posX + dest.m10 * posY + dest.m20 * posZ;
+            dest.m31 += dest.m01 * posX + dest.m11 * posY + dest.m21 * posZ;
+            dest.m32 += dest.m02 * posX + dest.m12 * posY + dest.m22 * posZ;
+            dest.m33 += dest.m03 * posX + dest.m13 * posY + dest.m23 * posZ;
+
+            double rx = Math.toRadians(rotX);
+            double ry = Math.toRadians(rotY);
+            double rz = Math.toRadians(rotZ);
+
+            float crx = (float) Math.cos(rx);
+            float cry = (float) Math.cos(ry);
+            float crz = (float) Math.cos(rz);
+
+            float srx = (float) Math.sin(rx);
+            float sry = (float) Math.sin(ry);
+            float srz = (float) Math.sin(rz);
+
+            float f00, f01, f02;
+            float f10, f11, f12;
+            float f20, f21, f22;
+
+            float p00, p01, p02, p03;
+            float p10, p11, p12, p13;
+            float p20, p21, p22, p23;
+
+            // rotX matrix
+            f00 = ONE; f01 = ZERO; f02 = ZERO;
+            f10 = ZERO; f11 = crx; f12 = srx;
+            f20 = ZERO; f21 = -srx; f22 = crx;
+
+            // Apply rotation X to the destination matrix
+            p00 = dest.m00 * f00 + dest.m10 * f01 + dest.m20 * f02;
+            p01 = dest.m01 * f00 + dest.m11 * f01 + dest.m21 * f02;
+            p02 = dest.m02 * f00 + dest.m12 * f01 + dest.m22 * f02;
+            p03 = dest.m03 * f00 + dest.m13 * f01 + dest.m23 * f02;
+
+            p10 = dest.m00 * f10 + dest.m10 * f11 + dest.m20 * f12;
+            p11 = dest.m01 * f10 + dest.m11 * f11 + dest.m21 * f12;
+            p12 = dest.m02 * f10 + dest.m12 * f11 + dest.m22 * f12;
+            p13 = dest.m03 * f10 + dest.m13 * f11 + dest.m23 * f12;
+
+            p20 = dest.m00 * f20 + dest.m10 * f21 + dest.m20 * f22;
+            p21 = dest.m01 * f20 + dest.m11 * f21 + dest.m21 * f22;
+            p22 = dest.m02 * f20 + dest.m12 * f21 + dest.m22 * f22;
+            p23 = dest.m03 * f20 + dest.m13 * f21 + dest.m23 * f22;
+
+            dest.m00 = p00; dest.m01 = p01; dest.m02 = p02; dest.m03 = p03;
+            dest.m10 = p10; dest.m11 = p11; dest.m12 = p12; dest.m13 = p13;
+            dest.m20 = p20; dest.m21 = p21; dest.m22 = p22; dest.m23 = p23;
+
+            // rotY matrix
+            f00 = cry; f01 = ZERO; f02 = -sry;
+            f10 = ZERO; f11 = ONE; f12 = ZERO;
+            f20 = sry; f21 = ZERO; f22 = cry;
+
+            // Apply rotation Y to the destination matrix
+            p00 = dest.m00 * f00 + dest.m10 * f01 + dest.m20 * f02;
+            p01 = dest.m01 * f00 + dest.m11 * f01 + dest.m21 * f02;
+            p02 = dest.m02 * f00 + dest.m12 * f01 + dest.m22 * f02;
+            p03 = dest.m03 * f00 + dest.m13 * f01 + dest.m23 * f02;
+
+            p10 = dest.m00 * f10 + dest.m10 * f11 + dest.m20 * f12;
+            p11 = dest.m01 * f10 + dest.m11 * f11 + dest.m21 * f12;
+            p12 = dest.m02 * f10 + dest.m12 * f11 + dest.m22 * f12;
+            p13 = dest.m03 * f10 + dest.m13 * f11 + dest.m23 * f12;
+
+            p20 = dest.m00 * f20 + dest.m10 * f21 + dest.m20 * f22;
+            p21 = dest.m01 * f20 + dest.m11 * f21 + dest.m21 * f22;
+            p22 = dest.m02 * f20 + dest.m12 * f21 + dest.m22 * f22;
+            p23 = dest.m03 * f20 + dest.m13 * f21 + dest.m23 * f22;
+
+            dest.m00 = p00; dest.m01 = p01; dest.m02 = p02; dest.m03 = p03;
+            dest.m10 = p10; dest.m11 = p11; dest.m12 = p12; dest.m13 = p13;
+            dest.m20 = p20; dest.m21 = p21; dest.m22 = p22; dest.m23 = p23;
+
+            // rotZ matrix
+            f00 = crz; f01 = -srz; f02 = ZERO;
+            f10 = srz; f11 = crz; f12 = ZERO;
+            f20 = ZERO; f21 = ZERO; f22 = ONE;
+
+            // Apply rotation Z to the destination matrix
+            p00 = dest.m00 * f00 + dest.m10 * f01 + dest.m20 * f02;
+            p01 = dest.m01 * f00 + dest.m11 * f01 + dest.m21 * f02;
+            p02 = dest.m02 * f00 + dest.m12 * f01 + dest.m22 * f02;
+            p03 = dest.m03 * f00 + dest.m13 * f01 + dest.m23 * f02;
+
+            p10 = dest.m00 * f10 + dest.m10 * f11 + dest.m20 * f12;
+            p11 = dest.m01 * f10 + dest.m11 * f11 + dest.m21 * f12;
+            p12 = dest.m02 * f10 + dest.m12 * f11 + dest.m22 * f12;
+            p13 = dest.m03 * f10 + dest.m13 * f11 + dest.m23 * f12;
+
+            p20 = dest.m00 * f20 + dest.m10 * f21 + dest.m20 * f22;
+            p21 = dest.m01 * f20 + dest.m11 * f21 + dest.m21 * f22;
+            p22 = dest.m02 * f20 + dest.m12 * f21 + dest.m22 * f22;
+            p23 = dest.m03 * f20 + dest.m13 * f21 + dest.m23 * f22;
+
+            dest.m00 = p00; dest.m01 = p01; dest.m02 = p02; dest.m03 = p03;
+            dest.m10 = p10; dest.m11 = p11; dest.m12 = p12; dest.m13 = p13;
+            dest.m20 = p20; dest.m21 = p21; dest.m22 = p22; dest.m23 = p23;
+
+            return Scale.scale(scaleX, scaleY, scaleZ, dest);
+        }
+
+        public static Mat4 createView(float posX, float posY, float posZ,
+                                      float rotX, float rotY, float rotZ,
+                                      Mat4 dest) {
+            dest.identity();
+
+            double rx = Math.toRadians(rotX);
+            double ry = Math.toRadians(rotY);
+            double rz = Math.toRadians(rotZ);
+
+            float crx = (float) Math.cos(rx);
+            float cry = (float) Math.cos(ry);
+            float crz = (float) Math.cos(rz);
+
+            float srx = (float) Math.sin(rx);
+            float sry = (float) Math.sin(ry);
+            float srz = (float) Math.sin(rz);
+
+            float f00, f01, f02;
+            float f10, f11, f12;
+            float f20, f21, f22;
+
+            float p00, p01, p02, p03;
+            float p10, p11, p12, p13;
+            float p20, p21, p22, p23;
+
+            // rotX matrix
+            f00 = ONE; f01 = ZERO; f02 = ZERO;
+            f10 = ZERO; f11 = crx; f12 = srx;
+            f20 = ZERO; f21 = -srx; f22 = crx;
+
+            // Apply rotation X to the destination matrix
+            p00 = dest.m00 * f00 + dest.m10 * f01 + dest.m20 * f02;
+            p01 = dest.m01 * f00 + dest.m11 * f01 + dest.m21 * f02;
+            p02 = dest.m02 * f00 + dest.m12 * f01 + dest.m22 * f02;
+            p03 = dest.m03 * f00 + dest.m13 * f01 + dest.m23 * f02;
+
+            p10 = dest.m00 * f10 + dest.m10 * f11 + dest.m20 * f12;
+            p11 = dest.m01 * f10 + dest.m11 * f11 + dest.m21 * f12;
+            p12 = dest.m02 * f10 + dest.m12 * f11 + dest.m22 * f12;
+            p13 = dest.m03 * f10 + dest.m13 * f11 + dest.m23 * f12;
+
+            p20 = dest.m00 * f20 + dest.m10 * f21 + dest.m20 * f22;
+            p21 = dest.m01 * f20 + dest.m11 * f21 + dest.m21 * f22;
+            p22 = dest.m02 * f20 + dest.m12 * f21 + dest.m22 * f22;
+            p23 = dest.m03 * f20 + dest.m13 * f21 + dest.m23 * f22;
+
+            dest.m00 = p00; dest.m01 = p01; dest.m02 = p02; dest.m03 = p03;
+            dest.m10 = p10; dest.m11 = p11; dest.m12 = p12; dest.m13 = p13;
+            dest.m20 = p20; dest.m21 = p21; dest.m22 = p22; dest.m23 = p23;
+
+            // rotY matrix
+            f00 = cry; f01 = ZERO; f02 = -sry;
+            f10 = ZERO; f11 = ONE; f12 = ZERO;
+            f20 = sry; f21 = ZERO; f22 = cry;
+
+            // Apply rotation Y to the destination matrix
+            p00 = dest.m00 * f00 + dest.m10 * f01 + dest.m20 * f02;
+            p01 = dest.m01 * f00 + dest.m11 * f01 + dest.m21 * f02;
+            p02 = dest.m02 * f00 + dest.m12 * f01 + dest.m22 * f02;
+            p03 = dest.m03 * f00 + dest.m13 * f01 + dest.m23 * f02;
+
+            p10 = dest.m00 * f10 + dest.m10 * f11 + dest.m20 * f12;
+            p11 = dest.m01 * f10 + dest.m11 * f11 + dest.m21 * f12;
+            p12 = dest.m02 * f10 + dest.m12 * f11 + dest.m22 * f12;
+            p13 = dest.m03 * f10 + dest.m13 * f11 + dest.m23 * f12;
+
+            p20 = dest.m00 * f20 + dest.m10 * f21 + dest.m20 * f22;
+            p21 = dest.m01 * f20 + dest.m11 * f21 + dest.m21 * f22;
+            p22 = dest.m02 * f20 + dest.m12 * f21 + dest.m22 * f22;
+            p23 = dest.m03 * f20 + dest.m13 * f21 + dest.m23 * f22;
+
+            dest.m00 = p00; dest.m01 = p01; dest.m02 = p02; dest.m03 = p03;
+            dest.m10 = p10; dest.m11 = p11; dest.m12 = p12; dest.m13 = p13;
+            dest.m20 = p20; dest.m21 = p21; dest.m22 = p22; dest.m23 = p23;
+
+            // rotZ matrix
+            f00 = crz; f01 = -srz; f02 = ZERO;
+            f10 = srz; f11 = crz; f12 = ZERO;
+            f20 = ZERO; f21 = ZERO; f22 = ONE;
+
+            // Apply rotation Z to the destination matrix
+            p00 = dest.m00 * f00 + dest.m10 * f01 + dest.m20 * f02;
+            p01 = dest.m01 * f00 + dest.m11 * f01 + dest.m21 * f02;
+            p02 = dest.m02 * f00 + dest.m12 * f01 + dest.m22 * f02;
+            p03 = dest.m03 * f00 + dest.m13 * f01 + dest.m23 * f02;
+
+            p10 = dest.m00 * f10 + dest.m10 * f11 + dest.m20 * f12;
+            p11 = dest.m01 * f10 + dest.m11 * f11 + dest.m21 * f12;
+            p12 = dest.m02 * f10 + dest.m12 * f11 + dest.m22 * f12;
+            p13 = dest.m03 * f10 + dest.m13 * f11 + dest.m23 * f12;
+
+            p20 = dest.m00 * f20 + dest.m10 * f21 + dest.m20 * f22;
+            p21 = dest.m01 * f20 + dest.m11 * f21 + dest.m21 * f22;
+            p22 = dest.m02 * f20 + dest.m12 * f21 + dest.m22 * f22;
+            p23 = dest.m03 * f20 + dest.m13 * f21 + dest.m23 * f22;
+
+            dest.m00 = p00; dest.m01 = p01; dest.m02 = p02; dest.m03 = p03;
+            dest.m10 = p10; dest.m11 = p11; dest.m12 = p12; dest.m13 = p13;
+            dest.m20 = p20; dest.m21 = p21; dest.m22 = p22; dest.m23 = p23;
+
+            // translation section
+
+            dest.m30 += dest.m00 * posX + dest.m10 * posY + dest.m20 * posZ;
+            dest.m31 += dest.m01 * posX + dest.m11 * posY + dest.m21 * posZ;
+            dest.m32 += dest.m02 * posX + dest.m12 * posY + dest.m22 * posZ;
+            dest.m33 += dest.m03 * posX + dest.m13 * posY + dest.m23 * posZ;
+
+            return dest;
+        }
+
+//    public static Mat4 createm(Camera camera, float staticPositionY)
+//    {
+//        Mat4 m = new Mat4();
+//        Mat4.rotate((float) java.lang.Math.toRadians(camera.getPitch()), Vec3.xAxis, m, m);
+//        Mat4.rotate((float) java.lang.Math.toRadians(camera.getYaw()), Vec3.yAxis, m, m);
+//        Mat4.rotate((float) java.lang.Math.toRadians(camera.getRoll()), Vec3.zAxis, m, m);
+//        Vec3 positiveCameraPosition = new Vec3(camera.getPosition().x, staticPositionY, camera.getPosition().z);
+//        Vec3 negativeCameraPosition = new Vec3(-camera.getPosition().x, -staticPositionY, -camera.getPosition().z);
+//        Mat4.translate(negativeCameraPosition, m, m);
+//        return m;
+//    }
+//
+//    public static Mat4 createm(Camera camera) {
+//        Mat4 m = new Mat4();
+//        m.identity();
+//        m.rotate((float) java.lang.Math.toRadians(camera.getPitch()), Vec3.xAxis);
+//        m.rotate((float) java.lang.Math.toRadians(camera.getYaw()), Vec3.yAxis);
+//        m.rotate((float) java.lang.Math.toRadians(camera.getRoll()), Vec3.zAxis);
+//
+//        Vec3 cameraPos = camera.getPosition();
+//        Vec3 negativeCameraPos = new Vec3(-cameraPos.x, -cameraPos.y, -cameraPos.z);
+//
+//        m.translate(negativeCameraPos);
+//
+//        return m;
+//    }
+
+        /**
+         * Calculates the interpolation of a point within a triangle using barycentric coordinates.
+         * This method takes three 3D points vec3_1, vec3_2, and vec3_3 representing the vertices of a triangle,
+         * and a 2D point pos within the triangle. It then computes the barycentric coordinates l1, l2, and l3
+         * which determine the weight of each vertex in the interpolation.
+         * The barycentric coordinates are calculated based on the determinant of the triangle formed by the three points.
+         * The interpolation is then computed using the barycentric coordinates to blend the values of vec3_1.y, vec3_2.y, and vec3_3.y.
+         * @param vec3_1 The first vertex of the triangle.
+         * @param vec3_2 The second vertex of the triangle.
+         * @param vec3_3 The third vertex of the triangle.
+         * @param pos The 2D point within the triangle for interpolation.
+         * @return The interpolated value at the given 2D point within the triangle.
+         */
+        public static float barryCentric(Vec3 vec3_1, Vec3 vec3_2, Vec3 vec3_3, Vec2 pos)
+        {
+            float det = (vec3_2.z - vec3_3.z) * (vec3_1.x - vec3_3.x) + (vec3_3.x - vec3_2.x) * (vec3_1.z - vec3_3.z);
+            float l1 = ((vec3_2.z - vec3_3.z) * (pos.x - vec3_3.x) + (vec3_3.x - vec3_2.x) * (pos.y - vec3_3.z)) / det;
+            float l2 = ((vec3_3.z - vec3_1.z) * (pos.x - vec3_3.x) + (vec3_1.x - vec3_3.x) * (pos.y - vec3_3.z)) / det;
+            float l3 = 1.0f - l1 - l2;
+            return l1 * vec3_1.y + l2 * vec3_2.y + l3 * vec3_3.y;
+        }
     }
 }

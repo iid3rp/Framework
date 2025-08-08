@@ -4,12 +4,14 @@ import framework.entity.Camera;
 import framework.entity.Entity;
 import framework.entity.Light;
 import framework.environment.Engine;
+import framework.environment.Scene;
 import framework.hardware.Display;
 import framework.model.Model;
 import framework.model.TexturedModel;
 import framework.io.Resources;
 
 import java.util.Arrays;
+import java.util.Random;
 
 import static framework.hardware.Display.getLwjglVersionMessage;
 import static framework.hardware.Display.getOpenGlVersionMessage;
@@ -21,6 +23,7 @@ public class Main
     public static TexturedModel tm;
     public static Entity ent;
     public static Light light;
+    public static Scene scene;
 
     private static void start() {
 
@@ -35,36 +38,42 @@ public class Main
     public static void main(String... args)
     {
         start();
+        scene = new Scene();
         Resources.createResourcePool();
-
-        float[] vertices = {
-                -.5f, .5f, 0,
-                -.5f, -.5f, 0,
-                .5f, -.5f, 0,
-                .5f, .5f, 0
-        };
-        float[] textures = {
-                0, 0, 0, 1, 1, 1, 1, 0
-        };
-        int[] indices = {
-                0, 1, 3,
-                3, 1, 2
-        };
 
         tm = new TexturedModel(
                 Resources.getModel("box"),
                 Resources.getTexture("box")
         );
-        ent = new Entity(tm);
-        //ent.setColor(200, 255, 255, 255);
+
+
         light = new Light();
         light.setColor(1,1, 1);
         light.setPosition(0, 0, 20);
+
+        ent = new Entity(tm);
         ent.setPosition(0, 0, -20);
         ent.setRotation(0, 180,0);
         ent.setScale(1, 1, 1);
+
+        Random r = new Random();
+
+        for(int i = 0; i < 1000; i++)
+        {
+            Entity entity = new Entity(tm);
+            entity.setPosition(r.nextFloat(200) - 100, r.nextFloat(100) - 50, -r.nextFloat(100));
+            entity.setScale(1,1, 1);
+            entity.setName(i + "");
+            scene.add(entity);
+        }
+
         Camera camera = new Camera();
-        Engine.setCamera(camera);
+
+        scene.add(ent);
+        scene.add(light);
+        scene.setCamera(camera);
+
+        Engine.setScene(scene);
         Engine.start();
 
     }

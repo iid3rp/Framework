@@ -1,4 +1,4 @@
-#version 460 core
+#version 410 core
 #define MAX_LIGHTS 100 // Define your maximum number of lights here
 
 // structures
@@ -32,15 +32,10 @@ struct Material {
 };
 
 // from the vertex shader
-in toFrag {
-    vec2 tex;
-    vec3 surface[MAX_LIGHTS];
-    vec3 toLight[MAX_LIGHTS];
-} fin;
-
 in vec2 passTex;
 in vec3 surfaceNorm;
-in vec3 toLight;
+in vec4 worldPos;
+in vec3 toCamera;
 
 // uniforms
 uniform sampler2D modelTexture;
@@ -49,6 +44,7 @@ uniform bool hasTexture;
 uniform Light lights[MAX_LIGHTS];
 uniform int lightCount;
 uniform float ambient;
+uniform Material material;
 
 // output color (final)
 out vec4 outColor;
@@ -63,19 +59,31 @@ vec4 paint(bool flag)
         return normalize(backgroundColor);
 }
 
+vec3 highlight(vec3 normal, int lightIndex)
+{
+    vec3 unitCamera = normalize(toCamera);
+    vec3 reflectLight = reflect(-unitCamera, normal);
+
+    float specular = max(dot(reflectLight, unitCamera), 0);
+    float damp = pow(specular, material.shineDamp);
+
+    return damp * lights[lightIndex].color;
+}
+
 vec4 processLighting(void)
 {
-//    for(int i = 0; i < lightCount; i++)
-//    {
-//
-//    }
-    vec3 unitNormal = normalize(surfaceNorm);
-    vec3 unitLightVector = normalize(toLight);
+    vec3 unitLightVector;
+    vec3 diffuse;
+    for(int i = 0; i < 1; i++)
+    {
+        vec3 unitLightVector = normalize(lights[i].pos - worldPos.xyz);
+        vec3 unitNormal = normalize(surfaceNorm);
 
-    float lightDot = dot(unitNormal, unitLightVector);
-    float brightness = max(lightDot, 0); // should be ambient here
-    vec3 diffuse = brightness * normalize(lights[0].color);
+        float lightDot = dot(unitNormal, unitLightVector);
+        float brightness = max(lightDot, .2);
 
+        diffuse += (brightness * normalize(lights[i].color)) + highlight(unitNormal, i) * material.reflectivity;
+    }
     return vec4(diffuse, 1);
 }
 

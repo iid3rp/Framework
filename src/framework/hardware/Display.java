@@ -92,6 +92,8 @@ public final class Display implements Hardware
         glfwWindowHint(GLFW_DECORATED, GL_TRUE);
         glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
 
+
+
         window = glfwCreateWindow(width, height, TITLE, 0, 0);
 
         if (window == 0) {

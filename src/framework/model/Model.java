@@ -2,6 +2,8 @@ package framework.model;
 
 import framework.loader.ModelLoader;
 
+import java.util.Objects;
+
 public class Model
 {
     public static Model cube;

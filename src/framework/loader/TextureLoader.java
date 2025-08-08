@@ -192,9 +192,6 @@ public class TextureLoader
         texture.setTextureID(textures[0]);
         texture.setNormalMap(textures[1]);
         texture.setSpecularMap(textures[2]);
-        texture.setDiffuseBuffer(buffers[0]);
-        texture.setNormalBuffer(buffers[1]);
-        texture.setSpecularBuffer(buffers[2]);
 
         return texture;
     }
@@ -292,8 +289,9 @@ public class TextureLoader
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         // Upload texture data
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture.getWidth(), texture.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE,
-                Buffer.createIntBuffer(texture.getArray()));
+        IntBuffer buffer = Buffer.createIntBuffer(texture.getArray());
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture.getWidth(), texture.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+        buffer.clear();
 
         // Generate mipmaps for better performance at distance
         glGenerateMipmap(GL_TEXTURE_2D);
@@ -301,8 +299,7 @@ public class TextureLoader
         // Enable anisotropic filtering if supported (check for extension availability)
         if (getCapabilities().GL_EXT_texture_filter_anisotropic) {
             float maxAnisotropy = glGetFloat(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT);
-            // Use moderate anisotropic filtering (4x) for good quality/performance balance
-            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, Math.min(4.0f, maxAnisotropy));
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, Math.min(8.0f, maxAnisotropy));
         }
 
         glBindTexture(GL_TEXTURE_2D, 0);

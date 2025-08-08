@@ -1,18 +1,23 @@
 package framework.renderer;
 
 import framework.entity.Entity;
-import framework.environment.Engine;
+import framework.environment.Scene;
 import framework.hardware.Display;
-import framework.lang.GeomMath;
 import framework.lang.Mat4;
-import framework.main.Main;
 import framework.model.Model;
 import framework.shader.GLShader;
+import framework.textures.Texture;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import static framework.shader.GLShader.EntityShader;
+import static framework.shader.GLShader.disableVertexArrays;
+import static framework.shader.GLShader.enableVertexArrays;
 import static org.lwjgl.opengl.GL30.*;
-import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
-import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 
 public class MasterRenderer {
     public static float fov = 70;
@@ -22,10 +27,12 @@ public class MasterRenderer {
     public static float SKY_GREEN = 0.9f;
     public static float SKY_BLUE = 0.67f;
     private static Mat4 projectionMatrix;
+    private static Map<Texture, Map<Model, List<Entity>>> entry;
 
 
     public static void setRenderer()
     {
+        entry = new HashMap<>();
         projectionMatrix = new Mat4();
         updateProjectionMatrix();
         GLShader.initializeShaders();
@@ -34,7 +41,6 @@ public class MasterRenderer {
         GLShader.unbind();
         enableCulling();
         enableDepthTest();
-
     }
 
     private static void enableDepthTest()
@@ -53,28 +59,6 @@ public class MasterRenderer {
 
     public static void processEntity() {
 
-    }
-
-    public static void render(Entity entity)
-    {
-        Model model = entity.getModel().getModel();
-        glBindVertexArray(model.getVaoId());
-        GLShader.enableVertexArrays();
-
-        // enable uniforms
-        GLShader.loadUniform("transformationMatrix", entity.getTransformationMatrix());
-        GLShader.loadUniform("viewMatrix", Engine.test.getViewMatrix());
-        GLShader.loadUniform("hasTexture", true);
-        GLShader.loadUniform("backgroundColor", entity.getRed(), entity.getGreen(), entity.getBlue(),
-                entity.getAlpha());
-        GLShader.loadLight(Main.light);
-
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, entity.getModel().getTexture().getTextureId());
-        glDrawElements(GL_TRIANGLES, model.getVertexCount(), GL_UNSIGNED_INT, 0);
-
-        GLShader.disableVertexArrays();
-        glBindVertexArray(0);
     }
 
     public static void prepare() {
@@ -107,5 +91,74 @@ public class MasterRenderer {
     public static Mat4 getProjectionMatrix()
     {
         return projectionMatrix;
+    }
+
+    public static void render(Scene scene) {
+        GLShader.bind(EntityShader.program);
+        enableVertexArrays();
+
+        processScene(scene);
+
+        processEntities(scene.entities);
+        renderBatchedEntities();
+
+        disableVertexArrays();
+        GLShader.unbind();
+    }
+
+    private static void processScene(Scene scene)
+    {
+        GLShader.loadUniform("viewMatrix", scene.camera.getViewMatrix());
+        GLShader.loadLights(scene.lights);
+    }
+
+
+    private static void processEntities(List<Entity> entities)
+    {
+        for(Entity e : entities)
+        {
+            Map<Model, List<Entity>> modelMap = entry.get(e.getModel().getTexture());
+            List<Entity> entityList;
+            if(modelMap == null)
+            {
+                modelMap = new HashMap<>();
+                entry.put(e.getModel().getTexture(), modelMap); // Add this line
+                entityList = new ArrayList<>();
+                modelMap.put(e.getModel().getModel(), entityList);
+            }
+            else
+            {
+                entityList = modelMap.computeIfAbsent(e.getModel().getModel(), k -> new ArrayList<>());
+            }
+            entityList.add(e);
+        }
+    }
+
+    private static void renderBatchedEntities() {
+        for (Entry<Texture, Map<Model, List<Entity>>> textureEntry : entry.entrySet()) {
+            Texture texture = textureEntry.getKey();
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, texture.getTextureId());
+            GLShader.loadTexture(texture);
+
+            Map<Model, List<Entity>> modelsMap = textureEntry.getValue();
+            for(Entry<Model, List<Entity>> modelEntry : modelsMap.entrySet()) {
+                Model model = modelEntry.getKey();
+                glBindVertexArray(model.getVaoId());
+
+                List<Entity> entities = modelEntry.getValue();
+                for(Entity e : entities) {
+
+                    GLShader.loadUniform("transformationMatrix", e.getTransformationMatrix());
+                    GLShader.loadUniform("hasTexture", true);
+                    if(e.getModel().getTexture().getID() == 0)
+                        GLShader.loadUniform("backgroundColor", e.getRed(), e.getGreen(), e.getBlue(), e.getAlpha());
+
+                    glDrawElements(GL_TRIANGLES, model.getVertexCount(), GL_UNSIGNED_INT, 0);
+                }
+            }
+        }
+
+        entry.clear();
     }
 }

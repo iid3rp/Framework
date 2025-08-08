@@ -4,6 +4,8 @@ package framework.model;
 import framework.lang.Mat4;
 import framework.textures.Texture;
 
+import java.util.Objects;
+
 public class TexturedModel
 {
     private final Model model;
@@ -23,4 +25,5 @@ public class TexturedModel
     {
         return texture;
     }
+
 }

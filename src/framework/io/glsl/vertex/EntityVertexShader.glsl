@@ -1,4 +1,4 @@
-#version 460 core
+#version 410 core
 #define MAX_LIGHTS 100 // Define your maximum number of lights here
 
 // structures
@@ -32,16 +32,12 @@ in vec3 normal;
 uniform mat4 transformationMatrix;
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
-uniform Light lights[MAX_LIGHTS];
-
 
 // variables for fragment shader
 out vec2 passTex;
 out vec3 surfaceNorm;
-out vec3 toLight;
-
-// global variables
-vec4 worldPos;
+out vec4 worldPos;
+out vec3 toCamera;
 
 vec4 worldPosition(void)
 {
@@ -58,11 +54,6 @@ vec3 surface(void)
     return (transformationMatrix * vec4(normal, 0)).xyz;
 }
 
-vec3 lightVector(void)
-{
-    return lights[0].pos - worldPos.xyz;
-}
-
 void main(void)
 {
     worldPos = worldPosition();
@@ -70,5 +61,5 @@ void main(void)
 
     passTex = tex;
     surfaceNorm = surface();
-    toLight = lightVector();
+    toCamera = (inverse(viewMatrix) * vec4(0, 0, 0, 1)).xyz - worldPos.xyz;
 }

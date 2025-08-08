@@ -1,3 +1,429 @@
+package framework.main;
+
+import framework.entity.Camera;
+import framework.entity.Entity;
+import framework.entity.Light;
+import framework.environment.Engine;
+import framework.environment.Scene;
+import framework.hardware.Display;
+import framework.model.Model;
+import framework.model.TexturedModel;
+import framework.io.Resources;
+
+import java.util.Arrays;
+import java.util.Random;
+
+import static framework.hardware.Display.getLwjglVersionMessage;
+import static framework.hardware.Display.getOpenGlVersionMessage;
+
+public class Main
+{
+
+    public static Model model;
+    public static TexturedModel tm;
+    public static Entity ent;
+    public static Light light;
+    public static Scene scene;
+
+    private static void start() {
+
+        Display.createDisplay(1280, 720);
+        Display.setShowFPSTitle(true);
+
+        Arrays.asList("OpenGL: " + getOpenGlVersionMessage(), "LWJGL: " + getLwjglVersionMessage()).forEach(
+                System.out::println);
+        Engine.createThreads();
+    }
+
+    public static void main(String... args)
+    {
+        start();
+        scene = new Scene();
+        Resources.createResourcePool();
+
+        tm = new TexturedModel(
+                Resources.getModel("box"),
+                Resources.getTexture("box")
+        );
+
+
+        light = new Light();
+        light.setColor(1,1, 1);
+        light.setPosition(0, 0, 20);
+
+        ent = new Entity(tm);
+        ent.setPosition(0, 0, -20);
+        ent.setRotation(0, 180,0);
+        ent.setScale(1, 1, 1);
+
+        Random r = new Random();
+
+        for(int i = 0; i < 900; i++)
+        {
+            Entity entity = new Entity(tm);
+            entity.setPosition(r.nextFloat(200) - 100, r.nextFloat(100) - 50, -r.nextFloat(100));
+            entity.setScale(1,1, 1);
+            scene.add(entity);
+        }
+
+        Camera camera = new Camera();
+
+        scene.add(ent);
+        scene.add(light);
+        scene.setCamera(camera);
+
+        Engine.setScene(scene);
+        Engine.start();
+
+    }
+}
+
+
+package framework.renderer;
+
+import framework.entity.Entity;
+import framework.environment.Scene;
+import framework.hardware.Display;
+import framework.lang.Mat4;
+import framework.model.TexturedModel;
+import framework.shader.GLShader;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static framework.shader.GLShader.EntityShader;
+import static framework.shader.GLShader.disableVertexArrays;
+import static framework.shader.GLShader.enableVertexArrays;
+import static org.lwjgl.opengl.GL30.*;
+
+public class MasterRenderer {
+    public static float fov = 70;
+    public static float nearPlane = 0.1f;
+    public static float farPlane = 100_000;
+    public static float SKY_RED = 0.95f;
+    public static float SKY_GREEN = 0.9f;
+    public static float SKY_BLUE = 0.67f;
+    private static Mat4 projectionMatrix;
+    private static Map<TexturedModel, List<Entity>> entry;
+
+
+    public static void setRenderer()
+    {
+        entry = new HashMap<>();
+        projectionMatrix = new Mat4();
+        updateProjectionMatrix();
+        GLShader.initializeShaders();
+        GLShader.bind(EntityShader.program);
+        GLShader.loadUniform("projectionMatrix", projectionMatrix);
+        GLShader.unbind();
+        enableCulling();
+        enableDepthTest();
+    }
+
+    private static void enableDepthTest()
+    {
+        glEnable(GL_DEPTH_TEST);
+    }
+
+    public static void enableCulling() {
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+    }
+
+    public static void disableCulling() {
+        glDisable(GL_CULL_FACE);
+    }
+
+    public static void processEntity() {
+
+    }
+
+    public static void prepare() {
+        glEnable(GL_DEPTH_TEST);    // test which triangles are in front and render them in the correct order
+        glClearColor(0,0, 0, 1);      // Load selected color into the color buffer
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);     // Clear the screen and draw with color in color buffer
+    }
+
+    private static float aspectRatio;
+    private static float yScale;
+    private static float xScale;
+    private static float frustumLength;
+
+    public static void updateProjectionMatrix()
+    {
+        projectionMatrix.identity();
+        aspectRatio = (float) Display.getWidth() / (float) Display.getHeight();
+        yScale = (float) (1f / Math.tan(Math.toRadians(fov / 2f)));
+        xScale = yScale / aspectRatio;
+        frustumLength = farPlane - nearPlane;
+
+        projectionMatrix.m00 = xScale;
+        projectionMatrix.m11 = yScale;
+        projectionMatrix.m22 = -((farPlane + nearPlane) / frustumLength);
+        projectionMatrix.m23 = -1f;
+        projectionMatrix.m32 = -((2f * nearPlane * farPlane) / frustumLength);
+        projectionMatrix.m33 = 0f;
+    }
+
+    public static Mat4 getProjectionMatrix()
+    {
+        return projectionMatrix;
+    }
+
+    public static void render(Scene scene) {
+        GLShader.bind(EntityShader.program);
+        enableVertexArrays();
+        GLShader.loadUniform("viewMatrix", scene.camera.getViewMatrix());
+        GLShader.loadLights(scene.lights);
+        processEntities(scene.entities);
+        renderBatchedEntities();
+        disableVertexArrays();
+        GLShader.unbind();
+        entry.clear();
+    }
+
+    private static void processEntities(List<Entity> entities) {
+        for (Entity e : entities) {
+            TexturedModel model = e.getModel();
+            List<Entity> list = entry.computeIfAbsent(model, k -> new ArrayList<>());
+            list.add(e);
+        }
+    }
+
+    private static void renderBatchedEntities() {
+        for (Map.Entry<TexturedModel, List<Entity>> ent : entry.entrySet()) {
+            TexturedModel model = ent.getKey();
+            List<Entity> entities = ent.getValue();
+
+            // Bind the VAO for the entire batch
+            glBindVertexArray(model.getModel().getVaoId());
+
+            // Bind the texture for the entire batch
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, model.getTexture().getTextureId());
+            GLShader.loadTexture(model.getTexture());
+
+            // Render each entity in the batch
+            for (Entity entity : entities) {
+                renderEntity(entity);
+            }
+
+            // Cleanup
+            glBindVertexArray(0);
+        }
+    }
+
+
+
+    private static void renderEntity(Entity entity) {
+        // Load uniforms that are specific to each entity
+        GLShader.loadUniform("transformationMatrix", entity.getTransformationMatrix());
+        GLShader.loadUniform("hasTexture", true);
+        GLShader.loadUniform("backgroundColor", entity.getRed(), entity.getGreen(), entity.getBlue(), entity.getAlpha());
+
+        // Draw the entity
+        glDrawElements(GL_TRIANGLES, entity.getModel().getModel().getVertexCount(), GL_UNSIGNED_INT, 0);
+
+    }
+}
+
+vertex shader:
+
+#version 410 core
+#define MAX_LIGHTS 100 // Define your maximum number of lights here
+
+// structures
+struct Light {
+    vec3 pos;
+    vec3 color;
+    float intensity;
+
+    // attenuation
+    float constant;
+    float linear;
+    float quadratic;
+    float distance; // < 0 means infinite distance
+
+    // matrices
+    mat4 lightSpaceMatrix;
+};
+
+struct Texture {
+    sampler2D diffuse;
+    sampler2D normal;
+    sampler2D specular;
+    bool hasDiffuse;
+    bool hasNormal;
+    bool hasSpecular;
+};
+
+struct Material {
+    float shineDamp;
+    float reflectivity;
+};
+
+// from the vertex shader
+in vec2 passTex;
+in vec3 surfaceNorm;
+in vec4 worldPos;
+in vec3 toCamera;
+
+// uniforms
+uniform sampler2D modelTexture;
+uniform vec4 backgroundColor;
+uniform bool hasTexture;
+uniform Light lights[MAX_LIGHTS];
+uniform int lightCount;
+uniform float ambient;
+uniform Material material;
+
+// output color (final)
+out vec4 outColor;
+
+// global variables
+
+vec4 paint(bool flag)
+{
+    if(flag)
+        return texture(modelTexture, passTex);
+    else
+        return normalize(backgroundColor);
+}
+
+vec3 highlight(vec3 normal, int lightIndex)
+{
+    vec3 unitCamera = normalize(toCamera);
+    vec3 reflectLight = reflect(-unitCamera, normal);
+
+    float specular = max(dot(reflectLight, unitCamera), 0);
+    float damp = pow(specular, material.shineDamp);
+
+    return damp * lights[lightIndex].color;
+}
+
+vec4 processLighting(void)
+{
+    vec3 unitLightVector;
+    vec3 diffuse;
+    for(int i = 0; i < 1; i++)
+    {
+        vec3 unitLightVector = normalize(lights[i].pos - worldPos.xyz);
+        vec3 unitNormal = normalize(surfaceNorm);
+
+        float lightDot = dot(unitNormal, unitLightVector);
+        float brightness = max(lightDot, 0);
+
+        diffuse += (brightness * normalize(lights[i].color)) + highlight(unitNormal, i) * material.reflectivity;
+    }
+    return vec4(diffuse, 1);
+}
+
+void main(void)
+{
+    outColor = paint(hasTexture);
+    outColor *= processLighting();
+    outColor = vec4(1);
+}
+
+fragment:
+#version 410 core
+#define MAX_LIGHTS 100 // Define your maximum number of lights here
+
+// structures
+struct Light {
+    vec3 pos;
+    vec3 color;
+    float intensity;
+
+    // attenuation
+    float constant;
+    float linear;
+    float quadratic;
+    float distance; // < 0 means infinite distance
+
+    // matrices
+    mat4 lightSpaceMatrix;
+};
+
+struct Texture {
+    sampler2D diffuse;
+    sampler2D normal;
+    sampler2D specular;
+    bool hasDiffuse;
+    bool hasNormal;
+    bool hasSpecular;
+};
+
+struct Material {
+    float shineDamp;
+    float reflectivity;
+};
+
+// from the vertex shader
+in vec2 passTex;
+in vec3 surfaceNorm;
+in vec4 worldPos;
+in vec3 toCamera;
+
+// uniforms
+uniform sampler2D modelTexture;
+uniform vec4 backgroundColor;
+uniform bool hasTexture;
+uniform Light lights[MAX_LIGHTS];
+uniform int lightCount;
+uniform float ambient;
+uniform Material material;
+
+// output color (final)
+out vec4 outColor;
+
+// global variables
+
+vec4 paint(bool flag)
+{
+    if(flag)
+        return texture(modelTexture, passTex);
+    else
+        return normalize(backgroundColor);
+}
+
+vec3 highlight(vec3 normal, int lightIndex)
+{
+    vec3 unitCamera = normalize(toCamera);
+    vec3 reflectLight = reflect(-unitCamera, normal);
+
+    float specular = max(dot(reflectLight, unitCamera), 0);
+    float damp = pow(specular, material.shineDamp);
+
+    return damp * lights[lightIndex].color;
+}
+
+vec4 processLighting(void)
+{
+    vec3 unitLightVector;
+    vec3 diffuse;
+    for(int i = 0; i < 1; i++)
+    {
+        vec3 unitLightVector = normalize(lights[i].pos - worldPos.xyz);
+        vec3 unitNormal = normalize(surfaceNorm);
+
+        float lightDot = dot(unitNormal, unitLightVector);
+        float brightness = max(lightDot, 0);
+
+        diffuse += (brightness * normalize(lights[i].color)) + highlight(unitNormal, i) * material.reflectivity;
+    }
+    return vec4(diffuse, 1);
+}
+
+void main(void)
+{
+    outColor = paint(hasTexture);
+    outColor *= processLighting();
+    outColor = vec4(1);
+}
+
 package framework.shader;
 
 import framework.entity.Light;
@@ -89,7 +515,7 @@ public final class GLShader
                 return name;
             }
         }
-        
+
         private int programId;
         private int vertex;
         private int fragment;
@@ -266,7 +692,7 @@ public final class GLShader
         GLShader.matrix.flip();
         glUniformMatrix4fv(location, false, GLShader.matrix);
     }
-    
+
     public static void unbind()
     {
         glUseProgram(0);
@@ -423,12 +849,9 @@ public final class GLShader
 
         public static void loadLights(List<Light> lights)
         {
-            loadUniform("lightCount", lights.size());
-
             int index = 0;
             for(Light l : lights)
             {
-                if (index >= 100) break;
                 loadLight(l, index++);
             }
 
@@ -442,3 +865,5 @@ public final class GLShader
         }
     }
 }
+
+do note that the files are working and the values have been passeed to the code... idk why this persists...

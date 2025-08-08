@@ -1,6 +1,8 @@
 package framework.textures;
 
-import java.nio.IntBuffer;
+import framework.shader.GLShader.ShaderProgram.Struct;
+
+import java.util.Objects;
 
 public class Texture
 {
@@ -9,15 +11,14 @@ public class Texture
     private int specularMap;
 
     private float shineDampening = 1;
-    private float reflectivity = 0;
+    private float reflectivity = 1;
     private int numberOfRows = 1;
 
     private boolean hasTransparency;
     private boolean useFakeLighting;
     private boolean hasSpecularMap;
-    private IntBuffer diffuseBuffer;
-    private IntBuffer normalBuffer;
-    private IntBuffer specularBuffer;
+
+    public static Struct struct = new Struct("material", "shineDamp", "reflectivity");
 
     public Texture(int id)
     {
@@ -30,7 +31,11 @@ public class Texture
     public Texture()
     {
         diffuseMap = normalMap = specularMap = 0;
+    }
 
+    public static Struct getStruct()
+    {
+        return struct;
     }
 
     public void setSpecularMap(int specularMap)
@@ -125,33 +130,4 @@ public class Texture
         this.diffuseMap = textureId;
     }
 
-    public void setDiffuseBuffer(IntBuffer diffuseBuffer)
-    {
-        this.diffuseBuffer = diffuseBuffer;
-    }
-
-    public IntBuffer getDiffuseBuffer()
-    {
-        return diffuseBuffer;
-    }
-
-    public void setNormalBuffer(IntBuffer normalBuffer)
-    {
-        this.normalBuffer = normalBuffer;
-    }
-
-    public IntBuffer getNormalBuffer()
-    {
-        return normalBuffer;
-    }
-
-    public void setSpecularBuffer(IntBuffer specularBuffer)
-    {
-        this.specularBuffer = specularBuffer;
-    }
-
-    public IntBuffer getSpecularBuffer()
-    {
-        return specularBuffer;
-    }
 }

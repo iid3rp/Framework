@@ -1,19 +1,18 @@
 package framework.entity;
 
-import framework.environment.Engine;
 import framework.hardware.Keyboard;
-import framework.lang.GeomMath;
 import framework.lang.Mat4;
+import framework.lang.Mat4.Matrix;
 
 public class Camera
 {
-    private float posX, posY, posZ;
-    private float rotX, rotY, rotZ; // x = pitch, y = yaw, z = roll
+    private volatile float posX, posY, posZ;
+    private volatile float rotX, rotY, rotZ; // x = pitch, y = yaw, z = roll
     private Mat4 viewMatrix;
     private static final float MAX_DISTANCE = 500;
     private static final float MIN_DISTANCE = 0;
     private static float REFRESH_RATE = 120;
-    private static final float WALK_SPEED = .005f;
+    private static final float WALK_SPEED = 5f;
     private static final float ROTATIONAL_SPEED = 180 / REFRESH_RATE;
     private float speed;
     private float rotationalSpeed;
@@ -51,34 +50,43 @@ public class Camera
         rotZ = angle;
     }
 
-//    public Camera(Player player)
-//    {
-//        this.player = player;
-//        playerCamera = true;
-//        setCameraDefaultPosition();
-//    }
-    public void move()
-    {
-        if(Keyboard.areKeysDown(Keyboard.W, Keyboard.A, Keyboard.S, Keyboard.D))
-            isMoving = true;
-        if(Keyboard.isKeyDown(Keyboard.W))
-            posZ -= WALK_SPEED;
-        if(Keyboard.isKeyDown(Keyboard.A))
-            posX -= WALK_SPEED;
-        if(Keyboard.isKeyDown(Keyboard.S))
-            posZ += WALK_SPEED;
-        if(Keyboard.isKeyDown(Keyboard.D))
-            posX += WALK_SPEED;
+    //    public Camera(Player player)
+    //    {
+    //        this.player = player;
+    //        playerCamera = true;
+    //        setCameraDefaultPosition();
+    //    }
+    // Update the method signature to accept deltaTime
+    public synchronized void move(float deltaTime) {
+        // Calculate the distance to move in this frame
+        final float distance = WALK_SPEED * deltaTime;
+        boolean keyWasPressed = false;
 
-        if(isMoving) {
+        if (Keyboard.isKeyDown(Keyboard.W)) {
+            posZ += distance; // Use distance, not WALK_SPEED
+            keyWasPressed = true;
+        }
+        if (Keyboard.isKeyDown(Keyboard.A)) {
+            posX += distance;
+            keyWasPressed = true;
+        }
+        if (Keyboard.isKeyDown(Keyboard.S)) {
+            posZ -= distance;
+            keyWasPressed = true;
+        }
+        if (Keyboard.isKeyDown(Keyboard.D)) {
+            posX -= distance;
+            keyWasPressed = true;
+        }
+
+        if (keyWasPressed) {
             updateViewMatrix();
-            isMoving = false;
         }
     }
 
-    public void updateViewMatrix()
+    public synchronized void updateViewMatrix()
     {
-        viewMatrix = GeomMath.createViewMatrix(posX,posY, posZ, rotX, rotY, rotZ,viewMatrix,viewMatrix);
+         Matrix.createView(posX, posY, posZ, rotX, rotY, rotZ,viewMatrix);
 
     }
 

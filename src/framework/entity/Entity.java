@@ -1,7 +1,6 @@
 package framework.entity;
-import framework.environment.Engine;
-import framework.lang.GeomMath;
 import framework.lang.Mat4;
+import framework.lang.Mat4.Matrix;
 import framework.model.TexturedModel;
 
 public class Entity
@@ -12,6 +11,14 @@ public class Entity
     public float scaleX, scaleY, scaleZ;
     public Mat4 transformationMatrix;
     private float red, green, blue, alpha;
+    private String name;
+
+    public Entity()
+    {
+        model = null;
+        transformationMatrix = new Mat4();
+    }
+
     public Entity(TexturedModel model)
     {
         this.model = model;
@@ -151,7 +158,7 @@ public class Entity
 
     public void updateTransformationMatrix()
     {
-        Engine.mainExecute(() -> GeomMath.createTransformationMatrix(posX, posY, posZ, rotX, rotY, rotZ, scaleX, scaleY, scaleZ, transformationMatrix, transformationMatrix));
+        Matrix.createTransformation(posX, posY, posZ, rotX, rotY, rotZ, scaleX, scaleY, scaleZ, transformationMatrix);
     }
 
     public float getAlpha()
@@ -159,4 +166,13 @@ public class Entity
         return alpha;
     }
 
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
+    public String getName()
+    {
+        return name;
+    }
 }
